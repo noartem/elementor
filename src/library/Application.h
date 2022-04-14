@@ -5,10 +5,10 @@
 #ifndef ELEMENTOR_APPLICATION_H
 #define ELEMENTOR_APPLICATION_H
 
-#include "IApplication.h"
+#include <include/core/SkCanvas.h>
 
 namespace elementor {
-    class Application : IApplication {
+    class Application {
     public:
         void draw(SkCanvas *canvas);
     };
