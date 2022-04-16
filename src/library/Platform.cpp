@@ -75,9 +75,14 @@ namespace elementor {
 
         while (!glfwWindowShouldClose(window)) {
             glfwWaitEvents();
-            
+
+            int width, height;
+            glfwGetWindowSize(window, &width, &height);
+            RenderSize windowSize = {width, height};
+
             // draw with skia
-            this->draw(canvas);
+            canvas->clear(SK_ColorBLACK);
+            this->draw(canvas, windowSize);
 
             context->flush();
             glfwSwapBuffers(window);
@@ -93,7 +98,7 @@ namespace elementor {
         exit(EXIT_SUCCESS);
     }
 
-    void Platform::draw(SkCanvas *canvas) {
-        this->application.draw(canvas, {this->width, this->height});
+    void Platform::draw(SkCanvas *canvas, RenderSize size) {
+        this->application.draw(canvas, size);
     }
 }

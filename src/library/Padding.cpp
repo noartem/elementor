@@ -36,6 +36,7 @@ namespace elementor {
         if (this->child) {
             RenderChild renderChild;
             renderChild.element = this->child;
+
             renderChild.position = {this->paddings.left, this->paddings.top};
 
             int childWidth = size.width - (this->paddings.left + this->paddings.right);

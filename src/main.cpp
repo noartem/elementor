@@ -16,7 +16,7 @@ int main(void) {
     rootElement.child = &paddingElement;
 
     elementor::Background childElement;
-    childElement.color = SK_ColorBLACK;
+    childElement.color = SK_ColorBLUE;
     paddingElement.child = &childElement;
 
     elementor::Application application;
@@ -24,8 +24,8 @@ int main(void) {
 
     elementor::Platform platform;
     platform.title = "Elementor Test";
-    platform.width = 400;
-    platform.height = 400;
+    platform.width = 720;
+    platform.height = 480;
     platform.application = application;
 
     platform.run();
