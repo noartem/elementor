@@ -3,17 +3,27 @@
 //
 
 #include "Application.h"
+#include "Element.h"
 
 namespace elementor {
-    void Application::draw(SkCanvas *canvas) {
-        SkPaint paint;
-        paint.setColor(SK_ColorWHITE);
-        canvas->drawPaint(paint);
+    void Application::draw(SkCanvas *canvas, RenderSize applicationSize) {
+        std::unique_ptr<ElementRenderer> rootRenderer = this->root->render();
 
-        paint.setColor(SK_ColorBLUE);
-        canvas->drawRect({100, 200, 300, 500}, paint);
+        RenderPosition rootPosition = {0, 0};
+        rootRenderer->paintBackground(canvas, rootPosition, applicationSize);
 
-        paint.setColor(SK_ColorRED);
-        canvas->drawRect({200, 200, 600, 500}, paint);
+        for (RenderChild child: rootRenderer->getChildren(applicationSize)) {
+            std::unique_ptr<ElementRenderer> childRenderer = child.element->render();
+
+            RenderPosition childPosition = {child.position.x + rootPosition.x, child.position.y + rootPosition.y};
+            childRenderer->paintBackground(canvas, childPosition, child.size);
+
+            for (RenderChild innerChild: childRenderer->getChildren(child.size)) {
+                std::unique_ptr<ElementRenderer> innerChildRenderer = innerChild.element->render();
+
+                RenderPosition innerChildPosition = {innerChild.position.x + childPosition.x, innerChild.position.y + childPosition.y};
+                innerChildRenderer->paintBackground(canvas, innerChildPosition, innerChild.size);
+            }
+        }
     }
 }

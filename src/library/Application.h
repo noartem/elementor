@@ -5,12 +5,14 @@
 #ifndef ELEMENTOR_APPLICATION_H
 #define ELEMENTOR_APPLICATION_H
 
-#include <include/core/SkCanvas.h>
+#include "Element.h"
 
 namespace elementor {
     class Application {
     public:
-        void draw(SkCanvas *canvas);
+        Element *root;
+
+        void draw(SkCanvas *canvas, RenderSize size);
     };
 };
 

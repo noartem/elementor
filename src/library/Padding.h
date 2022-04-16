@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_PADDING_H
 #define ELEMENTOR_PADDING_H
 
-#include "IElement.h"
+#include "Element.h"
 
 namespace elementor {
     struct PaddingsValue {
@@ -15,12 +15,12 @@ namespace elementor {
         int left;
     };
 
-    class Padding : public IElement {
+    class Padding : public Element {
     public:
         PaddingsValue paddings;
-        IElement *child;
+        Element *child;
 
-        IElementRenderer* render();
+        std::unique_ptr<ElementRenderer> render() override;
 
         void setPaddings(int paddings);
 
@@ -31,16 +31,12 @@ namespace elementor {
         void setPaddings(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft);
     };
 
-    class PaddingRenderer : public IElementRenderer {
+    class PaddingRenderer : public ElementRenderer {
     public:
         PaddingsValue paddings;
-        IElement *child;
+        Element *child;
 
-        RenderSize getSize(Boundaries boundaries);
-
-        void paintBackground(RenderSize size, SkCanvas *canvas);
-
-        std::vector <RenderChild> getChildren(RenderSize size);
+        std::vector<RenderChild> getChildren(RenderSize size) override;
     };
 }
 

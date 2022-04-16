@@ -4,6 +4,8 @@
 
 #include "Padding.h"
 
+#include <iostream>
+
 namespace elementor {
     void Padding::setPaddings(int paddingYX) {
         this->paddings = {paddingYX, paddingYX, paddingYX, paddingYX};
@@ -21,24 +23,11 @@ namespace elementor {
         this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
     }
 
-    IElementRenderer* Padding::render() {
-        PaddingRenderer *paddingRenderer = new PaddingRenderer();
-        paddingRenderer->paddings = this->paddings;
-        paddingRenderer->child = this->child;
-
-        IElementRenderer *renderer = paddingRenderer;
+    std::unique_ptr<ElementRenderer> Padding::render() {
+        auto renderer = std::make_unique<PaddingRenderer>();
+        renderer->paddings = this->paddings;
+        renderer->child = this->child;
         return renderer;
-    }
-
-    RenderSize PaddingRenderer::getSize(Boundaries boundaries) {
-        if (boundaries.max.height != -1 && boundaries.max.width != -1) {
-            return boundaries.max;
-        } else {
-            return boundaries.min;
-        }
-    }
-
-    void PaddingRenderer::paintBackground(RenderSize size, SkCanvas *canvas) {
     }
 
     std::vector <RenderChild> PaddingRenderer::getChildren(RenderSize size) {
@@ -47,16 +36,11 @@ namespace elementor {
         if (this->child) {
             RenderChild renderChild;
             renderChild.element = this->child;
+            renderChild.position = {this->paddings.left, this->paddings.top};
 
-            renderChild.position = {
-                (float) this->paddings.left,
-                (float) this->paddings.top,
-            };
-
-            renderChild.size = {
-                size.width - (this->paddings.left + this->paddings.right),
-                size.height - (this->paddings.top + this->paddings.bottom),
-            };
+            int childWidth = size.width - (this->paddings.left + this->paddings.right);
+            int childHeight = size.height - (this->paddings.top + this->paddings.bottom);
+            renderChild.size = {childWidth, childHeight};
 
             children.push_back(renderChild);
         }

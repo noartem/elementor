@@ -94,6 +94,6 @@ namespace elementor {
     }
 
     void Platform::draw(SkCanvas *canvas) {
-        this->application.draw(canvas);
+        this->application.draw(canvas, {this->width, this->height});
     }
 }
