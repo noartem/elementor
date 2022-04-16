@@ -55,6 +55,9 @@ namespace elementor {
         glfwMakeContextCurrent(window);
         glEnable(GL_FRAMEBUFFER_SRGB);
 
+        glfwSwapInterval(1);
+        glfwSetKeyCallback(window, key_callback);
+
         // init skia
         auto interface = GrGLMakeNativeInterface();
         GrDirectContext* context = GrDirectContext::MakeGL(interface).release();
@@ -65,20 +68,20 @@ namespace elementor {
         framebufferInfo.fFormat = GL_RGBA8;
 
         SkColorType colorType = kRGBA_8888_SkColorType;
-        GrBackendRenderTarget backendRenderTarget(this->width, this->height, 0, 0, framebufferInfo);
-        SkSurface* surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
-
-        glfwSwapInterval(1);
-        glfwSetKeyCallback(window, key_callback);
-
-        SkCanvas* canvas = surface->getCanvas();
 
         while (!glfwWindowShouldClose(window)) {
             glfwWaitEvents();
+            glClear(GL_COLOR_BUFFER_BIT);
 
             int width, height;
-            glfwGetWindowSize(window, &width, &height);
+            glfwGetFramebufferSize(window, &width, &height);
             RenderSize windowSize = {width, height};
+
+            // create skia canvas
+            // TODO: Fix memory leak, do not create surface on each frame but store it and update in resize handler
+            GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
+            SkSurface* surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
+            SkCanvas* canvas = surface->getCanvas();
 
             // draw with skia
             canvas->clear(SK_ColorBLACK);
@@ -86,10 +89,12 @@ namespace elementor {
 
             context->flush();
             glfwSwapBuffers(window);
+
+            delete canvas;
         }
 
         // cleanup skia
-        delete surface;
+        // delete surface;
         delete context;
 
         // cleanup glfw
