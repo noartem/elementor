@@ -13,7 +13,7 @@ namespace elementor {
         std::string title;
         int width;
         int height;
-        Application application;
+        Application *application;
 
         int run();
 

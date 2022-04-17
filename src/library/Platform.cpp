@@ -102,6 +102,6 @@ namespace elementor {
     }
 
     void Platform::draw(SkCanvas *canvas, RenderSize size) {
-        this->application.draw(canvas, size);
+        this->application->draw(canvas, size);
     }
 }
