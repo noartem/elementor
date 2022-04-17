@@ -12,7 +12,7 @@
     ```bash
     xmake
     ```
-4. Build project for your system `xmake build`
+4. Build project for your system
     ```bash
     xmake build
     ```
