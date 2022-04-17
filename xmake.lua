@@ -1,5 +1,7 @@
 add_rules("mode.debug", "mode.release")
 
+set_languages("c99", "cxx20")
+
 add_requires("skia")
 add_requires("glfw")
 add_requires("doctest")
