@@ -36,7 +36,7 @@ namespace elementor {
         PaddingsValue paddings;
         Element *child;
 
-        std::vector<RenderChild> getChildren(RenderSize size) override;
+        std::vector<RenderElement> getChildren(RenderSize size) override;
     };
 }
 

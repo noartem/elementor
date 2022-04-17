@@ -4,6 +4,8 @@
 
 #include "Background.h"
 
+#include <iostream>
+
 namespace elementor {
     std::unique_ptr<ElementRenderer> Background::render() {
         auto renderer = std::make_unique<BackgroundRenderer>();
@@ -20,16 +22,16 @@ namespace elementor {
         canvas->drawRect(rect, paint);
     }
 
-    std::vector <RenderChild> BackgroundRenderer::getChildren(RenderSize size) {
-        std::vector<RenderChild> children;
+    std::vector <RenderElement> BackgroundRenderer::getChildren(RenderSize size) {
+        std::vector<RenderElement> children;
 
         if (this->child) {
-            RenderChild renderChild;
-            renderChild.element = this->child;
-            renderChild.position = {0, 0};
-            renderChild.size = size;
+            RenderElement child;
+            child.element = this->child;
+            child.position = {0, 0};
+            child.size = size;
 
-            children.push_back(renderChild);
+            children.push_back(child);
         }
 
         return children;

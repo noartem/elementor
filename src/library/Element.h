@@ -26,7 +26,7 @@ namespace elementor {
         RenderSize max;
     };
 
-    struct RenderChild {
+    struct RenderElement {
         RenderPosition position;
         RenderSize size;
         Element* element;
@@ -38,7 +38,7 @@ namespace elementor {
     
         virtual void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size);
     
-        virtual std::vector <RenderChild> getChildren(RenderSize size);
+        virtual std::vector <RenderElement> getChildren(RenderSize size);
     };
 
     class Element {

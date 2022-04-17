@@ -30,20 +30,20 @@ namespace elementor {
         return renderer;
     }
 
-    std::vector <RenderChild> PaddingRenderer::getChildren(RenderSize size) {
-        std::vector<RenderChild> children;
+    std::vector <RenderElement> PaddingRenderer::getChildren(RenderSize size) {
+        std::vector<RenderElement> children;
 
         if (this->child) {
-            RenderChild renderChild;
-            renderChild.element = this->child;
+            RenderElement child;
+            child.element = this->child;
 
-            renderChild.position = {this->paddings.left, this->paddings.top};
+            child.position = {this->paddings.left, this->paddings.top};
 
             int childWidth = size.width - (this->paddings.left + this->paddings.right);
             int childHeight = size.height - (this->paddings.top + this->paddings.bottom);
-            renderChild.size = {childWidth, childHeight};
+            child.size = {childWidth, childHeight};
 
-            children.push_back(renderChild);
+            children.push_back(child);
         }
 
         return children;
