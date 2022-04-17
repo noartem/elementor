@@ -7,12 +7,15 @@
 
 #include "Application.h"
 
+#include <optional>
+
 namespace elementor {
     class Platform {
     public:
         std::string title;
-        int width;
-        int height;
+        RenderSize size;
+        std::optional<RenderSize> minSize;
+        std::optional<RenderSize> maxSize;
         Application *application;
 
         int run();

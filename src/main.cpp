@@ -42,8 +42,9 @@ int main(void) {
 
     Platform *platform = new Platform();
     platform->title = "Elementor Test";
-    platform->width = 720;
-    platform->height = 480;
+    platform->size = {720, 480};
+    platform->minSize = {480, 320};
+    platform->maxSize = {1440, 960};
     platform->application = application;
 
     platform->run();

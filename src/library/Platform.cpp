@@ -46,10 +46,18 @@ namespace elementor {
         glfwWindowHint(GLFW_ALPHA_BITS, 0);
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
-        window = glfwCreateWindow(this->width, this->height, this->title.c_str(), NULL, NULL);
+        window = glfwCreateWindow(this->size.width, this->size.height, this->title.c_str(), NULL, NULL);
         if (!window) {
             glfwTerminate();
             exit(EXIT_FAILURE);
+        }
+
+        if (this->minSize && this->maxSize) {
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width, this->maxSize->height);
+        } else if (this->minSize && !this->maxSize) {
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, GLFW_DONT_CARE, GLFW_DONT_CARE);
+        } else if (!this->minSize && this->maxSize) {
+            glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width, this->maxSize->height);
         }
 
         glfwMakeContextCurrent(window);
