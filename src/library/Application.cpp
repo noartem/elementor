@@ -5,25 +5,25 @@
 #include "Application.h"
 #include "Element.h"
 
+#include <iostream>
+
 namespace elementor {
     void Application::draw(SkCanvas *canvas, RenderSize applicationSize) {
-        std::unique_ptr<ElementRenderer> rootRenderer = this->root->render();
+        RenderElement rootElement;
+        rootElement.position = {0, 0};
+        rootElement.size = applicationSize;
+        rootElement.element = this->root;
+        this->drawElement(canvas, &rootElement, {0, 0});
+    }
 
-        RenderPosition rootPosition = {0, 0};
-        rootRenderer->paintBackground(canvas, rootPosition, applicationSize);
+    void Application::drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition) {
+        std::unique_ptr<ElementRenderer> elementRenderer = element->element->render();
 
-        for (RenderChild child: rootRenderer->getChildren(applicationSize)) {
-            std::unique_ptr<ElementRenderer> childRenderer = child.element->render();
+        RenderPosition elementPosition = {element->position.x + parentPosition.x, element->position.y + parentPosition.y};
+        elementRenderer->paintBackground(canvas, elementPosition, element->size);
 
-            RenderPosition childPosition = {child.position.x + rootPosition.x, child.position.y + rootPosition.y};
-            childRenderer->paintBackground(canvas, childPosition, child.size);
-
-            for (RenderChild innerChild: childRenderer->getChildren(child.size)) {
-                std::unique_ptr<ElementRenderer> innerChildRenderer = innerChild.element->render();
-
-                RenderPosition innerChildPosition = {innerChild.position.x + childPosition.x, innerChild.position.y + childPosition.y};
-                innerChildRenderer->paintBackground(canvas, innerChildPosition, innerChild.size);
-            }
+        for (RenderElement child: elementRenderer->getChildren(element->size)) {
+            this->drawElement(canvas, &child, elementPosition);
         }
     }
 }

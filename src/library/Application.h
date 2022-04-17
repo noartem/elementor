@@ -13,6 +13,9 @@ namespace elementor {
         Element *root;
 
         void draw(SkCanvas *canvas, RenderSize size);
+
+    private:
+        void drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition);
     };
 };
 
