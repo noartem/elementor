@@ -78,7 +78,6 @@ namespace elementor {
             RenderSize windowSize = {width, height};
 
             // create skia canvas
-            // TODO: Fix memory leak, do not create surface on each frame but store it and update in resize handler
             GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
             SkSurface* surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
             SkCanvas* canvas = surface->getCanvas();
@@ -90,11 +89,10 @@ namespace elementor {
             context->flush();
             glfwSwapBuffers(window);
 
-            delete canvas;
+            delete surface;
         }
 
         // cleanup skia
-        // delete surface;
         delete context;
 
         // cleanup glfw
