@@ -7,26 +7,44 @@
 #include "./library/Application.h"
 #include "./library/Platform.h"
 
+using namespace elementor;
+
 int main(void) {
-    elementor::Background rootElement;
-    rootElement.color = SK_ColorWHITE;
+    Background *gElement = new Background();
+    gElement->color = SkColorSetARGB(0xFF, 0xFF, 0x9F, 0x1C);
 
-    elementor::Padding paddingElement;
-    paddingElement.setPaddings(32);
-    rootElement.child = &paddingElement;
+    Padding *fElement = new Padding();
+    fElement->setPaddings(64);
+    fElement->child = gElement;
 
-    elementor::Background childElement;
-    childElement.color = SK_ColorBLUE;
-    paddingElement.child = &childElement;
+    Background *eElement = new Background();
+    eElement->color = SkColorSetARGB(0xFF, 0xCB, 0xF3, 0xF0);
+    eElement->child = fElement;
 
-    elementor::Application application;
-    application.root = &rootElement;
+    Padding *dElement = new Padding();
+    dElement->setPaddings(32);
+    dElement->child = eElement;
 
-    elementor::Platform platform;
-    platform.title = "Elementor Test";
-    platform.width = 720;
-    platform.height = 480;
-    platform.application = application;
+    Background *cElement = new Background();
+    cElement->color = SkColorSetARGB(0xFF, 0x2E, 0xC4, 0xB6);
+    cElement->child = dElement;
 
-    platform.run();
+    Padding *bElement = new Padding();
+    bElement->setPaddings(48);
+    bElement->child = cElement;
+
+    Background *aElement = new Background();
+    aElement->color = SK_ColorWHITE;
+    aElement->child = bElement;
+
+    Application *application = new Application();
+    application->root = aElement;
+
+    Platform *platform = new Platform();
+    platform->title = "Elementor Test";
+    platform->width = 720;
+    platform->height = 480;
+    platform->application = application;
+
+    platform->run();
 }
