@@ -23,7 +23,6 @@
 
 ## TODO
 
-* Complete Application::draw prototype
 * Add Flex element
 * Add logical pixels
 * Add linter
