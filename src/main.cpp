@@ -6,19 +6,41 @@
 #include "./library/Padding.h"
 #include "./library/Application.h"
 #include "./library/Platform.h"
+#include "./library/Flex.h"
 
 using namespace elementor;
 
 int main(void) {
-    Background *gElement = new Background();
-    gElement->setColor("#FF9F1C");
+    Background *lElement = new Background();
+    lElement->setColor("#1d3557");
+
+    Background *kElement = new Background();
+    kElement->setColor("#1d3557");
+
+    Background *jElement = new Background();
+    jElement->setColor("#e63946");
+
+    Flex *iElement = new Flex();
+    iElement->gap = 24;
+    iElement->direction = FlexDirection::Column;
+    iElement->children.push_back(lElement);
+    iElement->children.push_back(kElement);
+    iElement->children.push_back(jElement);
+
+    Background *hElement = new Background();
+    hElement->setColor("#e63946");
+
+    Flex *gElement = new Flex();
+    gElement->gap = 32;
+    gElement->children.push_back(hElement);
+    gElement->children.push_back(iElement);
 
     Padding *fElement = new Padding();
     fElement->setPaddings(64);
     fElement->child = gElement;
 
     Background *eElement = new Background();
-    eElement->setColor("#CBF3F0");
+    eElement->setColor("#a8dadc");
     eElement->child = fElement;
 
     Padding *dElement = new Padding();
@@ -26,7 +48,7 @@ int main(void) {
     dElement->child = eElement;
 
     Background *cElement = new Background();
-    cElement->setColor("#2EC4B6");
+    cElement->setColor("#457b9d");
     cElement->child = dElement;
 
     Padding *bElement = new Padding();
@@ -34,7 +56,7 @@ int main(void) {
     bElement->child = cElement;
 
     Background *aElement = new Background();
-    aElement->color = SK_ColorWHITE;
+    aElement->setColor("#f1faee");
     aElement->child = bElement;
 
     Application *application = new Application();
@@ -43,7 +65,7 @@ int main(void) {
     Platform *platform = new Platform();
     platform->title = "Elementor Test";
     platform->size = {720, 480};
-    platform->minSize = {480, 320};
+    platform->minSize = {640, 427};
     platform->maxSize = {1440, 960};
     platform->application = application;
 
