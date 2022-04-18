@@ -4,8 +4,6 @@
 
 #include "Padding.h"
 
-#include <iostream>
-
 namespace elementor {
     void Padding::setPaddings(int paddingYX) {
         this->paddings = {paddingYX, paddingYX, paddingYX, paddingYX};
