@@ -13,6 +13,12 @@ namespace elementor {
         SkColor color;
         Element *child;
 
+        void setColor(uint8_t r, uint8_t g, uint8_t b);
+
+        void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+        void setColor(std::string hex);
+
         std::unique_ptr<ElementRenderer> render() override;
     };
 

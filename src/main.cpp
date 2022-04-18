@@ -11,14 +11,14 @@ using namespace elementor;
 
 int main(void) {
     Background *gElement = new Background();
-    gElement->color = SkColorSetARGB(0xFF, 0xFF, 0x9F, 0x1C);
+    gElement->setColor("#FF9F1C");
 
     Padding *fElement = new Padding();
     fElement->setPaddings(64);
     fElement->child = gElement;
 
     Background *eElement = new Background();
-    eElement->color = SkColorSetARGB(0xFF, 0xCB, 0xF3, 0xF0);
+    eElement->setColor("#CBF3F0");
     eElement->child = fElement;
 
     Padding *dElement = new Padding();
@@ -26,7 +26,7 @@ int main(void) {
     dElement->child = eElement;
 
     Background *cElement = new Background();
-    cElement->color = SkColorSetARGB(0xFF, 0x2E, 0xC4, 0xB6);
+    cElement->setColor("#2EC4B6");
     cElement->child = dElement;
 
     Padding *bElement = new Padding();

@@ -20,8 +20,6 @@ namespace elementor {
         PaddingsValue paddings;
         Element *child;
 
-        std::unique_ptr<ElementRenderer> render() override;
-
         void setPaddings(int paddings);
 
         void setPaddings(int paddingY, int paddingX);
@@ -29,6 +27,8 @@ namespace elementor {
         void setPaddings(int paddingTop, int paddingX, int paddingBottom);
 
         void setPaddings(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft);
+
+        std::unique_ptr<ElementRenderer> render() override;
     };
 
     class PaddingRenderer : public ElementRenderer {
