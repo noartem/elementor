@@ -29,21 +29,21 @@ namespace elementor {
     struct RenderElement {
         RenderPosition position;
         RenderSize size;
-        Element* element;
+        Element *element;
     };
 
     class ElementRenderer {
     public:
         virtual RenderSize getSize(RenderBoundaries boundaries);
-    
+
         virtual void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size);
-    
+
         virtual std::vector <RenderElement> getChildren(RenderSize size);
     };
 
     class Element {
     public:
-        virtual std::unique_ptr<ElementRenderer> render();
+        virtual std::unique_ptr <ElementRenderer> render();
     };
 }
 

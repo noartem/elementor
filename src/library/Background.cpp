@@ -14,27 +14,26 @@ namespace elementor {
     }
 
     void Background::setColor(std::string hex) {
-        switch (hex.size())
-        {
-        case 4:
-        case 7:
-            this->setColor(hex.substr(1));
-            break;
+        switch (hex.size()) {
+            case 4:
+            case 7:
+                this->setColor(hex.substr(1));
+                break;
 
-        case 3:
-            this->setColor(hex + hex);
-            break;
+            case 3:
+                this->setColor(hex + hex);
+                break;
 
-        case 6:
-            uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
-            uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
-            uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
-            this->setColor(r, g, b);
-            break;
+            case 6:
+                uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
+                uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
+                uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
+                this->setColor(r, g, b);
+                break;
         }
     }
 
-    std::unique_ptr<ElementRenderer> Background::render() {
+    std::unique_ptr <ElementRenderer> Background::render() {
         auto renderer = std::make_unique<BackgroundRenderer>();
         renderer->color = this->color;
         renderer->child = this->child;
@@ -50,7 +49,7 @@ namespace elementor {
     }
 
     std::vector <RenderElement> BackgroundRenderer::getChildren(RenderSize size) {
-        std::vector<RenderElement> children;
+        std::vector <RenderElement> children;
 
         if (this->child) {
             RenderElement child;

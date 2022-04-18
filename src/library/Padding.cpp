@@ -8,11 +8,11 @@ namespace elementor {
     void Padding::setPaddings(int paddingYX) {
         this->paddings = {paddingYX, paddingYX, paddingYX, paddingYX};
     }
-    
+
     void Padding::setPaddings(int paddingY, int paddingX) {
         this->paddings = {paddingY, paddingX, paddingY, paddingX};
     }
-    
+
     void Padding::setPaddings(int paddingTop, int paddingX, int paddingBottom) {
         this->paddings = {paddingTop, paddingX, paddingBottom, paddingX};
     }
@@ -21,7 +21,7 @@ namespace elementor {
         this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
     }
 
-    std::unique_ptr<ElementRenderer> Padding::render() {
+    std::unique_ptr <ElementRenderer> Padding::render() {
         auto renderer = std::make_unique<PaddingRenderer>();
         renderer->paddings = this->paddings;
         renderer->child = this->child;
@@ -29,7 +29,7 @@ namespace elementor {
     }
 
     std::vector <RenderElement> PaddingRenderer::getChildren(RenderSize size) {
-        std::vector<RenderElement> children;
+        std::vector <RenderElement> children;
 
         if (this->child) {
             RenderElement child;

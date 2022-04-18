@@ -19,7 +19,7 @@ namespace elementor {
 
         void setColor(std::string hex);
 
-        std::unique_ptr<ElementRenderer> render() override;
+        std::unique_ptr <ElementRenderer> render() override;
     };
 
     class BackgroundRenderer : public ElementRenderer {
@@ -29,7 +29,7 @@ namespace elementor {
 
         void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) override;
 
-        std::vector<RenderElement> getChildren(RenderSize size) override;
+        std::vector <RenderElement> getChildren(RenderSize size) override;
     };
 }
 

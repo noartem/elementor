@@ -23,6 +23,5 @@
 
 ## TODO
 
-* Add Flex element
+* Add application context
 * Add logical pixels
-* Add linter

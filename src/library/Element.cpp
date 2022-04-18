@@ -5,7 +5,7 @@
 #include "Element.h"
 
 namespace elementor {
-    std::unique_ptr<ElementRenderer> Element::render() {
+    std::unique_ptr <ElementRenderer> Element::render() {
         auto renderer = std::make_unique<ElementRenderer>();
         return renderer;
     }
@@ -18,7 +18,7 @@ namespace elementor {
     }
 
     std::vector <RenderElement> ElementRenderer::getChildren(RenderSize size) {
-        std::vector<RenderElement> children;
+        std::vector <RenderElement> children;
         return children;
     }
 }

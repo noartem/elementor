@@ -3,7 +3,9 @@
 //
 
 #include "GLFW/glfw3.h"
+
 #define SK_GL
+
 #include "include/gpu/GrBackendSurface.h"
 #include "include/gpu/GrDirectContext.h"
 #include "include/gpu/gl/GrGLInterface.h"
@@ -19,19 +21,19 @@
 #define GL_FRAMEBUFFER_SRGB 0x8DB9
 #define GL_SRGB8_ALPHA8 0x8C43
 
-void error_callback(int error, const char* description) {
-	fputs(description, stderr);
+void error_callback(int error, const char *description) {
+    fputs(description, stderr);
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 namespace elementor {
     int Platform::run() {
         // init glfw
-        GLFWwindow* window;
+        GLFWwindow *window;
         glfwSetErrorCallback(error_callback);
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
@@ -53,11 +55,14 @@ namespace elementor {
         }
 
         if (this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width, this->maxSize->height);
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width,
+                                    this->maxSize->height);
         } else if (this->minSize && !this->maxSize) {
-            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, GLFW_DONT_CARE, GLFW_DONT_CARE);
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, GLFW_DONT_CARE,
+                                    GLFW_DONT_CARE);
         } else if (!this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width, this->maxSize->height);
+            glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width,
+                                    this->maxSize->height);
         }
 
         glfwMakeContextCurrent(window);
@@ -68,7 +73,7 @@ namespace elementor {
 
         // init skia
         auto interface = GrGLMakeNativeInterface();
-        GrDirectContext* context = GrDirectContext::MakeGL(interface).release();
+        GrDirectContext *context = GrDirectContext::MakeGL(interface).release();
 
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
@@ -87,8 +92,10 @@ namespace elementor {
 
             // create skia canvas
             GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
-            SkSurface* surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
-            SkCanvas* canvas = surface->getCanvas();
+            SkSurface *surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget,
+                                                                        kBottomLeft_GrSurfaceOrigin, colorType,
+                                                                        SkColorSpace::MakeSRGB(), nullptr).release();
+            SkCanvas *canvas = surface->getCanvas();
 
             // draw with skia
             canvas->clear(SK_ColorBLACK);

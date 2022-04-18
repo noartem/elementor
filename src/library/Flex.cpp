@@ -5,7 +5,7 @@
 #include "Flex.h"
 
 namespace elementor {
-    std::unique_ptr<ElementRenderer> Flex::render() {
+    std::unique_ptr <ElementRenderer> Flex::render() {
         auto renderer = std::make_unique<FlexRenderer>();
         renderer->gap = this->gap;
         renderer->direction = this->direction;
@@ -14,7 +14,7 @@ namespace elementor {
     }
 
     std::vector <RenderElement> FlexRenderer::getChildren(RenderSize size) {
-        std::vector<RenderElement> children;
+        std::vector <RenderElement> children;
 
         int axisSize = this->direction == FlexDirection::Row ? size.width : size.height;
         int childrenCount = this->children.size();

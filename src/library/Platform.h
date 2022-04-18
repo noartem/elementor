@@ -14,8 +14,8 @@ namespace elementor {
     public:
         std::string title;
         RenderSize size;
-        std::optional<RenderSize> minSize;
-        std::optional<RenderSize> maxSize;
+        std::optional <RenderSize> minSize;
+        std::optional <RenderSize> maxSize;
         Application *application;
 
         int run();

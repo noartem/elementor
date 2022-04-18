@@ -17,9 +17,10 @@ namespace elementor {
     }
 
     void Application::drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition) {
-        std::unique_ptr<ElementRenderer> elementRenderer = element->element->render();
+        std::unique_ptr <ElementRenderer> elementRenderer = element->element->render();
 
-        RenderPosition elementPosition = {element->position.x + parentPosition.x, element->position.y + parentPosition.y};
+        RenderPosition elementPosition = {element->position.x + parentPosition.x,
+                                          element->position.y + parentPosition.y};
         elementRenderer->paintBackground(canvas, elementPosition, element->size);
 
         for (RenderElement child: elementRenderer->getChildren(element->size)) {
