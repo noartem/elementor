@@ -14,23 +14,18 @@ namespace elementor {
     }
 
     void Background::setColor(std::string hex) {
-        switch (hex.size()) {
-            case 4:
-            case 7:
-                this->setColor(hex.substr(1));
-                break;
-
-            case 3:
-                this->setColor(hex + hex);
-                break;
-
-            case 6:
-                uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
-                uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
-                uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
-                this->setColor(r, g, b);
-                break;
+        if (hex.size() == 7) {
+            hex = hex.substr(1);
         }
+
+        if (hex.size() != 6) {
+            return;
+        }
+
+        uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
+        uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
+        uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
+        this->setColor(r, g, b);
     }
 
     std::unique_ptr <ElementRenderer> Background::render() {
