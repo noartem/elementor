@@ -5,8 +5,6 @@
 #include "Application.h"
 #include "Element.h"
 
-#include <iostream>
-
 namespace elementor {
     void Application::draw(SkCanvas *canvas, RenderSize applicationSize) {
         RenderElement rootElement;
