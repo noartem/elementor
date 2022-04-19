@@ -5,8 +5,8 @@
 #include "Element.h"
 
 namespace elementor {
-    std::unique_ptr <ElementRenderer> Element::render() {
-        auto renderer = std::make_unique<ElementRenderer>();
+    std::shared_ptr <ElementRenderer> Element::render() {
+        auto renderer = std::make_shared<ElementRenderer>();
         return renderer;
     }
 

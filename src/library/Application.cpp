@@ -13,17 +13,16 @@ namespace elementor {
         rootElement.position = {0, 0};
         rootElement.size = applicationSize;
         rootElement.element = this->root;
+        rootElement.renderer = this->root->render();
         this->drawElement(canvas, &rootElement, {0, 0});
     }
 
     void Application::drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition) {
-        std::unique_ptr <ElementRenderer> elementRenderer = element->element->render();
-
         RenderPosition elementPosition = {element->position.x + parentPosition.x,
                                           element->position.y + parentPosition.y};
-        elementRenderer->paintBackground(canvas, elementPosition, element->size);
+        element->renderer->paintBackground(canvas, elementPosition, element->size);
 
-        for (RenderElement child: elementRenderer->getChildren(element->size)) {
+        for (RenderElement child: element->renderer->getChildren(element->size)) {
             this->drawElement(canvas, &child, elementPosition);
         }
     }

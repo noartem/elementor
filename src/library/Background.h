@@ -19,7 +19,7 @@ namespace elementor {
 
         void setColor(std::string hex);
 
-        std::unique_ptr <ElementRenderer> render() override;
+        std::shared_ptr <ElementRenderer> render() override;
     };
 
     class BackgroundRenderer : public ElementRenderer {

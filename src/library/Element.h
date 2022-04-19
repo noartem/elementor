@@ -10,6 +10,7 @@
 
 namespace elementor {
     class Element;
+    class ElementRenderer;
 
     struct RenderPosition {
         int x;
@@ -29,6 +30,7 @@ namespace elementor {
     struct RenderElement {
         RenderPosition position;
         RenderSize size;
+        std::shared_ptr <ElementRenderer> renderer;
         Element *element;
     };
 
@@ -43,7 +45,7 @@ namespace elementor {
 
     class Element {
     public:
-        virtual std::unique_ptr <ElementRenderer> render();
+        virtual std::shared_ptr <ElementRenderer> render();
     };
 }
 

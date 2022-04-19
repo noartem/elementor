@@ -21,8 +21,8 @@ namespace elementor {
         this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
     }
 
-    std::unique_ptr <ElementRenderer> Padding::render() {
-        auto renderer = std::make_unique<PaddingRenderer>();
+    std::shared_ptr <ElementRenderer> Padding::render() {
+        auto renderer = std::make_shared<PaddingRenderer>();
         renderer->paddings = this->paddings;
         renderer->child = this->child;
         return renderer;
@@ -34,6 +34,7 @@ namespace elementor {
         if (this->child) {
             RenderElement child;
             child.element = this->child;
+            child.renderer = this->child->render();
 
             child.position = {this->paddings.left, this->paddings.top};
 

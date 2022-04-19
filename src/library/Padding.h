@@ -28,7 +28,7 @@ namespace elementor {
 
         void setPaddings(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft);
 
-        std::unique_ptr <ElementRenderer> render() override;
+        std::shared_ptr <ElementRenderer> render() override;
     };
 
     class PaddingRenderer : public ElementRenderer {
