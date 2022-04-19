@@ -7,33 +7,54 @@
 #include "./library/Application.h"
 #include "./library/Platform.h"
 #include "./library/Flex.h"
+#include "./library/Flexible.h"
+#include "./library/Sized.h"
 
 using namespace elementor;
 
 int main(void) {
-    Background *lElement = new Background();
-    lElement->setColor("#1d3557");
+    Background *jBackground = new Background();
+    jBackground->setColor("#e63946");
 
-    Background *kElement = new Background();
-    kElement->setColor("#1d3557");
+    Flexible *jElement = new Flexible();
+    jElement->grow = 2;
+    jElement->child = jBackground;
 
-    Background *jElement = new Background();
-    jElement->setColor("#e63946");
+    Background *iColumnBox1Background = new Background();
+    iColumnBox1Background->setColor("#1d3557");
 
-    Flex *iElement = new Flex();
-    iElement->gap = 24;
-    iElement->direction = FlexDirection::Column;
-    iElement->children.push_back(lElement);
-    iElement->children.push_back(kElement);
-    iElement->children.push_back(jElement);
+    Flexible *iColumnBox1 = new Flexible();
+    iColumnBox1->child = iColumnBox1Background;
 
-    Background *hElement = new Background();
-    hElement->setColor("#e63946");
+    Background *iColumnBox2Background = new Background();
+    iColumnBox2Background->setColor("#1d3557");
+
+    Sized *iColumnBox2 = new Sized();
+    iColumnBox2->width = 140;
+    iColumnBox2->height = 140;
+    iColumnBox2->child = iColumnBox2Background;
+
+    Flex *iColumn = new Flex();
+    iColumn->spacing = 24;
+    iColumn->direction = FlexDirection::Column;
+    iColumn->children.push_back(iColumnBox1);
+    iColumn->children.push_back(iColumnBox2);
+
+    Flexible *iElement = new Flexible();
+    iElement->grow = 2;
+    iElement->child = iColumn;
+
+    Background *hBackground = new Background();
+    hBackground->setColor("#e63946");
+
+    Flexible *hElement = new Flexible();
+    hElement->child = hBackground;
 
     Flex *gElement = new Flex();
-    gElement->gap = 32;
+    gElement->spacing = 32;
     gElement->children.push_back(hElement);
     gElement->children.push_back(iElement);
+    gElement->children.push_back(jElement);
 
     Padding *fElement = new Padding();
     fElement->setPaddings(64);
