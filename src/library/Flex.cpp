@@ -5,7 +5,7 @@
 #include "Flex.h"
 #include "Flexible.h"
 
-#include <tuple> 
+#include <tuple>
 #include <algorithm>
 
 namespace elementor {
@@ -25,7 +25,7 @@ namespace elementor {
         int childrenCount = this->children.size();
         int fixedSize = this->spacing * (childrenCount - 1);
 
-        std::vector <std::tuple <int, int>> flexibleChildren;
+        std::vector <std::tuple<int, int>> flexibleChildren;
         int flexibleGrowsSum = 0;
 
         for (int i = 0; i < childrenCount; i++) {
@@ -33,9 +33,9 @@ namespace elementor {
             child.element = this->children[i];
             child.renderer = child.element->render();
 
-            Flexible *childAsFlexible = dynamic_cast<Flexible*>(child.element);
+            Flexible *childAsFlexible = dynamic_cast<Flexible *>(child.element);
             if (childAsFlexible) {
-                std::tuple<int, int> flexibleChild (i, childAsFlexible->grow);
+                std::tuple<int, int> flexibleChild(i, childAsFlexible->grow);
                 flexibleChildren.push_back(flexibleChild);
                 flexibleGrowsSum += childAsFlexible->grow;
             } else {
@@ -50,7 +50,7 @@ namespace elementor {
         int freeSize = axisSize - fixedSize;
         int sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
 
-        for (std::tuple <int, int> flexibleChild : flexibleChildren) {
+        for (std::tuple<int, int> flexibleChild: flexibleChildren) {
             int childIndex = std::get<0>(flexibleChild);
             RenderElement &child = children[childIndex];
 
@@ -58,16 +58,18 @@ namespace elementor {
             int axisSize = sizePerGrow * childGrow;
             RenderBoundaries childBoundaries;
             if (this->direction == FlexDirection::Row) {
-                childBoundaries = {{axisSize, 0}, {axisSize, size.height}};
+                childBoundaries = {{axisSize, 0},
+                                   {axisSize, size.height}};
             } else {
-                childBoundaries = {{0, axisSize}, {size.width, axisSize}};
+                childBoundaries = {{0,          axisSize},
+                                   {size.width, axisSize}};
             }
 
             child.size = child.renderer->getSize(childBoundaries);
         }
 
         int axisPosition = 0;
-        for (RenderElement &child : children) {
+        for (RenderElement &child: children) {
             if (this->direction == FlexDirection::Row) {
                 child.position = {axisPosition, 0};
             } else {

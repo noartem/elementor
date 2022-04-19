@@ -10,6 +10,7 @@
 
 namespace elementor {
     class Element;
+
     class ElementRenderer;
 
     struct RenderPosition {
