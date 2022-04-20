@@ -4,6 +4,7 @@
 
 #include "Flex.h"
 #include "Flexible.h"
+#include "Expanded.h"
 
 #include <tuple>
 #include <algorithm>
@@ -17,6 +18,20 @@ namespace elementor {
         renderer->crossAlignment = this->crossAlignment;
         renderer->children = this->children;
         return renderer;
+    }
+
+    bool isFlexible(Element *element) {
+        return dynamic_cast<Flexible *>(element) != NULL || dynamic_cast<Expanded *>(element) != NULL;
+    }
+
+    int getFlexibleGrow(Element *element) {
+        if (dynamic_cast<Flexible *>(element)) {
+            return dynamic_cast<Flexible *>(element)->grow;
+        } else if (dynamic_cast<Expanded *>(element)) {
+            return dynamic_cast<Expanded *>(element)->grow;
+        } else {
+            return 0;
+        }
     }
 
     std::vector <RenderElement> FlexRenderer::getChildren(RenderSize size) {
@@ -35,11 +50,11 @@ namespace elementor {
             child.element = this->children[i];
             child.renderer = child.element->render();
 
-            Flexible *childAsFlexible = dynamic_cast<Flexible *>(child.element);
-            if (childAsFlexible) {
-                std::tuple<int, int> flexibleChild(i, childAsFlexible->grow);
+            if (isFlexible(child.element)) {
+                int childGrow = getFlexibleGrow(child.element);
+                std::tuple<int, int> flexibleChild(i, childGrow);
                 flexibleChildren.push_back(flexibleChild);
-                flexibleGrowsSum += childAsFlexible->grow;
+                flexibleGrowsSum += childGrow;
             } else {
                 child.size = child.renderer->getSize(sizedChildBoundaries);
                 fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
