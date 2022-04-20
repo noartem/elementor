@@ -8,14 +8,20 @@
 #include "Element.h"
 
 namespace elementor {
-    enum FlexDirection {
+    enum class FlexDirection {
         Row,
         Column,
     };
 
-    enum FlexAlignment {
+    enum class FlexAlignment {
         Start,
         Center,
+        End,
+    };
+
+    enum class FlexCrossAlignment {
+        Start,
+        SpaceBetween,
         End,
     };
 
@@ -24,6 +30,7 @@ namespace elementor {
         int spacing = 0;
         FlexDirection direction = FlexDirection::Row;
         FlexAlignment alignment = FlexAlignment::Start;
+        FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
         std::vector<Element *> children;
 
         std::shared_ptr <ElementRenderer> render() override;
@@ -31,9 +38,10 @@ namespace elementor {
 
     class FlexRenderer : public ElementRenderer {
     public:
-        int spacing = 0;
-        FlexDirection direction = FlexDirection::Row;
-        FlexAlignment alignment = FlexAlignment::Start;
+        int spacing;
+        FlexDirection direction;
+        FlexAlignment alignment;
+        FlexCrossAlignment crossAlignment;
         std::vector<Element *> children;
 
         std::vector <RenderElement> getChildren(RenderSize size) override;

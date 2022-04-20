@@ -14,6 +14,7 @@ namespace elementor {
         renderer->spacing = this->spacing;
         renderer->direction = this->direction;
         renderer->alignment = this->alignment;
+        renderer->crossAlignment = this->crossAlignment;
         renderer->children = this->children;
         return renderer;
     }
@@ -71,6 +72,17 @@ namespace elementor {
         }
 
         int axisPosition = 0;
+
+        if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::End) {
+            axisPosition += freeSize;
+        }
+
+        int addSpaceBetween = flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceBetween;
+        int spaceBetween = freeSize / (childrenCount + 1);
+        if (addSpaceBetween) {
+            axisPosition += spaceBetween;
+        }
+
         for (RenderElement &child: children) {
             int childAxisSize = this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             int childCrossAxisSize = this->direction == FlexDirection::Row ? child.size.height : child.size.width;
@@ -90,6 +102,10 @@ namespace elementor {
 
             axisPosition += this->spacing;
             axisPosition += childAxisSize;
+
+            if (addSpaceBetween) {
+                axisPosition += spaceBetween;
+            }
         }
 
         return children;
