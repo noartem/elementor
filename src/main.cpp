@@ -9,10 +9,11 @@
 #include "./library/Flex.h"
 #include "./library/Flexible.h"
 #include "./library/Sized.h"
+#include "./library/Expanded.h"
 
 using namespace elementor;
 
-int main(void) {
+void exampleMain() {
     Background *jBackground = new Background();
     jBackground->setColor("#e63946");
 
@@ -84,11 +85,190 @@ int main(void) {
     application->root = aElement;
 
     Platform *platform = new Platform();
-    platform->title = "Elementor Test";
-    platform->size = {720, 480};
-    platform->minSize = {640, 427};
+    platform->title = "Elementor example";
+    platform->size = {900, 600};
+    platform->minSize = {720, 480};
     platform->maxSize = {1440, 960};
     platform->application = application;
 
     platform->run();
+}
+
+void exampleFlexibleExpanedAndSized() {
+    Background *background = new Background();
+    background->setColor("#457B9D");
+
+    Flexible *flexible = new Flexible();
+    flexible->child = background;
+
+    Sized *sized = new Sized();
+    sized->width = 200;
+    sized->height = 200;
+    sized->child = background;
+
+    Expanded *expanded = new Expanded();
+    expanded->child = sized;
+
+    Flex *rowWithFlexible = new Flex();
+    rowWithFlexible->spacing = 24;
+    rowWithFlexible->children.push_back(flexible);
+    rowWithFlexible->children.push_back(flexible);
+
+    Flexible *rowWithFlexibleWrapper = new Flexible();
+    rowWithFlexibleWrapper->child = rowWithFlexible;
+
+    Flex *rowWithExpanded = new Flex();
+    rowWithExpanded->spacing = 24;
+    rowWithExpanded->children.push_back(expanded);
+    rowWithExpanded->children.push_back(expanded);
+
+    Flexible *rowWithExpandedWrapper = new Flexible();
+    rowWithExpandedWrapper->child = rowWithExpanded;
+
+    Flex *rowWithSized = new Flex();
+    rowWithSized->spacing = 24;
+    rowWithSized->children.push_back(sized);
+    rowWithSized->children.push_back(sized);
+
+    Flexible *rowWithSizedWrapper = new Flexible();
+    rowWithSizedWrapper->child = rowWithSized;
+
+    Flex *rowsColumn = new Flex();
+    rowsColumn->direction = FlexDirection::Column;
+    rowsColumn->spacing = 32;
+    rowsColumn->children.push_back(rowWithFlexibleWrapper);
+    rowsColumn->children.push_back(rowWithSizedWrapper);
+    rowsColumn->children.push_back(rowWithExpandedWrapper);
+
+    Padding *containerPadding = new Padding();
+    containerPadding->setPaddings(48);
+    containerPadding->child = rowsColumn;
+
+    Background *container = new Background();
+    container->setColor("#f1faee");
+    container->child = containerPadding;
+
+    Application *application = new Application();
+    application->root = container;
+
+    Platform *platform = new Platform();
+    platform->title = "Elementor example: flexible, expanded and sized";
+    platform->size = {840, 600};
+    platform->minSize = {840, 600};
+    platform->application = application;
+
+    platform->run();
+}
+
+Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
+    Background *box1Background = new Background();
+    box1Background->setColor("#457b9d");
+
+    Sized *box1 = new Sized();
+    box1->width = 280;
+    box1->height = 200;
+    box1->child = box1Background;
+
+    Background *box2Background = new Background();
+    box2Background->setColor("#a8dadc");
+
+    Sized *box2 = new Sized();
+    box2->width = 200;
+    box2->height = 80;
+    box2->child = box2Background;
+
+    Background *box3Background = new Background();
+    box3Background->setColor("#1d3557");
+
+    Sized *box3 = new Sized();
+    box3->width = 160;
+    box3->height = 120;
+    box3->child = box3Background;
+
+    Flex *row = new Flex();
+    row->spacing = 24;
+    row->direction = FlexDirection::Row;
+    row->alignment = alignment;
+    row->crossAlignment = crossAlignment;
+    row->children.push_back(box1);
+    row->children.push_back(box2);
+    row->children.push_back(box3);
+
+    Flexible *rowContainer = new Flexible();
+    rowContainer->child = row;
+
+    return rowContainer;
+}
+
+void exampleFlexAlignment() {
+    Flex *rowsColumn = new Flex();
+    rowsColumn->direction = FlexDirection::Column;
+    rowsColumn->spacing = 24;
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceBetween));
+
+    Padding *containerPadding = new Padding();
+    containerPadding->setPaddings(32);
+    containerPadding->child = rowsColumn;
+
+    Background *container = new Background();
+    container->setColor("#f1faee");
+    container->child = containerPadding;
+
+    Application *application = new Application();
+    application->root = container;
+
+    Platform *platform = new Platform();
+    platform->title = "Elementor example: flex alignment";
+    platform->size = {840, 600};
+    platform->minSize = {840, 600};
+    platform->application = application;
+
+    platform->run();
+}
+
+void exampleFlexCrossAlignment() {
+    Flex *rowsColumn = new Flex();
+    rowsColumn->direction = FlexDirection::Column;
+    rowsColumn->spacing = 24;
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End));
+
+    Padding *containerPadding = new Padding();
+    containerPadding->setPaddings(32);
+    containerPadding->child = rowsColumn;
+
+    Background *container = new Background();
+    container->setColor("#f1faee");
+    container->child = containerPadding;
+
+    Application *application = new Application();
+    application->root = container;
+
+    Platform *platform = new Platform();
+    platform->title = "Elementor example: flex cross alignment";
+    platform->size = {840, 600};
+    platform->minSize = {840, 600};
+    platform->application = application;
+
+    platform->run();
+}
+
+int main(int argc, char* argv[]) {
+    switch (atoi(argv[1])) {
+    case 0:
+        exampleMain();
+        break;
+    case 1:
+        exampleFlexibleExpanedAndSized();
+        break;
+    case 2:
+        exampleFlexAlignment();
+        break;
+    case 3:
+        exampleFlexCrossAlignment();
+        break;
+    }
 }
