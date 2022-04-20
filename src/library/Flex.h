@@ -13,10 +13,17 @@ namespace elementor {
         Column,
     };
 
+    enum FlexAlignment {
+        Start,
+        Center,
+        End,
+    };
+
     class Flex : public Element {
     public:
         int spacing = 0;
         FlexDirection direction = FlexDirection::Row;
+        FlexAlignment alignment = FlexAlignment::Start;
         std::vector<Element *> children;
 
         std::shared_ptr <ElementRenderer> render() override;
@@ -26,6 +33,7 @@ namespace elementor {
     public:
         int spacing = 0;
         FlexDirection direction = FlexDirection::Row;
+        FlexAlignment alignment = FlexAlignment::Start;
         std::vector<Element *> children;
 
         std::vector <RenderElement> getChildren(RenderSize size) override;

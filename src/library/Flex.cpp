@@ -13,6 +13,7 @@ namespace elementor {
         auto renderer = std::make_shared<FlexRenderer>();
         renderer->spacing = this->spacing;
         renderer->direction = this->direction;
+        renderer->alignment = this->alignment;
         renderer->children = this->children;
         return renderer;
     }
@@ -47,6 +48,7 @@ namespace elementor {
         }
 
         int axisSize = this->direction == FlexDirection::Row ? size.width : size.height;
+        int crossAxisSize = this->direction == FlexDirection::Row ? size.height : size.width;
         int freeSize = axisSize - fixedSize;
         int sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
 
@@ -70,14 +72,24 @@ namespace elementor {
 
         int axisPosition = 0;
         for (RenderElement &child: children) {
+            int childAxisSize = this->direction == FlexDirection::Row ? child.size.width : child.size.height;
+            int childCrossAxisSize = this->direction == FlexDirection::Row ? child.size.height : child.size.width;
+
+            int crossAxisPosition = 0;
+            if (this->alignment == FlexAlignment::End) {
+                crossAxisPosition = crossAxisSize - childCrossAxisSize;
+            } else if (this->alignment == FlexAlignment::Center) {
+                crossAxisPosition = (crossAxisSize - childCrossAxisSize) / 2;
+            }
+
             if (this->direction == FlexDirection::Row) {
-                child.position = {axisPosition, 0};
+                child.position = {axisPosition, crossAxisPosition};
             } else {
-                child.position = {0, axisPosition};
+                child.position = {crossAxisPosition, axisPosition};
             }
 
             axisPosition += this->spacing;
-            axisPosition += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
+            axisPosition += childAxisSize;
         }
 
         return children;
