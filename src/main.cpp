@@ -196,7 +196,7 @@ void exampleFlexAlignment() {
     rowsColumn->direction = FlexDirection::Column;
     rowsColumn->spacing = 24;
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
 
     Padding *containerPadding = new Padding();
