@@ -23,5 +23,10 @@
 
 ## TODO
 
+* Align
+* Flex Wrap
+* Clip
+* ClipRect
+* Radius
 * Add application context
 * Add logical pixels
