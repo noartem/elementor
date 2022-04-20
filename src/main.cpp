@@ -177,14 +177,6 @@ Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAl
     box2->height = 80;
     box2->child = box2Background;
 
-    Background *box3Background = new Background();
-    box3Background->setColor("#1d3557");
-
-    Sized *box3 = new Sized();
-    box3->width = 160;
-    box3->height = 120;
-    box3->child = box3Background;
-
     Flex *row = new Flex();
     row->spacing = 24;
     row->direction = FlexDirection::Row;
@@ -192,7 +184,6 @@ Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAl
     row->crossAlignment = crossAlignment;
     row->children.push_back(box1);
     row->children.push_back(box2);
-    row->children.push_back(box3);
 
     Flexible *rowContainer = new Flexible();
     rowContainer->child = row;
@@ -204,9 +195,9 @@ void exampleFlexAlignment() {
     Flex *rowsColumn = new Flex();
     rowsColumn->direction = FlexDirection::Column;
     rowsColumn->spacing = 24;
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly));
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceBetween));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
 
     Padding *containerPadding = new Padding();
     containerPadding->setPaddings(32);
@@ -233,6 +224,7 @@ void exampleFlexCrossAlignment() {
     rowsColumn->direction = FlexDirection::Column;
     rowsColumn->spacing = 24;
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start));
+    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
     rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End));
 
