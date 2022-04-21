@@ -17,6 +17,7 @@ namespace elementor {
         renderer->alignment = this->alignment;
         renderer->crossAlignment = this->crossAlignment;
         renderer->children = this->children;
+        renderer->context = this->context;
         return renderer;
     }
 
@@ -39,8 +40,10 @@ namespace elementor {
 
         RenderBoundaries sizedChildBoundaries = {{0, 0}, size};
 
+        int spacing = this->spacing * this->context->monitorPixelScale;
+
         int childrenCount = this->children.size();
-        int fixedSize = this->spacing * (childrenCount - 1);
+        int fixedSize = spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
         int flexibleGrowsSum = 0;
@@ -48,6 +51,7 @@ namespace elementor {
         for (int i = 0; i < childrenCount; i++) {
             RenderElement child;
             child.element = this->children[i];
+            child.element->context = this->context;
             child.renderer = child.element->render();
 
             if (isFlexible(child.element)) {
@@ -115,7 +119,7 @@ namespace elementor {
                 child.position = {crossAxisPosition, axisPosition};
             }
 
-            axisPosition += this->spacing;
+            axisPosition += spacing;
             axisPosition += childAxisSize;
 
             if (addSpaceEvenly) {

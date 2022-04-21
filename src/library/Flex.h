@@ -28,7 +28,7 @@ namespace elementor {
 
     class Flex : public Element {
     public:
-        int spacing = 0;
+        float spacing = 0;
         FlexDirection direction = FlexDirection::Row;
         FlexAlignment alignment = FlexAlignment::Start;
         FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
@@ -39,7 +39,7 @@ namespace elementor {
 
     class FlexRenderer : public ElementRenderer {
     public:
-        int spacing;
+        float spacing;
         FlexDirection direction;
         FlexAlignment alignment;
         FlexCrossAlignment crossAlignment;
