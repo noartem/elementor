@@ -10,8 +10,8 @@
 namespace elementor {
     class Sized : public Element {
     public:
-        int width = 0;
-        int height = 0;
+        float width = 0;
+        float height = 0;
         Element *child;
 
         std::shared_ptr <ElementRenderer> render() override;
@@ -19,8 +19,8 @@ namespace elementor {
 
     class SizedRenderer : public ElementRenderer {
     public:
-        int width = 0;
-        int height = 0;
+        float width = 0;
+        float height = 0;
         Element *child;
 
         RenderSize getSize(RenderBoundaries boundaries) override;

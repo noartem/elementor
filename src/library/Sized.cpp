@@ -12,12 +12,15 @@ namespace elementor {
         renderer->width = this->width;
         renderer->height = this->height;
         renderer->child = this->child;
+        renderer->context = this->context;
         return renderer;
     }
 
     RenderSize SizedRenderer::getSize(RenderBoundaries boundaries) {
-        int width = std::min(std::max(this->width, boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max(this->height, boundaries.min.height), boundaries.max.height);
+        int sizeWidth = this->width * this->context->monitorPixelScale;
+        int width = std::min(std::max(sizeWidth, boundaries.min.width), boundaries.max.width);
+        int sizeHeight = this->height * this->context->monitorPixelScale;
+        int height = std::min(std::max(sizeHeight, boundaries.min.height), boundaries.max.height);
         return {width, height};
     }
 
@@ -27,6 +30,7 @@ namespace elementor {
         if (this->child) {
             RenderElement child;
             child.element = this->child;
+            child.element->context = context;
             child.renderer = this->child->render();
             child.position = {0, 0};
             child.size = size;
