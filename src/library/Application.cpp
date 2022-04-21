@@ -16,6 +16,8 @@ namespace elementor {
     }
 
     void Application::drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition) {
+        canvas->save();
+
         RenderPosition elementPosition = {element->position.x + parentPosition.x,
                                           element->position.y + parentPosition.y};
         element->renderer->paintBackground(canvas, elementPosition, element->size);
@@ -23,5 +25,7 @@ namespace elementor {
         for (RenderElement child: element->renderer->getChildren(element->size)) {
             this->drawElement(canvas, &child, elementPosition);
         }
+
+        canvas->restore();
     }
 }
