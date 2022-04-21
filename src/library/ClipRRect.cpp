@@ -12,12 +12,14 @@ namespace elementor {
         renderer->child = this->child;
         renderer->radius = this->radius;
         renderer->clipOp = this->clipOp;
+        renderer->context = this->context;
         return renderer;
     }
 
     void ClipRRectRenderer::paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) {
         SkRect paintRect = SkRect::MakeXYWH(start.x, start.y, size.width, size.height);
-        SkRRect oval = SkRRect::MakeRectXY(paintRect, this->radius, this->radius);
+        int radius = this->radius * this->context->monitorPixelScale;
+        SkRRect oval = SkRRect::MakeRectXY(paintRect, radius, radius);
         canvas->clipRRect(oval, this->clipOp, true);
     }
 
@@ -27,6 +29,7 @@ namespace elementor {
         if (this->child) {
             RenderElement child;
             child.element = this->child;
+            child.element->context = context;
             child.renderer = this->child->render();
             child.size = size;
             child.position = {0, 0};

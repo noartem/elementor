@@ -10,18 +10,18 @@
 namespace elementor {
     class ClipRRect : public Element {
     public:
-        Element *child;
-        int radius = 0;
+        float radius = 0;
         SkClipOp clipOp = SkClipOp::kIntersect;
+        Element *child;
 
         std::shared_ptr <ElementRenderer> render() override;
     };
 
     class ClipRRectRenderer : public ElementRenderer {
     public:
-        Element *child;
-        int radius = 0;
+        float radius = 0;
         SkClipOp clipOp;
+        Element *child;
 
         void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) override;
 
