@@ -9,23 +9,23 @@
 
 namespace elementor {
     struct PaddingsValue {
-        int top;
-        int right;
-        int bottom;
-        int left;
+        float top;
+        float right;
+        float bottom;
+        float left;
     };
 
     class Padding : public Element {
     public:
         Element *child;
 
-        void setPaddings(int paddings);
+        void setPaddings(float paddings);
 
-        void setPaddings(int paddingY, int paddingX);
+        void setPaddings(float paddingY, float paddingX);
 
-        void setPaddings(int paddingTop, int paddingX, int paddingBottom);
+        void setPaddings(float paddingTop, float paddingX, float paddingBottom);
 
-        void setPaddings(int paddingTop, int paddingRight, int paddingBottom, int paddingLeft);
+        void setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 
         std::shared_ptr <ElementRenderer> render() override;
 
