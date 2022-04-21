@@ -71,6 +71,20 @@ namespace elementor {
         glfwSwapInterval(1);
         glfwSetKeyCallback(window, key_callback);
 
+        GLFWmonitor* monitor = glfwGetWindowMonitor(window);
+        if (monitor == NULL) {
+            monitor = glfwGetPrimaryMonitor();
+        }
+
+        int physicalWidth, physicalHeight;
+        glfwGetMonitorPhysicalSize(monitor, &physicalWidth, &physicalHeight);
+        RenderSize monitorPhysicalSize = {physicalWidth, physicalHeight};
+
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        RenderSize monitorSize = {mode->width, mode->height};
+
+        float monitorPixelScale = DefaultMonitorScale / ((float)monitorSize.width / (float)monitorPhysicalSize.width);
+
         // init skia
         auto interface = GrGLMakeNativeInterface();
         GrDirectContext *context = GrDirectContext::MakeGL(interface).release();
@@ -96,10 +110,15 @@ namespace elementor {
                                                                         kBottomLeft_GrSurfaceOrigin, colorType,
                                                                         SkColorSpace::MakeSRGB(), nullptr).release();
             SkCanvas *canvas = surface->getCanvas();
-
-            // draw with skia
             canvas->clear(SK_ColorBLACK);
-            this->draw(canvas, windowSize);
+
+            // draw application
+            ApplicationContext applicationContext;
+            applicationContext.windowSize = size;
+            applicationContext.monitorPhysicalSize = monitorPhysicalSize;
+            applicationContext.monitorPixelScale = monitorPixelScale;
+
+            this->application->draw(canvas, applicationContext);
 
             context->flush();
             glfwSwapBuffers(window);
@@ -114,9 +133,5 @@ namespace elementor {
         glfwDestroyWindow(window);
         glfwTerminate();
         exit(EXIT_SUCCESS);
-    }
-
-    void Platform::draw(SkCanvas *canvas, RenderSize size) {
-        this->application->draw(canvas, size);
     }
 }

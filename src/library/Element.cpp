@@ -7,6 +7,7 @@
 namespace elementor {
     std::shared_ptr <ElementRenderer> Element::render() {
         auto renderer = std::make_shared<ElementRenderer>();
+        renderer->context = this->context;
         return renderer;
     }
 

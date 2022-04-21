@@ -6,11 +6,12 @@
 #include "Element.h"
 
 namespace elementor {
-    void Application::draw(SkCanvas *canvas, RenderSize applicationSize) {
+    void Application::draw(SkCanvas *canvas, ApplicationContext context) {
         RenderElement rootElement;
         rootElement.position = {0, 0};
-        rootElement.size = applicationSize;
+        rootElement.size = context.windowSize;
         rootElement.element = this->root;
+        rootElement.element->context = &context;
         rootElement.renderer = this->root->render();
         this->drawElement(canvas, &rootElement, {0, 0});
     }

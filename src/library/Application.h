@@ -12,7 +12,7 @@ namespace elementor {
     public:
         Element *root;
 
-        void draw(SkCanvas *canvas, RenderSize size);
+        void draw(SkCanvas *canvas, ApplicationContext context);
 
     private:
         void drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition);

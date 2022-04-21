@@ -19,9 +19,6 @@ namespace elementor {
         Application *application;
 
         int run();
-
-    private:
-        void draw(SkCanvas *canvas, RenderSize size);
     };
 };
 

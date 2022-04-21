@@ -5,6 +5,8 @@
 #ifndef ELEMENTOR_ELEMENT_H
 #define ELEMENTOR_ELEMENT_H
 
+#include "ApplicationContext.h"
+
 #include <include/core/SkCanvas.h>
 #include <vector>
 
@@ -12,21 +14,6 @@ namespace elementor {
     class Element;
 
     class ElementRenderer;
-
-    struct RenderPosition {
-        int x;
-        int y;
-    };
-
-    struct RenderSize {
-        int width;
-        int height;
-    };
-
-    struct RenderBoundaries {
-        RenderSize min;
-        RenderSize max;
-    };
 
     struct RenderElement {
         RenderPosition position;
@@ -37,6 +24,8 @@ namespace elementor {
 
     class ElementRenderer {
     public:
+        ApplicationContext *context;
+
         virtual RenderSize getSize(RenderBoundaries boundaries);
 
         virtual void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size);
@@ -46,6 +35,7 @@ namespace elementor {
 
     class Element {
     public:
+        ApplicationContext *context;
         virtual std::shared_ptr <ElementRenderer> render();
     };
 }
