@@ -10,7 +10,6 @@
 namespace elementor {
     class Background : public Element {
     public:
-        SkColor color;
         Element *child;
 
         void setColor(uint8_t r, uint8_t g, uint8_t b);
@@ -20,6 +19,9 @@ namespace elementor {
         void setColor(std::string hex);
 
         std::shared_ptr <ElementRenderer> render() override;
+
+    private:
+        SkColor color;
     };
 
     class BackgroundRenderer : public ElementRenderer {
