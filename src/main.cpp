@@ -10,8 +10,34 @@
 #include "./library/Flexible.h"
 #include "./library/Sized.h"
 #include "./library/Expanded.h"
+#include "./library/Align.h"
 
 using namespace elementor;
+
+Element *makeExampleContainer(Element *child) {
+    Padding *containerPadding = new Padding();
+    containerPadding->setPaddings(32);
+    containerPadding->child = child;
+
+    Background *container = new Background();
+    container->setColor("#f1faee");
+    container->child = containerPadding;
+
+    return container;
+}
+
+Platform *makeExample(std::string description, Element *root, RenderSize size = {600, 840}) {
+    Application *application = new Application();
+    application->root = makeExampleContainer(root);
+
+    Platform *platform = new Platform();
+    platform->title = "Elementor example: " + description;
+    platform->size = size;
+    platform->minSize = size;
+    platform->application = application;
+
+    return platform;
+}
 
 void exampleMain() {
     Background *jBackground = new Background();
@@ -73,25 +99,7 @@ void exampleMain() {
     cElement->setColor("#457b9d");
     cElement->child = dElement;
 
-    Padding *bElement = new Padding();
-    bElement->setPaddings(48);
-    bElement->child = cElement;
-
-    Background *aElement = new Background();
-    aElement->setColor("#f1faee");
-    aElement->child = bElement;
-
-    Application *application = new Application();
-    application->root = aElement;
-
-    Platform *platform = new Platform();
-    platform->title = "Elementor example";
-    platform->size = {900, 600};
-    platform->minSize = {720, 480};
-    platform->maxSize = {1440, 960};
-    platform->application = application;
-
-    platform->run();
+    makeExample("Main", cElement, {900, 600})->run();
 }
 
 void exampleFlexibleExpanedAndSized() {
@@ -133,31 +141,14 @@ void exampleFlexibleExpanedAndSized() {
     Flexible *rowWithSizedWrapper = new Flexible();
     rowWithSizedWrapper->child = rowWithSized;
 
-    Flex *rowsColumn = new Flex();
-    rowsColumn->direction = FlexDirection::Column;
-    rowsColumn->spacing = 32;
-    rowsColumn->children.push_back(rowWithFlexibleWrapper);
-    rowsColumn->children.push_back(rowWithSizedWrapper);
-    rowsColumn->children.push_back(rowWithExpandedWrapper);
+    Flex *examples = new Flex();
+    examples->direction = FlexDirection::Column;
+    examples->spacing = 24;
+    examples->children.push_back(rowWithFlexibleWrapper);
+    examples->children.push_back(rowWithSizedWrapper);
+    examples->children.push_back(rowWithExpandedWrapper);
 
-    Padding *containerPadding = new Padding();
-    containerPadding->setPaddings(48);
-    containerPadding->child = rowsColumn;
-
-    Background *container = new Background();
-    container->setColor("#f1faee");
-    container->child = containerPadding;
-
-    Application *application = new Application();
-    application->root = container;
-
-    Platform *platform = new Platform();
-    platform->title = "Elementor example: flexible, expanded and sized";
-    platform->size = {840, 600};
-    platform->minSize = {840, 600};
-    platform->application = application;
-
-    platform->run();
+    makeExample("Flexible, Expanded and Sized", examples)->run();
 }
 
 Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
@@ -192,60 +183,66 @@ Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAl
 }
 
 void exampleFlexAlignment() {
-    Flex *rowsColumn = new Flex();
-    rowsColumn->direction = FlexDirection::Column;
-    rowsColumn->spacing = 24;
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
+    Flex *examples = new Flex();
+    examples->direction = FlexDirection::Column;
+    examples->spacing = 24;
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly));
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
 
-    Padding *containerPadding = new Padding();
-    containerPadding->setPaddings(32);
-    containerPadding->child = rowsColumn;
-
-    Background *container = new Background();
-    container->setColor("#f1faee");
-    container->child = containerPadding;
-
-    Application *application = new Application();
-    application->root = container;
-
-    Platform *platform = new Platform();
-    platform->title = "Elementor example: flex alignment";
-    platform->size = {840, 600};
-    platform->minSize = {840, 600};
-    platform->application = application;
-
-    platform->run();
+    makeExample("Flex alignment", examples)->run();
 }
 
 void exampleFlexCrossAlignment() {
-    Flex *rowsColumn = new Flex();
-    rowsColumn->direction = FlexDirection::Column;
-    rowsColumn->spacing = 24;
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
-    rowsColumn->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End));
+    Flex *examples = new Flex();
+    examples->direction = FlexDirection::Column;
+    examples->spacing = 24;
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start));
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly));
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween));
+    examples->children.push_back(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End));
 
-    Padding *containerPadding = new Padding();
-    containerPadding->setPaddings(32);
-    containerPadding->child = rowsColumn;
+    makeExample("Flex Cross Alignment", examples)->run();
+}
 
-    Background *container = new Background();
-    container->setColor("#f1faee");
-    container->child = containerPadding;
+Element *makeExampleAlign(Alignment alignment) {
+    Background *sizedBackground = new Background();
+    sizedBackground->setColor("#457b9d");
 
-    Application *application = new Application();
-    application->root = container;
+    Sized *sized = new Sized();
+    sized->width = 40;
+    sized->height = 40;
+    sized->child = sizedBackground;
 
-    Platform *platform = new Platform();
-    platform->title = "Elementor example: flex cross alignment";
-    platform->size = {840, 600};
-    platform->minSize = {840, 600};
-    platform->application = application;
+    Align *align = new Align();
+    align->setAlignment(alignment);
+    align->child = sized;
 
-    platform->run();
+    Background *alignBackground = new Background();
+    alignBackground->setColor("#a8dadc");
+    alignBackground->child = align;
+
+    Flexible *alignContainer = new Flexible();
+    alignContainer->child = alignBackground;
+
+    return alignContainer;
+}
+
+void exampleAlign() {
+    Flex *examples = new Flex();
+    examples->direction = FlexDirection::Column;
+    examples->spacing = 24;
+    examples->children.push_back(makeExampleAlign(Alignment::BottomCenter));
+    examples->children.push_back(makeExampleAlign(Alignment::BottomLeft));
+    examples->children.push_back(makeExampleAlign(Alignment::BottomRight));
+    examples->children.push_back(makeExampleAlign(Alignment::Center));
+    examples->children.push_back(makeExampleAlign(Alignment::CenterLeft));
+    examples->children.push_back(makeExampleAlign(Alignment::CenterRight));
+    examples->children.push_back(makeExampleAlign(Alignment::TopCenter));
+    examples->children.push_back(makeExampleAlign(Alignment::TopLeft));
+    examples->children.push_back(makeExampleAlign(Alignment::TopRight));
+
+    makeExample("Align", examples)->run();
 }
 
 int main(int argc, char* argv[]) {
@@ -261,6 +258,9 @@ int main(int argc, char* argv[]) {
         break;
     case 3:
         exampleFlexCrossAlignment();
+        break;
+    case 4:
+        exampleAlign();
         break;
     }
 }
