@@ -11,6 +11,7 @@
 #include "./library/Sized.h"
 #include "./library/Expanded.h"
 #include "./library/Align.h"
+#include "./library/ClipRRect.h"
 
 using namespace elementor;
 
@@ -245,6 +246,43 @@ void exampleAlign() {
     makeExample("Align", examples)->run();
 }
 
+Element *makeExampleClipRRect(int radius) {
+    Background *innerRoundedBackground = new Background();
+    innerRoundedBackground->setColor("#a8dadc");
+
+    ClipRRect *innerRounded = new ClipRRect();
+    innerRounded->radius = radius + 10;
+    innerRounded->child = innerRoundedBackground;
+
+    Padding *innerRoundedPadding = new Padding();
+    innerRoundedPadding->setPaddings(24);
+    innerRoundedPadding->child = innerRounded;
+
+    Background *roundedBackground = new Background();
+    roundedBackground->setColor("#457b9d");
+    roundedBackground->child = innerRoundedPadding;
+
+    ClipRRect *rounded = new ClipRRect();
+    rounded->radius = radius;
+    rounded->child = roundedBackground;
+
+    Flexible *roundedContainer = new Flexible();
+    roundedContainer->child = rounded;
+
+    return roundedContainer;
+}
+
+void exampleClipRRect() {
+    Flex *examples = new Flex();
+    examples->spacing = 24;
+    examples->children.push_back(makeExampleClipRRect(10));
+    examples->children.push_back(makeExampleClipRRect(20));
+    examples->children.push_back(makeExampleClipRRect(30));
+    examples->children.push_back(makeExampleClipRRect(40));
+
+    makeExample("ClipRRect", examples, {480, 240})->run();
+}
+
 int main(int argc, char* argv[]) {
     switch (atoi(argv[1])) {
     case 0:
@@ -261,6 +299,9 @@ int main(int argc, char* argv[]) {
         break;
     case 4:
         exampleAlign();
+        break;
+    case 5:
+        exampleClipRRect();
         break;
     }
 }
