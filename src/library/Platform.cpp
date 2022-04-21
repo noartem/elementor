@@ -114,7 +114,7 @@ namespace elementor {
 
             // draw application
             ApplicationContext applicationContext;
-            applicationContext.windowSize = size;
+            applicationContext.windowSize = windowSize;
             applicationContext.monitorPhysicalSize = monitorPhysicalSize;
             applicationContext.monitorPixelScale = monitorPixelScale;
 
