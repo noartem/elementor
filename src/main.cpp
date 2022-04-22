@@ -12,6 +12,7 @@
 #include "./library/Expanded.h"
 #include "./library/Align.h"
 #include "./library/ClipRRect.h"
+#include "./library/Label.h"
 
 using namespace elementor;
 
@@ -283,6 +284,52 @@ void exampleClipRRect() {
     makeExample("ClipRRect", examples, {480, 240})->run();
 }
 
+Element *makeButton(std::string text) {
+    Label *label = new Label();
+    label->text = text;
+    label->fontSize = 24;
+    label->fontColor = SK_ColorWHITE;
+
+    Align *labelAlign = new Align();
+    labelAlign->setAlignment(Alignment::Center);
+    labelAlign->child = label;
+
+    Background *background = new Background();
+    background->setColor("#457b9d");
+    background->child = labelAlign;
+
+    ClipRRect *rounded = new ClipRRect();
+    rounded->radius = 8;
+    rounded->child = background;
+
+    Sized *sized = new Sized();
+    sized->width = 300;
+    sized->height = 100;
+    sized->child = rounded;
+
+    Align *align = new Align();
+    align->setAlignment(Alignment::Center);
+    align->child = sized;
+
+    Expanded *expanded = new Expanded();
+    expanded->child = align;
+
+    return expanded;
+}
+
+void exampleLabel() {
+    Flex *examples = new Flex();
+    examples->spacing = 24;
+    examples->direction = FlexDirection::Column;
+    examples->children.push_back(makeButton("Text"));
+    examples->children.push_back(makeButton("Apply"));
+    examples->children.push_back(makeButton("Lorem Ipsum"));
+    examples->children.push_back(makeButton("Some other text"));
+    examples->children.push_back(makeButton("Click on me"));
+
+    makeExample("Label", examples, {320, 640})->run();
+}
+
 int main(int argc, char* argv[]) {
     switch (atoi(argv[1])) {
     case 0:
@@ -302,6 +349,9 @@ int main(int argc, char* argv[]) {
         break;
     case 5:
         exampleClipRRect();
+        break;
+    case 6:
+        exampleLabel();
         break;
     }
 }
