@@ -23,6 +23,5 @@
 
 ## TODO
 
+* Rework all fields getters and setters
 * Flex Wrap
-* Optimize Platform frame draw
-* Text
