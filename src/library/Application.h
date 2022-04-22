@@ -15,7 +15,7 @@ namespace elementor {
         void draw(SkCanvas *canvas, ApplicationContext context);
 
     private:
-        void drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition);
+        void drawElement(SkCanvas *canvas, RenderElement *element);
     };
 };
 

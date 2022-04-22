@@ -13,18 +13,17 @@ namespace elementor {
         rootElement.element = this->root;
         rootElement.element->context = &context;
         rootElement.renderer = this->root->render();
-        this->drawElement(canvas, &rootElement, {0, 0});
+        this->drawElement(canvas, &rootElement);
     }
 
-    void Application::drawElement(SkCanvas *canvas, RenderElement *element, RenderPosition parentPosition) {
+    void Application::drawElement(SkCanvas *canvas, RenderElement *element) {
         canvas->save();
 
-        RenderPosition elementPosition = {element->position.x + parentPosition.x,
-                                          element->position.y + parentPosition.y};
-        element->renderer->paintBackground(canvas, elementPosition, element->size);
+        canvas->translate(element->position.x, element->position.y);
+        element->renderer->paintBackground(canvas, element->size);
 
         for (RenderElement child: element->renderer->getChildren(element->size)) {
-            this->drawElement(canvas, &child, elementPosition);
+            this->drawElement(canvas, &child);
         }
 
         canvas->restore();

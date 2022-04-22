@@ -23,7 +23,7 @@ namespace elementor {
         SkClipOp clipOp;
         Element *child;
 
-        void paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) override;
+        void paintBackground(SkCanvas *canvas, RenderSize size) override;
 
         std::vector <RenderElement> getChildren(RenderSize size) override;
     };

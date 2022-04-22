@@ -118,7 +118,10 @@ namespace elementor {
             applicationContext.monitorPhysicalSize = monitorPhysicalSize;
             applicationContext.monitorPixelScale = monitorPixelScale;
 
+            // double start = glfwGetTime();
             this->application->draw(canvas, applicationContext);
+            // double end = glfwGetTime();
+            // std::cout << end - start << std::endl;
 
             context->flush();
             glfwSwapBuffers(window);

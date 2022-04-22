@@ -36,11 +36,11 @@ namespace elementor {
         return renderer;
     }
 
-    void BackgroundRenderer::paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) {
+    void BackgroundRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
         SkPaint paint;
         paint.setColor(this->color);
 
-        SkRect rect = SkRect::MakeXYWH(start.x, start.y, size.width, size.height);
+        SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
         canvas->drawRect(rect, paint);
     }
 

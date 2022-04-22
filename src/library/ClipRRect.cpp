@@ -16,8 +16,8 @@ namespace elementor {
         return renderer;
     }
 
-    void ClipRRectRenderer::paintBackground(SkCanvas *canvas, RenderPosition start, RenderSize size) {
-        SkRect paintRect = SkRect::MakeXYWH(start.x, start.y, size.width, size.height);
+    void ClipRRectRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
+        SkRect paintRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
         int radius = this->radius * this->context->monitorPixelScale;
         SkRRect oval = SkRRect::MakeRectXY(paintRect, radius, radius);
         canvas->clipRRect(oval, this->clipOp, true);
