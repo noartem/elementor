@@ -38,6 +38,18 @@ namespace elementor {
         ApplicationContext *context;
         virtual std::shared_ptr <ElementRenderer> render();
     };
+
+    class WithChild {
+    public:
+        void setChild(Element *child);
+
+        Element *getChild();
+
+        void removeChild();
+
+    private:
+        Element *child;
+    };
 }
 
 #endif //ELEMENTOR_ELEMENT_H

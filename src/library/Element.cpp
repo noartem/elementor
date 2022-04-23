@@ -22,4 +22,16 @@ namespace elementor {
         std::vector <RenderElement> children;
         return children;
     }
+
+    void ElementWithChild::setChild(Element *element) {
+        this->child = element;
+    }
+
+    void ElementWithChild::removeChild() {
+        this->setChild(NULL);
+    }
+
+    Element *ElementWithChild::getChild() {
+        return this->child;
+    }
 }
