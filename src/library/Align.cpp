@@ -59,6 +59,10 @@ namespace elementor {
         this->alignment = getAlignmentValue(alignmentType);
     }
 
+    AlignmentFraction Align::getAlignment() {
+        return this->alignment;
+    }
+
     std::shared_ptr <ElementRenderer> Align::render() {
         return std::make_shared<AlignRenderer>(this->context, this->alignment, this->getChild());
     }

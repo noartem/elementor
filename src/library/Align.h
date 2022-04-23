@@ -43,6 +43,8 @@ namespace elementor {
 
         void setAlignment(AlignmentFraction alignment);
 
+        AlignmentFraction getAlignment();
+
         std::shared_ptr <ElementRenderer> render() override;
     
     private:
