@@ -23,15 +23,15 @@ namespace elementor {
         return children;
     }
 
-    void ElementWithChild::setChild(Element *element) {
+    void WithChild::setChild(Element *element) {
         this->child = element;
     }
 
-    void ElementWithChild::removeChild() {
+    void WithChild::removeChild() {
         this->setChild(NULL);
     }
 
-    Element *ElementWithChild::getChild() {
+    Element *WithChild::getChild() {
         return this->child;
     }
 }
