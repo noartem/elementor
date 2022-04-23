@@ -60,11 +60,13 @@ namespace elementor {
     }
 
     std::shared_ptr <ElementRenderer> Align::render() {
-        auto renderer = std::make_shared<AlignRenderer>();
-        renderer->alignment = this->alignment;
-        renderer->child = this->getChild();
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<AlignRenderer>(this->context, this->alignment, this->getChild());
+    }
+
+    AlignRenderer::AlignRenderer(ApplicationContext *context, AlignmentFraction alignment, Element *child) {
+        this->context = context;
+        this->alignment = alignment;
+        this->child = child;
     }
 
     std::vector <RenderElement> AlignRenderer::getChildren(RenderSize size) {

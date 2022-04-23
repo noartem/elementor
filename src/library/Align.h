@@ -51,10 +51,13 @@ namespace elementor {
 
     class AlignRenderer : public ElementRenderer {
     public:
-        AlignmentFraction alignment;
-        Element *child;
+        AlignRenderer(ApplicationContext *context, AlignmentFraction alignment, Element *child);
 
         std::vector <RenderElement> getChildren(RenderSize size) override;
+
+    private:
+        AlignmentFraction alignment;
+        Element *child;    
     };
 }
 
