@@ -54,6 +54,10 @@ namespace elementor {
         this->setColor(r, g, b);
     }
 
+    SkColor Background::getColor() {
+        return this->color;
+    }
+
     std::shared_ptr <ElementRenderer> Background::render() {
         return std::make_shared<BackgroundRenderer>(this->context, this->color, this->getChild());
     }

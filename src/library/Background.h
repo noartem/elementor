@@ -30,6 +30,8 @@ namespace elementor {
 
         void setColor(std::string hex);
 
+        SkColor getColor();
+
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
