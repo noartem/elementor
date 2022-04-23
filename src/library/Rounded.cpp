@@ -12,15 +12,31 @@ namespace elementor {
     }
 
     Rounded::Rounded(float radiusXY, Element *child) {
-        this->radiusX = radiusXY;
-        this->radiusY = radiusXY;
+        this->setRadius(radiusXY);
         this->setChild(child);
     }
 
     Rounded::Rounded(float radiusX, float radiusY, Element *child) {
+        this->setRadius(radiusX, radiusY);
+        this->setChild(child);
+    }
+
+    void Rounded::setRadius(float radiusXY) {
+        this->radiusX = radiusXY;
+        this->radiusY = radiusXY;
+    }
+
+    void Rounded::setRadius(float radiusX, float radiusY) {
         this->radiusX = radiusX;
         this->radiusY = radiusY;
-        this->setChild(child);
+    }
+
+    float Rounded::getRadiusX() {
+        return this->radiusX;
+    }
+
+    float Rounded::getRadiusY() {
+        return this->radiusY;
     }
 
     std::shared_ptr <ElementRenderer> Rounded::render() {

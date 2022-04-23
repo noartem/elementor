@@ -18,6 +18,14 @@ namespace elementor {
 
         Rounded(float radiusX, float radiusY, Element *child);
 
+        void setRadius(float radiusXY);
+
+        void setRadius(float radiusX, float radiusY);
+
+        float getRadiusX();
+
+        float getRadiusY();
+
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
