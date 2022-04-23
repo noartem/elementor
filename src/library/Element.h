@@ -50,6 +50,22 @@ namespace elementor {
     private:
         Element *child;
     };
+
+    class WithChildren {
+    public:
+        void setChildren(std::vector<Element *> children);
+
+        void addChild(Element *child);
+
+        void removeChild(int i);
+
+        std::vector<Element *> getChildren();
+
+        Element *getChild(int i);
+
+    private:
+        std::vector<Element *> children;
+    };
 }
 
 #endif //ELEMENTOR_ELEMENT_H

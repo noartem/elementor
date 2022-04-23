@@ -34,4 +34,24 @@ namespace elementor {
     Element *WithChild::getChild() {
         return this->child;
     }
+
+    void WithChildren::setChildren(std::vector<Element *> children) {
+        this->children = children;
+    }
+
+    void WithChildren::addChild(Element *child) {
+        this->children.push_back(child);
+    }
+
+    void WithChildren::removeChild(int i) {
+        this->children.erase(this->children.begin() + i); 
+    }
+
+    std::vector<Element *> WithChildren::getChildren() {
+        return this->children;
+    }
+
+    Element *WithChildren::getChild(int i) {
+        return this->children[i];
+    }
 }
