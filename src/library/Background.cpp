@@ -5,12 +5,38 @@
 #include "Background.h"
 
 namespace elementor {
-    void Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
-        this->setColor(r, g, b, 255);
+    Background::Background(Element *child) {
+        this->setChild(child);
+    }
+
+    Background::Background(SkColor color) {
+        this->setColor(color);
+    }
+
+    Background::Background(std::string color) {
+        this->setColor(color);
+    }
+
+    Background::Background(SkColor color, Element *child) {
+        this->setColor(color);
+        this->setChild(child);
+    }
+
+    Background::Background(std::string color, Element *child) {
+        this->setColor(color);
+        this->setChild(child);
+    }
+    
+    void Background::setColor(SkColor color) {
+        this->color = color;
     }
 
     void Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-        this->color = SkColorSetARGB(a, r, g, b);
+        this->setColor(SkColorSetARGB(a, r, g, b));
+    }
+
+    void Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
+        this->setColor(r, g, b, 255);
     }
 
     void Background::setColor(std::string hex) {
@@ -29,11 +55,13 @@ namespace elementor {
     }
 
     std::shared_ptr <ElementRenderer> Background::render() {
-        auto renderer = std::make_shared<BackgroundRenderer>();
-        renderer->color = this->color;
-        renderer->child = this->child;
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<BackgroundRenderer>(this->context, this->color, this->getChild());
+    }
+
+    BackgroundRenderer::BackgroundRenderer(ApplicationContext *context, SkColor color, Element *child) {
+        this->context = context;
+        this->color = color;
+        this->child = child;
     }
 
     void BackgroundRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
