@@ -27,7 +27,7 @@ namespace elementor {
 
     int getFlexibleGrow(Element *element) {
         if (dynamic_cast<Flexible *>(element)) {
-            return dynamic_cast<Flexible *>(element)->grow;
+            return dynamic_cast<Flexible *>(element)->getGrow();
         } else if (dynamic_cast<Expanded *>(element)) {
             return dynamic_cast<Expanded *>(element)->getGrow();
         } else {
