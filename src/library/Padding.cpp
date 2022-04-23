@@ -5,6 +5,31 @@
 #include "Padding.h"
 
 namespace elementor {
+
+    Padding::Padding(Element *child) {
+        this->setChild(child);
+    }
+
+    Padding::Padding(float paddings, Element *child) {
+        this->setPaddings(paddings);
+        this->setChild(child);
+    }
+
+    Padding::Padding(float paddingY, float paddingX, Element *child) {
+        this->setPaddings(paddingY, paddingX);
+        this->setChild(child);
+    }
+
+    Padding::Padding(float paddingTop, float paddingX, float paddingBottom, Element *child) {
+        this->setPaddings(paddingTop, paddingX, paddingBottom);
+        this->setChild(child);
+    }
+
+    Padding::Padding(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft, Element *child) {
+        this->setPaddings(paddingTop, paddingRight, paddingBottom, paddingLeft);
+        this->setChild(child);
+    }
+
     void Padding::setPaddings(float paddingYX) {
         this->paddings = {paddingYX, paddingYX, paddingYX, paddingYX};
     }
@@ -22,20 +47,22 @@ namespace elementor {
     }
 
     std::shared_ptr <ElementRenderer> Padding::render() {
-        auto renderer = std::make_shared<PaddingRenderer>();
-        renderer->paddings = this->paddings;
-        renderer->child = this->child;
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<PaddingRenderer>(this->context, this->paddings, this->getChild());
+    }
+
+    PaddingRenderer::PaddingRenderer(ApplicationContext *context, PaddingsValue paddings, Element *child) {
+        this->context = context;
+        this->paddings = {
+            (int) ceil(paddings.top * this->context->monitorPixelScale),
+            (int) ceil(paddings.right * this->context->monitorPixelScale),
+            (int) ceil(paddings.bottom * this->context->monitorPixelScale),
+            (int) ceil(paddings.left * this->context->monitorPixelScale),
+        };
+        this->child = child;
     }
 
     std::vector <RenderElement> PaddingRenderer::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
-
-        int paddingsTop = this->paddings.top * this->context->monitorPixelScale;
-        int paddingsRight = this->paddings.right * this->context->monitorPixelScale;
-        int paddingsBottom = this->paddings.bottom * this->context->monitorPixelScale;
-        int paddingsLeft = this->paddings.left * this->context->monitorPixelScale;
 
         if (this->child) {
             RenderElement child;
@@ -43,10 +70,10 @@ namespace elementor {
             child.element->context = context;
             child.renderer = this->child->render();
 
-            child.position = {paddingsLeft, paddingsTop};
+            child.position = {this->paddings.left, this->paddings.top};
 
-            int childWidth = size.width - (paddingsLeft + paddingsRight);
-            int childHeight = size.height - (paddingsTop + paddingsBottom);
+            int childWidth = size.width - (this->paddings.left + this->paddings.right);
+            int childHeight = size.height - (this->paddings.top + this->paddings.bottom);
             child.size = {childWidth, childHeight};
 
             children.push_back(child);
