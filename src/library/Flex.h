@@ -26,26 +26,80 @@ namespace elementor {
         End,
     };
 
-    class Flex : public Element {
+    class Flex : public Element, public WithChildren {
     public:
+        Flex() {};
+
+        Flex(std::vector<Element *> children);
+
+        Flex(FlexDirection direction, std::vector<Element *> children);
+
+        Flex(FlexAlignment alignment, std::vector<Element *> children);
+
+        Flex(FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children);
+
+        Flex(FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(float spacing, std::vector<Element *> children);
+
+        Flex(float spacing, FlexDirection direction, std::vector<Element *> children);
+
+        Flex(float spacing, FlexAlignment alignment, std::vector<Element *> children);
+
+        Flex(float spacing, FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children);
+
+        Flex(float spacing, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(float spacing, FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(float spacing, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        Flex(float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+
+        void setSpacing(float spacing);
+
+        float getSpacing();
+
+        void setDirection(FlexDirection direction);
+
+        FlexDirection getDirection();
+
+        void setAlignment(FlexAlignment alignment);
+
+        FlexAlignment getAlignment();
+
+        void setCrossAlignment(FlexCrossAlignment alignment);
+
+        FlexCrossAlignment getCrossAlignment();
+
+        std::shared_ptr <ElementRenderer> render() override;
+
+    private:
         float spacing = 0;
         FlexDirection direction = FlexDirection::Row;
         FlexAlignment alignment = FlexAlignment::Start;
         FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
-        std::vector<Element *> children;
-
-        std::shared_ptr <ElementRenderer> render() override;
     };
 
     class FlexRenderer : public ElementRenderer {
     public:
-        float spacing;
+        FlexRenderer(ApplicationContext *context, float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
+
+        std::vector <RenderElement> getChildren(RenderSize size) override;
+
+    private:
+        int spacing;
         FlexDirection direction;
         FlexAlignment alignment;
         FlexCrossAlignment crossAlignment;
         std::vector<Element *> children;
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
     };
 }
 

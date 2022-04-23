@@ -10,19 +10,143 @@
 #include <algorithm>
 
 namespace elementor {
+    Flex::Flex(std::vector<Element *> children) {
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexDirection direction, std::vector<Element *> children) {
+        this->setDirection(direction);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexAlignment alignment, std::vector<Element *> children) {
+        this->setAlignment(alignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setAlignment(alignment);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children) {
+        this->setDirection(direction);
+        this->setAlignment(alignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setDirection(direction);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setDirection(direction);
+        this->setAlignment(alignment);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexDirection direction, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setDirection(direction);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexAlignment alignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setAlignment(alignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setDirection(direction);
+        this->setAlignment(alignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setDirection(direction);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setAlignment(alignment);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    Flex::Flex(float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->setSpacing(spacing);
+        this->setDirection(direction);
+        this->setAlignment(alignment);
+        this->setCrossAlignment(crossAlignment);
+        this->setChildren(children);
+    }
+
+    void Flex::setSpacing(float spacing) {
+        this->spacing = spacing;
+    }
+
+    float Flex::getSpacing() {
+        return this->spacing;
+    }
+
+    void Flex::setDirection(FlexDirection direction) {
+        this->direction = direction;
+    }
+
+    FlexDirection Flex::getDirection() {
+        return this->direction;
+    }
+
+    void Flex::setAlignment(FlexAlignment alignment) {
+        this->alignment = alignment;
+    }
+
+    FlexAlignment Flex::getAlignment() {
+        return this->alignment;
+    }
+
+    void Flex::setCrossAlignment(FlexCrossAlignment alignment) {
+        this->crossAlignment = alignment;
+    }
+
+    FlexCrossAlignment Flex::getCrossAlignment() {
+        return this->crossAlignment;
+    }
+
     std::shared_ptr <ElementRenderer> Flex::render() {
-        auto renderer = std::make_shared<FlexRenderer>();
-        renderer->spacing = this->spacing;
-        renderer->direction = this->direction;
-        renderer->alignment = this->alignment;
-        renderer->crossAlignment = this->crossAlignment;
-        renderer->children = this->children;
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<FlexRenderer>(this->context, this->spacing, this->direction, this->alignment, this->crossAlignment, this->getChildren());
     }
 
     bool isFlexible(Element *element) {
-        return dynamic_cast<Flexible *>(element) != NULL || dynamic_cast<Expanded *>(element) != NULL;
+        return (
+            dynamic_cast<Flexible *>(element) != NULL ||
+            dynamic_cast<Expanded *>(element) != NULL
+        );
     }
 
     int getFlexibleGrow(Element *element) {
@@ -35,15 +159,22 @@ namespace elementor {
         }
     }
 
+    FlexRenderer::FlexRenderer(ApplicationContext *context, float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
+        this->context = context;
+        this->spacing = spacing * this->context->monitorPixelScale;
+        this->direction = direction;
+        this->alignment = alignment;
+        this->crossAlignment = crossAlignment;
+        this->children = children;
+    }
+
     std::vector <RenderElement> FlexRenderer::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
         RenderBoundaries sizedChildBoundaries = {{0, 0}, size};
 
-        int spacing = this->spacing * this->context->monitorPixelScale;
-
         int childrenCount = this->children.size();
-        int fixedSize = spacing * (childrenCount - 1);
+        int fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
         int flexibleGrowsSum = 0;
@@ -119,7 +250,7 @@ namespace elementor {
                 child.position = {crossAxisPosition, axisPosition};
             }
 
-            axisPosition += spacing;
+            axisPosition += this->spacing;
             axisPosition += childAxisSize;
 
             if (addSpaceEvenly) {
