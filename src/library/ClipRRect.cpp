@@ -7,19 +7,51 @@
 #include <include/core/SkRRect.h>
 
 namespace elementor {
+    ClipRRect::ClipRRect(Element *child) {
+        this->setChild(child);
+    }
+
+    ClipRRect::ClipRRect(float radiusXY, Element *child) {
+        this->radiusX = radiusXY;
+        this->radiusY = radiusXY;
+        this->setChild(child);
+    }
+
+    ClipRRect::ClipRRect(float radiusXY, SkClipOp clipOp, Element *child) {
+        this->radiusX = radiusXY;
+        this->radiusY = radiusXY;
+        this->clipOp = clipOp;
+        this->setChild(child);
+    }
+
+    ClipRRect::ClipRRect(float radiusX, float radiusY, Element *child) {
+        this->radiusX = radiusX;
+        this->radiusY = radiusY;
+        this->setChild(child);
+    }
+
+    ClipRRect::ClipRRect(float radiusX, float radiusY, SkClipOp clipOp, Element *child) {
+        this->radiusX = radiusX;
+        this->radiusY = radiusY;
+        this->clipOp = clipOp;
+        this->setChild(child);
+    }
+
     std::shared_ptr <ElementRenderer> ClipRRect::render() {
-        auto renderer = std::make_shared<ClipRRectRenderer>();
-        renderer->child = this->child;
-        renderer->radius = this->radius;
-        renderer->clipOp = this->clipOp;
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<ClipRRectRenderer>(this->context, this->radiusX, this->radiusY, this->clipOp, this->getChild());
+    }
+
+    ClipRRectRenderer::ClipRRectRenderer(ApplicationContext *context, float radiusX, float radiusY, SkClipOp clipOp, Element *child) {
+        this->context = context;
+        this->radiusX = radiusX * this->context->monitorPixelScale;
+        this->radiusY = radiusY * this->context->monitorPixelScale;
+        this->clipOp = clipOp;
+        this->child = child;
     }
 
     void ClipRRectRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
         SkRect paintRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
-        int radius = this->radius * this->context->monitorPixelScale;
-        SkRRect oval = SkRRect::MakeRectXY(paintRect, radius, radius);
+        SkRRect oval = SkRRect::MakeRectXY(paintRect, this->radiusX, this->radiusY);
         canvas->clipRRect(oval, this->clipOp, true);
     }
 
