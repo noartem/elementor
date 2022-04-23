@@ -62,7 +62,6 @@ namespace elementor {
 
         Flex(float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
 
-
         void setSpacing(float spacing);
 
         float getSpacing();
