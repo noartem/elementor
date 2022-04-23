@@ -25,9 +25,19 @@ namespace elementor {
         TopRight,
     };
 
-    class Align : public Element {
+    class Align : public Element, public WithChild {
     public:
-        Element *child;
+        Align() {};
+
+        Align(Element *child);
+
+        Align(Alignment alignment);
+
+        Align(AlignmentFraction alignment);
+
+        Align(Alignment alignment, Element *child);
+
+        Align(AlignmentFraction alignment, Element *child);
 
         void setAlignment(Alignment alignment);
 

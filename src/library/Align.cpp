@@ -5,6 +5,28 @@
 #include "Align.h"
 
 namespace elementor {
+    Align::Align(Element *child) {
+        this->setChild(child);
+    }
+
+    Align::Align(Alignment alignment) {
+        this->setAlignment(alignment);
+    }
+
+    Align::Align(AlignmentFraction alignment) {
+        this->setAlignment(alignment);
+    }
+
+    Align::Align(Alignment alignment, Element *child) {
+        this->setAlignment(alignment);
+        this->setChild(child);
+    }
+
+    Align::Align(AlignmentFraction alignment, Element *child) {
+        this->setAlignment(alignment);
+        this->setChild(child);
+    }
+
     void Align::setAlignment(AlignmentFraction alignment) {
         this->alignment = alignment;
     }
@@ -40,7 +62,7 @@ namespace elementor {
     std::shared_ptr <ElementRenderer> Align::render() {
         auto renderer = std::make_shared<AlignRenderer>();
         renderer->alignment = this->alignment;
-        renderer->child = this->child;
+        renderer->child = this->getChild();
         renderer->context = this->context;
         return renderer;
     }
