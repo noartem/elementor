@@ -5,11 +5,30 @@
 #include "Expanded.h"
 
 namespace elementor {
+    Expanded::Expanded(Element *child) {
+        this->setChild(child);
+    }
+
+    Expanded::Expanded(int grow, Element *child) {
+        this->setGrow(grow);
+        this->setChild(child);
+    }
+
+    void Expanded::setGrow(int grow) {
+        this->grow = grow;
+    }
+
+    int Expanded::getGrow() {
+        return this->grow;
+    }
+
     std::shared_ptr <ElementRenderer> Expanded::render() {
-        auto renderer = std::make_shared<ExpandedRenderer>();
-        renderer->child = this->child;
-        renderer->context = this->context;
-        return renderer;
+        return std::make_shared<ExpandedRenderer>(this->context, this->getChild());
+    }
+
+    ExpandedRenderer::ExpandedRenderer(ApplicationContext *context, Element *child) {
+        this->context = context;
+        this->child = child;
     }
 
     std::vector <RenderElement> ExpandedRenderer::getChildren(RenderSize size) {

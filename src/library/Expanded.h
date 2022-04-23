@@ -8,19 +8,32 @@
 #include "Element.h"
 
 namespace elementor {
-    class Expanded : public Element {
+    class Expanded : public Element, public WithChild {
     public:
-        int grow = 1;
-        Element *child;
+        Expanded() {};
+        
+        Expanded(Element *child);
+
+        Expanded(int grow, Element *child);
+
+        void setGrow(int grow);
+
+        int getGrow();
 
         std::shared_ptr <ElementRenderer> render() override;
+
+    private:
+        int grow = 1;
     };
 
     class ExpandedRenderer : public ElementRenderer {
     public:
-        Element *child;
+        ExpandedRenderer(ApplicationContext *context, Element *child);
 
         std::vector <RenderElement> getChildren(RenderSize size) override;
+
+    private:
+        Element *child;
     };
 }
 

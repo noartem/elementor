@@ -29,7 +29,7 @@ namespace elementor {
         if (dynamic_cast<Flexible *>(element)) {
             return dynamic_cast<Flexible *>(element)->grow;
         } else if (dynamic_cast<Expanded *>(element)) {
-            return dynamic_cast<Expanded *>(element)->grow;
+            return dynamic_cast<Expanded *>(element)->getGrow();
         } else {
             return 0;
         }
