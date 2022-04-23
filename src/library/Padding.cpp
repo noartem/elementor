@@ -46,6 +46,10 @@ namespace elementor {
         this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
     }
 
+    PaddingsValue Padding::getPaddings() {
+        return this->paddings;
+    }
+
     std::shared_ptr <ElementRenderer> Padding::render() {
         return std::make_shared<PaddingRenderer>(this->context, this->paddings, this->getChild());
     }

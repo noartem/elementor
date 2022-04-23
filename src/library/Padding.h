@@ -44,6 +44,8 @@ namespace elementor {
 
         void setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 
+        PaddingsValue getPaddings();
+
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
