@@ -23,5 +23,15 @@
 
 ## TODO
 
-* Rework all fields getters and setters
+* Text
+    * TextLine = text + text formatting options
+    * Textable: text() => TextLine
+    * Label just draw TextLine the simple way
+    * Fix label memory leak
+* Border
 * Flex Wrap
+* Image?
+* BoxShadow?
+* Interactive, Events
+* Button
+* Scroll
