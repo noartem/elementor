@@ -17,7 +17,11 @@
 using namespace elementor;
 
 Element *makeExampleContainer(Element *child) {
-    return new Background("#f1faee", new Padding(32, child));
+    return background()
+        ->setColor("#f1faee")
+        ->setChild(padding()
+            ->setPaddings(32)
+            ->setChild(child));
 }
 
 Platform *makeExample(std::string description, Element *root, RenderSize size = {600, 840}) {
@@ -34,163 +38,226 @@ Platform *makeExample(std::string description, Element *root, RenderSize size = 
 }
 
 void exampleMain() {
-    Background *jBackground = new Background("#e63946");
-    Flexible *jElement = new Flexible(2, jBackground);
-    Background *iColumnBox1Background = new Background("#1d3557");
-    Flexible *iColumnBox1 = new Flexible(iColumnBox1Background);
-    Background *iColumnBox2Background = new Background("#1d3557");
-    Sized *iColumnBox2 = new Sized(140, iColumnBox2Background);
-    Flex *iColumn = new Flex(24, FlexDirection::Column, {iColumnBox1, iColumnBox2});
-    Flexible *iElement = new Flexible(2, iColumn);
-    Background *hBackground = new Background("#e63946");
-    Flexible *hElement = new Flexible(hBackground);
-    Flex *gElement = new Flex(32, {hElement, iElement, jElement});
-    Padding *fElement = new Padding(64, gElement);
-    Background *eElement = new Background("#a8dadc", fElement);
-    Padding *dElement = new Padding(32, eElement);
-    Background *cElement = new Background("#457b9d", dElement);
+    Element *scene = background()
+        ->setColor("#457b9d")
+        ->setChild(padding()
+            ->setPaddings(32)
+            ->setChild(background()
+                ->setColor("#a8dadc")
+                ->setChild(padding()
+                    ->setPaddings(64)
+                    ->setChild(flex()
+                        ->setSpacing(32)
+                        ->appendChild(flexible()
+                            ->setChild(background()
+                                ->setColor("#e63946")))
+                        ->appendChild(flexible()
+                            ->setGrow(2)
+                            ->setChild(flex()
+                                ->setSpacing(24)
+                                ->setDirection(FlexDirection::Column)
+                                ->appendChild(flexible()
+                                    ->setChild(background()
+                                    ->setColor("#1d3557")))
+                        ->appendChild(sized()
+                            ->setSize(200)
+                            ->setChild(background()
+                                ->setColor("#1d3557")))))
+                        ->appendChild(flexible()
+                            ->setGrow(2)
+                            ->setChild(background()
+                                ->setColor("#e63946")))))));
 
-    makeExample("Main", cElement, {900, 600})->run();
+    makeExample("Main", scene, {900, 600})->run();
 }
 
 void exampleFlexibleExpanedAndSized() {
-    Background *background = new Background("#457B9D");
-    Flexible *flexible = new Flexible(background);
-    Sized *sized = new Sized(200, background);
-    Expanded *expanded = new Expanded(sized);
-    Flex *rowWithFlexible = new Flex(24, {flexible, flexible});
-    Flexible *rowWithFlexibleWrapper = new Flexible(rowWithFlexible);
-    Flex *rowWithExpanded = new Flex(24, {expanded, expanded});
-    Flexible *rowWithExpandedWrapper = new Flexible(rowWithExpanded);
-    Flex *rowWithSized = new Flex(24, {sized, sized});
-    Flexible *rowWithSizedWrapper = new Flexible(rowWithSized);
-    Flex *examples = new Flex(24, FlexDirection::Column, {rowWithFlexibleWrapper, rowWithSizedWrapper, rowWithExpandedWrapper});
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->setDirection(FlexDirection::Column)
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->appendChild(flexible()
+                    ->setChild(background()
+                        ->setColor("#457B9D")))
+                ->appendChild(flexible()
+                    ->setChild(background()
+                        ->setColor("#457B9D")))))
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->appendChild(sized()
+                    ->setSize(120)
+                    ->setChild(background()
+                        ->setColor("#457B9D")))
+                ->appendChild(sized()
+                    ->setSize(120)
+                    ->setChild(background()
+                        ->setColor("#457B9D")))))
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->appendChild(expanded()
+                    ->setChild(sized()
+                        ->setSize(120)
+                        ->setChild(background()
+                            ->setColor("#457B9D"))))
+                ->appendChild(expanded()
+                    ->setChild(sized()
+                        ->setSize(120)
+                        ->setChild(background()
+                            ->setColor("#457B9D"))))));
 
-    makeExample("Flexible, Expanded and Sized", examples)->run();
+    makeExample("Flexible, Expanded and Sized", scene)->run();
 }
 
-Flexible* makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
-    Background *box1Background = new Background("#457b9d");
-    Sized *box1 = new Sized(280, 200, box1Background);
-    Background *box2Background = new Background("#a8dadc");
-    Sized *box2 = new Sized(200, 80, box2Background);
-    Flex *row = new Flex(24, FlexDirection::Row, alignment, {box1, box2});
-    Flexible *rowContainer = new Flexible(row);
-    return rowContainer;
+Flexible *makeExampleFlexRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
+    return flexible()
+        ->setChild(flex()
+            ->setSpacing(16)
+            ->setAlignment(alignment)
+            ->setCrossAlignment(crossAlignment)
+            ->appendChild(sized()
+                ->setSize(280, 200)
+                ->setChild(background()
+                    ->setColor("#457b9d")))
+            ->appendChild(sized()
+                ->setSize(200, 80)
+                ->setChild(background()
+                    ->setColor("#a8dadc"))));
 }
 
 void exampleFlexAlignment() {
-    Flex *examples = new Flex(24, FlexDirection::Column, {
-        makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly),
-        makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly),
-        makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly)
-    });
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->setDirection(FlexDirection::Column)
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly))
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly))
+        ->appendChild(makeExampleFlexRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
 
-    makeExample("Flex alignment", examples)->run();
+    makeExample("Flex alignment", scene)->run();
 }
 
 void exampleFlexCrossAlignment() {
-    Flex *examples = new Flex(24, FlexDirection::Column, {
-        makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start),
-        makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly),
-        makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween),
-        makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End),
-    });
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->setDirection(FlexDirection::Column)
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::Start))
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly))
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::SpaceBetween))
+        ->appendChild(makeExampleFlexRow(FlexAlignment::Center, FlexCrossAlignment::End));
 
-    makeExample("Flex Cross Alignment", examples)->run();
+    makeExample("Flex Cross Alignment", scene)->run();
 }
 
 Element *makeExampleAlign(Alignment alignment) {
-    Background *sizedBackground = new Background("#457b9d");
-    Sized *sized = new Sized(40, sizedBackground);
-    Align *align = new Align(alignment, sized);
-    Background *alignBackground = new Background("#a8dadc", align);
-    Flexible *alignContainer = new Flexible(alignBackground);
-    return alignContainer;
+    return flexible()
+        ->setChild(background()
+            ->setColor("a8dadc")
+            ->setChild(align()
+                ->setAlignment(alignment)
+                ->setChild(sized()
+                    ->setSize(40)
+                    ->setChild(background()
+                        ->setColor("#457b9d")))));
 }
 
 void exampleAlign() {
-    Flex *examples = new Flex(24, FlexDirection::Column, {
-        makeExampleAlign(Alignment::BottomCenter),
-        makeExampleAlign(Alignment::BottomLeft),
-        makeExampleAlign(Alignment::BottomRight),
-        makeExampleAlign(Alignment::Center),
-        makeExampleAlign(Alignment::CenterLeft),
-        makeExampleAlign(Alignment::CenterRight),
-        makeExampleAlign(Alignment::TopCenter),
-        makeExampleAlign(Alignment::TopLeft),
-        makeExampleAlign(Alignment::TopRight),
-    });
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->setDirection(FlexDirection::Column)
+        ->appendChild(makeExampleAlign(Alignment::BottomCenter))
+        ->appendChild(makeExampleAlign(Alignment::BottomLeft))
+        ->appendChild(makeExampleAlign(Alignment::BottomRight))
+        ->appendChild(makeExampleAlign(Alignment::Center))
+        ->appendChild(makeExampleAlign(Alignment::CenterLeft))
+        ->appendChild(makeExampleAlign(Alignment::CenterRight))
+        ->appendChild(makeExampleAlign(Alignment::TopCenter))
+        ->appendChild(makeExampleAlign(Alignment::TopLeft))
+        ->appendChild(makeExampleAlign(Alignment::TopRight));
 
-    makeExample("Align", examples)->run();
+    makeExample("Align", scene)->run();
 }
 
-Element *makeExampleRounded(float radius) {
-    Background *innerRoundedBackground = new Background("#a8dadc");
-    Rounded *innerRounded = new Rounded(12, innerRoundedBackground);
-    Padding *innerRoundedPadding = new Padding(24, innerRounded);
-    Background *roundedBackground = new Background("#457b9d", innerRoundedPadding);
-    Rounded *rounded = new Rounded(radius, roundedBackground);
-    Flexible *roundedContainer = new Flexible(rounded);
-    return roundedContainer;
+Element *makeExampleRounded(float radiusX, float radiusY) {
+    return flexible()
+        ->setChild(rounded()
+            ->setRadius(radiusX, radiusY)
+            ->setChild(background()
+                ->setColor("#457b9d")
+                ->setChild(padding()
+                    ->setPaddings(24)
+                    ->setChild(rounded()
+                        ->setRadius(radiusX, radiusY)
+                        ->setChild(background()
+                            ->setColor("#a8dadc"))))));
 }
 
 void exampleRounded() {
-    Flex *examples = new Flex(24, {
-        makeExampleRounded(10),
-        makeExampleRounded(20),
-        makeExampleRounded(30),
-        makeExampleRounded(40),
-    });
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->appendChild(makeExampleRounded(10.0, 10.0))
+        ->appendChild(makeExampleRounded(10.0, 20.0))
+        ->appendChild(makeExampleRounded(20.0, 20.0))
+        ->appendChild(makeExampleRounded(20.0, 30.0))
+        ->appendChild(makeExampleRounded(30.0, 30.0))
+        ->appendChild(makeExampleRounded(60.0, 120.0));
 
-    makeExample("Rounded", examples, {480, 240})->run();
+    makeExample("Rounded", scene, {720, 360})->run();
 }
 
 Element *makeButton(std::string text) {
-    Label *label = new Label(text, "#ffffff", 24);
-    Align *labelAlign = new Align(Alignment::Center, label);
-    Background *background = new Background("#457b9d", labelAlign);
-    Rounded *rounded = new Rounded(8, background);
-    Sized *sized = new Sized(300, 100, rounded);
-    Align *align = new Align(Alignment::Center, sized);
-    Expanded *expanded = new Expanded(align);
-    return expanded;
+    return expanded()
+        ->setChild(align()
+            ->setChild(sized()
+                ->setSize(300, 100)
+                ->setChild(rounded()
+                    ->setRadius(8)
+                    ->setChild(background()
+                        ->setColor("#457b9d")
+                        ->setChild(align()
+                            ->setChild(label()
+                                ->setFontColor("#ffffff")
+                                ->setFontSize(24)
+                                ->setText(text)))))));
 }
 
 void exampleLabel() {
-    Flex *examples = new Flex(24, FlexDirection::Column, {
-        makeButton("Text"),
-        makeButton("Apply"),
-        makeButton("Lorem Ipsum"),
-        makeButton("Some other text"),
-        makeButton("Click on me"),
-    });
+    Element *scene = flex()
+        ->setSpacing(24)
+        ->setDirection(FlexDirection::Column)
+        ->appendChild(makeButton("Text"))
+        ->appendChild(makeButton("Apply"))
+        ->appendChild(makeButton("Lorem Ipsum"))
+        ->appendChild(makeButton("Some other text"))
+        ->appendChild(makeButton("Click on me"));
 
-    makeExample("Label", examples, {320, 640})->run();
+    makeExample("Label", scene, {320, 640})->run();
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     switch (atoi(argv[1])) {
-    case 0:
-        exampleMain();
-        break;
-    case 1:
-        exampleFlexibleExpanedAndSized();
-        break;
-    case 2:
-        exampleFlexAlignment();
-        break;
-    case 3:
-        exampleFlexCrossAlignment();
-        break;
-    case 4:
-        exampleAlign();
-        break;
-    case 5:
-        exampleRounded();
-        break;
-    case 6:
-        exampleLabel();
-        break;
+        case 0:
+            exampleMain();
+            break;
+        case 1:
+            exampleFlexibleExpanedAndSized();
+            break;
+        case 2:
+            exampleFlexAlignment();
+            break;
+        case 3:
+            exampleFlexCrossAlignment();
+            break;
+        case 4:
+            exampleAlign();
+            break;
+        case 5:
+            exampleRounded();
+            break;
+        case 6:
+            exampleLabel();
+            break;
     }
 }
