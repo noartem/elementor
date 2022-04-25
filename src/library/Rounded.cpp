@@ -6,29 +6,22 @@
 
 #include <include/core/SkRRect.h>
 
+#include <iostream>
+
 namespace elementor {
-    Rounded::Rounded(Element *child) {
-        this->setChild(child);
+    Rounded *rounded() {
+        return new Rounded();
     }
 
-    Rounded::Rounded(float radiusXY, Element *child) {
-        this->setRadius(radiusXY);
-        this->setChild(child);
-    }
-
-    Rounded::Rounded(float radiusX, float radiusY, Element *child) {
-        this->setRadius(radiusX, radiusY);
-        this->setChild(child);
-    }
-
-    void Rounded::setRadius(float radiusXY) {
-        this->radiusX = radiusXY;
-        this->radiusY = radiusXY;
-    }
-
-    void Rounded::setRadius(float radiusX, float radiusY) {
+    Rounded *Rounded::setRadius(float radiusX, float radiusY) {
         this->radiusX = radiusX;
         this->radiusY = radiusY;
+        return this;
+    }
+
+    Rounded *Rounded::setRadius(float radiusXY) {
+        this->setRadius(radiusXY, radiusXY);
+        return this;
     }
 
     float Rounded::getRadiusX() {
@@ -39,8 +32,13 @@ namespace elementor {
         return this->radiusY;
     }
 
+    Rounded *Rounded::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
+    }
+
     std::shared_ptr <ElementRenderer> Rounded::render() {
-        return std::make_shared<RoundedRenderer>(this->context, this->radiusX, this->radiusY, this->getChild());
+        return std::make_shared<RoundedRenderer>(this->context, this->getRadiusX(), this->getRadiusY(), this->getChild());
     }
 
     RoundedRenderer::RoundedRenderer(ApplicationContext *context, float radiusX, float radiusY, Element *child) {

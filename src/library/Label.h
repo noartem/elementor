@@ -12,33 +12,19 @@
 namespace elementor {
     class Label : public Element {
     public:
-        Label() {};
-
-        Label(std::string text);
-
-        Label(std::string text, SkColor fontColor);
-
-        Label(std::string text, std::string fontColor);
-
-        Label(std::string text, float fontSize);
-
-        Label(std::string text, SkColor fontColor, float fontSize);
-
-        Label(std::string text, std::string fontColor, float fontSize);
-
-        void setText(std::string text);
+        Label *setText(std::string text);
 
         std::string setText();
 
-        void setFontColor(SkColor color);
+        Label *setFontColor(SkColor color);
 
-        void setFontColor(uint8_t r, uint8_t g, uint8_t b);
+        Label *setFontColor(uint8_t r, uint8_t g, uint8_t b);
 
-        void setFontColor(std::string color);
+        Label *setFontColor(std::string color);
 
         SkColor getFontColor();
 
-        void setFontSize(float size);
+        Label *setFontSize(float size);
 
         float getFontSize();
 
@@ -49,6 +35,8 @@ namespace elementor {
         SkColor fontColor = SK_ColorBLACK;
         float fontSize = 16.0;
     };
+
+    Label *label();
 
     class LabelRenderer : public ElementRenderer {
     public:

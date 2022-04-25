@@ -27,29 +27,21 @@ namespace elementor {
 
     class Align : public Element, public WithChild {
     public:
-        Align() {};
+        Align *setAlignment(Alignment alignment);
 
-        Align(Element *child);
-
-        Align(Alignment alignment);
-
-        Align(AlignmentFraction alignment);
-
-        Align(Alignment alignment, Element *child);
-
-        Align(AlignmentFraction alignment, Element *child);
-
-        void setAlignment(Alignment alignment);
-
-        void setAlignment(AlignmentFraction alignment);
+        Align *setAlignment(AlignmentFraction alignment);
 
         AlignmentFraction getAlignment();
+
+        Align *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
     
     private:
-        AlignmentFraction alignment;
+        AlignmentFraction alignment = {0.5, 0.5};
     };
+
+    Align *align();
 
     class AlignRenderer : public ElementRenderer {
     public:

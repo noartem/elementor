@@ -5,21 +5,22 @@
 #include "Expanded.h"
 
 namespace elementor {
-    Expanded::Expanded(Element *child) {
-        this->setChild(child);
+    Expanded *expanded() {
+        return new Expanded();
     }
 
-    Expanded::Expanded(int grow, Element *child) {
-        this->setGrow(grow);
-        this->setChild(child);
-    }
-
-    void Expanded::setGrow(int grow) {
+    Expanded *Expanded::setGrow(int grow) {
         this->grow = grow;
+        return this;
     }
 
     int Expanded::getGrow() {
         return this->grow;
+    }
+
+    Expanded *Expanded::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
     }
 
     std::shared_ptr <ElementRenderer> Expanded::render() {

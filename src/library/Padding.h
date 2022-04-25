@@ -24,33 +24,25 @@ namespace elementor {
 
     class Padding : public Element, public WithChild {
     public:
-        Padding() {};
+        Padding *setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 
-        Padding(Element *child);
+        Padding *setPaddings(float paddingTop, float paddingX, float paddingBottom);
 
-        Padding(float paddings, Element *child);
+        Padding *setPaddings(float paddingY, float paddingX);
 
-        Padding(float paddingY, float paddingX, Element *child);
-
-        Padding(float paddingTop, float paddingX, float paddingBottom, Element *child);
-
-        Padding(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft, Element *child);
-
-        void setPaddings(float paddings);
-
-        void setPaddings(float paddingY, float paddingX);
-
-        void setPaddings(float paddingTop, float paddingX, float paddingBottom);
-
-        void setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
+        Padding *setPaddings(float paddings);
 
         PaddingsValue getPaddings();
+
+        Padding *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
         PaddingsValue paddings;
     };
+
+    Padding *padding();
 
     class PaddingRenderer : public ElementRenderer {
     public:

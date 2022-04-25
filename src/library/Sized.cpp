@@ -7,35 +7,29 @@
 #include <algorithm>
 
 namespace elementor {
-    Sized::Sized(Element *child) {
-        this->setChild(child);
+    Sized *sized() {
+        return new Sized();
     }
 
-    Sized::Sized(float size, Element *child) {
-        this->setSize(size);
-        this->setChild(child);
-    }
-
-    Sized::Sized(float width, float height, Element *child) {
-        this->setSize(width, height);
-        this->setChild(child);
-    }
-
-    void Sized::setWidth(float width) {
+    Sized *Sized::setWidth(float width) {
         this->width = width;
+        return this;
     }
 
-    void Sized::setHeight(float height) {
+    Sized *Sized::setHeight(float height) {
         this->height = height;
+        return this;
     }
 
-    void Sized::setSize(float width, float height) {
+    Sized *Sized::setSize(float width, float height) {
         this->setWidth(width);
         this->setHeight(height);
+        return this;
     }
 
-    void Sized::setSize(float size) {
+    Sized *Sized::setSize(float size) {
         this->setSize(size, size);
+        return this;
     }
 
     float Sized::getWidth() {
@@ -46,8 +40,13 @@ namespace elementor {
         return this->height;
     }
 
+    Sized *Sized::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
+    }
+
     std::shared_ptr <ElementRenderer> Sized::render() {
-        return std::make_shared<SizedRenderer>(this->context, this->width, this->height, this->getChild());
+        return std::make_shared<SizedRenderer>(this->context, this->getWidth(), this->getHeight(), this->getChild());
     }
 
     SizedRenderer::SizedRenderer(ApplicationContext *context, float width, float height, Element *child) {

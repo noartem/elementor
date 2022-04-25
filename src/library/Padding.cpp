@@ -5,49 +5,37 @@
 #include "Padding.h"
 
 namespace elementor {
-
-    Padding::Padding(Element *child) {
-        this->setChild(child);
+    Padding *padding() {
+        return new Padding();
     }
 
-    Padding::Padding(float paddings, Element *child) {
-        this->setPaddings(paddings);
-        this->setChild(child);
-    }
-
-    Padding::Padding(float paddingY, float paddingX, Element *child) {
-        this->setPaddings(paddingY, paddingX);
-        this->setChild(child);
-    }
-
-    Padding::Padding(float paddingTop, float paddingX, float paddingBottom, Element *child) {
-        this->setPaddings(paddingTop, paddingX, paddingBottom);
-        this->setChild(child);
-    }
-
-    Padding::Padding(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft, Element *child) {
-        this->setPaddings(paddingTop, paddingRight, paddingBottom, paddingLeft);
-        this->setChild(child);
-    }
-
-    void Padding::setPaddings(float paddingYX) {
-        this->paddings = {paddingYX, paddingYX, paddingYX, paddingYX};
-    }
-
-    void Padding::setPaddings(float paddingY, float paddingX) {
-        this->paddings = {paddingY, paddingX, paddingY, paddingX};
-    }
-
-    void Padding::setPaddings(float paddingTop, float paddingX, float paddingBottom) {
-        this->paddings = {paddingTop, paddingX, paddingBottom, paddingX};
-    }
-
-    void Padding::setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
+    Padding *Padding::setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
         this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
+        return this;
+    }
+
+    Padding *Padding::setPaddings(float paddingTop, float paddingX, float paddingBottom) {
+        this->setPaddings(paddingTop, paddingX, paddingBottom, paddingX);
+        return this;
+    }
+
+    Padding *Padding::setPaddings(float paddingY, float paddingX) {
+        this->setPaddings(paddingY, paddingX, paddingY, paddingX);
+        return this;
+    }
+
+    Padding *Padding::setPaddings(float paddingYX) {
+        this->setPaddings(paddingYX, paddingYX, paddingYX, paddingYX);
+        return this;
     }
 
     PaddingsValue Padding::getPaddings() {
         return this->paddings;
+    }
+
+    Padding *Padding::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
     }
 
     std::shared_ptr <ElementRenderer> Padding::render() {

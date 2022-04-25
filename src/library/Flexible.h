@@ -10,21 +10,19 @@
 namespace elementor {
     class Flexible : public Element, public WithChild {
     public:
-        Flexible() {};
-        
-        Flexible(Element *child);
-
-        Flexible(int grow, Element *child);
-
-        void setGrow(int grow);
+        Flexible *setGrow(int grow);
 
         int getGrow();
+
+        Flexible *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
         int grow = 1;
     };
+
+    Flexible *flexible();
 
     class FlexibleRenderer : public ElementRenderer {
     public:

@@ -10,21 +10,19 @@
 namespace elementor {
     class Expanded : public Element, public WithChild {
     public:
-        Expanded() {};
-        
-        Expanded(Element *child);
-
-        Expanded(int grow, Element *child);
-
-        void setGrow(int grow);
+        Expanded *setGrow(int grow);
 
         int getGrow();
+
+        Expanded *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
         int grow = 1;
     };
+
+    Expanded *expanded();
 
     class ExpandedRenderer : public ElementRenderer {
     public:

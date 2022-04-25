@@ -10,28 +10,24 @@
 namespace elementor {
     class Rounded : public Element, public WithChild {
     public:
-        Rounded() {};
+        Rounded *setRadius(float radiusX, float radiusY);
 
-        Rounded(Element *child);
-
-        Rounded(float radiusXY, Element *child);
-
-        Rounded(float radiusX, float radiusY, Element *child);
-
-        void setRadius(float radiusXY);
-
-        void setRadius(float radiusX, float radiusY);
+        Rounded *setRadius(float radiusXY);
 
         float getRadiusX();
 
         float getRadiusY();
 
+        Rounded *setChild(Element *child);
+
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
-        float radiusX = 0;
-        float radiusY = 0;
+        float radiusX = 10;
+        float radiusY = 10;
     };
+
+    Rounded *rounded();
 
     class RoundedRenderer : public ElementRenderer {
     public:

@@ -10,33 +10,25 @@
 namespace elementor {
     class Background : public Element, public WithChild {
     public:
-        Background() {};
+        Background *setColor(SkColor color);
 
-        Background(Element *child);
+        Background *setColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Background(SkColor color);
+        Background *setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        Background(std::string color);
-
-        Background(SkColor color, Element *child);
-
-        Background(std::string color, Element *child);
-
-        void setColor(SkColor color);
-
-        void setColor(uint8_t r, uint8_t g, uint8_t b);
-
-        void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-
-        void setColor(std::string hex);
+        Background *setColor(std::string hex);
 
         SkColor getColor();
+
+        Background *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
 
     private:
         SkColor color;
     };
+
+    Background *background();
 
     class BackgroundRenderer : public ElementRenderer {
     public:

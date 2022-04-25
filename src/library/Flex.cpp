@@ -10,132 +10,49 @@
 #include <algorithm>
 
 namespace elementor {
-    Flex::Flex(std::vector<Element *> children) {
-        this->setChildren(children);
+    Flex *flex() {
+        return new Flex();
     }
 
-    Flex::Flex(FlexDirection direction, std::vector<Element *> children) {
-        this->setDirection(direction);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexAlignment alignment, std::vector<Element *> children) {
-        this->setAlignment(alignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setAlignment(alignment);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children) {
-        this->setDirection(direction);
-        this->setAlignment(alignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setDirection(direction);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setDirection(direction);
-        this->setAlignment(alignment);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexDirection direction, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setDirection(direction);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexAlignment alignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setAlignment(alignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexDirection direction, FlexAlignment alignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setDirection(direction);
-        this->setAlignment(alignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexDirection direction, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setDirection(direction);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setAlignment(alignment);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    Flex::Flex(float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->setSpacing(spacing);
-        this->setDirection(direction);
-        this->setAlignment(alignment);
-        this->setCrossAlignment(crossAlignment);
-        this->setChildren(children);
-    }
-
-    void Flex::setSpacing(float spacing) {
+    Flex *Flex::setSpacing(float spacing) {
         this->spacing = spacing;
+        return this;
     }
 
     float Flex::getSpacing() {
         return this->spacing;
     }
 
-    void Flex::setDirection(FlexDirection direction) {
+    Flex *Flex::setDirection(FlexDirection direction) {
         this->direction = direction;
+        return this;
     }
 
     FlexDirection Flex::getDirection() {
         return this->direction;
     }
 
-    void Flex::setAlignment(FlexAlignment alignment) {
+    Flex *Flex::setAlignment(FlexAlignment alignment) {
         this->alignment = alignment;
+        return this;
     }
 
     FlexAlignment Flex::getAlignment() {
         return this->alignment;
     }
 
-    void Flex::setCrossAlignment(FlexCrossAlignment alignment) {
+    Flex *Flex::setCrossAlignment(FlexCrossAlignment alignment) {
         this->crossAlignment = alignment;
+        return this;
     }
 
     FlexCrossAlignment Flex::getCrossAlignment() {
         return this->crossAlignment;
+    }
+
+    Flex *Flex::appendChild(Element *child) {
+        this->addChild(child);
+        return this;
     }
 
     std::shared_ptr <ElementRenderer> Flex::render() {

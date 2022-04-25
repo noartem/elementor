@@ -41,7 +41,7 @@ namespace elementor {
 
     class WithChild {
     public:
-        void setChild(Element *child);
+        void updateChild(Element *child);
 
         Element *getChild();
 

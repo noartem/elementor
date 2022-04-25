@@ -5,21 +5,22 @@
 #include "Flexible.h"
 
 namespace elementor {
-    Flexible::Flexible(Element *child) {
-        this->setChild(child);
+    Flexible *flexible() {
+        return new Flexible();
     }
 
-    Flexible::Flexible(int grow, Element *child) {
-        this->setGrow(grow);
-        this->setChild(child);
-    }
-
-    void Flexible::setGrow(int grow) {
+    Flexible *Flexible::setGrow(int grow) {
         this->grow = grow;
+        return this;
     }
 
     int Flexible::getGrow() {
         return this->grow;
+    }
+
+    Flexible *Flexible::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
     }
 
     std::shared_ptr <ElementRenderer> Flexible::render() {

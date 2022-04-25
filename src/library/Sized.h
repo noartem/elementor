@@ -10,25 +10,19 @@
 namespace elementor {
     class Sized : public Element, public WithChild {
     public:
-        Sized() {};
+        Sized *setWidth(float width);
 
-        Sized(Element *child);
+        Sized *setHeight(float height);
 
-        Sized(float size, Element *child);
+        Sized *setSize(float width, float height);
 
-        Sized(float width, float height, Element *child);
-
-        void setWidth(float width);
-
-        void setHeight(float height);
-
-        void setSize(float width, float height);
-
-        void setSize(float size);
+        Sized *setSize(float size);
 
         float getWidth();
 
         float getHeight();
+
+        Sized *setChild(Element *child);
 
         std::shared_ptr <ElementRenderer> render() override;
 
@@ -36,6 +30,8 @@ namespace elementor {
         float width = 0;
         float height = 0;
     };
+
+    Sized *sized();
 
     class SizedRenderer : public ElementRenderer {
     public:

@@ -5,57 +5,47 @@
 #include "Background.h"
 
 namespace elementor {
-    Background::Background(Element *child) {
-        this->setChild(child);
+    Background *background() {
+        return new Background();
     }
 
-    Background::Background(SkColor color) {
-        this->setColor(color);
-    }
-
-    Background::Background(std::string color) {
-        this->setColor(color);
-    }
-
-    Background::Background(SkColor color, Element *child) {
-        this->setColor(color);
-        this->setChild(child);
-    }
-
-    Background::Background(std::string color, Element *child) {
-        this->setColor(color);
-        this->setChild(child);
-    }
-    
-    void Background::setColor(SkColor color) {
+    Background *Background::setColor(SkColor color) {
         this->color = color;
+        return this;
     }
 
-    void Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->setColor(SkColorSetARGB(a, r, g, b));
+        return this;
     }
 
-    void Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
+    Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
         this->setColor(r, g, b, 255);
+        return this;
     }
 
-    void Background::setColor(std::string hex) {
+    Background *Background::setColor(std::string hex) {
         if (hex.size() == 7) {
             hex = hex.substr(1);
         }
 
-        if (hex.size() != 6) {
-            return;
+        if (hex.size() == 6) {
+            uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
+            uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
+            uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
+            this->setColor(r, g, b);
         }
 
-        uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
-        uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
-        uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
-        this->setColor(r, g, b);
+        return this;
     }
 
     SkColor Background::getColor() {
         return this->color;
+    }
+
+    Background *Background::setChild(Element *child) {
+        this->updateChild(child);
+        return this;
     }
 
     std::shared_ptr <ElementRenderer> Background::render() {
