@@ -213,17 +213,16 @@ void exampleRounded() {
 Element *makeButton(std::string text) {
     return flexible()
         ->setChild(align()
-            ->setChild(sized()
-                ->setSize(300, 100)
-                ->setChild(rounded()
-                    ->setRadius(8)
-                    ->setChild(background()
-                        ->setColor("#457b9d")
-                        ->setChild(align()
-                            ->setChild(label()
-                                ->setFontColor("#ffffff")
-                                ->setFontSize(24)
-                                ->setText(text)))))));
+            ->setChild(rounded()
+                ->setRadius(16)
+                ->setChild(background()
+                    ->setColor("#457b9d")
+                    ->setChild(padding()
+                        ->setPaddings(24, 36)
+                        ->setChild(label()
+                            ->setFontColor("#ffffff")
+                            ->setFontSize(24)
+                            ->setText(text))))));
 }
 
 void exampleLabel() {
