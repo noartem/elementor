@@ -37,11 +37,10 @@ namespace elementor {
     }
 
     void Rounded::paintBackground(SkCanvas *canvas, RenderSize size) {
-        SkRRect oval = SkRRect::MakeRectXY(
-            SkRect::MakeXYWH(0, 0, size.width, size.height),
-            this->radiusX * this->context->monitorPixelScale,
-            this->radiusY * this->context->monitorPixelScale
-        );
+        SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+        float radiusX = this->radiusX * this->context->monitorPixelScale;
+        float radiusY = this->radiusY * this->context->monitorPixelScale;
+        SkRRect oval = SkRRect::MakeRectXY(rect, radiusX, radiusY);
 
         canvas->clipRRect(oval, SkClipOp::kIntersect, true);
     }
