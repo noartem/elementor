@@ -9,7 +9,6 @@
 #include "./library/Flex.h"
 #include "./library/Flexible.h"
 #include "./library/Sized.h"
-#include "./library/Expanded.h"
 #include "./library/Align.h"
 #include "./library/Rounded.h"
 #include "./library/Label.h"
@@ -98,16 +97,20 @@ void exampleFlexibleExpanedAndSized() {
         ->appendChild(flexible()
             ->setChild(flex()
                 ->setSpacing(16)
-                ->appendChild(expanded()
-                    ->setChild(sized()
-                        ->setSize(120)
-                        ->setChild(background()
-                            ->setColor("#457B9D"))))
-                ->appendChild(expanded()
-                    ->setChild(sized()
-                        ->setSize(120)
-                        ->setChild(background()
-                            ->setColor("#457B9D"))))));
+                ->appendChild(flexible()
+                    ->setChild(align()
+                        ->setAlignment(Alignment::TopLeft)
+                        ->setChild(sized()
+                            ->setSize(120)
+                            ->setChild(background()
+                                ->setColor("#457B9D")))))
+                ->appendChild(flexible()
+                    ->setChild(align()
+                        ->setAlignment(Alignment::TopLeft)
+                        ->setChild(sized()
+                            ->setSize(120)
+                            ->setChild(background()
+                                ->setColor("#457B9D")))))));
 
     makeExample("Flexible, Expanded and Sized", scene)->run();
 }
@@ -208,7 +211,7 @@ void exampleRounded() {
 }
 
 Element *makeButton(std::string text) {
-    return expanded()
+    return flexible()
         ->setChild(align()
             ->setChild(sized()
                 ->setSize(300, 100)
