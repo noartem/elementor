@@ -49,6 +49,14 @@ namespace elementor {
         return this;
     }
 
+    RenderSize Background::getSize(RenderBoundaries boundaries) {
+        if (this->hasChild()) {
+            return this->getChild(this->context)->getSize(boundaries);
+        } else {
+            return boundaries.max;
+        }
+    }
+
     void Background::paintBackground(SkCanvas *canvas, RenderSize size) {
         SkPaint paint;
         paint.setColor(this->color);

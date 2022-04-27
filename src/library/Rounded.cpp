@@ -46,6 +46,14 @@ namespace elementor {
         canvas->clipRRect(oval, SkClipOp::kIntersect, true);
     }
 
+    RenderSize Rounded::getSize(RenderBoundaries boundaries) {
+        if (this->hasChild()) {
+            return this->getChild(this->context)->getSize(boundaries);
+        } else {
+            return boundaries.max;
+        }
+    }
+
     std::vector <RenderElement> Rounded::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 

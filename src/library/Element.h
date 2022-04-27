@@ -62,6 +62,8 @@ namespace elementor {
     private:
         std::vector<Element *> children;
     };
+
+    RenderSize fitSizeInBoundaries(RenderSize size, RenderBoundaries boundaries);
 }
 
 #endif //ELEMENTOR_ELEMENT_H

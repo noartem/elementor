@@ -4,6 +4,8 @@
 
 #include "Element.h"
 
+#include <algorithm>
+
 namespace elementor {
     RenderSize Element::getSize(RenderBoundaries boundaries) {
         return boundaries.max;
@@ -60,5 +62,11 @@ namespace elementor {
 
     Element *WithChildren::getChild(int i) {
         return this->children[i];
+    }
+
+    RenderSize fitSizeInBoundaries(RenderSize size, RenderBoundaries boundaries) {
+        int width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
+        int height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
+        return {width, height};
     }
 }

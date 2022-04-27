@@ -27,7 +27,17 @@ namespace elementor {
 
         PaddingsValue getPaddings();
 
+        int getPaddingTop();
+
+        int getPaddingRight();
+
+        int getPaddingBottom();
+
+        int getPaddingLeft();
+
         Padding *setChild(Element *child);
+
+        RenderSize getSize(RenderBoundaries boundaries) override;
 
         std::vector <RenderElement> getChildren(RenderSize size) override;
 

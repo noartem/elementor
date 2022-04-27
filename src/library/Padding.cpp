@@ -39,6 +39,34 @@ namespace elementor {
         return this;
     }
 
+    int Padding::getPaddingTop() {
+        return ceil(this->getPaddings().top * this->context->monitorPixelScale);
+    }
+
+    int Padding::getPaddingRight() {
+        return ceil(this->getPaddings().right * this->context->monitorPixelScale);
+    }
+
+    int Padding::getPaddingBottom() {
+        return ceil(this->getPaddings().bottom * this->context->monitorPixelScale);
+    }
+
+    int Padding::getPaddingLeft() {
+        return ceil(this->getPaddings().left * this->context->monitorPixelScale);
+    }
+
+    RenderSize Padding::getSize(RenderBoundaries boundaries) {
+        if (this->hasChild()) {
+            RenderSize childSize = this->getChild(this->context)->getSize(boundaries);
+            int width = childSize.width + this->getPaddingLeft() + this->getPaddingRight();
+            int height = childSize.height + this->getPaddingTop() + this->getPaddingBottom();
+            RenderSize size = {width, height};
+            return fitSizeInBoundaries(size, boundaries);
+        } else {
+            return boundaries.max;
+        }
+    }
+
     std::vector <RenderElement> Padding::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
@@ -46,15 +74,10 @@ namespace elementor {
             RenderElement child;
             child.element = this->getChild(this->context);
 
-            int paddingsTop = (int) ceil(this->paddings.top * this->context->monitorPixelScale);
-            int paddingsRight = (int) ceil(this->paddings.right * this->context->monitorPixelScale);
-            int paddingsBottom = (int) ceil(this->paddings.bottom * this->context->monitorPixelScale);
-            int paddingsLeft = (int) ceil(this->paddings.left * this->context->monitorPixelScale);
+            child.position = {this->getPaddingLeft(), this->getPaddingTop()};
 
-            child.position = {paddingsLeft, paddingsTop};
-
-            int childWidth = size.width - (paddingsLeft + paddingsRight);
-            int childHeight = size.height - (paddingsTop + paddingsBottom);
+            int childWidth = size.width - (this->getPaddingLeft() + this->getPaddingRight());
+            int childHeight = size.height - (this->getPaddingTop() + this->getPaddingBottom());
             child.size = {childWidth, childHeight};
 
             children.push_back(child);

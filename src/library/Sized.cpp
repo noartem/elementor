@@ -4,10 +4,6 @@
 
 #include "Sized.h"
 
-#include <algorithm>
-
-#include <iostream>
-
 namespace elementor {
     Sized *sized() {
         return new Sized();
@@ -49,9 +45,9 @@ namespace elementor {
     }
 
     RenderSize Sized::getSize(RenderBoundaries boundaries) {
-        int width = std::min(std::max((int) ceil(this->width * this->context->monitorPixelScale), boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max((int) ceil(this->height * this->context->monitorPixelScale), boundaries.min.height), boundaries.max.height);
-        return {width, height};
+        int width = ceil(this->width * this->context->monitorPixelScale);
+        int height = ceil(this->height * this->context->monitorPixelScale);
+        return fitSizeInBoundaries({width, height}, boundaries);
     }
 
     std::vector <RenderElement> Sized::getChildren(RenderSize size) {
