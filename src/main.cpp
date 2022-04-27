@@ -154,7 +154,7 @@ void exampleFlexCrossAlignment() {
     makeExample("Flex Cross Alignment", scene)->run();
 }
 
-Element *makeExampleAlign(Alignment alignment) {
+Element *makeExampleAlign(Alignment alignment, std::string alignLabel) {
     return flexible()
         ->setChild(background()
             ->setColor("a8dadc")
@@ -163,24 +163,40 @@ Element *makeExampleAlign(Alignment alignment) {
                 ->setChild(sized()
                     ->setSize(40)
                     ->setChild(background()
-                        ->setColor("#457b9d")))));
+                        ->setColor("#457b9d")
+                        ->setChild(align()
+                            ->setChild(label()
+                                ->setFontColor("#ffffff")
+                                ->setFontSize(20)
+                                ->setText(alignLabel)))))));
 }
 
 void exampleAlign() {
     Element *scene = flex()
         ->setSpacing(24)
-        ->setDirection(FlexDirection::Column)
-        ->appendChild(makeExampleAlign(Alignment::BottomCenter))
-        ->appendChild(makeExampleAlign(Alignment::BottomLeft))
-        ->appendChild(makeExampleAlign(Alignment::BottomRight))
-        ->appendChild(makeExampleAlign(Alignment::Center))
-        ->appendChild(makeExampleAlign(Alignment::CenterLeft))
-        ->appendChild(makeExampleAlign(Alignment::CenterRight))
-        ->appendChild(makeExampleAlign(Alignment::TopCenter))
-        ->appendChild(makeExampleAlign(Alignment::TopLeft))
-        ->appendChild(makeExampleAlign(Alignment::TopRight));
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->setDirection(FlexDirection::Column)
+                ->appendChild(makeExampleAlign(Alignment::TopLeft, "TL"))
+                ->appendChild(makeExampleAlign(Alignment::CenterLeft, "CL"))
+                ->appendChild(makeExampleAlign(Alignment::BottomLeft, "BR"))))
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->setDirection(FlexDirection::Column)
+                ->appendChild(makeExampleAlign(Alignment::TopCenter, "TC"))
+                ->appendChild(makeExampleAlign(Alignment::Center, "CC"))
+                ->appendChild(makeExampleAlign(Alignment::BottomCenter, "BC"))))
+        ->appendChild(flexible()
+            ->setChild(flex()
+                ->setSpacing(16)
+                ->setDirection(FlexDirection::Column)
+                ->appendChild(makeExampleAlign(Alignment::TopRight, "TR"))
+                ->appendChild(makeExampleAlign(Alignment::CenterRight, "CR"))
+                ->appendChild(makeExampleAlign(Alignment::BottomRight, "BR"))));
 
-    makeExample("Align", scene)->run();
+    makeExample("Align", scene, {480, 480})->run();
 }
 
 Element *makeExampleRounded(float radiusX, float radiusY) {
