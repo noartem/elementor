@@ -48,30 +48,21 @@ namespace elementor {
     }
 
     Align *Align::setChild(Element *child) {
+        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Align::render() {
-        return std::make_shared<AlignRenderer>(this->context, this->alignment, this->getChild());
-    }
-
-    AlignRenderer::AlignRenderer(ApplicationContext *context, AlignmentFraction alignment, Element *child) {
-        this->context = context;
-        this->alignment = alignment;
-        this->child = child;
-    }
-
-    std::vector <RenderElement> AlignRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Align::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
-            child.size = child.renderer->getSize({{0, 0}, size});
-            child.position = {(int)(this->alignment.x * (size.width - child.size.width)), (int)(this->alignment.y * (size.height - child.size.height))};
+            child.element = this->getChild(this->context);
+            child.size = child.element->getSize({{0, 0}, size});
+            int positionX = this->alignment.x * (size.width - child.size.width);
+            int positionY = this->alignment.y * (size.height - child.size.height);
+            child.position = {positionX, positionY};
 
             children.push_back(child);
         }

@@ -5,20 +5,14 @@
 #include "Element.h"
 
 namespace elementor {
-    std::shared_ptr <ElementRenderer> Element::render() {
-        auto renderer = std::make_shared<ElementRenderer>();
-        renderer->context = this->context;
-        return renderer;
-    }
-
-    RenderSize ElementRenderer::getSize(RenderBoundaries boundaries) {
+    RenderSize Element::getSize(RenderBoundaries boundaries) {
         return boundaries.max;
     }
 
-    void ElementRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Element::paintBackground(SkCanvas *canvas, RenderSize size) {
     }
 
-    std::vector <RenderElement> ElementRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Element::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
         return children;
     }
@@ -31,8 +25,17 @@ namespace elementor {
         this->updateChild(NULL);
     }
 
-    Element *WithChild::getChild() {
-        return this->child;
+    Element *WithChild::getChild(ApplicationContext *context) {
+        if (this->child) {
+            this->child->context = context;
+            return this->child;
+        } else {
+            return NULL;
+        }
+    }
+
+    bool WithChild::hasChild() {
+        return this->child != NULL;
     }
 
     void WithChildren::setChildren(std::vector<Element *> children) {
@@ -49,6 +52,10 @@ namespace elementor {
 
     std::vector<Element *> WithChildren::getChildren() {
         return this->children;
+    }
+
+    int WithChildren::getChildrenSize() {
+        return this->children.size();
     }
 
     Element *WithChildren::getChild(int i) {

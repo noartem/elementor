@@ -8,7 +8,7 @@
 #include "Element.h"
 
 namespace elementor {
-    class Flexible : public Element, public WithChild {
+    class Flexible : public Element, WithChild {
     public:
         Flexible *setGrow(int grow);
 
@@ -16,23 +16,13 @@ namespace elementor {
 
         Flexible *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
+        std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         int grow = 1;
     };
 
     Flexible *flexible();
-
-    class FlexibleRenderer : public ElementRenderer {
-    public:
-        FlexibleRenderer(ApplicationContext *context, Element *child);
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        Element *child;
-    };
 }
 
 

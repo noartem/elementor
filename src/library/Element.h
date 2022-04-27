@@ -8,21 +8,19 @@
 #include "ApplicationContext.h"
 
 #include <include/core/SkCanvas.h>
+
 #include <vector>
 
 namespace elementor {
     class Element;
 
-    class ElementRenderer;
-
     struct RenderElement {
+        Element *element;
         RenderPosition position;
         RenderSize size;
-        std::shared_ptr <ElementRenderer> renderer;
-        Element *element;
     };
 
-    class ElementRenderer {
+    class Element {
     public:
         ApplicationContext *context;
 
@@ -33,17 +31,13 @@ namespace elementor {
         virtual std::vector <RenderElement> getChildren(RenderSize size);
     };
 
-    class Element {
-    public:
-        ApplicationContext *context;
-        virtual std::shared_ptr <ElementRenderer> render();
-    };
-
     class WithChild {
     public:
         void updateChild(Element *child);
 
-        Element *getChild();
+        Element *getChild(ApplicationContext *context);
+
+        bool hasChild();
 
         void removeChild();
 
@@ -60,6 +54,8 @@ namespace elementor {
         void removeChild(int i);
 
         std::vector<Element *> getChildren();
+
+        int getChildrenSize();
 
         Element *getChild(int i);
 

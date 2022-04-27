@@ -26,7 +26,7 @@ namespace elementor {
         End,
     };
 
-    class Flex : public Element, public WithChildren {
+    class Flex : public Element, WithChildren {
     public:
         Flex *setSpacing(float spacing);
 
@@ -46,7 +46,7 @@ namespace elementor {
 
         Flex *appendChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
+        std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         float spacing = 0;
@@ -56,20 +56,6 @@ namespace elementor {
     };
 
     Flex *flex();
-
-    class FlexRenderer : public ElementRenderer {
-    public:
-        FlexRenderer(ApplicationContext *context, float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children);
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        int spacing;
-        FlexDirection direction;
-        FlexAlignment alignment;
-        FlexCrossAlignment crossAlignment;
-        std::vector<Element *> children;
-    };
 }
 
 

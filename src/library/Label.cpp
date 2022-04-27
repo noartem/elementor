@@ -58,32 +58,26 @@ namespace elementor {
         return this->fontSize;
     }
 
-    std::shared_ptr <ElementRenderer> Label::render() {
-        return std::make_shared<LabelRenderer>(this->context, this->text, this->fontColor, this->fontSize);
-    }
+    RenderSize Label::getSize(RenderBoundaries boundaries) {
+        SkFont font;
+        font.setSize(this->fontSize * this->context->monitorPixelScale);
 
-    LabelRenderer::LabelRenderer(ApplicationContext *context, std::string text, SkColor fontColor, float fontSize) {
-        this->context = context;
-        this->text = text;
-        this->fontColor = fontColor;
-        this->fontSize = fontSize * this->context->monitorPixelScale;
-        this->font.setSize(fontSize);
-        this->font.measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &this->bounds);
-    }
+        SkRect textBounds;
+        font.measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds);
 
-    RenderSize LabelRenderer::getSize(RenderBoundaries boundaries) {
-        int textWidth = ceil(this->bounds.width());
-        int textHeight = ceil(this->bounds.height());
-        int width = std::min(std::max(textWidth, boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max(textHeight, boundaries.min.height), boundaries.max.height);
+        int width = std::min(std::max((int) ceil(textBounds.width()), boundaries.min.width), boundaries.max.width);
+        int height = std::min(std::max((int) ceil(textBounds.height()), boundaries.min.height), boundaries.max.height);
         return {width, height};
     }
 
-    void LabelRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
-        SkPaint paint;
-        paint.setColor(this->fontColor);
+    void Label::paintBackground(SkCanvas *canvas, RenderSize size) {
+        SkFont font;
+        font.setSize(this->fontSize * this->context->monitorPixelScale);
 
-        canvas->translate(0, this->bounds.height());
-        canvas->drawString(this->text.c_str(), 0, 0, this->font, paint);
+        SkPaint paint;
+        paint.setColor(this->getFontColor());
+
+        canvas->translate(0, size.height);
+        canvas->drawString(this->text.c_str(), 0, 0, font, paint);
     }
 }

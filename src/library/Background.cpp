@@ -44,21 +44,12 @@ namespace elementor {
     }
 
     Background *Background::setChild(Element *child) {
+        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Background::render() {
-        return std::make_shared<BackgroundRenderer>(this->context, this->color, this->getChild());
-    }
-
-    BackgroundRenderer::BackgroundRenderer(ApplicationContext *context, SkColor color, Element *child) {
-        this->context = context;
-        this->color = color;
-        this->child = child;
-    }
-
-    void BackgroundRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Background::paintBackground(SkCanvas *canvas, RenderSize size) {
         SkPaint paint;
         paint.setColor(this->color);
 
@@ -66,14 +57,12 @@ namespace elementor {
         canvas->drawRect(rect, paint);
     }
 
-    std::vector <RenderElement> BackgroundRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Background::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
+            child.element = this->getChild(this->context);
             child.position = {0, 0};
             child.size = size;
 

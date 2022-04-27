@@ -4,7 +4,6 @@
 
 #include "Flex.h"
 #include "Flexible.h"
-#include "Expanded.h"
 
 #include <tuple>
 #include <algorithm>
@@ -55,42 +54,13 @@ namespace elementor {
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Flex::render() {
-        return std::make_shared<FlexRenderer>(this->context, this->spacing, this->direction, this->alignment, this->crossAlignment, this->getChildren());
-    }
-
-    bool isFlexible(Element *element) {
-        return (
-            dynamic_cast<Flexible *>(element) != NULL ||
-            dynamic_cast<Expanded *>(element) != NULL
-        );
-    }
-
-    int getFlexibleGrow(Element *element) {
-        if (dynamic_cast<Flexible *>(element)) {
-            return dynamic_cast<Flexible *>(element)->getGrow();
-        } else if (dynamic_cast<Expanded *>(element)) {
-            return dynamic_cast<Expanded *>(element)->getGrow();
-        } else {
-            return 0;
-        }
-    }
-
-    FlexRenderer::FlexRenderer(ApplicationContext *context, float spacing, FlexDirection direction, FlexAlignment alignment, FlexCrossAlignment crossAlignment, std::vector<Element *> children) {
-        this->context = context;
-        this->spacing = spacing * this->context->monitorPixelScale;
-        this->direction = direction;
-        this->alignment = alignment;
-        this->crossAlignment = crossAlignment;
-        this->children = children;
-    }
-
-    std::vector <RenderElement> FlexRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Flex::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
         RenderBoundaries sizedChildBoundaries = {{0, 0}, size};
 
-        int childrenCount = this->children.size();
+        int childrenCount = this->getChildrenSize();
+        int spacing = ceil(this->spacing * this->context->monitorPixelScale);
         int fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
@@ -98,18 +68,19 @@ namespace elementor {
 
         for (int i = 0; i < childrenCount; i++) {
             RenderElement child;
-            child.element = this->children[i];
+            child.element = this->getChild(i);
             child.element->context = this->context;
-            child.renderer = child.element->render();
 
-            if (isFlexible(child.element)) {
-                int childGrow = getFlexibleGrow(child.element);
+            Flexible *childFlexible = dynamic_cast<Flexible *>(child.element);
+
+            if (dynamic_cast<Flexible *>(child.element) == NULL) {
+                child.size = child.element->getSize(sizedChildBoundaries);
+                fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
+            } else {
+                int childGrow = childFlexible->getGrow();
                 std::tuple<int, int> flexibleChild(i, childGrow);
                 flexibleChildren.push_back(flexibleChild);
                 flexibleGrowsSum += childGrow;
-            } else {
-                child.size = child.renderer->getSize(sizedChildBoundaries);
-                fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             }
 
             children.push_back(child);
@@ -128,14 +99,12 @@ namespace elementor {
             int axisSize = sizePerGrow * childGrow;
             RenderBoundaries childBoundaries;
             if (this->direction == FlexDirection::Row) {
-                childBoundaries = {{axisSize, 0},
-                                   {axisSize, size.height}};
+                childBoundaries = {{axisSize, 0}, {axisSize, size.height}};
             } else {
-                childBoundaries = {{0,          axisSize},
-                                   {size.width, axisSize}};
+                childBoundaries = {{0, axisSize}, {size.width, axisSize}};
             }
 
-            child.size = child.renderer->getSize(childBoundaries);
+            child.size = child.element->getSize(childBoundaries);
         }
 
         int axisPosition = 0;

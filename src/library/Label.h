@@ -28,7 +28,9 @@ namespace elementor {
 
         float getFontSize();
 
-        std::shared_ptr <ElementRenderer> render() override;
+        RenderSize getSize(RenderBoundaries boundaries) override;    
+
+        void paintBackground(SkCanvas *canvas, RenderSize size) override;
 
     private:
         std::string text;
@@ -37,22 +39,6 @@ namespace elementor {
     };
 
     Label *label();
-
-    class LabelRenderer : public ElementRenderer {
-    public:
-        LabelRenderer(ApplicationContext *context, std::string text, SkColor fontColor, float fontSize);
-
-        RenderSize getSize(RenderBoundaries boundaries) override;    
-
-        void paintBackground(SkCanvas *canvas, RenderSize size) override;
-
-    private:
-        std::string text;
-        SkColor fontColor;
-        float fontSize;
-        SkFont font;
-        SkRect bounds;
-    };
 }
 
 

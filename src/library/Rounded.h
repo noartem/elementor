@@ -8,7 +8,7 @@
 #include "Element.h"
 
 namespace elementor {
-    class Rounded : public Element, public WithChild {
+    class Rounded : public Element, WithChild {
     public:
         Rounded *setRadius(float radiusX, float radiusY);
 
@@ -20,7 +20,9 @@ namespace elementor {
 
         Rounded *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
+        void paintBackground(SkCanvas *canvas, RenderSize size) override;
+
+        std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         float radiusX = 10;
@@ -28,20 +30,6 @@ namespace elementor {
     };
 
     Rounded *rounded();
-
-    class RoundedRenderer : public ElementRenderer {
-    public:
-        RoundedRenderer(ApplicationContext *context, float radiusX, float radiusY, Element *child);
-
-        void paintBackground(SkCanvas *canvas, RenderSize size) override;
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        int radiusX;
-        int radiusY;
-        Element *child;
-    };
 }
 
 

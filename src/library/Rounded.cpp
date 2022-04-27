@@ -6,8 +6,6 @@
 
 #include <include/core/SkRRect.h>
 
-#include <iostream>
-
 namespace elementor {
     Rounded *rounded() {
         return new Rounded();
@@ -33,35 +31,27 @@ namespace elementor {
     }
 
     Rounded *Rounded::setChild(Element *child) {
+        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Rounded::render() {
-        return std::make_shared<RoundedRenderer>(this->context, this->getRadiusX(), this->getRadiusY(), this->getChild());
-    }
+    void Rounded::paintBackground(SkCanvas *canvas, RenderSize size) {
+        SkRRect oval = SkRRect::MakeRectXY(
+            SkRect::MakeXYWH(0, 0, size.width, size.height),
+            this->radiusX * this->context->monitorPixelScale,
+            this->radiusY * this->context->monitorPixelScale
+        );
 
-    RoundedRenderer::RoundedRenderer(ApplicationContext *context, float radiusX, float radiusY, Element *child) {
-        this->context = context;
-        this->radiusX = radiusX * this->context->monitorPixelScale;
-        this->radiusY = radiusY * this->context->monitorPixelScale;
-        this->child = child;
-    }
-
-    void RoundedRenderer::paintBackground(SkCanvas *canvas, RenderSize size) {
-        SkRect paintRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
-        SkRRect oval = SkRRect::MakeRectXY(paintRect, this->radiusX, this->radiusY);
         canvas->clipRRect(oval, SkClipOp::kIntersect, true);
     }
 
-    std::vector <RenderElement> RoundedRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Rounded::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
+            child.element = this->getChild(this->context);
             child.size = size;
             child.position = {0, 0};
 

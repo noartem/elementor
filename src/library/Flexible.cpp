@@ -19,29 +19,19 @@ namespace elementor {
     }
 
     Flexible *Flexible::setChild(Element *child) {
+        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Flexible::render() {
-        return std::make_shared<FlexibleRenderer>(this->context, this->getChild());
-    }
-
-    FlexibleRenderer::FlexibleRenderer(ApplicationContext *context, Element *child) {
-        this->context = context;
-        this->child = child;
-    }
-
-    std::vector <RenderElement> FlexibleRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Flexible::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
+            child.element = this->getChild(this->context);
             child.position = {0, 0};
-            child.size = child.renderer->getSize({{0, 0}, size});
+            child.size = child.element->getSize({{0, 0}, size});
 
             children.push_back(child);
         }

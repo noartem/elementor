@@ -34,38 +34,27 @@ namespace elementor {
     }
 
     Padding *Padding::setChild(Element *child) {
+        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Padding::render() {
-        return std::make_shared<PaddingRenderer>(this->context, this->paddings, this->getChild());
-    }
-
-    PaddingRenderer::PaddingRenderer(ApplicationContext *context, PaddingsValue paddings, Element *child) {
-        this->context = context;
-        this->paddings = {
-            (int) ceil(paddings.top * this->context->monitorPixelScale),
-            (int) ceil(paddings.right * this->context->monitorPixelScale),
-            (int) ceil(paddings.bottom * this->context->monitorPixelScale),
-            (int) ceil(paddings.left * this->context->monitorPixelScale),
-        };
-        this->child = child;
-    }
-
-    std::vector <RenderElement> PaddingRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Padding::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
+            child.element = this->getChild(this->context);
 
-            child.position = {this->paddings.left, this->paddings.top};
+            int paddingsTop = (int) ceil(this->paddings.top * this->context->monitorPixelScale);
+            int paddingsRight = (int) ceil(this->paddings.right * this->context->monitorPixelScale);
+            int paddingsBottom = (int) ceil(this->paddings.bottom * this->context->monitorPixelScale);
+            int paddingsLeft = (int) ceil(this->paddings.left * this->context->monitorPixelScale);
 
-            int childWidth = size.width - (this->paddings.left + this->paddings.right);
-            int childHeight = size.height - (this->paddings.top + this->paddings.bottom);
+            child.position = {paddingsLeft, paddingsTop};
+
+            int childWidth = size.width - (paddingsLeft + paddingsRight);
+            int childHeight = size.height - (paddingsTop + paddingsBottom);
             child.size = {childWidth, childHeight};
 
             children.push_back(child);

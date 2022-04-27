@@ -15,14 +15,7 @@ namespace elementor {
         float left;
     };
 
-    struct PaddingsIntValue {
-        int top;
-        int right;
-        int bottom;
-        int left;
-    };
-
-    class Padding : public Element, public WithChild {
+    class Padding : public Element, WithChild {
     public:
         Padding *setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 
@@ -36,24 +29,13 @@ namespace elementor {
 
         Padding *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
+        std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         PaddingsValue paddings;
     };
 
     Padding *padding();
-
-    class PaddingRenderer : public ElementRenderer {
-    public:
-        PaddingRenderer(ApplicationContext *context, PaddingsValue paddings, Element *child);
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        PaddingsIntValue paddings;
-        Element *child;
-    };
 }
 
 

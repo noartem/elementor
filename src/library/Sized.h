@@ -8,7 +8,7 @@
 #include "Element.h"
 
 namespace elementor {
-    class Sized : public Element, public WithChild {
+    class Sized : public Element, WithChild {
     public:
         Sized *setWidth(float width);
 
@@ -24,7 +24,9 @@ namespace elementor {
 
         Sized *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
+        RenderSize getSize(RenderBoundaries boundaries) override;
+
+        std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         float width = 0;
@@ -32,20 +34,6 @@ namespace elementor {
     };
 
     Sized *sized();
-
-    class SizedRenderer : public ElementRenderer {
-    public:
-        SizedRenderer(ApplicationContext *context, float width, float height, Element *child);
-
-        RenderSize getSize(RenderBoundaries boundaries) override;
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        int width = 0;
-        int height = 0;
-        Element *child;
-    };
 }
 
 

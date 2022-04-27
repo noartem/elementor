@@ -8,7 +8,7 @@
 #include "Element.h"
 
 namespace elementor {
-    class Background : public Element, public WithChild {
+    class Background : public Element, WithChild {
     public:
         Background *setColor(SkColor color);
 
@@ -22,26 +22,15 @@ namespace elementor {
 
         Background *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
-
-    private:
-        SkColor color;
-    };
-
-    Background *background();
-
-    class BackgroundRenderer : public ElementRenderer {
-    public:
-        BackgroundRenderer(ApplicationContext *context, SkColor color, Element *child);
-
         void paintBackground(SkCanvas *canvas, RenderSize size) override;
 
         std::vector <RenderElement> getChildren(RenderSize size) override;
 
     private:
         SkColor color;
-        Element *child;
     };
+
+    Background *background();
 }
 
 

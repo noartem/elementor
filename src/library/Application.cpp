@@ -12,7 +12,6 @@ namespace elementor {
         rootElement.size = context.windowSize;
         rootElement.element = this->root;
         rootElement.element->context = &context;
-        rootElement.renderer = this->root->render();
         this->drawElement(canvas, &rootElement);
     }
 
@@ -20,9 +19,9 @@ namespace elementor {
         canvas->save();
 
         canvas->translate(element->position.x, element->position.y);
-        element->renderer->paintBackground(canvas, element->size);
+        element->element->paintBackground(canvas, element->size);
 
-        for (RenderElement child: element->renderer->getChildren(element->size)) {
+        for (RenderElement child: element->element->getChildren(element->size)) {
             this->drawElement(canvas, &child);
         }
 

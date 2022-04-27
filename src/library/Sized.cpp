@@ -6,6 +6,8 @@
 
 #include <algorithm>
 
+#include <iostream>
+
 namespace elementor {
     Sized *sized() {
         return new Sized();
@@ -41,35 +43,23 @@ namespace elementor {
     }
 
     Sized *Sized::setChild(Element *child) {
+        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    std::shared_ptr <ElementRenderer> Sized::render() {
-        return std::make_shared<SizedRenderer>(this->context, this->getWidth(), this->getHeight(), this->getChild());
-    }
-
-    SizedRenderer::SizedRenderer(ApplicationContext *context, float width, float height, Element *child) {
-        this->context = context;
-        this->width = width * this->context->monitorPixelScale;
-        this->height = height * this->context->monitorPixelScale;
-        this->child = child;
-    }
-
-    RenderSize SizedRenderer::getSize(RenderBoundaries boundaries) {
-        int width = std::min(std::max(this->width, boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max(this->height, boundaries.min.height), boundaries.max.height);
+    RenderSize Sized::getSize(RenderBoundaries boundaries) {
+        int width = std::min(std::max((int) ceil(this->width * this->context->monitorPixelScale), boundaries.min.width), boundaries.max.width);
+        int height = std::min(std::max((int) ceil(this->height * this->context->monitorPixelScale), boundaries.min.height), boundaries.max.height);
         return {width, height};
     }
 
-    std::vector <RenderElement> SizedRenderer::getChildren(RenderSize size) {
+    std::vector <RenderElement> Sized::getChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
-        if (this->child) {
+        if (this->hasChild()) {
             RenderElement child;
-            child.element = this->child;
-            child.element->context = context;
-            child.renderer = this->child->render();
+            child.element = this->getChild(this->context);
             child.position = {0, 0};
             child.size = size;
 

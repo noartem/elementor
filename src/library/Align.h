@@ -25,7 +25,7 @@ namespace elementor {
         TopRight,
     };
 
-    class Align : public Element, public WithChild {
+    class Align : public Element, WithChild {
     public:
         Align *setAlignment(Alignment alignment);
 
@@ -35,24 +35,13 @@ namespace elementor {
 
         Align *setChild(Element *child);
 
-        std::shared_ptr <ElementRenderer> render() override;
-    
+        std::vector <RenderElement> getChildren(RenderSize size) override;
+
     private:
         AlignmentFraction alignment = {0.5, 0.5};
     };
 
     Align *align();
-
-    class AlignRenderer : public ElementRenderer {
-    public:
-        AlignRenderer(ApplicationContext *context, AlignmentFraction alignment, Element *child);
-
-        std::vector <RenderElement> getChildren(RenderSize size) override;
-
-    private:
-        AlignmentFraction alignment;
-        Element *child;    
-    };
 }
 
 
