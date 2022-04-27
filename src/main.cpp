@@ -12,6 +12,7 @@
 #include "./library/Align.h"
 #include "./library/Rounded.h"
 #include "./library/Label.h"
+#include "./library/Border.h"
 
 using namespace elementor;
 
@@ -233,12 +234,16 @@ Element *makeButton(std::string text) {
                 ->setRadius(16)
                 ->setChild(background()
                     ->setColor("#457b9d")
-                    ->setChild(padding()
-                        ->setPaddings(24, 36)
-                        ->setChild(label()
-                            ->setFontColor("#ffffff")
-                            ->setFontSize(24)
-                            ->setText(text))))));
+                    ->setChild(border()
+                        ->setWidth(12)
+                        ->setColor("#a8dadc")
+                        ->setRadius(16)
+                        ->setChild(padding()
+                            ->setPaddings(24, 36)
+                            ->setChild(label()
+                                ->setFontColor("#ffffff")
+                                ->setFontSize(24)
+                                ->setText(text)))))));
 }
 
 void exampleLabel() {
@@ -251,7 +256,7 @@ void exampleLabel() {
         ->appendChild(makeButton("Some other text"))
         ->appendChild(makeButton("Click on me"));
 
-    makeExample("Label", scene, {320, 640})->run();
+    makeExample("Label", scene, {360, 640})->run();
 }
 
 int main(int argc, char *argv[]) {
