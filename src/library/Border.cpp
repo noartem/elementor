@@ -5,6 +5,8 @@
 #include "Border.h"
 
 #include <include/core/SkRRect.h>
+#include <include/effects/SkDashPathEffect.h>
+#include <include/effects/Sk1DPathEffect.h>
 
 namespace elementor {
     Border *border() {
@@ -73,6 +75,15 @@ namespace elementor {
         return this->radiusY;
     }
 
+    Border *Border::setStyle(BorderStyle style) {
+        this->style = style;
+        return this;
+    }
+
+    BorderStyle Border::getStyle() {
+        return this->style;
+    }
+
     Border *Border::setChild(Element *child) {
         child->context = this->context;
         this->updateChild(child);
@@ -97,6 +108,18 @@ namespace elementor {
         paint.setStrokeWidth(this->getWidth());
         paint.setStyle(SkPaint::kStroke_Style);
         paint.setAntiAlias(true);
+
+        if (this->style == BorderStyle::Dotted) {
+            SkPath path;
+            path.addOval(SkRect::MakeWH(this->getWidth() / 2, this->getWidth() / 2));
+
+            paint.setPathEffect(SkPath1DPathEffect::Make(path, this->getWidth(), 0.0f, SkPath1DPathEffect::kRotate_Style));
+        }
+
+        if (this->style == BorderStyle::Dashed) {
+            const SkScalar intervals[] = {10.0f, 5.0f};
+            paint.setPathEffect(SkDashPathEffect::Make(intervals, 2, 0.0f));
+        }
 
         SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
         float radiusX = this->radiusX * this->context->monitorPixelScale;

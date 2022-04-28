@@ -8,6 +8,12 @@
 #include "Element.h"
 
 namespace elementor {
+    enum class BorderStyle {
+        Solid,
+        Dotted,
+        Dashed,
+    };
+
     class Border : public Element, WithChild {
     public:
         Border *setColor(SkColor color);
@@ -32,6 +38,10 @@ namespace elementor {
 
         float getRadiusY();
 
+        Border *setStyle(BorderStyle style);
+
+        BorderStyle getStyle();
+
         Border *setChild(Element *child);
 
         RenderSize getSize(RenderBoundaries boundaries) override;
@@ -45,6 +55,7 @@ namespace elementor {
         float radiusX = 0.0;
         float radiusY = 0.0;
         SkColor color;
+        BorderStyle style = BorderStyle::Solid;
     };
 
     Border *border();
