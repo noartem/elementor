@@ -48,7 +48,7 @@ namespace elementor {
 
         void paintBackground(SkCanvas *canvas, RenderSize size);
 
-        std::vector <RenderElement> getChildren(RenderSize size) override;
+        std::vector <RenderElement> getRenderChildren(RenderSize size) override;
 
     private:
         float width = 0.0;

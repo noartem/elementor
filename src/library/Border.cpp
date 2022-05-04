@@ -129,7 +129,7 @@ namespace elementor {
         canvas->drawRRect(rRect, paint);
     }
 
-    std::vector <RenderElement> Border::getChildren(RenderSize size) {
+    std::vector <RenderElement> Border::getRenderChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

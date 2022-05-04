@@ -46,7 +46,7 @@ namespace elementor {
 
         Flex *appendChild(Element *child);
 
-        std::vector <RenderElement> getChildren(RenderSize size) override;
+        std::vector <RenderElement> getRenderChildren(RenderSize size) override;
 
     private:
         float spacing = 0;

@@ -14,7 +14,7 @@ namespace elementor {
     void Element::paintBackground(SkCanvas *canvas, RenderSize size) {
     }
 
-    std::vector <RenderElement> Element::getChildren(RenderSize size) {
+    std::vector <RenderElement> Element::getRenderChildren(RenderSize size) {
         std::vector <RenderElement> children;
         return children;
     }

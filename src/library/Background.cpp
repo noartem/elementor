@@ -65,7 +65,7 @@ namespace elementor {
         canvas->drawRect(rect, paint);
     }
 
-    std::vector <RenderElement> Background::getChildren(RenderSize size) {
+    std::vector <RenderElement> Background::getRenderChildren(RenderSize size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

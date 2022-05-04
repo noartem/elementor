@@ -21,7 +21,7 @@ namespace elementor {
         canvas->translate(element->position.x, element->position.y);
         element->element->paintBackground(canvas, element->size);
 
-        for (RenderElement child: element->element->getChildren(element->size)) {
+        for (RenderElement child: element->element->getRenderChildren(element->size)) {
             this->drawElement(canvas, &child);
         }
 

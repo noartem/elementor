@@ -24,7 +24,7 @@ namespace elementor {
 
         RenderSize getSize(RenderBoundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(RenderSize size) override;
+        std::vector <RenderElement> getRenderChildren(RenderSize size) override;
 
     private:
         float radiusX = 10;
