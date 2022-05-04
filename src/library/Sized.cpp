@@ -11,11 +11,24 @@ namespace elementor {
 
     Sized *Sized::setWidth(float width) {
         this->width = width;
+        this->absWidth = false;
+        return this;
+    }
+
+    Sized *Sized::setWidth(int width) {
+        this->width = (float) width;
+        this->absWidth = true;
         return this;
     }
 
     Sized *Sized::setHeight(float height) {
         this->height = height;
+        return this;
+    }
+
+    Sized *Sized::setHeight(int height) {
+        this->height = height;
+        this->absHeight = true;
         return this;
     }
 
@@ -25,7 +38,18 @@ namespace elementor {
         return this;
     }
 
+    Sized *Sized::setSize(int width, int height) {
+        this->setWidth(width);
+        this->setHeight(height);
+        return this;
+    }
+
     Sized *Sized::setSize(float size) {
+        this->setSize(size, size);
+        return this;
+    }
+
+    Sized *Sized::setSize(int size) {
         this->setSize(size, size);
         return this;
     }
@@ -45,8 +69,8 @@ namespace elementor {
     }
 
     RenderSize Sized::getSize(RenderBoundaries boundaries) {
-        int width = ceil(this->width * this->context->monitorPixelScale);
-        int height = ceil(this->height * this->context->monitorPixelScale);
+        int width = this->width == -1 ? boundaries.max.width : this->absWidth ? (int) this->width : ceil(this->width * this->context->monitorPixelScale);
+        int height = this->height == -1 ? boundaries.max.height : this->absHeight ? (int) this->height : ceil(this->height * this->context->monitorPixelScale);
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
