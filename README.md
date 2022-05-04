@@ -23,15 +23,14 @@
 
 ## TODO
 
+* Interactive, Events
+* Flex Wrap alignment
 * Text
     * TextLine = text + text formatting options
     * Textable: text() => TextLine
     * Label just draw TextLine the simple way
     * Fix label memory leak
-* Border
-* Flex Wrap
 * Image?
-* BoxShadow?
-* Interactive, Events
+* BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
 * Button
 * Scroll
