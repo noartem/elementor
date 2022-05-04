@@ -14,17 +14,9 @@ namespace elementor {
 
         Sized *setHeight(float height);
 
-        Sized *setWidth(int width);
-
-        Sized *setHeight(int height);
-
         Sized *setSize(float width, float height);
 
-        Sized *setSize(int width, int height);
-
         Sized *setSize(float size);
-
-        Sized *setSize(int size);
 
         float getWidth();
 
@@ -37,10 +29,8 @@ namespace elementor {
         std::vector <RenderElement> getRenderChildren(RenderSize size) override;
 
     private:
-        float width = -1;
-        float height = -1;
-        bool absWidth = false;
-        bool absHeight = false;
+        float width = 0;
+        float height = 0;
     };
 
     Sized *sized();
