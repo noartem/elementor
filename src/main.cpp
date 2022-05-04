@@ -13,6 +13,7 @@
 #include "./library/Rounded.h"
 #include "./library/Label.h"
 #include "./library/Border.h"
+#include "./library/Wrap.h"
 
 using namespace elementor;
 
@@ -228,35 +229,56 @@ void exampleRounded() {
 }
 
 Element *makeButton(std::string text) {
+    return rounded()
+        ->setRadius(16)
+        ->setChild(background()
+            ->setColor("#457b9d")
+            ->setChild(border()
+                ->setWidth(12)
+                ->setColor("#a8dadc")
+                ->setRadius(16)
+                ->setChild(padding()
+                    ->setPaddings(24, 36)
+                    ->setChild(label()
+                        ->setFontColor("#ffffff")
+                        ->setFontSize(24)
+                        ->setText(text)))));
+}
+
+Element *makeAlignedButton(std::string text) {
     return flexible()
         ->setChild(align()
-            ->setChild(rounded()
-                ->setRadius(16)
-                ->setChild(background()
-                    ->setColor("#457b9d")
-                    ->setChild(border()
-                        ->setWidth(12)
-                        ->setColor("#a8dadc")
-                        ->setRadius(16)
-                        ->setChild(padding()
-                            ->setPaddings(24, 36)
-                            ->setChild(label()
-                                ->setFontColor("#ffffff")
-                                ->setFontSize(24)
-                                ->setText(text)))))));
+            ->setChild(makeButton(text)));
 }
 
 void exampleLabel() {
     Element *scene = flex()
         ->setSpacing(24)
         ->setDirection(FlexDirection::Column)
+        ->appendChild(makeAlignedButton("Text"))
+        ->appendChild(makeAlignedButton("Apply"))
+        ->appendChild(makeAlignedButton("Lorem Ipsum"))
+        ->appendChild(makeAlignedButton("Some other text"))
+        ->appendChild(makeAlignedButton("Click on me"));
+
+    makeExample("Label", scene, {360, 640})->run();
+}
+
+void exampleWrap() {
+    Element *scene = wrap()
+        ->setSpacing(24, 12)
+        ->appendChild(makeButton("Text"))
+        ->appendChild(makeButton("Apply"))
+        ->appendChild(makeButton("Lorem Ipsum"))
+        ->appendChild(makeButton("Some other text"))
+        ->appendChild(makeButton("Click on me"))
         ->appendChild(makeButton("Text"))
         ->appendChild(makeButton("Apply"))
         ->appendChild(makeButton("Lorem Ipsum"))
         ->appendChild(makeButton("Some other text"))
         ->appendChild(makeButton("Click on me"));
 
-    makeExample("Label", scene, {360, 640})->run();
+    makeExample("Wrap", scene, {360, 640})->run();
 }
 
 int main(int argc, char *argv[]) {
@@ -281,6 +303,9 @@ int main(int argc, char *argv[]) {
             break;
         case 6:
             exampleLabel();
+            break;
+        case 7:
+            exampleWrap();
             break;
     }
 }
