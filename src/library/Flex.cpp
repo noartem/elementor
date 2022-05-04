@@ -50,6 +50,7 @@ namespace elementor {
     }
 
     Flex *Flex::appendChild(Element *child) {
+        child->context = this->context;
         this->addChild(child);
         return this;
     }
