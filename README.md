@@ -23,6 +23,7 @@
 
 ## TODO
 
+* Исправить сборку под windows
 * Interactive, Events
 * Flex Wrap alignment
 * Text
