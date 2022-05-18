@@ -6,6 +6,9 @@
 #define ELEMENTOR_APPLICATION_H
 
 #include "Element.h"
+#include "Event.h"
+
+#include <map>
 
 namespace elementor {
     class Application {
@@ -14,8 +17,14 @@ namespace elementor {
 
         void draw(SkCanvas *canvas, ApplicationContext context);
 
+        void dispatchEvent(Event *event);
+    
     private:
-        void drawElement(SkCanvas *canvas, RenderElement *element);
+        std::map<std::string, std::vector<Element*>> eventListeners;
+
+        void saveElementEventListeners(Element *element);
+
+        void drawElement(SkCanvas *canvas, RenderElement *element, Rect rect, Rect boundary);
     };
 };
 

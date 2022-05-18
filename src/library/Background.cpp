@@ -49,7 +49,7 @@ namespace elementor {
         return this;
     }
 
-    RenderSize Background::getSize(RenderBoundaries boundaries) {
+    Size Background::getSize(Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild(this->context)->getSize(boundaries);
         } else {
@@ -57,15 +57,15 @@ namespace elementor {
         }
     }
 
-    void Background::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Background::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
         SkPaint paint;
         paint.setColor(this->color);
 
-        SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
-        canvas->drawRect(rect, paint);
+        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+        canvas->drawRect(skRect, paint);
     }
 
-    std::vector <RenderElement> Background::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Background::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

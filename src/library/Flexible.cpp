@@ -24,7 +24,7 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Flexible::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Flexible::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

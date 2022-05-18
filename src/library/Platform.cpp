@@ -21,20 +21,32 @@
 #define GL_FRAMEBUFFER_SRGB 0x8DB9
 #define GL_SRGB8_ALPHA8 0x8C43
 
-void error_callback(int error, const char *description) {
-    fputs(description, stderr);
-}
-
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
 namespace elementor {
+    void callbackEventMouseButton(GLFWwindow* window, int button, int action, int mods) {
+        EventMouseButton *event = new EventMouseButton();
+        event->button = static_cast<MouseButton>(button);
+        event->action = static_cast<MouseAction>(action);
+        event->mod = static_cast<MouseMod>(mods);
+
+        Platform *platform = static_cast<Platform *>(glfwGetWindowUserPointer(window));
+        platform->application->dispatchEvent(event);
+    }
+
+    void callbackEventMouseMove(GLFWwindow* window, double x, double y) {
+        EventMouseMove *event = new EventMouseMove();
+        event->x = x;
+        event->y = y;
+
+        Platform *platform = static_cast<Platform *>(glfwGetWindowUserPointer(window));
+        platform->application->dispatchEvent(event);
+    }
+
     int Platform::run() {
         // init glfw
         GLFWwindow *window;
-        glfwSetErrorCallback(error_callback);
+        glfwSetErrorCallback([] (int error, const char *description) {
+            fputs(description, stderr);
+        });
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
         }
@@ -55,21 +67,32 @@ namespace elementor {
         }
 
         if (this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width,
-                                    this->maxSize->height);
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width, this->maxSize->height);
         } else if (this->minSize && !this->maxSize) {
-            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, GLFW_DONT_CARE,
-                                    GLFW_DONT_CARE);
+            glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, GLFW_DONT_CARE, GLFW_DONT_CARE);
         } else if (!this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width,
-                                    this->maxSize->height);
+            glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width, this->maxSize->height);
         }
 
         glfwMakeContextCurrent(window);
         glEnable(GL_FRAMEBUFFER_SRGB);
-
         glfwSwapInterval(1);
-        glfwSetKeyCallback(window, key_callback);
+
+        glfwSetWindowUserPointer(window, this);
+
+        glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+                glfwSetWindowShouldClose(window, GL_TRUE);
+            }
+        });
+
+        glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {
+            callbackEventMouseButton(window, button, action, mods);
+        });
+
+        glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double x, double y) {
+            callbackEventMouseMove(window, x, y);
+        });
 
         GLFWmonitor* monitor = glfwGetWindowMonitor(window);
         if (monitor == NULL) {
@@ -78,10 +101,10 @@ namespace elementor {
 
         int physicalWidth, physicalHeight;
         glfwGetMonitorPhysicalSize(monitor, &physicalWidth, &physicalHeight);
-        RenderSize monitorPhysicalSize = {physicalWidth, physicalHeight};
+        Size monitorPhysicalSize = {physicalWidth, physicalHeight};
 
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        RenderSize monitorSize = {mode->width, mode->height};
+        Size monitorSize = {mode->width, mode->height};
 
         float monitorPixelScale = DefaultMonitorScale / ((float)monitorSize.width / (float)monitorPhysicalSize.width);
 
@@ -102,7 +125,7 @@ namespace elementor {
 
             int width, height;
             glfwGetFramebufferSize(window, &width, &height);
-            RenderSize windowSize = {width, height};
+            Size windowSize = {width, height};
 
             // create skia canvas
             GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);

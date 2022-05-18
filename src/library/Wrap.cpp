@@ -4,8 +4,6 @@
 
 #include "Wrap.h"
 
-#include <iostream>
-
 namespace elementor {
     Wrap *wrap() {
         return new Wrap();
@@ -50,7 +48,7 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Wrap::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Wrap::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         for (Element *childElement: this->getChildren()) {

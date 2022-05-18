@@ -55,10 +55,10 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Flex::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Flex::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
-        RenderBoundaries sizedChildBoundaries = {{0, 0}, size};
+        Boundaries sizedChildBoundaries = {{0, 0}, size};
 
         int childrenCount = this->getChildrenSize();
         int spacing = ceil(this->spacing * this->context->monitorPixelScale);
@@ -74,7 +74,7 @@ namespace elementor {
 
             Flexible *childFlexible = dynamic_cast<Flexible *>(child.element);
 
-            if (dynamic_cast<Flexible *>(child.element) == NULL) {
+            if (childFlexible == NULL) {
                 child.size = child.element->getSize(sizedChildBoundaries);
                 fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             } else {
@@ -98,7 +98,7 @@ namespace elementor {
 
             int childGrow = std::get<1>(flexibleChild);
             int axisSize = sizePerGrow * childGrow;
-            RenderBoundaries childBoundaries;
+            Boundaries childBoundaries;
             if (this->direction == FlexDirection::Row) {
                 childBoundaries = {{axisSize, 0}, {axisSize, size.height}};
             } else {

@@ -36,16 +36,16 @@ namespace elementor {
         return this;
     }
 
-    void Rounded::paintBackground(SkCanvas *canvas, RenderSize size) {
-        SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+    void Rounded::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
         float radiusX = this->radiusX * this->context->monitorPixelScale;
         float radiusY = this->radiusY * this->context->monitorPixelScale;
-        SkRRect oval = SkRRect::MakeRectXY(rect, radiusX, radiusY);
+        SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
-        canvas->clipRRect(oval, SkClipOp::kIntersect, true);
+        canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
     }
 
-    RenderSize Rounded::getSize(RenderBoundaries boundaries) {
+    Size Rounded::getSize(Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild(this->context)->getSize(boundaries);
         } else {
@@ -53,7 +53,7 @@ namespace elementor {
         }
     }
 
-    std::vector <RenderElement> Rounded::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Rounded::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
@@ -66,5 +66,9 @@ namespace elementor {
         }
 
         return children;
+    }
+
+    ClipBehavior Rounded::getClipBehaviour() {
+        return ClipBehavior::AntiAlias;
     }
 }

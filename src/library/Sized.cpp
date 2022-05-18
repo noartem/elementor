@@ -44,13 +44,13 @@ namespace elementor {
         return this;
     }
 
-    RenderSize Sized::getSize(RenderBoundaries boundaries) {
+    Size Sized::getSize(Boundaries boundaries) {
         int width = ceil(this->width * this->context->monitorPixelScale);
         int height = ceil(this->height * this->context->monitorPixelScale);
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Sized::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Sized::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

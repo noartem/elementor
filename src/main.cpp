@@ -14,6 +14,7 @@
 #include "./library/Label.h"
 #include "./library/Border.h"
 #include "./library/Wrap.h"
+#include "./library/Hoverable.h"
 
 using namespace elementor;
 
@@ -25,7 +26,7 @@ Element *makeExampleContainer(Element *child) {
             ->setChild(child));
 }
 
-Platform *makeExample(std::string description, Element *root, RenderSize size = {600, 840}) {
+Platform *makeExample(std::string description, Element *root, Size size = {600, 840}) {
     Application *application = new Application();
     application->root = makeExampleContainer(root);
 
@@ -228,11 +229,11 @@ void exampleRounded() {
     makeExample("Rounded", scene, {720, 360})->run();
 }
 
-Element *makeButton(std::string text) {
+Element *makeButton(std::string text, std::string backgroundColor = "#457b9d") {
     return rounded()
         ->setRadius(16)
         ->setChild(background()
-            ->setColor("#457b9d")
+            ->setColor(backgroundColor)
             ->setChild(border()
                 ->setWidth(12)
                 ->setColor("#a8dadc")
@@ -281,6 +282,32 @@ void exampleWrap() {
     makeExample("Wrap", scene, {360, 640})->run();
 }
 
+Element *makeHoverableButton(std::string text) {
+    Hoverable *hoverableButton = hoverable();
+    Element *notHovered = makeButton(text);
+    Element *hovered = makeButton(text, "#ffaaaa");
+    hoverableButton->setChild(notHovered);
+    hoverableButton->onEnter([hoverableButton, hovered]() {
+        hoverableButton->setChild(hovered);
+    });
+    hoverableButton->onLeave([hoverableButton, notHovered]() {
+        hoverableButton->setChild(notHovered);
+    });
+    return hoverableButton;
+}
+
+void exampleHoverable() {
+    Element *scene = wrap()
+        ->setSpacing(24, 12)
+        ->appendChild(makeHoverableButton("Text"))
+        ->appendChild(makeHoverableButton("Apply"))
+        ->appendChild(makeHoverableButton("Lorem Ipsum"))
+        ->appendChild(makeHoverableButton("Some other text"))
+        ->appendChild(makeHoverableButton("Click on me"));
+
+    makeExample("Wrap", scene, {360, 640})->run();
+}
+
 int main(int argc, char *argv[]) {
     switch (atoi(argv[1])) {
         case 0:
@@ -306,6 +333,9 @@ int main(int argc, char *argv[]) {
             break;
         case 7:
             exampleWrap();
+            break;
+        case 8:
+            exampleHoverable();
             break;
     }
 }

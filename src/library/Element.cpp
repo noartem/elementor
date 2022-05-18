@@ -7,16 +7,20 @@
 #include <algorithm>
 
 namespace elementor {
-    RenderSize Element::getSize(RenderBoundaries boundaries) {
+    Size Element::getSize(Boundaries boundaries) {
         return boundaries.max;
     }
 
-    void Element::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Element::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
     }
 
-    std::vector <RenderElement> Element::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Element::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
         return children;
+    }
+
+    ClipBehavior Element::getClipBehaviour() {
+        return ClipBehavior::None;
     }
 
     void WithChild::updateChild(Element *element) {
@@ -64,9 +68,18 @@ namespace elementor {
         return this->children[i];
     }
 
-    RenderSize fitSizeInBoundaries(RenderSize size, RenderBoundaries boundaries) {
+    Size fitSizeInBoundaries(Size size, Boundaries boundaries) {
         int width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
         int height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
         return {width, height};
+    }
+
+    Rect clipRectInParent(Rect childRect, Rect parentRect) {
+        Rect rect;
+        rect.position.x = childRect.position.x;
+        rect.position.y = childRect.position.y;
+        rect.size.width = std::min(parentRect.size.width - childRect.position.x, childRect.size.width);
+        rect.size.height = std::min(parentRect.size.height - childRect.position.y, childRect.size.height);
+        return rect;
     }
 }

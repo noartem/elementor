@@ -55,19 +55,19 @@ namespace elementor {
         return ceil(this->getPaddings().left * this->context->monitorPixelScale);
     }
 
-    RenderSize Padding::getSize(RenderBoundaries boundaries) {
+    Size Padding::getSize(Boundaries boundaries) {
         if (this->hasChild()) {
-            RenderSize childSize = this->getChild(this->context)->getSize(boundaries);
+            Size childSize = this->getChild(this->context)->getSize(boundaries);
             int width = childSize.width + this->getPaddingLeft() + this->getPaddingRight();
             int height = childSize.height + this->getPaddingTop() + this->getPaddingBottom();
-            RenderSize size = {width, height};
+            Size size = {width, height};
             return fitSizeInBoundaries(size, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> Padding::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Padding::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
