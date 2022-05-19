@@ -4,13 +4,20 @@ set_languages("c99", "cxx17")
 
 add_requires("skia")
 add_requires("glfw")
-add_requires("glew")
 add_requires("doctest")
+
+if is_plat("windows") then
+    add_requires("glew")
+end
 
 target("elementor")
     set_kind("static")
-    add_packages("skia", "glfw", "glew")
+    add_packages("skia", "glfw", "glut")
     add_files("src/library/*.cpp")
+
+if is_plat("windows") then
+    add_packages("glew")
+end
 
 target("elementor-test")
     set_kind("binary")
