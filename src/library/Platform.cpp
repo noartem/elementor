@@ -53,9 +53,9 @@ namespace elementor {
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
+        glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_STENCIL_BITS, 0);
         glfwWindowHint(GLFW_ALPHA_BITS, 0);
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
@@ -75,14 +75,14 @@ namespace elementor {
         }
 
         glfwMakeContextCurrent(window);
-        glEnable(GL_FRAMEBUFFER_SRGB);
+
         glfwSwapInterval(1);
 
         glfwSetWindowUserPointer(window, this);
 
         glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-                glfwSetWindowShouldClose(window, GL_TRUE);
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
             }
         });
 
@@ -106,7 +106,7 @@ namespace elementor {
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         Size monitorSize = {mode->width, mode->height};
 
-        float monitorPixelScale = DefaultMonitorScale / ((float)monitorSize.width / (float)monitorPhysicalSize.width);
+        float monitorPixelScale = ((float)monitorSize.width / (float)monitorPhysicalSize.width) / DefaultMonitorScale;
 
         // init skia
         auto interface = GrGLMakeNativeInterface();
@@ -115,13 +115,11 @@ namespace elementor {
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_SRGB8_ALPHA8;
-        framebufferInfo.fFormat = GL_RGBA8;
 
         SkColorType colorType = kRGBA_8888_SkColorType;
 
         while (!glfwWindowShouldClose(window)) {
             glfwWaitEvents();
-            glClear(GL_COLOR_BUFFER_BIT);
 
             int width, height;
             glfwGetFramebufferSize(window, &width, &height);
