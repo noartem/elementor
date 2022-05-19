@@ -75,7 +75,6 @@ namespace elementor {
         }
 
         glfwMakeContextCurrent(window);
-        // glEnable(GL_FRAMEBUFFER_SRGB);
 
         glfwSwapInterval(1);
 
