@@ -14,8 +14,8 @@ target("elementor")
 
 target("elementor-test")
     set_kind("binary")
-    add_packages("skia", "glfw")
     add_deps("elementor")
+    add_packages("skia", "glfw")
     add_files("src/*.cpp")
 
 target("tests")
