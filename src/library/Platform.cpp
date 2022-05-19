@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define GL_FRAMEBUFFER_SRGB 0x8DB9
-#define GL_SRGB8_ALPHA8 0x8C43
 #define GL_RGBA8 0x8058
 
 namespace elementor {
@@ -76,7 +74,6 @@ namespace elementor {
         }
 
         glfwMakeContextCurrent(window);
-        glEnable(GL_FRAMEBUFFER_SRGB);
 
         glfwSwapInterval(1);
 
