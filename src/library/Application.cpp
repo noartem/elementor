@@ -55,7 +55,7 @@ namespace elementor {
     }
 
     void Application::dispatchEvent(Event *event) {
-        if (this->eventListeners.contains(event->getName())) {
+        if (this->eventListeners.count(event->getName())) {
             std::vector<Element *> listeners = this->eventListeners[event->getName()];
             for (int i = listeners.size() - 1; i >= 0; i--) {
                 EventCallbackResponse callbackResponse = callElementEventHandler(listeners[i], event);
