@@ -20,11 +20,13 @@ namespace elementor {
 
         Rounded *setChild(Element *child);
 
-        void paintBackground(SkCanvas *canvas, RenderSize size) override;
+        void paintBackground(SkCanvas *canvas, Size size, Rect rect) override;
 
-        RenderSize getSize(RenderBoundaries boundaries) override;
+        Size getSize(Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(RenderSize size) override;
+        std::vector <RenderElement> getRenderChildren(Size size) override;
+
+        ClipBehavior getClipBehaviour();
 
     private:
         float radiusX = 10;

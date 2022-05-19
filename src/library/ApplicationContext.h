@@ -12,8 +12,8 @@ namespace elementor {
     constexpr float DefaultMonitorScale = 38.0 / 10.0;
 
     struct ApplicationContext {
-        RenderSize windowSize;
-        RenderSize monitorPhysicalSize;
+        Size windowSize;
+        Size monitorPhysicalSize;
         float monitorPixelScale;
     };
 }

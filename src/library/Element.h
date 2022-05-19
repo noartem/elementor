@@ -16,19 +16,27 @@ namespace elementor {
 
     struct RenderElement {
         Element *element;
-        RenderPosition position;
-        RenderSize size;
+        Position position;
+        Size size;
+    };
+
+    enum class ClipBehavior {
+        None,
+        Hard,
+        AntiAlias,
     };
 
     class Element {
     public:
         ApplicationContext *context;
 
-        virtual RenderSize getSize(RenderBoundaries boundaries);
+        virtual Size getSize(Boundaries boundaries);
 
-        virtual void paintBackground(SkCanvas *canvas, RenderSize size);
+        virtual void paintBackground(SkCanvas *canvas, Size size, Rect rect);
 
-        virtual std::vector <RenderElement> getRenderChildren(RenderSize size);
+        virtual std::vector <RenderElement> getRenderChildren(Size size);
+
+        virtual ClipBehavior getClipBehaviour();
     };
 
     class WithChild {
@@ -63,7 +71,7 @@ namespace elementor {
         std::vector<Element *> children;
     };
 
-    RenderSize fitSizeInBoundaries(RenderSize size, RenderBoundaries boundaries);
+    Size fitSizeInBoundaries(Size size, Boundaries boundaries);
 }
 
 #endif //ELEMENTOR_ELEMENT_H

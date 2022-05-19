@@ -58,7 +58,7 @@ namespace elementor {
         return this->fontSize;
     }
 
-    RenderSize Label::getSize(RenderBoundaries boundaries) {
+    Size Label::getSize(Boundaries boundaries) {
         SkFont font;
         font.setSize(this->fontSize * this->context->monitorPixelScale);
 
@@ -70,7 +70,7 @@ namespace elementor {
         return {width, height};
     }
 
-    void Label::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Label::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
         SkFont font;
         font.setSize(this->fontSize * this->context->monitorPixelScale);
 

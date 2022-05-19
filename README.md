@@ -26,6 +26,7 @@
 * Исправить сборку под windows
 * Interactive, Events
 * Flex Wrap alignment
+* Debug
 * Text
     * TextLine = text + text formatting options
     * Textable: text() => TextLine

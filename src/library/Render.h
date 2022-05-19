@@ -6,19 +6,24 @@
 #define ELEMENTOR_RENDER_H
 
 namespace elementor {
-    struct RenderPosition {
+    struct Position {
         int x;
         int y;
     };
 
-    struct RenderSize {
+    struct Size {
         int width;
         int height;
     };
 
-    struct RenderBoundaries {
-        RenderSize min;
-        RenderSize max;
+    struct Boundaries {
+        Size min;
+        Size max;
+    };
+
+    struct Rect {
+        Size size;
+        Position position;
     };
 }
 

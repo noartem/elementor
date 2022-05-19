@@ -90,10 +90,10 @@ namespace elementor {
         return this;
     }
 
-    RenderSize Border::getSize(RenderBoundaries boundaries) {
+    Size Border::getSize(Boundaries boundaries) {
         if (this->hasChild()) {
             int borderWidth = ceil(this->getWidth() * this->context->monitorPixelScale);
-            RenderSize childSize = this->getChild(this->context)->getSize(boundaries);
+            Size childSize = this->getChild(this->context)->getSize(boundaries);
             int width = childSize.width + 2 * borderWidth;
             int height = childSize.height + 2 * borderWidth;
             return fitSizeInBoundaries({width, height}, boundaries);
@@ -102,7 +102,7 @@ namespace elementor {
         }
     }
 
-    void Border::paintBackground(SkCanvas *canvas, RenderSize size) {
+    void Border::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
         SkPaint paint;
         paint.setColor(this->getColor());
         paint.setStrokeWidth(this->getWidth());
@@ -121,15 +121,15 @@ namespace elementor {
             paint.setPathEffect(SkDashPathEffect::Make(intervals, 2, 0.0f));
         }
 
-        SkRect rect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
         float radiusX = this->radiusX * this->context->monitorPixelScale;
         float radiusY = this->radiusY * this->context->monitorPixelScale;
-        SkRRect rRect = SkRRect::MakeRectXY(rect, radiusX, radiusY);
+        SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
-        canvas->drawRRect(rRect, paint);
+        canvas->drawRRect(skRRect, paint);
     }
 
-    std::vector <RenderElement> Border::getRenderChildren(RenderSize size) {
+    std::vector <RenderElement> Border::getRenderChildren(Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

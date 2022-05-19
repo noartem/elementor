@@ -37,9 +37,9 @@ namespace elementor {
 
         Padding *setChild(Element *child);
 
-        RenderSize getSize(RenderBoundaries boundaries) override;
+        Size getSize(Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(RenderSize size) override;
+        std::vector <RenderElement> getRenderChildren(Size size) override;
 
     private:
         PaddingsValue paddings;
