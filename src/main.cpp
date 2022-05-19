@@ -305,7 +305,7 @@ void exampleHoverable() {
         ->appendChild(makeHoverableButton("Some other text"))
         ->appendChild(makeHoverableButton("Click on me"));
 
-    makeExample("Wrap", scene, {360, 640})->run();
+    makeExample("Hoverable", scene, {360, 640})->run();
 }
 
 int main(int argc, char *argv[]) {
