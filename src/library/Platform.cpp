@@ -32,11 +32,6 @@ namespace elementor {
         platform->application->dispatchEvent(event);
     }
 
-    void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-
     void callbackEventMouseMove(GLFWwindow* window, double x, double y) {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
@@ -88,7 +83,7 @@ namespace elementor {
 
         glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-                glfwSetWindowShouldClose(window, GL_TRUE);
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
             }
         });
 
@@ -126,6 +121,7 @@ namespace elementor {
         SkColorType colorType = kRGBA_8888_SkColorType;
 
         while (!glfwWindowShouldClose(window)) {
+            // std::cout << glfwGetTime() << std::endl;
             glfwWaitEvents();
             // glClear(GL_COLOR_BUFFER_BIT);
 
