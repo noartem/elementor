@@ -116,14 +116,11 @@ namespace elementor {
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_SRGB8_ALPHA8;
-        // framebufferInfo.fFormat = GL_RGBA8;
 
         SkColorType colorType = kRGBA_8888_SkColorType;
 
         while (!glfwWindowShouldClose(window)) {
-            // std::cout << glfwGetTime() << std::endl;
             glfwWaitEvents();
-            // glClear(GL_COLOR_BUFFER_BIT);
 
             int width, height;
             glfwGetFramebufferSize(window, &width, &height);
