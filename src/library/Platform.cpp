@@ -65,6 +65,10 @@ namespace elementor {
             exit(EXIT_FAILURE);
         }
 
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
+        glfwSetWindowUserPointer(window, this);
+
         if (this->minSize && this->maxSize) {
             glfwSetWindowSizeLimits(window, this->minSize->width, this->minSize->height, this->maxSize->width, this->maxSize->height);
         } else if (this->minSize && !this->maxSize) {
@@ -72,12 +76,6 @@ namespace elementor {
         } else if (!this->minSize && this->maxSize) {
             glfwSetWindowSizeLimits(window, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width, this->maxSize->height);
         }
-
-        glfwMakeContextCurrent(window);
-
-        glfwSwapInterval(1);
-
-        glfwSetWindowUserPointer(window, this);
 
         glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
@@ -126,9 +124,7 @@ namespace elementor {
 
             // create skia canvas
             GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
-            SkSurface *surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget,
-                                                                        kBottomLeft_GrSurfaceOrigin, colorType,
-                                                                        SkColorSpace::MakeSRGB(), nullptr).release();
+            SkSurface *surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
             SkCanvas *canvas = surface->getCanvas();
             canvas->clear(SK_ColorBLACK);
 
