@@ -15,6 +15,7 @@
 #include "./library/Border.h"
 #include "./library/Wrap.h"
 #include "./library/Hoverable.h"
+#include "./library/Clickable.h"
 
 using namespace elementor;
 
@@ -229,11 +230,11 @@ void exampleRounded() {
     makeExample("Rounded", scene, {720, 360})->run();
 }
 
-Element *makeButton(std::string text, std::string backgroundColor = "#457b9d") {
+Element *makeButton(std::string text) {
     return rounded()
         ->setRadius(16)
         ->setChild(background()
-            ->setColor(backgroundColor)
+            ->setColor("#457b9d")
             ->setChild(border()
                 ->setWidth(12)
                 ->setColor("#a8dadc")
@@ -283,17 +284,25 @@ void exampleWrap() {
 }
 
 Element *makeHoverableButton(std::string text) {
-    Hoverable *hoverableButton = hoverable();
-    Element *notHovered = makeButton(text);
-    Element *hovered = makeButton(text, "#ffaaaa");
-    hoverableButton->setChild(notHovered);
-    hoverableButton->onEnter([hoverableButton, hovered]() {
-        hoverableButton->setChild(hovered);
-    });
-    hoverableButton->onLeave([hoverableButton, notHovered]() {
-        hoverableButton->setChild(notHovered);
-    });
-    return hoverableButton;
+    Background *buttonBackground = background();
+
+    return hoverable()
+        ->setChild(rounded()
+            ->setRadius(16)
+            ->setChild(buttonBackground
+                ->setColor("#457b9d")
+                ->setChild(border()
+                    ->setWidth(12)
+                    ->setColor("#a8dadc")
+                    ->setRadius(16)
+                    ->setChild(padding()
+                        ->setPaddings(24, 36)
+                        ->setChild(label()
+                            ->setFontColor("#ffffff")
+                            ->setFontSize(24)
+                            ->setText(text))))))
+        ->onEnter([buttonBackground]() { buttonBackground->setColor("#1d3557"); })
+        ->onLeave([buttonBackground]() { buttonBackground->setColor("#457b9d"); });
 }
 
 void exampleHoverable() {
@@ -306,6 +315,65 @@ void exampleHoverable() {
         ->appendChild(makeHoverableButton("Click on me"));
 
     makeExample("Hoverable", scene, {360, 640})->run();
+}
+
+Element *makeClickableButton(std::string text, bool &active) {
+    Background *buttonBackground = background();
+
+    return hoverable()
+        ->setChild(clickable()
+            ->setChild(rounded()
+                ->setRadius(16)
+                ->setChild(buttonBackground
+                    ->setColor("#457b9d")
+                    ->setChild(border()
+                        ->setWidth(12)
+                        ->setColor("#a8dadc")
+                        ->setRadius(16)
+                        ->setChild(padding()
+                            ->setPaddings(24, 36)
+                            ->setChild(label()
+                                ->setFontColor("#ffffff")
+                                ->setFontSize(24)
+                                ->setText(text))))))
+            ->onClick([&active, buttonBackground] () mutable {
+                active = !active;
+                if (active) {
+                    buttonBackground->setColor("#e63946");
+                } else {
+                    buttonBackground->setColor("#457b9d");
+                }
+            }))
+        ->onEnter([&active, buttonBackground]() {
+            if (active) {
+                buttonBackground->setColor("#e63946");
+            } else {
+                buttonBackground->setColor("#1d3557");
+            }
+        })
+        ->onLeave([&active, buttonBackground]() {
+            if (active) {
+                buttonBackground->setColor("#e2717a");
+            } else {
+                buttonBackground->setColor("#457b9d");
+            }
+        });
+}
+
+void exampleClickable() {
+    bool firstActive;
+    bool secondActive;
+    bool thirdActive;
+    bool fourthActive;
+
+    Element *scene = wrap()
+        ->setSpacing(24, 12)
+        ->appendChild(makeClickableButton("Text", firstActive))
+        ->appendChild(makeClickableButton("Apply", secondActive))
+        ->appendChild(makeClickableButton("Lorem Ipsum", thirdActive))
+        ->appendChild(makeClickableButton("Some other text", fourthActive));
+
+    makeExample("Clickable", scene, {360, 640})->run();
 }
 
 int main(int argc, char *argv[]) {
@@ -336,6 +404,9 @@ int main(int argc, char *argv[]) {
             break;
         case 8:
             exampleHoverable();
+            break;
+        case 9:
+            exampleClickable();
             break;
     }
 }
