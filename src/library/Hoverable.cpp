@@ -9,13 +9,42 @@ namespace elementor {
         return new Hoverable();
     }
 
-    Hoverable *Hoverable::onEnter(std::function<void()> callback) {
+    Hoverable *Hoverable::onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
         this->callbackEnter = callback;
         return this;
     }
 
-    Hoverable *Hoverable::onLeave(std::function<void()> callback) {
+    Hoverable *Hoverable::onEnter(std::function<void ()> callback) {
+        this->callbackEnter = [callback](EventMouseMove *event) {
+            callback();
+            return EventCallbackResponse::None;
+        };
+        return this;
+    }
+
+    Hoverable *Hoverable::onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
+        this->callbackMove = callback;
+        return this;
+    }
+
+    Hoverable *Hoverable::onMove(std::function<void ()> callback) {
+        this->callbackMove = [callback](EventMouseMove *event) {
+            callback();
+            return EventCallbackResponse::None;
+        };
+        return this;
+    }
+
+    Hoverable *Hoverable::onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
         this->callbackLeave = callback;
+        return this;
+    }
+
+    Hoverable *Hoverable::onLeave(std::function<void ()> callback) {
+        this->callbackLeave = [callback](EventMouseMove *event) {
+            callback();
+            return EventCallbackResponse::None;
+        };
         return this;
     }
 
@@ -53,20 +82,30 @@ namespace elementor {
     }
 
     EventCallbackResponse Hoverable::onEvent(EventMouseMove *event) {
-        if (
-            this->rect.position.x < event->x &&
-            this->rect.position.x + this->rect.size.width > event->x &&
-            this->rect.position.y < event->y &&
-            this->rect.position.y + this->rect.size.height > event->y
-        ) {
-            this->hovered = true;
-            if (this->callbackEnter) {
-                this->callbackEnter();
+        if (this->rect.contains(event->x, event->y)) {
+            if (this->hovered) {
+                if (this->callbackMove) {
+                    EventCallbackResponse callbackResponse = this->callbackMove(event);
+                    if (callbackResponse != EventCallbackResponse::None) {
+                        return callbackResponse;
+                    }
+                }
+            } else {
+                this->hovered = true;
+                if (this->callbackEnter) {
+                    EventCallbackResponse callbackResponse = this->callbackEnter(event);
+                    if (callbackResponse != EventCallbackResponse::None) {
+                        return callbackResponse;
+                    }
+                }
             }
         } else if (this->hovered) {
             this->hovered = false;
             if (this->callbackLeave) {
-                this->callbackLeave();
+                EventCallbackResponse callbackResponse = this->callbackLeave(event);
+                if (callbackResponse != EventCallbackResponse::None) {
+                    return callbackResponse;
+                }
             }
         }
 

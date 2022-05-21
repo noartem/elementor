@@ -11,11 +11,19 @@
 #include <functional>
 
 namespace elementor {
-    class Hoverable : public Element, WithChild, public WithOnMouseMove {
+    class Hoverable : public Element, public WithOnMouseMove, WithChild {
     public:
-        Hoverable *onEnter(std::function<void()> callback);
+        Hoverable *onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
 
-        Hoverable *onLeave(std::function<void()> callback);
+        Hoverable *onEnter(std::function<void ()> callback);
+
+        Hoverable *onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
+
+        Hoverable *onMove(std::function<void ()> callback);
+
+        Hoverable *onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
+
+        Hoverable *onLeave(std::function<void ()> callback);
 
         Hoverable *setChild(Element *child);
 
@@ -31,8 +39,9 @@ namespace elementor {
         Rect rect;
         bool hovered;
 
-        std::function<void()> callbackEnter;
-        std::function<void()> callbackLeave;
+        std::function<EventCallbackResponse (EventMouseMove *event)> callbackEnter;
+        std::function<EventCallbackResponse (EventMouseMove *event)> callbackMove;
+        std::function<EventCallbackResponse (EventMouseMove *event)> callbackLeave;
     };
 
     Hoverable *hoverable();
