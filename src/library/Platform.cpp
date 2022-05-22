@@ -21,34 +21,92 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    void callbackEventMouseButton(GLFWwindow* window, int button, int action, int mods) {
+    Size Platform::getWindowSize() {
+        int width, height;
+        glfwGetFramebufferSize(this->window, &width, &height);
+        return {width, height};
+    }
+
+    Size Platform::getMonitorPhysicalSize() {
+        int width, height;
+        glfwGetMonitorPhysicalSize(this->monitor, &width, &height);
+        return {width, height};
+    }
+
+    Size Platform::getMonitorSize() {
+        const GLFWvidmode* mode = glfwGetVideoMode(this->monitor);
+        return {mode->width, mode->height};
+    }
+
+    float Platform::calcMonitorPixelScale(Size monitorPhysicalSize) {
+        Size monitorSize = this->getMonitorSize();
+        return ((float)monitorSize.width / (float)monitorPhysicalSize.width) / DefaultMonitorScale;
+    }
+
+    ApplicationContext Platform::makeApplicationContext() {
+        Size windowSize = this->getWindowSize();
+        Size monitorPhysicalSize = this->getMonitorPhysicalSize();
+        float monitorPixelScale = this->calcMonitorPixelScale(monitorPhysicalSize);
+        return {windowSize, monitorPhysicalSize, monitorPixelScale};
+    }
+
+    void Platform::refresh() {
+        Size windowSize = this->getWindowSize();
+        Size monitorPhysicalSize = this->getMonitorPhysicalSize();
+        float monitorPixelScale = this->calcMonitorPixelScale(monitorPhysicalSize);
+        this->applicationContext = {windowSize, monitorPhysicalSize, monitorPixelScale};
+
+        GrGLFramebufferInfo framebufferInfo;
+        framebufferInfo.fFBOID = 0;
+        framebufferInfo.fFormat = GL_RGBA8;
+
+        if (this->skiaSurface) {
+            delete this->skiaSurface;
+        }
+
+        // create skia canvas
+        GrBackendRenderTarget backendRenderTarget(windowSize.width, windowSize.height, 0, 0, framebufferInfo);
+        this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
+        this->skiaCanvas = this->skiaSurface->getCanvas();
+    }
+
+    void Platform::draw() {
+        this->skiaCanvas->clear(SK_ColorBLACK);
+        this->application->draw(this->skiaCanvas, this->applicationContext);
+
+        this->skiaContext->flush();
+        glfwSwapBuffers(this->window);
+    }
+
+    void Platform::onMouseButton(int button, int action, int mods) {
         EventMouseButton *event = new EventMouseButton();
         event->button = static_cast<MouseButton>(button);
         event->action = static_cast<MouseAction>(action);
         event->mod = static_cast<MouseMod>(mods);
 
-        Platform *platform = static_cast<Platform *>(glfwGetWindowUserPointer(window));
-        platform->application->dispatchEvent(event);
+        this->application->dispatchEvent(event);
     }
 
-    void callbackEventMouseMove(GLFWwindow* window, double x, double y) {
+    void Platform::onMouseMove(double x, double y) {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
         event->y = y;
 
-        Platform *platform = static_cast<Platform *>(glfwGetWindowUserPointer(window));
-        platform->application->dispatchEvent(event);
+        this->application->dispatchEvent(event);
+    }
+
+    Platform *getWindowPlatform(GLFWwindow *window) {
+        return static_cast<Platform *>(glfwGetWindowUserPointer(window));
     }
 
     int Platform::run() {
-        // init glfw
-        GLFWwindow *window;
-        glfwSetErrorCallback([] (int error, const char *description) {
-            fputs(description, stderr);
-        });
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
         }
+
+        glfwSetErrorCallback([] (int error, const char *description) {
+            fputs(description, stderr);
+        });
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -59,11 +117,12 @@ namespace elementor {
         glfwWindowHint(GLFW_ALPHA_BITS, 0);
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
-        window = glfwCreateWindow(this->size.width, this->size.height, this->title.c_str(), NULL, NULL);
+        GLFWwindow *window = glfwCreateWindow(this->size.width, this->size.height, this->title.c_str(), NULL, NULL);
         if (!window) {
             glfwTerminate();
             exit(EXIT_FAILURE);
         }
+        this->window = window;
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
@@ -84,66 +143,39 @@ namespace elementor {
         });
 
         glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {
-            callbackEventMouseButton(window, button, action, mods);
+            Platform *platform = getWindowPlatform(window);
+            platform->onMouseButton(button, action, mods);
         });
 
         glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double x, double y) {
-            callbackEventMouseMove(window, x, y);
+            Platform *platform = getWindowPlatform(window);
+            platform->onMouseMove(x, y);
         });
 
         GLFWmonitor* monitor = glfwGetWindowMonitor(window);
         if (monitor == NULL) {
             monitor = glfwGetPrimaryMonitor();
         }
-
-        int physicalWidth, physicalHeight;
-        glfwGetMonitorPhysicalSize(monitor, &physicalWidth, &physicalHeight);
-        Size monitorPhysicalSize = {physicalWidth, physicalHeight};
-
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        Size monitorSize = {mode->width, mode->height};
-
-        float monitorPixelScale = ((float)monitorSize.width / (float)monitorPhysicalSize.width) / DefaultMonitorScale;
+        this->monitor = monitor;
 
         // init skia
         auto interface = GrGLMakeNativeInterface();
-        GrDirectContext *context = GrDirectContext::MakeGL(interface).release();
+        this->skiaContext = GrDirectContext::MakeGL(interface).release();
 
-        GrGLFramebufferInfo framebufferInfo;
-        framebufferInfo.fFBOID = 0;
-        framebufferInfo.fFormat = GL_RGBA8;
-
-        SkColorType colorType = kRGBA_8888_SkColorType;
+        glfwSetWindowRefreshCallback(window, [] (GLFWwindow* window) {
+            Platform *platform = getWindowPlatform(window);
+            platform->refresh();
+            platform->draw();
+        });
 
         while (!glfwWindowShouldClose(window)) {
             glfwWaitEvents();
-
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            Size windowSize = {width, height};
-
-            // create skia canvas
-            GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
-            SkSurface *surface = SkSurface::MakeFromBackendRenderTarget(context, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, SkColorSpace::MakeSRGB(), nullptr).release();
-            SkCanvas *canvas = surface->getCanvas();
-            canvas->clear(SK_ColorBLACK);
-
-            // draw application
-            ApplicationContext applicationContext;
-            applicationContext.windowSize = windowSize;
-            applicationContext.monitorPhysicalSize = monitorPhysicalSize;
-            applicationContext.monitorPixelScale = monitorPixelScale;
-
-            this->application->draw(canvas, applicationContext);
-
-            context->flush();
-            glfwSwapBuffers(window);
-
-            delete surface;
+            this->draw();
         }
 
         // cleanup skia
-        delete context;
+        if (this->skiaSurface) delete this->skiaSurface;
+        if (this->skiaContext) delete this->skiaContext;
 
         // cleanup glfw
         glfwDestroyWindow(window);

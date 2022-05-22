@@ -9,7 +9,7 @@
 
 namespace elementor {
     // Default monitor scale is 38 logical pixels per centimeter
-    constexpr float DefaultMonitorScale = 38.0 / 10.0;
+    #define DefaultMonitorScale 3.8;
 
     struct ApplicationContext {
         Size windowSize;

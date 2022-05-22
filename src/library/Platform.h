@@ -7,6 +7,8 @@
 
 #include "Application.h"
 
+#include "GLFW/glfw3.h"
+#include "include/gpu/GrDirectContext.h"
 #include <optional>
 
 namespace elementor {
@@ -19,6 +21,34 @@ namespace elementor {
         Application *application;
 
         int run();
+
+        void forceUpdate();
+
+    private:
+        GLFWwindow *window;
+        GLFWmonitor *monitor;
+        SkSurface *skiaSurface;
+        SkCanvas *skiaCanvas;
+        GrDirectContext *skiaContext;
+        ApplicationContext applicationContext;
+
+        void refresh();
+
+        void draw();
+
+        Size getWindowSize();
+
+        Size getMonitorPhysicalSize();
+
+        Size getMonitorSize();
+
+        float calcMonitorPixelScale(Size monitorPhysicalSize);
+
+        ApplicationContext makeApplicationContext();
+
+        void onMouseButton(int button, int action, int mods);
+
+        void onMouseMove(double x, double y);
     };
 };
 
