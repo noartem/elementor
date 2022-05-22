@@ -23,9 +23,8 @@
 
 ## TODO
 
-* Interactive, Events
+* Scroll
 * Flex Wrap alignment
-* Debug
 * Text
     * TextLine = text + text formatting options
     * Textable: text() => TextLine
@@ -33,5 +32,5 @@
     * Fix label memory leak
 * Image?
 * BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
-* Button
-* Scroll
+* Debug
+* UI elements: beaty button, text input with text selection
