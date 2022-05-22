@@ -95,6 +95,14 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
+    void Platform::onScroll(double xOffset, double yOffset) {
+        EventScroll *event = new EventScroll();
+        event->xOffset = xOffset;
+        event->yOffset = yOffset;
+
+        this->application->dispatchEvent(event);
+    }
+
     Platform *getWindowPlatform(GLFWwindow *window) {
         return static_cast<Platform *>(glfwGetWindowUserPointer(window));
     }
@@ -150,6 +158,11 @@ namespace elementor {
         glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double x, double y) {
             Platform *platform = getWindowPlatform(window);
             platform->onMouseMove(x, y);
+        });
+
+        glfwSetScrollCallback(window, [] (GLFWwindow* window, double xOffset, double yOffset) {
+            Platform *platform = getWindowPlatform(window);
+            platform->onScroll(xOffset, yOffset);
         });
 
         GLFWmonitor* monitor = glfwGetWindowMonitor(window);

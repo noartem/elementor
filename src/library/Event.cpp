@@ -4,18 +4,7 @@
 
 #include "Event.h"
 
-#define EVENT_MOUSE_BUTTON "mouse-button"
-#define EVENT_MOUSE_MOVE "mouse-move"
-
 namespace elementor {
-    std::string EventMouseButton::getName() {
-        return EVENT_MOUSE_BUTTON;
-    }
-
-    std::string EventMouseMove::getName() {
-        return EVENT_MOUSE_MOVE;
-    }
-
     std::vector<std::string> getElementEvents(Element *element) {
         std::vector<std::string> events;
 
@@ -27,6 +16,10 @@ namespace elementor {
             events.push_back(EVENT_MOUSE_MOVE);
         }
 
+        if (dynamic_cast<WithOnScroll *>(element) != NULL) {
+            events.push_back(EVENT_SCROLL);
+        }
+
         return events;
     }
 
@@ -36,6 +29,8 @@ namespace elementor {
             return dynamic_cast<WithOnMouseButton *>(element)->onEvent(dynamic_cast<EventMouseButton *>(event));
         } else if (eventName == EVENT_MOUSE_MOVE) {
             return dynamic_cast<WithOnMouseMove *>(element)->onEvent(dynamic_cast<EventMouseMove *>(event));
+        } else if (eventName == EVENT_SCROLL) {
+            return dynamic_cast<WithOnScroll *>(element)->onEvent(dynamic_cast<EventScroll *>(event));
         }
 
         return EventCallbackResponse::None;

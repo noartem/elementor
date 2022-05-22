@@ -10,6 +10,10 @@
 #include <string>
 #include <vector>
 
+#define EVENT_MOUSE_BUTTON "mouse-button"
+#define EVENT_MOUSE_MOVE "mouse-move"
+#define EVENT_SCROLL "scroll"
+
 namespace elementor {
     class Event {
     public:
@@ -54,7 +58,7 @@ namespace elementor {
         MouseAction action;
         MouseMod mod;
 
-        std::string getName();
+        std::string getName() { return EVENT_MOUSE_BUTTON; };
     };
 
     class WithOnMouseButton {
@@ -67,12 +71,25 @@ namespace elementor {
         float x;
         float y;
 
-        std::string getName();
+        std::string getName() { return EVENT_MOUSE_MOVE; };
     };
 
     class WithOnMouseMove {
     public:
         virtual EventCallbackResponse onEvent(EventMouseMove *event) = 0;
+    };
+
+    class EventScroll: public Event {
+    public:
+        float xOffset;
+        float yOffset;
+
+        std::string getName() { return EVENT_SCROLL; };
+    };
+
+    class WithOnScroll {
+    public:
+        virtual EventCallbackResponse onEvent(EventScroll *event) = 0;
     };
 }
 
