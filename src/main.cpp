@@ -16,20 +16,15 @@
 #include "./library/Wrap.h"
 #include "./library/Hoverable.h"
 #include "./library/Clickable.h"
+#include "./library/Scroll.h"
 
 using namespace elementor;
 
-Element *makeExampleContainer(Element *child) {
-    return background()
-        ->setColor("#f1faee")
-        ->setChild(padding()
-            ->setPaddings(32)
-            ->setChild(child));
-}
-
 Platform *makeExample(std::string description, Element *root, Size size = {600, 840}) {
     Application *application = new Application();
-    application->root = makeExampleContainer(root);
+    application->root = background()
+        ->setColor("#ffffff")
+        ->setChild(root);
 
     Platform *platform = new Platform();
     platform->title = "Elementor example: " + description;
@@ -376,6 +371,54 @@ void exampleClickable() {
     makeExample("Clickable", scene, {360, 640})->run();
 }
 
+Element *button(std::string text) {
+    Background *buttonBackground = background();
+    Element *button = rounded()
+        ->setRadius(8)
+        ->setChild(buttonBackground
+            ->setColor("#0065FB")
+            ->setChild(padding()
+                ->setPaddings(16, 24)
+                ->setChild(label()
+                    ->setFontColor("#ffffff")
+                    ->setFontSize(18)
+                    ->setText(text))));
+
+    return hoverable()
+        ->setChild(button)
+        ->onEnter([buttonBackground] () { buttonBackground->setColor("#005CE6"); })
+        ->onLeave([buttonBackground] () { buttonBackground->setColor("#0065FB"); });
+}
+
+void exampleScroll() {
+    Element *scene = align()
+        ->setAlignment(Alignment::Center)
+        ->setChild(scroll()
+            ->setChild(sized()
+                ->setSize(320, 640)
+                ->setChild(padding()
+                    ->setPaddings(12)
+                    ->setChild(wrap()
+                        ->setSpacing(12, 12)
+                        ->appendChild(button("Text"))
+                        ->appendChild(button("Apply"))
+                        ->appendChild(button("Lorem Ipsum"))
+                        ->appendChild(button("Some other text"))
+                        ->appendChild(button("Click on me"))
+                        ->appendChild(button("Text"))
+                        ->appendChild(button("Apply"))
+                        ->appendChild(button("Lorem Ipsum"))
+                        ->appendChild(button("Some other text"))
+                        ->appendChild(button("Click on me"))
+                        ->appendChild(button("Text"))
+                        ->appendChild(button("Apply"))
+                        ->appendChild(button("Lorem Ipsum"))
+                        ->appendChild(button("Some other text"))
+                        ->appendChild(button("Click on me"))))));
+
+    makeExample("Scroll", scene, {320, 360})->run();
+}
+
 int main(int argc, char *argv[]) {
     switch (atoi(argv[1])) {
         case 0:
@@ -407,6 +450,9 @@ int main(int argc, char *argv[]) {
             break;
         case 9:
             exampleClickable();
+            break;
+        case 10:
+            exampleScroll();
             break;
     }
 }
