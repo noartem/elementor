@@ -9,12 +9,6 @@ namespace elementor {
         return new Clickable();
     }
 
-    Clickable::Clickable() {
-        this->hoverable = new Hoverable();
-        this->hoverable->onEnter([this]() { this->hovered = true; });
-        this->hoverable->onLeave([this]() { this->hovered = false; });
-    }
-
     Clickable *Clickable::onButton(std::function<EventCallbackResponse (EventMouseButton *event)> callback) {
         this->callbackButton = callback;
         return this;
@@ -55,27 +49,41 @@ namespace elementor {
     }
 
     Clickable *Clickable::setChild(Element *child) {
-        this->hoverable->context = this->context;
-        this->hoverable->setChild(child);
+        child->context = this->context;
+        this->updateChild(child);
         return this;
     }
 
-    Hoverable *Clickable::getChild() {
-        this->hoverable->context = this->context;
-        return this->hoverable;
+    Size Clickable::getSize(Boundaries boundaries) {
+        if (this->hasChild()) {
+            return this->getChild(this->context)->getSize(boundaries);
+        } else {
+            return boundaries.max;
+        }
     }
 
-    Size Clickable::getSize(Boundaries boundaries) {
-        return this->getChild()->getSize(boundaries);
+    void Clickable::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+        this->rect = rect;
     }
 
     std::vector <RenderElement> Clickable::getRenderChildren(Size size) {
-        RenderElement child;
-        child.element = this->getChild();
-        child.position = {0, 0};
-        child.size = size;
+        std::vector <RenderElement> children;
 
-        return {child};
+        if (this->hasChild()) {
+            RenderElement child;
+            child.element = this->getChild(this->context);
+            child.position = {0, 0};
+            child.size = size;
+
+            children.push_back(child);
+        }
+
+        return children;
+    }
+
+    EventCallbackResponse Clickable::onEvent(EventMouseMove *event) {
+        this->hovered = this->rect.contains(event->x, event->y);
+        return EventCallbackResponse::None;
     }
 
     EventCallbackResponse Clickable::onEvent(EventMouseButton *event) {
