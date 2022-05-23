@@ -62,7 +62,7 @@ namespace elementor {
         }
     }
 
-    void Hoverable::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Hoverable::paintBackground(SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
@@ -82,7 +82,7 @@ namespace elementor {
     }
 
     EventCallbackResponse Hoverable::onEvent(EventMouseMove *event) {
-        if (this->rect.contains(event->x, event->y)) {
+        if (this->rect.visibleContains(event->x, event->y)) {
             if (this->hovered) {
                 if (this->callbackMove) {
                     EventCallbackResponse callbackResponse = this->callbackMove(event);

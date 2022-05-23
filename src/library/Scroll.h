@@ -29,7 +29,7 @@ namespace elementor {
 
         Size getSize(Boundaries boundaries) override;
 
-        void paintBackground(SkCanvas *canvas, Size size, Rect rect) override;
+        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
 
         std::vector <RenderElement> getRenderChildren(Size size) override;
 
@@ -40,7 +40,7 @@ namespace elementor {
         EventCallbackResponse onEvent(EventScroll *event);
 
     private:
-        Rect rect;
+        ElementRect rect;
         float scrollLeft;
         float scrollTop;
         float scrollAcceleration = 16.0;

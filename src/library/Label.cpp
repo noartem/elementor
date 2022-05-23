@@ -70,14 +70,14 @@ namespace elementor {
         return {width, height};
     }
 
-    void Label::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Label::paintBackground(SkCanvas *canvas, ElementRect rect) {
         SkFont font;
         font.setSize(this->fontSize * this->context->monitorPixelScale);
 
         SkPaint paint;
         paint.setColor(this->getFontColor());
 
-        canvas->translate(0, size.height);
+        canvas->translate(0, rect.size.height);
         canvas->drawString(this->text.c_str(), 0, 0, font, paint);
     }
 }

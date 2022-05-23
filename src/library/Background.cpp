@@ -57,11 +57,11 @@ namespace elementor {
         }
     }
 
-    void Background::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Background::paintBackground(SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->color);
 
-        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
         canvas->drawRect(skRect, paint);
     }
 

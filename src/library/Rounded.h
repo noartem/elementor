@@ -20,7 +20,7 @@ namespace elementor {
 
         Rounded *setChild(Element *child);
 
-        void paintBackground(SkCanvas *canvas, Size size, Rect rect) override;
+        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
 
         Size getSize(Boundaries boundaries) override;
 

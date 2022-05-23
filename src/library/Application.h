@@ -24,7 +24,7 @@ namespace elementor {
 
         void saveElementEventListeners(Element *element);
 
-        void drawElement(SkCanvas *canvas, RenderElement *element, Rect rect, Rect boundary);
+        void drawElement(SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary);
     };
 };
 

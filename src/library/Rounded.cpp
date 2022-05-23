@@ -36,8 +36,8 @@ namespace elementor {
         return this;
     }
 
-    void Rounded::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
-        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+    void Rounded::paintBackground(SkCanvas *canvas, ElementRect rect) {
+        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
         float radiusX = this->radiusX * this->context->monitorPixelScale;
         float radiusY = this->radiusY * this->context->monitorPixelScale;
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);

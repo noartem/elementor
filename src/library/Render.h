@@ -21,16 +21,29 @@ namespace elementor {
         Size max;
     };
 
-    class Rect {
-        public:
-            Size size;
-            Position position;
+    struct Rect {
+        Size size;
+        Position position;
+    };
 
-            bool contains(float x, float y);
+    class ElementRect {
+    public:
+        Position position;
+        Position inParentPosition;
+        Size size;
+        Size visibleSize;
 
-            bool contains(int x, int y);
+        bool contains(float x, float y);
 
-            bool contains(Position point);
+        bool contains(int x, int y);
+
+        bool contains(Position point);
+
+        bool visibleContains(float x, float y);
+
+        bool visibleContains(int x, int y);
+
+        bool visibleContains(Position point);
     };
 }
 

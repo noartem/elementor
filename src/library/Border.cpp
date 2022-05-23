@@ -102,7 +102,7 @@ namespace elementor {
         }
     }
 
-    void Border::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Border::paintBackground(SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->getColor());
         paint.setStrokeWidth(this->getWidth());
@@ -121,7 +121,7 @@ namespace elementor {
             paint.setPathEffect(SkDashPathEffect::Make(intervals, 2, 0.0f));
         }
 
-        SkRect skRect = SkRect::MakeXYWH(0, 0, size.width, size.height);
+        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
         float radiusX = this->radiusX * this->context->monitorPixelScale;
         float radiusY = this->radiusY * this->context->monitorPixelScale;
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);

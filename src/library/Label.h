@@ -30,7 +30,7 @@ namespace elementor {
 
         Size getSize(Boundaries boundaries) override;    
 
-        void paintBackground(SkCanvas *canvas, Size size, Rect rect) override;
+        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
 
     private:
         std::string text;

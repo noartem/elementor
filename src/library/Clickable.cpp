@@ -62,7 +62,7 @@ namespace elementor {
         }
     }
 
-    void Clickable::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Clickable::paintBackground(SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
@@ -82,7 +82,7 @@ namespace elementor {
     }
 
     EventCallbackResponse Clickable::onEvent(EventMouseMove *event) {
-        this->hovered = this->rect.contains(event->x, event->y);
+        this->hovered = this->rect.visibleContains(event->x, event->y);
         return EventCallbackResponse::None;
     }
 

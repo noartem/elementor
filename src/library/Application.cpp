@@ -14,14 +14,20 @@ namespace elementor {
         rootElement.element = this->root;
         rootElement.element->context = &context;
 
-        Rect rootRect;
+        ElementRect rootRect;
         rootRect.position = rootElement.position;
+        rootRect.inParentPosition = rootElement.position;
         rootRect.size = rootElement.size;
+        rootRect.visibleSize = rootElement.size;
 
-        this->drawElement(canvas, &rootElement, rootRect, rootRect);
+        Rect rootBoundary;
+        rootBoundary.position = rootElement.position;
+        rootBoundary.size = rootElement.size;
+
+        this->drawElement(canvas, &rootElement, rootRect, rootBoundary);
     }
 
-    void Application::drawElement(SkCanvas *canvas, RenderElement *element, Rect rect, Rect boundary) {
+    void Application::drawElement(SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary) {
         this->saveElementEventListeners(element->element);
 
         canvas->save();
@@ -29,18 +35,20 @@ namespace elementor {
 
         ClipBehavior clipBehavior = element->element->getClipBehaviour();
         if (clipBehavior != ClipBehavior::None) {
-            boundary = rect;
+            boundary = {rect.size, rect.position};
             canvas->clipRect(SkRect::MakeWH(boundary.size.width, boundary.size.height), SkClipOp::kIntersect, clipBehavior == ClipBehavior::Hard);
         }
 
-        element->element->paintBackground(canvas, element->size, rect);
+        element->element->paintBackground(canvas, rect);
 
         for (RenderElement child: element->element->getRenderChildren(element->size)) {
-            Rect childRect;
+            ElementRect childRect;
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;
-            childRect.size.width = std::min(std::max(boundary.size.width - std::max(childRect.position.x - boundary.position.x, 0), 0), child.size.width);
-            childRect.size.height = std::min(std::max(boundary.size.height - std::max(childRect.position.y - boundary.position.y, 0), 0), child.size.height);
+            childRect.visibleSize.width = std::min(std::max(boundary.size.width - std::max(childRect.position.x - boundary.position.x, 0), 0), child.size.width);
+            childRect.visibleSize.height = std::min(std::max(boundary.size.height - std::max(childRect.position.y - boundary.position.y, 0), 0), child.size.height);
+            childRect.size = child.size;
+            childRect.inParentPosition = child.position;
 
             this->drawElement(canvas, &child, childRect, boundary);
         }

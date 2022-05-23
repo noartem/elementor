@@ -54,7 +54,7 @@ namespace elementor {
         }
     }
 
-    void Scroll::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Scroll::paintBackground(SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
@@ -81,7 +81,7 @@ namespace elementor {
     }
 
     EventCallbackResponse Scroll::onEvent(EventMouseMove *event) {
-        this->hovered = this->rect.contains(event->x, event->y);
+        this->hovered = this->rect.visibleContains(event->x, event->y);
         return EventCallbackResponse::None;
     }
 

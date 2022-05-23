@@ -11,7 +11,7 @@ namespace elementor {
         return boundaries.max;
     }
 
-    void Element::paintBackground(SkCanvas *canvas, Size size, Rect rect) {
+    void Element::paintBackground(SkCanvas *canvas, ElementRect rect) {
     }
 
     std::vector <RenderElement> Element::getRenderChildren(Size size) {

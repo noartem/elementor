@@ -29,14 +29,14 @@ namespace elementor {
 
         Size getSize(Boundaries boundaries) override;
 
-        void paintBackground(SkCanvas *canvas, Size size, Rect rect) override;
+        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
 
         std::vector <RenderElement> getRenderChildren(Size size) override;
 
         EventCallbackResponse onEvent(EventMouseMove *event);
 
     private:
-        Rect rect;
+        ElementRect rect;
         bool hovered;
 
         std::function<EventCallbackResponse (EventMouseMove *event)> callbackEnter;

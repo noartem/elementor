@@ -32,7 +32,7 @@ namespace elementor {
 
         virtual Size getSize(Boundaries boundaries);
 
-        virtual void paintBackground(SkCanvas *canvas, Size size, Rect rect);
+        virtual void paintBackground(SkCanvas *canvas, ElementRect rect);
 
         virtual std::vector <RenderElement> getRenderChildren(Size size);
 
