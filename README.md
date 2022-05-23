@@ -24,6 +24,18 @@
 ## TODO
 
 * Scroll
+    * Исправить scroll на тачпаде
+    * Добавить scrollbar
+        * Scrollbar child всегда Scroll
+        * С помощью scrollHeight/scrollTop определять положение thumb
+        * Рисовать один track для vertical/horizontal, оба если Both
+        * setTrack(Element *trackElement) - может быть NULL, тогда нет track, default: ScrollbarTrack
+        * setThumb(Element *thumbElement) - не NULL, default: ScrollbarThumb
+        * где рисовать, над контентом или вместе с ним - занимая пространство
+          ScrollbarPosition::InContent, ScrollbarPosition::OnTop
+        * Показывать только когда есть возможность скролить (default)  или всегда
+* Examples gallery - все в одном месте, переключение по клику
+* Перенести элементы в отедльный namespace
 * Flex Wrap alignment
 * Text
     * TextLine = text + text formatting options
