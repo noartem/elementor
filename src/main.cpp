@@ -16,7 +16,7 @@
 #include "./library/Wrap.h"
 #include "./library/Hoverable.h"
 #include "./library/Clickable.h"
-#include "./library/Scroll.h"
+#include "./library/Scrollable.h"
 
 using namespace elementor;
 
@@ -393,28 +393,30 @@ Element *button(std::string text) {
 void exampleScroll() {
     Element *scene = align()
         ->setAlignment(Alignment::Center)
-        ->setChild(scroll()
-            ->setChild(sized()
-                ->setSize(320, 640)
-                ->setChild(padding()
-                    ->setPaddings(12)
-                    ->setChild(wrap()
-                        ->setSpacing(12, 12)
-                        ->appendChild(button("Text"))
-                        ->appendChild(button("Apply"))
-                        ->appendChild(button("Lorem Ipsum"))
-                        ->appendChild(button("Some other text"))
-                        ->appendChild(button("Click on me"))
-                        ->appendChild(button("Text"))
-                        ->appendChild(button("Apply"))
-                        ->appendChild(button("Lorem Ipsum"))
-                        ->appendChild(button("Some other text"))
-                        ->appendChild(button("Click on me"))
-                        ->appendChild(button("Text"))
-                        ->appendChild(button("Apply"))
-                        ->appendChild(button("Lorem Ipsum"))
-                        ->appendChild(button("Some other text"))
-                        ->appendChild(button("Click on me"))))));
+        ->setChild(padding()
+            ->setPaddings(12)
+            ->setChild(scrollable()
+                ->setChild(sized()
+                    ->setSize(320, 640)
+                    ->setChild(padding()
+                        ->setPaddings(12)
+                        ->setChild(wrap()
+                            ->setSpacing(12, 12)
+                            ->appendChild(button("Text"))
+                            ->appendChild(button("Apply"))
+                            ->appendChild(button("Lorem Ipsum"))
+                            ->appendChild(button("Some other text"))
+                            ->appendChild(button("Click on me"))
+                            ->appendChild(button("Text"))
+                            ->appendChild(button("Apply"))
+                            ->appendChild(button("Lorem Ipsum"))
+                            ->appendChild(button("Some other text"))
+                            ->appendChild(button("Click on me"))
+                            ->appendChild(button("Text"))
+                            ->appendChild(button("Apply"))
+                            ->appendChild(button("Lorem Ipsum"))
+                            ->appendChild(button("Some other text"))
+                            ->appendChild(button("Click on me")))))));
 
     makeExample("Scroll", scene, {320, 360})->run();
 }
