@@ -38,6 +38,14 @@ namespace elementor {
         return this->scrollLeft;
     }
 
+    float Scrollable::getScrollHeight() {
+        return this->childSize.height;
+    }
+
+    float Scrollable::getScrollWidth() {
+        return this->childSize.width;
+    }
+
     Scrollable *Scrollable::setScrollAcceleration(float scrollAcceleration) {
         this->scrollAcceleration = scrollAcceleration;
         return this;

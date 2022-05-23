@@ -31,6 +31,10 @@ namespace elementor {
 
         float getScrollLeft();
 
+        float getScrollHeight();
+
+        float getScrollWidth();
+
         Scrollable *setScrollAcceleration(float scrollAcceleration);
 
         float getScrollAcceleration();
