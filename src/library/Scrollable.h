@@ -11,19 +11,29 @@
 #include <functional>
 
 namespace elementor {
+    enum class ScrollDirection {
+        Vertical,
+        Horizontal,
+        Both,
+    };
+
     class Scrollable : public Element, public WithOnMouseMove, public WithOnScroll, WithChild {
     public:
-        Scrollable *setScrollableTop(float scrollableTop);
+        Scrollable *setDirection(ScrollDirection direction);
 
-        float getScrollableTop();
+        ScrollDirection getDirection();
 
-        Scrollable *setScrollableLeft(float scrollableTop);
+        Scrollable *setScrollTop(float scrollTop);
 
-        float getScrollableLeft();
+        float getScrollTop();
 
-        Scrollable *setScrollableAcceleration(float scrollableAcceleration);
+        Scrollable *setScrollLeft(float scrollTop);
 
-        float getScrollableAcceleration();
+        float getScrollLeft();
+
+        Scrollable *setScrollAcceleration(float scrollAcceleration);
+
+        float getScrollAcceleration();
 
         Scrollable *setChild(Element *child);
 
@@ -40,10 +50,11 @@ namespace elementor {
         EventCallbackResponse onEvent(EventScroll *event);
 
     private:
+        ScrollDirection direction = ScrollDirection::Both;
         ElementRect rect;
-        float scrollableLeft;
-        float scrollableTop;
-        float scrollableAcceleration = 16.0;
+        float scrollLeft;
+        float scrollTop;
+        float scrollAcceleration = 16.0;
         Size childSize;
         bool hovered;
     };

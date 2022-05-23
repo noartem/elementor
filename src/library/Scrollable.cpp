@@ -11,31 +11,40 @@ namespace elementor {
         return new Scrollable();
     }
 
-    Scrollable *Scrollable::setScrollableTop(float scrollableTop) {
-        this->scrollableTop = scrollableTop;
+    Scrollable *Scrollable::setDirection(ScrollDirection direction) {
+        this->direction = direction;
         return this;
     }
 
-    float Scrollable::getScrollableTop() {
-        return this->scrollableTop;
+    ScrollDirection Scrollable::getDirection() {
+        return this->direction;
     }
 
-    Scrollable *Scrollable::setScrollableLeft(float scrollableLeft) {
-        this->scrollableLeft = scrollableLeft;
+    Scrollable *Scrollable::setScrollTop(float scrollTop) {
+        this->scrollTop = scrollTop;
         return this;
     }
 
-    float Scrollable::getScrollableLeft() {
-        return this->scrollableLeft;
+    float Scrollable::getScrollTop() {
+        return this->scrollTop;
     }
 
-    Scrollable *Scrollable::setScrollableAcceleration(float scrollableAcceleration) {
-        this->scrollableAcceleration = scrollableAcceleration;
+    Scrollable *Scrollable::setScrollLeft(float scrollLeft) {
+        this->scrollLeft = scrollLeft;
         return this;
     }
 
-    float Scrollable::getScrollableAcceleration() {
-        return this->scrollableAcceleration;
+    float Scrollable::getScrollLeft() {
+        return this->scrollLeft;
+    }
+
+    Scrollable *Scrollable::setScrollAcceleration(float scrollAcceleration) {
+        this->scrollAcceleration = scrollAcceleration;
+        return this;
+    }
+
+    float Scrollable::getScrollAcceleration() {
+        return this->scrollAcceleration;
     }
 
     Scrollable *Scrollable::setChild(Element *child) {
@@ -64,11 +73,19 @@ namespace elementor {
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild(this->context);
-
-            int positionX = ceil(-1 * this->getScrollableLeft() * this->context->monitorPixelScale);
-            int positionY = ceil(-1 * this->getScrollableTop() * this->context->monitorPixelScale);
-            child.position = {positionX, positionY};
             child.size = this->childSize;
+
+            if (this->direction == ScrollDirection::Horizontal || this->direction == ScrollDirection::Both) {
+                child.position.x = ceil(-1 * this->getScrollLeft() * this->context->monitorPixelScale);
+            } else {
+                child.position.x = 0;
+            }
+
+            if (this->direction == ScrollDirection::Vertical || this->direction == ScrollDirection::Both) {
+                child.position.y = ceil(-1 * this->getScrollTop() * this->context->monitorPixelScale);
+            } else {
+                child.position.y = 0;
+            }
 
             children.push_back(child);
         }
@@ -87,16 +104,19 @@ namespace elementor {
 
     EventCallbackResponse Scrollable::onEvent(EventScroll *event) {
         if (this->hovered) {
-            this->scrollableLeft -= event->xOffset * this->scrollableAcceleration;
-            float realScrollableLeft = this->scrollableLeft* this->context->monitorPixelScale;
-            float maxScrollableLeft = this->childSize.width - this->rect.size.width;
-            float zero = 0.0;
-            this->scrollableLeft = std::min(std::max(realScrollableLeft, zero), maxScrollableLeft) / this->context->monitorPixelScale;
+            if (this->direction == ScrollDirection::Horizontal || this->direction == ScrollDirection::Both) {
+                this->scrollLeft -= event->xOffset * this->scrollAcceleration;
+                float realScrollLeft = this->scrollLeft* this->context->monitorPixelScale;
+                float maxScrollLeft = this->childSize.width - this->rect.size.width;
+                this->scrollLeft = std::min(std::max(realScrollLeft, (float) 0.0), maxScrollLeft) / this->context->monitorPixelScale;
+            }
 
-            this->scrollableTop -= event->yOffset * this->scrollableAcceleration;
-            float realScrollableTop = this->scrollableTop * this->context->monitorPixelScale;
-            float maxScrollableTop = this->childSize.height - this->rect.size.height;
-            this->scrollableTop = std::min(std::max(realScrollableTop, zero), maxScrollableTop) / this->context->monitorPixelScale;
+            if (this->direction == ScrollDirection::Vertical || this->direction == ScrollDirection::Both) {
+                this->scrollTop -= event->yOffset * this->scrollAcceleration;
+                float realScrollTop = this->scrollTop * this->context->monitorPixelScale;
+                float maxScrollTop = this->childSize.height - this->rect.size.height;
+                this->scrollTop = std::min(std::max(realScrollTop, (float) 0.0), maxScrollTop) / this->context->monitorPixelScale;
+            }
         }
 
         return EventCallbackResponse::None;
