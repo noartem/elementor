@@ -49,7 +49,7 @@ namespace elementor {
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Sized::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Sized::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

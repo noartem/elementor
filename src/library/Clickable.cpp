@@ -65,7 +65,7 @@ namespace elementor {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Clickable::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Clickable::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

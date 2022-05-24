@@ -47,10 +47,10 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Wrap::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
-        for (Element *childElement: this->getChildren()) {
+        for (Element *childElement: this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
             child.size = childElement->getSize(ctx, {{0, 0}, size});

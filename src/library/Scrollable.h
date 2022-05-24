@@ -45,7 +45,7 @@ namespace elementor {
 
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
         ClipBehavior getClipBehaviour();
 

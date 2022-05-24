@@ -54,7 +54,7 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Flex::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         Boundaries sizedChildBoundaries = {{0, 0}, size};

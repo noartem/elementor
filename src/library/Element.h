@@ -33,7 +33,7 @@ namespace elementor {
 
         virtual void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect);
 
-        virtual std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size);
+        virtual std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size);
 
         virtual ClipBehavior getClipBehaviour();
     };
@@ -70,7 +70,7 @@ namespace elementor {
 
         void removeChild(int i);
 
-        std::vector<Element *> getChildren();
+        std::vector<Element *> getChildrenList();
 
         int getChildrenSize();
 

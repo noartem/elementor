@@ -42,7 +42,7 @@ namespace elementor {
 
         element->element->paintBackground(ctx, canvas, rect);
 
-        for (RenderElement child: element->element->getRenderChildren(ctx, element->size)) {
+        for (RenderElement child: element->element->getChildren(ctx, element->size)) {
             ElementRect childRect;
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;

@@ -52,7 +52,7 @@ namespace elementor {
         }
     }
 
-    std::vector <RenderElement> Rounded::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Rounded::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

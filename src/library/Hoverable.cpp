@@ -65,7 +65,7 @@ namespace elementor {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Hoverable::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Hoverable::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

@@ -53,7 +53,7 @@ namespace elementor {
         }
     }
 
-    std::vector <RenderElement> Padding::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

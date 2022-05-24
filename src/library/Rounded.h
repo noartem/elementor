@@ -24,7 +24,7 @@ namespace elementor {
 
         Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
         ClipBehavior getClipBehaviour();
 

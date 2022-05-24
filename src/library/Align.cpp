@@ -51,7 +51,7 @@ namespace elementor {
         return this;
     }
 
-    std::vector <RenderElement> Align::getRenderChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Align::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
