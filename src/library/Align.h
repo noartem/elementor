@@ -35,7 +35,7 @@ namespace elementor {
 
         Align *setChild(Element *child);
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         AlignmentFraction alignment = {0.5, 0.5};

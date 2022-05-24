@@ -27,19 +27,11 @@ namespace elementor {
 
         PaddingsValue getPaddings();
 
-        int getPaddingTop();
-
-        int getPaddingRight();
-
-        int getPaddingBottom();
-
-        int getPaddingLeft();
-
         Padding *setChild(Element *child);
 
-        Size getSize(Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         PaddingsValue paddings;

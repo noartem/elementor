@@ -22,11 +22,11 @@ namespace elementor {
 
         Background *setChild(Element *child);
 
-        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
-        Size getSize(Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         SkColor color;

@@ -47,18 +47,17 @@ namespace elementor {
     }
 
     Align *Align::setChild(Element *child) {
-        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    std::vector <RenderElement> Align::getRenderChildren(Size size) {
+    std::vector <RenderElement> Align::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
-            child.size = child.element->getSize({{0, 0}, size});
+            child.element = this->getChild();
+            child.size = child.element->getSize(ctx, {{0, 0}, size});
             int positionX = this->alignment.x * (size.width - child.size.width);
             int positionY = this->alignment.y * (size.height - child.size.height);
             child.position = {positionX, positionY};

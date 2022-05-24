@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_ELEMENT_H
 #define ELEMENTOR_ELEMENT_H
 
-#include "ApplicationContext.h"
+#include "Render.h"
 
 #include <include/core/SkCanvas.h>
 
@@ -13,6 +13,7 @@
 
 namespace elementor {
     class Element;
+    class ApplicationContext;
 
     struct RenderElement {
         Element *element;
@@ -28,22 +29,30 @@ namespace elementor {
 
     class Element {
     public:
-        ApplicationContext *context;
+        virtual Size getSize(ApplicationContext *ctx, Boundaries boundaries);
 
-        virtual Size getSize(Boundaries boundaries);
+        virtual void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect);
 
-        virtual void paintBackground(SkCanvas *canvas, ElementRect rect);
-
-        virtual std::vector <RenderElement> getRenderChildren(Size size);
+        virtual std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size);
 
         virtual ClipBehavior getClipBehaviour();
+    };
+
+    // Default monitor scale is 38 logical pixels per centimeter
+    #define DefaultMonitorScale 3.8;
+
+    struct ApplicationContext {
+        Size windowSize;
+        Size monitorPhysicalSize;
+        float monitorPixelScale;
+        Element *root;
     };
 
     class WithChild {
     public:
         void updateChild(Element *child);
 
-        Element *getChild(ApplicationContext *context);
+        Element *getChild();
 
         bool hasChild();
 

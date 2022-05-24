@@ -43,24 +43,22 @@ namespace elementor {
     }
 
     Wrap *Wrap::appendChild(Element *child) {
-        child->context = this->context;
         this->addChild(child);
         return this;
     }
 
-    std::vector <RenderElement> Wrap::getRenderChildren(Size size) {
+    std::vector <RenderElement> Wrap::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         for (Element *childElement: this->getChildren()) {
             RenderElement child;
             child.element = childElement;
-            child.element->context = this->context;
-            child.size = childElement->getSize({{0, 0}, size});
+            child.size = childElement->getSize(ctx, {{0, 0}, size});
             children.push_back(child);
         }
 
-        int spacing = this->getSpacing() * this->context->monitorPixelScale;
-        int crossSpacing = this->getCrossSpacing() * this->context->monitorPixelScale;
+        int spacing = this->getSpacing() * ctx->monitorPixelScale;
+        int crossSpacing = this->getCrossSpacing() * ctx->monitorPixelScale;
 
         bool isRow = this->direction == WrapDirection::Row;
 

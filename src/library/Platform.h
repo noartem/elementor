@@ -44,8 +44,6 @@ namespace elementor {
 
         float calcMonitorPixelScale(Size monitorPhysicalSize);
 
-        ApplicationContext makeApplicationContext();
-
         void onMouseButton(int button, int action, int mods);
 
         void onMouseMove(double x, double y);

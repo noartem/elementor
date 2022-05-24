@@ -16,7 +16,7 @@ namespace elementor {
 
         Flexible *setChild(Element *child);
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         int grow = 1;

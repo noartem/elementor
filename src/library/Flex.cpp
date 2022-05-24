@@ -50,18 +50,17 @@ namespace elementor {
     }
 
     Flex *Flex::appendChild(Element *child) {
-        child->context = this->context;
         this->addChild(child);
         return this;
     }
 
-    std::vector <RenderElement> Flex::getRenderChildren(Size size) {
+    std::vector <RenderElement> Flex::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         Boundaries sizedChildBoundaries = {{0, 0}, size};
 
         int childrenCount = this->getChildrenSize();
-        int spacing = ceil(this->spacing * this->context->monitorPixelScale);
+        int spacing = ceil(this->spacing * ctx->monitorPixelScale);
         int fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
@@ -70,12 +69,11 @@ namespace elementor {
         for (int i = 0; i < childrenCount; i++) {
             RenderElement child;
             child.element = this->getChild(i);
-            child.element->context = this->context;
 
             Flexible *childFlexible = dynamic_cast<Flexible *>(child.element);
 
             if (childFlexible == NULL) {
-                child.size = child.element->getSize(sizedChildBoundaries);
+                child.size = child.element->getSize(ctx, sizedChildBoundaries);
                 fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             } else {
                 int childGrow = childFlexible->getGrow();
@@ -105,7 +103,7 @@ namespace elementor {
                 childBoundaries = {{0, axisSize}, {size.width, axisSize}};
             }
 
-            child.size = child.element->getSize(childBoundaries);
+            child.size = child.element->getSize(ctx, childBoundaries);
         }
 
         int axisPosition = 0;

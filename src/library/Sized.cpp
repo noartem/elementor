@@ -39,23 +39,22 @@ namespace elementor {
     }
 
     Sized *Sized::setChild(Element *child) {
-        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    Size Sized::getSize(Boundaries boundaries) {
-        int width = ceil(this->width * this->context->monitorPixelScale);
-        int height = ceil(this->height * this->context->monitorPixelScale);
+    Size Sized::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        int width = ceil(this->width * ctx->monitorPixelScale);
+        int height = ceil(this->height * ctx->monitorPixelScale);
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Sized::getRenderChildren(Size size) {
+    std::vector <RenderElement> Sized::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
             child.position = {0, 0};
             child.size = size;
 

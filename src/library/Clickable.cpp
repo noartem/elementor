@@ -49,29 +49,28 @@ namespace elementor {
     }
 
     Clickable *Clickable::setChild(Element *child) {
-        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    Size Clickable::getSize(Boundaries boundaries) {
+    Size Clickable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild(this->context)->getSize(boundaries);
+            return this->getChild()->getSize(ctx, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    void Clickable::paintBackground(SkCanvas *canvas, ElementRect rect) {
+    void Clickable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Clickable::getRenderChildren(Size size) {
+    std::vector <RenderElement> Clickable::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
             child.position = {0, 0};
             child.size = size;
 

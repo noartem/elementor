@@ -34,50 +34,40 @@ namespace elementor {
     }
 
     Padding *Padding::setChild(Element *child) {
-        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    int Padding::getPaddingTop() {
-        return ceil(this->getPaddings().top * this->context->monitorPixelScale);
-    }
-
-    int Padding::getPaddingRight() {
-        return ceil(this->getPaddings().right * this->context->monitorPixelScale);
-    }
-
-    int Padding::getPaddingBottom() {
-        return ceil(this->getPaddings().bottom * this->context->monitorPixelScale);
-    }
-
-    int Padding::getPaddingLeft() {
-        return ceil(this->getPaddings().left * this->context->monitorPixelScale);
-    }
-
-    Size Padding::getSize(Boundaries boundaries) {
+    Size Padding::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            Size childSize = this->getChild(this->context)->getSize(boundaries);
-            int width = childSize.width + this->getPaddingLeft() + this->getPaddingRight();
-            int height = childSize.height + this->getPaddingTop() + this->getPaddingBottom();
-            Size size = {width, height};
-            return fitSizeInBoundaries(size, boundaries);
+            Size childSize = this->getChild()->getSize(ctx, boundaries);
+            int paddingTop = ceil(this->getPaddings().top * ctx->monitorPixelScale);
+            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
+            int paddingBottom = ceil(this->getPaddings().bottom * ctx->monitorPixelScale);
+            int paddingLeft = ceil(this->getPaddings().left * ctx->monitorPixelScale);
+            int width = childSize.width + paddingLeft + paddingRight;
+            int height = childSize.height + paddingTop + paddingBottom;
+            return fitSizeInBoundaries({width, height}, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> Padding::getRenderChildren(Size size) {
+    std::vector <RenderElement> Padding::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
 
-            child.position = {this->getPaddingLeft(), this->getPaddingTop()};
+            int paddingTop = ceil(this->getPaddings().top * ctx->monitorPixelScale);
+            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
+            int paddingBottom = ceil(this->getPaddings().bottom * ctx->monitorPixelScale);
+            int paddingLeft = ceil(this->getPaddings().left * ctx->monitorPixelScale);
+            child.position = {paddingLeft, paddingTop};
 
-            int childWidth = size.width - (this->getPaddingLeft() + this->getPaddingRight());
-            int childHeight = size.height - (this->getPaddingTop() + this->getPaddingBottom());
+            int childWidth = size.width - paddingLeft - paddingRight;
+            int childHeight = size.height - paddingTop - paddingBottom;
             child.size = {childWidth, childHeight};
 
             children.push_back(child);

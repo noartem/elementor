@@ -44,20 +44,19 @@ namespace elementor {
     }
 
     Background *Background::setChild(Element *child) {
-        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    Size Background::getSize(Boundaries boundaries) {
+    Size Background::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild(this->context)->getSize(boundaries);
+            return this->getChild()->getSize(ctx, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    void Background::paintBackground(SkCanvas *canvas, ElementRect rect) {
+    void Background::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->color);
 
@@ -65,12 +64,12 @@ namespace elementor {
         canvas->drawRect(skRect, paint);
     }
 
-    std::vector <RenderElement> Background::getRenderChildren(Size size) {
+    std::vector <RenderElement> Background::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
             child.position = {0, 0};
             child.size = size;
 

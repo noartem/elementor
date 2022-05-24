@@ -44,11 +44,11 @@ namespace elementor {
 
         Border *setChild(Element *child);
 
-        Size getSize(Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        void paintBackground(SkCanvas *canvas, ElementRect rect);
+        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect);
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         float width = 0.0;

@@ -5,14 +5,15 @@
 #include "Application.h"
 
 namespace elementor {
-    void Application::draw(SkCanvas *canvas, ApplicationContext context) {
+    void Application::draw(ApplicationContext *ctx, SkCanvas *canvas) {
         this->eventListeners.clear();
+
+        ctx->root = this->root;
 
         RenderElement rootElement;
         rootElement.position = {0, 0};
-        rootElement.size = context.windowSize;
+        rootElement.size = ctx->windowSize;
         rootElement.element = this->root;
-        rootElement.element->context = &context;
 
         ElementRect rootRect;
         rootRect.position = rootElement.position;
@@ -24,10 +25,10 @@ namespace elementor {
         rootBoundary.position = rootElement.position;
         rootBoundary.size = rootElement.size;
 
-        this->drawElement(canvas, &rootElement, rootRect, rootBoundary);
+        this->drawElement(ctx, canvas, &rootElement, rootRect, rootBoundary);
     }
 
-    void Application::drawElement(SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary) {
+    void Application::drawElement(ApplicationContext *ctx, SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary) {
         this->saveElementEventListeners(element->element);
 
         canvas->save();
@@ -39,9 +40,9 @@ namespace elementor {
             canvas->clipRect(SkRect::MakeWH(boundary.size.width, boundary.size.height), SkClipOp::kIntersect, clipBehavior == ClipBehavior::Hard);
         }
 
-        element->element->paintBackground(canvas, rect);
+        element->element->paintBackground(ctx, canvas, rect);
 
-        for (RenderElement child: element->element->getRenderChildren(element->size)) {
+        for (RenderElement child: element->element->getRenderChildren(ctx, element->size)) {
             ElementRect childRect;
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;
@@ -50,7 +51,7 @@ namespace elementor {
             childRect.size = child.size;
             childRect.inParentPosition = child.position;
 
-            this->drawElement(canvas, &child, childRect, boundary);
+            this->drawElement(ctx, canvas, &child, childRect, boundary);
         }
 
         canvas->restore();

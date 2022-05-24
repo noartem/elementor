@@ -24,9 +24,9 @@ namespace elementor {
 
         Sized *setChild(Element *child);
 
-        Size getSize(Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
     private:
         float width = 0;

@@ -31,34 +31,33 @@ namespace elementor {
     }
 
     Rounded *Rounded::setChild(Element *child) {
-        child->context = context;
         this->updateChild(child);
         return this;
     }
 
-    void Rounded::paintBackground(SkCanvas *canvas, ElementRect rect) {
+    void Rounded::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        float radiusX = this->radiusX * this->context->monitorPixelScale;
-        float radiusY = this->radiusY * this->context->monitorPixelScale;
+        float radiusX = this->radiusX * ctx->monitorPixelScale;
+        float radiusY = this->radiusY * ctx->monitorPixelScale;
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
         canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
     }
 
-    Size Rounded::getSize(Boundaries boundaries) {
+    Size Rounded::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild(this->context)->getSize(boundaries);
+            return this->getChild()->getSize(ctx, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> Rounded::getRenderChildren(Size size) {
+    std::vector <RenderElement> Rounded::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
             child.size = size;
             child.position = {0, 0};
 

@@ -85,15 +85,14 @@ namespace elementor {
     }
 
     Border *Border::setChild(Element *child) {
-        child->context = this->context;
         this->updateChild(child);
         return this;
     }
 
-    Size Border::getSize(Boundaries boundaries) {
+    Size Border::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            int borderWidth = ceil(this->getWidth() * this->context->monitorPixelScale);
-            Size childSize = this->getChild(this->context)->getSize(boundaries);
+            int borderWidth = ceil(this->getWidth() * ctx->monitorPixelScale);
+            Size childSize = this->getChild()->getSize(ctx, boundaries);
             int width = childSize.width + 2 * borderWidth;
             int height = childSize.height + 2 * borderWidth;
             return fitSizeInBoundaries({width, height}, boundaries);
@@ -102,7 +101,7 @@ namespace elementor {
         }
     }
 
-    void Border::paintBackground(SkCanvas *canvas, ElementRect rect) {
+    void Border::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->getColor());
         paint.setStrokeWidth(this->getWidth());
@@ -122,21 +121,21 @@ namespace elementor {
         }
 
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        float radiusX = this->radiusX * this->context->monitorPixelScale;
-        float radiusY = this->radiusY * this->context->monitorPixelScale;
+        float radiusX = this->radiusX * ctx->monitorPixelScale;
+        float radiusY = this->radiusY * ctx->monitorPixelScale;
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
         canvas->drawRRect(skRRect, paint);
     }
 
-    std::vector <RenderElement> Border::getRenderChildren(Size size) {
+    std::vector <RenderElement> Border::getRenderChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
-            child.element = this->getChild(this->context);
+            child.element = this->getChild();
 
-            int borderWidth = ceil(this->getWidth() * this->context->monitorPixelScale);
+            int borderWidth = ceil(this->getWidth() * ctx->monitorPixelScale);
             child.position = {borderWidth, borderWidth};
 
             int childWidth = size.width - 2 * borderWidth;

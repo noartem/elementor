@@ -58,9 +58,9 @@ namespace elementor {
         return this->fontSize;
     }
 
-    Size Label::getSize(Boundaries boundaries) {
+    Size Label::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         SkFont font;
-        font.setSize(this->fontSize * this->context->monitorPixelScale);
+        font.setSize(this->fontSize * ctx->monitorPixelScale);
 
         SkRect textBounds;
         font.measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds);
@@ -70,9 +70,9 @@ namespace elementor {
         return {width, height};
     }
 
-    void Label::paintBackground(SkCanvas *canvas, ElementRect rect) {
+    void Label::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         SkFont font;
-        font.setSize(this->fontSize * this->context->monitorPixelScale);
+        font.setSize(this->fontSize * ctx->monitorPixelScale);
 
         SkPaint paint;
         paint.setColor(this->getFontColor());

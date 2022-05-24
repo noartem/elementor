@@ -43,18 +43,13 @@ namespace elementor {
         return ((float)monitorSize.width / (float)monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
-    ApplicationContext Platform::makeApplicationContext() {
-        Size windowSize = this->getWindowSize();
-        Size monitorPhysicalSize = this->getMonitorPhysicalSize();
-        float monitorPixelScale = this->calcMonitorPixelScale(monitorPhysicalSize);
-        return {windowSize, monitorPhysicalSize, monitorPixelScale};
-    }
-
     void Platform::refresh() {
-        Size windowSize = this->getWindowSize();
-        Size monitorPhysicalSize = this->getMonitorPhysicalSize();
-        float monitorPixelScale = this->calcMonitorPixelScale(monitorPhysicalSize);
-        this->applicationContext = {windowSize, monitorPhysicalSize, monitorPixelScale};
+        ApplicationContext applicationContext;
+        applicationContext.windowSize = this->getWindowSize();
+        applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
+        applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
+        applicationContext.root = NULL;
+        this->applicationContext = applicationContext;
 
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
@@ -65,14 +60,14 @@ namespace elementor {
         }
 
         // create skia canvas
-        GrBackendRenderTarget backendRenderTarget(windowSize.width, windowSize.height, 0, 0, framebufferInfo);
+        GrBackendRenderTarget backendRenderTarget(applicationContext.windowSize.width, applicationContext.windowSize.height, 0, 0, framebufferInfo);
         this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }
 
     void Platform::draw() {
         this->skiaCanvas->clear(SK_ColorBLACK);
-        this->application->draw(this->skiaCanvas, this->applicationContext);
+        this->application->draw(&this->applicationContext, this->skiaCanvas);
 
         this->skiaContext->flush();
         glfwSwapBuffers(this->window);

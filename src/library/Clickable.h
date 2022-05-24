@@ -27,11 +27,11 @@ namespace elementor {
 
         Clickable *setChild(Element *child);
 
-        Size getSize(Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
-        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector <RenderElement> getRenderChildren(Size size) override;
+        std::vector <RenderElement> getRenderChildren(ApplicationContext *ctx, Size size) override;
 
         EventCallbackResponse onEvent(EventMouseMove *event);
 

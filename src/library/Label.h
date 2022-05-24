@@ -28,9 +28,9 @@ namespace elementor {
 
         float getFontSize();
 
-        Size getSize(Boundaries boundaries) override;    
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;    
 
-        void paintBackground(SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
     private:
         std::string text;
