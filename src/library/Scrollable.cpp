@@ -71,6 +71,20 @@ namespace elementor {
     }
 
     void Scrollable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+        if (this->rect.size.height != rect.size.height || this->rect.size.width != rect.size.width) {
+            if (this->direction == ScrollDirection::Horizontal || this->direction == ScrollDirection::Both) {
+                if (rect.size.width + this->getScrollLeft() > this->childSize.width && this->childSize.width > rect.size.width) {
+                    this->scrollLeft = this->childSize.width - rect.size.width;
+                }
+            }
+
+            if (this->direction == ScrollDirection::Vertical || this->direction == ScrollDirection::Both) {
+                if (rect.size.height + this->getScrollTop() > this->childSize.height && this->childSize.height > rect.size.height) {
+                    this->scrollTop = this->childSize.height - rect.size.height;
+                }
+            }
+        }
+
         this->ctx = ctx;
         this->rect = rect;
     }
