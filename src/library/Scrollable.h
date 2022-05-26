@@ -8,8 +8,6 @@
 #include "Element.h"
 #include "Event.h"
 
-#include <functional>
-
 namespace elementor {
     enum class ScrollDirection {
         Vertical,

@@ -5,6 +5,7 @@
 #include "Scrollable.h"
 
 #include <climits>
+#include <iostream>
 
 namespace elementor {
     Scrollable *scrollable() {
@@ -39,11 +40,19 @@ namespace elementor {
     }
 
     float Scrollable::getScrollHeight() {
-        return this->childSize.height;
+        if (this->childSize.height == 0) {
+            return 0;
+        } else {
+            return this->childSize.height / this->ctx->monitorPixelScale;
+        }
     }
 
     float Scrollable::getScrollWidth() {
-        return this->childSize.width;
+        if (this->childSize.width == 0) {
+            return 0;
+        } else {
+            return this->childSize.width / this->ctx->monitorPixelScale;
+        }
     }
 
     Scrollable *Scrollable::setScrollAcceleration(float scrollAcceleration) {
