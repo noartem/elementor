@@ -41,6 +41,8 @@ namespace elementor {
 
         Scrollable *setChild(Element *child);
 
+        Size getChildSize(ApplicationContext *ctx, Boundaries boundaries);
+
         Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
