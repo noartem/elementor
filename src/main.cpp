@@ -19,6 +19,7 @@
 #include "./library/Scrollable.h"
 #include "./library/Column.h"
 #include "./library/Row.h"
+#include "./library/Scrollbar.h"
 
 using namespace elementor;
 
@@ -392,12 +393,26 @@ Element *button(std::string text) {
         ->onLeave([buttonBackground] () { buttonBackground->setColor("#0065FB"); });
 }
 
+Element *scrollTrack() {
+    return sized()
+        ->setSize(12)
+        ->setChild(background()
+            ->setColor("#F1F1F1"));
+}
+
+Element *scrollThumb() {
+    return background()
+        ->setColor("#C1C1C1");
+}
+
 void exampleScroll() {
-    Element *scene = align()
-        ->setAlignment(Alignment::Center)
+    Element *scene = scrollbar()
+        ->setScrollTrack(scrollTrack)
+        ->setScrollThumb(scrollThumb)
         ->setChild(scrollable()
+            ->setDirection(ScrollDirection::Vertical)
             ->setChild(padding()
-                ->setPaddings(12)
+                ->setPaddings(12, 18)
                 ->setChild(column()
                     ->setSpacing(12)
                     ->setAlignment(ColumnAlignment::Center)
