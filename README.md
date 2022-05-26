@@ -23,6 +23,7 @@
 
 ## TODO
 
+* INT_MAX -> inf
 * Scroll
     * Исправить scroll на тачпаде
     * Добавить scrollbar
