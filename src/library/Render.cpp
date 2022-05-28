@@ -38,4 +38,11 @@ namespace elementor {
     bool ElementRect::visibleContains(Position point) {
         return this->visibleContains(point.x, point.y);
     }
+
+    Position ElementRect::absolutePositionToContained(Position absoulutePosition) {
+        return {
+            absoulutePosition.x - this->position.x,
+            absoulutePosition.y - this->position.y,
+        };
+    }
 }

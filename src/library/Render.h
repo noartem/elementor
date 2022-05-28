@@ -44,6 +44,8 @@ namespace elementor {
         bool visibleContains(int x, int y);
 
         bool visibleContains(Position point);
+
+        Position absolutePositionToContained(Position absolutePosition);
     };
 }
 
