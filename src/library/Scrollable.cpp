@@ -5,7 +5,6 @@
 #include "Scrollable.h"
 
 #include <climits>
-#include <iostream>
 
 namespace elementor {
     Scrollable *scrollable() {
@@ -21,18 +20,42 @@ namespace elementor {
         return this->direction;
     }
 
+    bool Scrollable::isHorizontalScroll() {
+        return this->getDirection() == ScrollDirection::Horizontal || this->getDirection() == ScrollDirection::Both;
+    }
+
+    bool Scrollable::isVerticalScroll() {
+        return this->getDirection() == ScrollDirection::Vertical || this->getDirection() == ScrollDirection::Both;
+    }
+
+    float Scrollable::getHeight() {
+        return this->rect.size.height / this->ctx->monitorPixelScale;
+    }
+
+    float Scrollable::getWidth() {
+        return this->rect.size.width / this->ctx->monitorPixelScale;
+    }
+
+    float Scrollable::getMaxScrollLeft() {
+        return std::max(this->childSize.width - this->rect.size.width, 0) / this->ctx->monitorPixelScale;
+    }
+
+    float Scrollable::getMaxScrollTop() {
+        return std::max(this->childSize.height - this->rect.size.height, 0) / this->ctx->monitorPixelScale;
+    }
+
+    Scrollable *Scrollable::setScrollLeft(float scrollLeft) {
+        this->scrollLeft = std::min(std::max(scrollLeft, (float) 0), this->getMaxScrollLeft());
+        return this;
+    }
+
     Scrollable *Scrollable::setScrollTop(float scrollTop) {
-        this->scrollTop = scrollTop;
+        this->scrollTop = std::min(std::max(scrollTop, (float) 0), this->getMaxScrollTop());
         return this;
     }
 
     float Scrollable::getScrollTop() {
         return this->scrollTop;
-    }
-
-    Scrollable *Scrollable::setScrollLeft(float scrollLeft) {
-        this->scrollLeft = scrollLeft;
-        return this;
     }
 
     float Scrollable::getScrollLeft() {
@@ -98,13 +121,13 @@ namespace elementor {
         this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
 
         if (rect.size.height != oldRect.size.height || rect.size.width != oldRect.size.width) {
-            if (this->direction == ScrollDirection::Horizontal || this->direction == ScrollDirection::Both) {
+            if (this->isHorizontalScroll()) {
                 if (rect.size.width + this->getScrollLeft() > this->childSize.width) {
                     this->scrollLeft = std::max(this->childSize.width - rect.size.width, 0);
                 }
             }
 
-            if (this->direction == ScrollDirection::Vertical || this->direction == ScrollDirection::Both) {
+            if (this->isVerticalScroll()) {
                 if (rect.size.height + this->getScrollTop() > this->childSize.height) {
                     this->scrollTop = std::max(this->childSize.height - rect.size.height, 0);
                 }
@@ -139,8 +162,8 @@ namespace elementor {
 
     EventCallbackResponse Scrollable::onEvent(EventScroll *event) {
         if (this->hovered) {
-            if (event->xOffset != 0 && (this->direction == ScrollDirection::Horizontal || this->direction == ScrollDirection::Both)) {
-                int maxScrollLeft = std::max(this->childSize.width - this->rect.size.width, 0);
+            if (event->xOffset != 0 && this->isHorizontalScroll()) {
+                int maxScrollLeft = ceil(this->getMaxScrollLeft() * this->ctx->monitorPixelScale);
                 int realScrollLeft = ceil(this->getScrollLeft() * this->ctx->monitorPixelScale);
                 if (event->xOffset < 0 && realScrollLeft == maxScrollLeft || event->xOffset > 0 && realScrollLeft == 0) {
                     return EventCallbackResponse::None;
@@ -150,8 +173,8 @@ namespace elementor {
                 }
             }
 
-            if (event->yOffset != 0 && (this->direction == ScrollDirection::Vertical || this->direction == ScrollDirection::Both)) {
-                int maxScrollTop = std::max(this->childSize.height - this->rect.size.height, 0);
+            if (event->yOffset != 0 && this->isVerticalScroll()) {
+                int maxScrollTop = ceil(this->getMaxScrollTop() * this->ctx->monitorPixelScale);
                 int realScrollTop = ceil(this->getScrollTop() * this->ctx->monitorPixelScale);
                 if (event->yOffset < 0 && realScrollTop == maxScrollTop || event->yOffset > 0 && realScrollTop == 0) {
                     return EventCallbackResponse::None;

@@ -11,6 +11,15 @@
 #include <functional>
 
 namespace elementor {
+    enum class ScrollbarPosition {
+        InContent,
+        OnTop,
+    };
+
+    enum class ScrollbarVisible {
+        WhenNeeded,
+        Always,
+    };
 
     class Scrollbar : public Element {
     public:
@@ -21,6 +30,14 @@ namespace elementor {
         Scrollbar *setScrollThumb(std::function<Element *()> scrollThumb);
 
         std::function<Element *()> getScrollThumb();
+
+        Scrollbar *setPosition(ScrollbarPosition position);
+
+        ScrollbarPosition getPosition();
+
+        Scrollbar *setVisible(ScrollbarVisible visible);
+
+        ScrollbarVisible getVisible();
 
         Scrollbar *setChild(Scrollable *child);
 
@@ -33,9 +50,22 @@ namespace elementor {
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
     private:
+        ApplicationContext *ctx;
+        ScrollbarPosition position = ScrollbarPosition::InContent;
+        ScrollbarVisible visible = ScrollbarVisible::WhenNeeded;
         Scrollable *child;
+        Element *trackX;
+        Element *thumbX;
+        Element *trackY;
+        Element *thumbY;
         std::function<Element *()> scrollTrack;
         std::function<Element *()> scrollThumb;
+
+        void scrollToX(int x);
+
+        void scrollToY(int y);
+
+        void initChild();
     };
 
     Scrollbar *scrollbar();

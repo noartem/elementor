@@ -21,6 +21,18 @@ namespace elementor {
 
         ScrollDirection getDirection();
 
+        bool isHorizontalScroll();
+
+        bool isVerticalScroll();
+
+        float getHeight();
+
+        float getWidth();
+
+        float getMaxScrollLeft();
+
+        float getMaxScrollTop();
+
         Scrollable *setScrollTop(float scrollTop);
 
         float getScrollTop();
