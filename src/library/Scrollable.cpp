@@ -4,8 +4,6 @@
 
 #include "Scrollable.h"
 
-#include <climits>
-
 namespace elementor {
     Scrollable *scrollable() {
         return new Scrollable();
@@ -45,12 +43,12 @@ namespace elementor {
     }
 
     Scrollable *Scrollable::setScrollLeft(float scrollLeft) {
-        this->scrollLeft = std::min(std::max(scrollLeft, (float) 0), this->getMaxScrollLeft());
+        this->scrollLeft = std::min(std::max(scrollLeft, ZERO), this->getMaxScrollLeft());
         return this;
     }
 
     Scrollable *Scrollable::setScrollTop(float scrollTop) {
-        this->scrollTop = std::min(std::max(scrollTop, (float) 0), this->getMaxScrollTop());
+        this->scrollTop = std::min(std::max(scrollTop, ZERO), this->getMaxScrollTop());
         return this;
     }
 
@@ -93,7 +91,7 @@ namespace elementor {
     }
 
     Size Scrollable::getChildSize(ApplicationContext *ctx, Boundaries boundaries) {
-        Boundaries childBoundaries = {{0, 0}, {INT_MAX, INT_MAX}};
+        Boundaries childBoundaries = {{0, 0}, {INF, INF}};
         if (this->direction == ScrollDirection::Horizontal) {
             childBoundaries.min.height = boundaries.max.height;
             childBoundaries.max.height = boundaries.max.height;

@@ -5,7 +5,12 @@
 #ifndef ELEMENTOR_RENDER_H
 #define ELEMENTOR_RENDER_H
 
+#include <climits>
+
 namespace elementor {
+    #define ZERO (float) 0
+    #define INF INT_MAX
+
     struct Position {
         int x;
         int y;

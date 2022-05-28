@@ -4,8 +4,6 @@
 
 #include "Column.h"
 
-#include <climits>
-
 namespace elementor {
     Column *column() {
         return new Column();
@@ -40,7 +38,7 @@ namespace elementor {
         int maxWidth = 0;
         int totalHeight = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, {INT_MAX, INT_MAX}});
+            Size childSize = childElement->getSize(ctx, {{0, 0}, {INF, INF}});
             maxWidth = std::max(childSize.width, maxWidth);
             totalHeight += childSize.height + spacing;
         }
@@ -57,7 +55,7 @@ namespace elementor {
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{0, 0}, {INT_MAX, INT_MAX}});
+            child.size = child.element->getSize(ctx, {{0, 0}, {INF, INF}});
 
             child.position.y = yPosition;
             yPosition += child.size.height + spacing;

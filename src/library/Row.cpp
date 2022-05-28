@@ -4,8 +4,6 @@
 
 #include "Row.h"
 
-#include <climits>
-
 namespace elementor {
     Row *row() {
         return new Row();
@@ -40,7 +38,7 @@ namespace elementor {
         int maxHeight = 0;
         int totalWidth = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, {INT_MAX, INT_MAX}});
+            Size childSize = childElement->getSize(ctx, {{0, 0}, {INF, INF}});
             maxHeight = std::max(childSize.height, maxHeight);
             totalWidth += childSize.width + spacing;
         }
@@ -57,7 +55,7 @@ namespace elementor {
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{0, 0}, {INT_MAX, INT_MAX}});
+            child.size = child.element->getSize(ctx, {{0, 0}, {INF, INF}});
 
             child.position.x = xPosition;
             xPosition += child.size.width + spacing;
