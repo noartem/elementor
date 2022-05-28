@@ -33,7 +33,7 @@ namespace elementor {
 
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
-        EventCallbackResponse onEvent(EventMouseMove *event);
+        EventCallbackResponse onEvent(EventMouseMove *event) override;
 
     private:
         ElementRect rect;

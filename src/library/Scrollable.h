@@ -59,11 +59,11 @@ namespace elementor {
 
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
-        ClipBehavior getClipBehaviour();
+        ClipBehavior getClipBehaviour() override;
 
-        EventCallbackResponse onEvent(EventMouseMove *event);
+        EventCallbackResponse onEvent(EventMouseMove *event) override;
 
-        EventCallbackResponse onEvent(EventScroll *event);
+        EventCallbackResponse onEvent(EventScroll *event) override;
 
     private:
         ScrollDirection direction = ScrollDirection::Both;

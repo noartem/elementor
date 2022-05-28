@@ -26,11 +26,11 @@ namespace elementor {
 
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
-        ClipBehavior getClipBehaviour();
+        ClipBehavior getClipBehaviour() override;
 
     private:
-        float radiusX = 10;
-        float radiusY = 10;
+        float radiusX;
+        float radiusY;
     };
 
     Rounded *rounded();
