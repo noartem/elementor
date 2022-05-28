@@ -13,15 +13,15 @@
 namespace elementor {
     class Clickable : public Element, public WithOnMouseButton, public WithOnMouseMove, WithChild {
     public:
-        Clickable *onButton(std::function<EventCallbackResponse(EventMouseButton *event)> callback);
+        Clickable *onButton(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
 
-        Clickable *onButton(std::function<void (EventMouseButton *event)> callback);
+        Clickable *onButton(std::function<void ()> callback);
 
-        Clickable *onClick(std::function<EventCallbackResponse()> callback);
+        Clickable *onClick(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
 
         Clickable *onClick(std::function<void ()> callback);
 
-        Clickable *onRightClick(std::function<EventCallbackResponse()> callback);
+        Clickable *onRightClick(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
 
         Clickable *onRightClick(std::function<void ()> callback);
 
@@ -39,10 +39,11 @@ namespace elementor {
 
     private:
         ElementRect rect;
+        Position cursorPosition;
         bool hovered;
-        std::function<EventCallbackResponse (EventMouseButton *event)> callbackButton;
-        std::function<EventCallbackResponse ()> callbackClick;
-        std::function<EventCallbackResponse ()> callbackRightClick;
+        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackButton;
+        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackClick;
+        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackRightClick;
     };
 
     Clickable *clickable();
