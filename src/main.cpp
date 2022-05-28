@@ -395,14 +395,18 @@ Element *button(std::string text) {
 
 Element *scrollTrack() {
     return sized()
-        ->setSize(12)
+        ->setSize(16)
         ->setChild(background()
             ->setColor("#F1F1F1"));
 }
 
 Element *scrollThumb() {
-    return background()
-        ->setColor("#C1C1C1");
+    return padding()
+        ->setPaddings(4)
+        ->setChild(rounded()
+            ->setRadius(8)
+            ->setChild(background()
+                ->setColor("#C1C1C1")));
 }
 
 void exampleScroll() {
