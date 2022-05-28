@@ -38,7 +38,7 @@ namespace elementor {
         int maxWidth = 0;
         int totalHeight = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, {INF, INF}});
+            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
             maxWidth = std::max(childSize.width, maxWidth);
             totalHeight += childSize.height + spacing;
         }
@@ -55,7 +55,7 @@ namespace elementor {
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{0, 0}, {INF, INF}});
+            child.size = child.element->getSize(ctx, {{0, 0}, size});
 
             child.position.y = yPosition;
             yPosition += child.size.height + spacing;
