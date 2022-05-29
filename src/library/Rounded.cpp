@@ -11,23 +11,38 @@ namespace elementor {
         return new Rounded();
     }
 
-    Rounded *Rounded::setRadius(float radiusX, float radiusY) {
-        this->radiusX = radiusX;
-        this->radiusY = radiusY;
+    Rounded *Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
+        this->radiusTopLeft = radiusTopLeft;
+        this->radiusTopRight = radiusTopRight;
+        this->radiusBottomLeft = radiusBottomLeft;
+        this->radiusBottomRight = radiusBottomRight;
         return this;
     }
 
-    Rounded *Rounded::setRadius(float radiusXY) {
-        this->setRadius(radiusXY, radiusXY);
+    Rounded *Rounded::setRadius(float radiusLeft, float radiusRight) {
+        this->setRadius(radiusLeft, radiusRight, radiusRight, radiusLeft);
         return this;
     }
 
-    float Rounded::getRadiusX() {
-        return this->radiusX;
+    Rounded *Rounded::setRadius(float radius) {
+        this->setRadius(radius, radius);
+        return this;
     }
 
-    float Rounded::getRadiusY() {
-        return this->radiusY;
+    float Rounded::getRadiusTopLeft() {
+        return this->radiusTopLeft;
+    }
+
+    float Rounded::getRadiusTopRight() {
+        return this->radiusTopRight;
+    }
+
+    float Rounded::getRadiusBottomLeft() {
+        return this->radiusBottomLeft;
+    }
+
+    float Rounded::getRadiusBottomRight() {
+        return this->radiusBottomRight;
     }
 
     Rounded *Rounded::setChild(Element *child) {
@@ -36,10 +51,15 @@ namespace elementor {
     }
 
     void Rounded::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+        float topLeft = this->getRadiusTopLeft() * ctx->monitorPixelScale;
+        float topRight = this->getRadiusTopRight() * ctx->monitorPixelScale;
+        float bottomRight = this->getRadiusBottomRight() * ctx->monitorPixelScale;
+        float bottomLeft = this->getRadiusBottomLeft() * ctx->monitorPixelScale;
+        SkVector corners[] = {{topLeft, topLeft}, {topRight, topRight}, {bottomRight, bottomRight}, {bottomLeft, bottomLeft}};
+
+        SkRRect skRRect;
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        float radiusX = this->radiusX * ctx->monitorPixelScale;
-        float radiusY = this->radiusY * ctx->monitorPixelScale;
-        SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
+        skRRect.setRectRadii(skRect, corners);
 
         canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
     }

@@ -10,13 +10,19 @@
 namespace elementor {
     class Rounded : public Element, WithChild {
     public:
-        Rounded *setRadius(float radiusX, float radiusY);
+        Rounded *setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomLeft, float radiusBottomRight);
 
-        Rounded *setRadius(float radiusXY);
+        Rounded *setRadius(float radiusLeft, float radiusRight);
 
-        float getRadiusX();
+        Rounded *setRadius(float radius);
 
-        float getRadiusY();
+        float getRadiusTopLeft();
+
+        float getRadiusTopRight();
+
+        float getRadiusBottomLeft();
+
+        float getRadiusBottomRight();
 
         Rounded *setChild(Element *child);
 
@@ -29,8 +35,10 @@ namespace elementor {
         ClipBehavior getClipBehaviour() override;
 
     private:
-        float radiusX;
-        float radiusY;
+        float radiusTopLeft;
+        float radiusTopRight;
+        float radiusBottomLeft;
+        float radiusBottomRight;
     };
 
     Rounded *rounded();
