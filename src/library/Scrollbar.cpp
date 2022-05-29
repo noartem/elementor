@@ -107,6 +107,7 @@ namespace elementor {
             RenderElement child;
             child.element = this->child;
             child.position = {0, 0};
+            this->child->getSize(ctx, {size, size});
 
             ScrollDirection scrollDirection = this->child->getDirection();
 
@@ -131,7 +132,7 @@ namespace elementor {
                     children.push_back(track);
                 }
 
-                if (this->thumbX) {
+                if (this->thumbX && scrollWidth > size.width) {
                     RenderElement thumb;
                     thumb.element = this->thumbX;
 

@@ -74,6 +74,8 @@ namespace elementor {
         float scrollAcceleration = 16.0;
         Size childSize;
         bool hovered;
+
+        float getMonitorPixelScale();
     };
 
     Scrollable *scrollable();
