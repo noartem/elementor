@@ -91,12 +91,10 @@ namespace elementor {
     }
 
     Size Scrollable::getChildSize(ApplicationContext *ctx, Boundaries boundaries) {
-        Boundaries childBoundaries = {{0, 0}, {INF, INF}};
+        Boundaries childBoundaries = {boundaries.min, {INF, INF}};
         if (this->direction == ScrollDirection::Horizontal) {
-            childBoundaries.min.height = boundaries.max.height;
             childBoundaries.max.height = boundaries.max.height;
         } else if (this->direction == ScrollDirection::Vertical) {
-            childBoundaries.min.width = boundaries.max.width;
             childBoundaries.max.width = boundaries.max.width;
         }
 
@@ -107,7 +105,7 @@ namespace elementor {
         if (this->hasChild()) {
             return fitSizeInBoundaries(this->getChildSize(ctx, boundaries), boundaries);
         } else {
-            return boundaries.min;
+            return boundaries.max;
         }
     }
 
