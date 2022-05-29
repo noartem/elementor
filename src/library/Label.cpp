@@ -67,7 +67,7 @@ namespace elementor {
 
         int width = std::min(std::max((int) ceil(textBounds.width()), boundaries.min.width), boundaries.max.width);
         int height = std::min(std::max((int) ceil(textBounds.height()), boundaries.min.height), boundaries.max.height);
-        return {width, height};
+        return fitSizeInBoundaries({width, height}, boundaries);
     }
 
     void Label::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
