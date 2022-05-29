@@ -23,6 +23,11 @@
 
 ## TODO
 
+* include все элементы
+* align -> alignHeight, alignWidth
+* sized -> width, height
+* stretchWidth, stretchHeight - "расстягивает" - делает boundaries.min = boundaries.max
+* еще раз посмотреть скролл для examples
 * Examples gallery - все в одном месте, переключение по клику
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
@@ -36,4 +41,4 @@
 * Image?
 * BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
 * Debug
-* UI elements: beaty button, text input with text selection
+* UI elements: beauty button, text input with text selection
