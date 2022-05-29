@@ -102,6 +102,7 @@ namespace elementor {
     }
 
     Size Scrollable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
         return boundaries.max;
     }
 
@@ -110,7 +111,6 @@ namespace elementor {
 
         this->ctx = ctx;
         this->rect = rect;
-        this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
 
         if (rect.size.height != oldRect.size.height || rect.size.width != oldRect.size.width) {
             if (this->isHorizontalScroll()) {
