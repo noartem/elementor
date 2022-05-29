@@ -107,7 +107,7 @@ namespace elementor {
             RenderElement child;
             child.element = this->child;
             child.position = {0, 0};
-            this->child->getSize(ctx, {size, size});
+            Size childSize = this->child->getSize(ctx, {size, size});
 
             ScrollDirection scrollDirection = this->child->getDirection();
 
@@ -116,7 +116,7 @@ namespace elementor {
             int scrollTop = ceil(this->child->getScrollTop() * ctx->monitorPixelScale);
             int scrollLeft = ceil(this->child->getScrollLeft() * ctx->monitorPixelScale);
 
-            int childHeight = size.height;
+            int childHeight = childSize.height;
             if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > size.width)) {
                 int trackHeight = 0;
 
@@ -151,7 +151,7 @@ namespace elementor {
                 }
             }
 
-            int childWidth = size.width;
+            int childWidth = childSize.width;
             if (this->child->isVerticalScroll() && (this->visible == ScrollbarVisible::Always || scrollHeight > size.height)) {
                 int trackWidth = 0;
 
@@ -189,7 +189,7 @@ namespace elementor {
             if (this->position == ScrollbarPosition::InContent) {
                 child.size = {childWidth, childHeight};
             } else {
-                child.size = size;
+                child.size = childSize;
             }
 
             children.push_back(child);
