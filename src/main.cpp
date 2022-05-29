@@ -419,7 +419,6 @@ void exampleScroll() {
                 ->setPaddings(12, 18)
                 ->setChild(column()
                     ->setSpacing(12)
-                    ->setAlignment(ColumnAlignment::Center)
                     ->appendChild(button("Text"))
                     ->appendChild(button("Apply"))
                     ->appendChild(button("Lorem Ipsum"))
