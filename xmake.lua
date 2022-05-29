@@ -25,12 +25,6 @@ target("examples")
     add_packages("skia", "glfw")
     add_files("src/examples/*.cpp")
 
-target("elementor-test")
-    set_kind("binary")
-    add_deps("elementor")
-    add_packages("skia", "glfw")
-    add_files("src/*.cpp")
-
 target("tests")
     set_kind("binary")
     add_packages("doctest")
