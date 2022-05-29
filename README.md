@@ -16,9 +16,9 @@
     ```bash
     xmake build
     ```
-5. Run example
+5. Check out examples
     ```bash
-    xmake run elementor-test
+    xmake run examples
     ```
 
 ## TODO
