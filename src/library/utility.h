@@ -14,6 +14,7 @@
 #include "Clickable.h"
 #include "Column.h"
 #include "Element.h"
+#include "Empty.h"
 #include "Event.h"
 #include "Flex.h"
 #include "Flexible.h"
