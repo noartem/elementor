@@ -5,10 +5,12 @@
 #ifndef ELEMENTOR_UTILITY_H
 #define ELEMENTOR_UTILITY_H
 
-#include "Align.h"
+#include "AlignWidth.h"
+#include "AlignHeight.h"
 #include "Application.h"
 #include "Background.h"
 #include "Border.h"
+#include "Center.h"
 #include "Clickable.h"
 #include "Column.h"
 #include "Element.h"
