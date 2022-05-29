@@ -18,32 +18,21 @@ namespace elementor {
         return this->spacing;
     }
 
-    Row *Row::setAlignment(RowAlignment alignment) {
-        this->alignment = alignment;
-        return this;
-    }
-
-    RowAlignment Row::getAlignment() {
-        return this->alignment;
-    }
-
     Row *Row::appendChild(Element *child) {
         this->addChild(child);
         return this;
     }
 
     Size Row::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        int spacing = ceil(this->getSpacing() * ctx->monitorPixelScale);
-
-        int maxHeight = 0;
         int totalWidth = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
-            maxHeight = std::max(childSize.height, maxHeight);
-            totalWidth += childSize.width + spacing;
+            Size childSize = childElement->getSize(ctx, {{0, boundaries.max.height}, boundaries.max});
+            totalWidth += childSize.width;
         }
 
-        return fitSizeInBoundaries({totalWidth - spacing, maxHeight}, boundaries);
+        totalWidth += (this->getChildrenSize() - 1) * ceil(this->getSpacing() * ctx->monitorPixelScale);
+
+        return fitSizeInBoundaries({totalWidth, boundaries.max.height}, boundaries);
     }
 
     std::vector <RenderElement> Row::getChildren(ApplicationContext *ctx, Size size) {
@@ -55,18 +44,10 @@ namespace elementor {
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{0, 0}, size});
+            child.size = child.element->getSize(ctx, {{0, size.height}, size});
 
-            child.position.x = xPosition;
+            child.position = {xPosition, 0};
             xPosition += child.size.width + spacing;
-
-            if (this->getAlignment() == RowAlignment::Center) {
-                child.position.y = (size.height - child.size.height) / 2;
-            } else if (this->getAlignment() == RowAlignment::End) {
-                child.position.y = size.height - child.size.height;
-            } else {
-                child.position.y = 0;
-            }
 
             children.push_back(child);
         }
