@@ -40,14 +40,17 @@ namespace elementor {
 
     Size Padding::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            Size childSize = this->getChild()->getSize(ctx, boundaries);
             int paddingTop = ceil(this->getPaddings().top * ctx->monitorPixelScale);
-            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
             int paddingBottom = ceil(this->getPaddings().bottom * ctx->monitorPixelScale);
+            int paddingY = paddingTop + paddingBottom;
+
+            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
             int paddingLeft = ceil(this->getPaddings().left * ctx->monitorPixelScale);
-            int width = childSize.width + paddingLeft + paddingRight;
-            int height = childSize.height + paddingTop + paddingBottom;
-            return fitSizeInBoundaries({width, height}, boundaries);
+            int paddingX = paddingLeft + paddingRight;
+
+            Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
+            Size childSize = this->getChild()->getSize(ctx, childBoundaries);
+            return {childSize.width + paddingX, childSize.height + paddingY};
         } else {
             return boundaries.max;
         }
