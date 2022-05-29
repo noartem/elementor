@@ -30,7 +30,15 @@ int main() {
         new ExampleFlexCrossAlignment(),
     };
 
-    Background *activeExampleElement = background();
+    Empty *activeExampleElement = empty();
+
+    Label *activeExampleLabelName = label()
+        ->setFontColor("#062016")
+        ->setFontSize(16);
+
+    Label *activeExampleLabelDescription = label()
+        ->setFontColor("#3F4944")
+        ->setFontSize(14);
 
     Column *examplesList = column();
     for (Example *example : examples) {
@@ -50,39 +58,64 @@ int main() {
                                     ->setText(example->getName())))))
                     ->onEnter([buttonBackground] () { buttonBackground->setColor("#CDE8D9"); })
                     ->onLeave([buttonBackground] () { buttonBackground->setColor("#EDF5F0"); }))
-                ->onClick([example, activeExampleElement] () { activeExampleElement->setChild(example->getScene()); }));
+                ->onClick([example, activeExampleElement, activeExampleLabelName, activeExampleLabelDescription] () {
+                    activeExampleElement->setChild(example->getScene());
+                    activeExampleLabelName->setText(example->getName());
+                    activeExampleLabelDescription->setText(example->getDescription());
+                }));
     }
 
     Application *application = new Application();
     application->root = background()
         ->setColor("#FFFCF3")
         ->setChild(flex()
-            ->setSpacing(12)
             ->appendChild(flexible()
                 ->setGrow(1)
                 ->setChild(background()
                     ->setColor("#EDF5F0")
-                    ->setChild(scrollbar()
-                        ->setScrollTrack(scrollTrack)
-                        ->setScrollThumb(scrollThumb)
-                        ->setChild(scrollable()
-                            ->setDirection(ScrollDirection::Vertical)
-                            ->setChild(padding()
-                                ->setPaddings(18)
-                                ->setChild(scrollbar()
-                                    ->setChild(scrollable()
-                                        ->setDirection(ScrollDirection::Vertical)
-                                        ->setChild(examplesList))))))))
+                    ->setChild(flex()
+                        ->setDirection(FlexDirection::Column)
+                        ->appendChild(padding()
+                            ->setPaddings(12, 18)
+                            ->setChild(label()
+                                ->setFontColor("#062016")
+                                ->setFontSize(18)
+                                ->setText("Examples")))
+                        ->appendChild(flexible()
+                            ->setChild(scrollbar()
+                                ->setScrollTrack(scrollTrack)
+                                ->setScrollThumb(scrollThumb)
+                                ->setChild(scrollable()
+                                    ->setDirection(ScrollDirection::Vertical)
+                                    ->setChild(padding()
+                                        ->setPaddings(12, 18)
+                                        ->setChild(scrollbar()
+                                            ->setChild(scrollable()
+                                                ->setDirection(ScrollDirection::Vertical)
+                                                ->setChild(examplesList))))))))))
             ->appendChild(flexible()
                 ->setGrow(3)
-                ->setChild(scrollbar()
-                    ->setScrollTrack(scrollTrack)
-                    ->setScrollThumb(scrollThumb)
-                    ->setChild(scrollable()
-                        ->setDirection(ScrollDirection::Vertical)
-                        ->setChild(padding()
-                            ->setPaddings(18)
-                            ->setChild(activeExampleElement))))));
+                ->setChild(flex()
+                    ->setDirection(FlexDirection::Column)
+                    ->appendChild(padding()
+                        ->setPaddings(12, 18)
+                        ->setChild(column()
+                            ->setSpacing(8)
+                            ->appendChild(height()
+                                ->setHeight(16)
+                                ->setChild(activeExampleLabelName))
+                            ->appendChild(height()
+                                ->setHeight(14)
+                                ->setChild(activeExampleLabelDescription))))
+                    ->appendChild(flexible()
+                        ->setChild(scrollbar()
+                            ->setScrollTrack(scrollTrack)
+                            ->setScrollThumb(scrollThumb)
+                            ->setChild(scrollable()
+                                ->setDirection(ScrollDirection::Vertical)
+                                ->setChild(padding()
+                                    ->setPaddings(18)
+                                    ->setChild(activeExampleElement))))))));
 
     Platform *platform = new Platform();
     platform->title = "Elementor examples";
