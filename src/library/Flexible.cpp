@@ -30,7 +30,7 @@ namespace elementor {
             RenderElement child;
             child.element = this->getChild();
             child.position = {0, 0};
-            child.size = child.element->getSize(ctx, {{0, 0}, size});
+            child.size = size;
 
             children.push_back(child);
         }
