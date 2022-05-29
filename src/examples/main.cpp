@@ -120,6 +120,21 @@ class ExampleFlexChildren: public Example {
     }
 };
 
+Element *scrollTrack() {
+    return sized()->setSize(16, 16);
+}
+
+Element *scrollThumb() {
+    return sized()
+        ->setSize(16, 16)
+        ->setChild(padding()
+            ->setPaddings(4)
+            ->setChild(rounded()
+                ->setRadius(4)
+                ->setChild(background()
+                    ->setColor("#BBB9AE"))));
+}
+
 int main() {
     std::vector <Example *> examples;
     examples.push_back((Example *) new ExampleFlexChildren());
@@ -157,12 +172,17 @@ int main() {
                 ->setGrow(1)
                 ->setChild(background()
                     ->setColor("#F7F4E8")
-                    ->setChild(padding()
-                        ->setPaddings(18)
-                        ->setChild(scrollbar()
-                            ->setChild(scrollable()
-                                ->setDirection(ScrollDirection::Vertical)
-                                ->setChild(examplesList))))))
+                    ->setChild(scrollbar()
+                        ->setScrollTrack(scrollTrack)
+                        ->setScrollThumb(scrollThumb)
+                        ->setChild(scrollable()
+                            ->setDirection(ScrollDirection::Vertical)
+                            ->setChild(padding()
+                                ->setPaddings(18)
+                                ->setChild(scrollbar()
+                                    ->setChild(scrollable()
+                                        ->setDirection(ScrollDirection::Vertical)
+                                        ->setChild(examplesList))))))))
             ->appendChild(flexible()
                 ->setGrow(3)
                 ->setChild(padding()
