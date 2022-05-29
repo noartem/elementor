@@ -19,6 +19,12 @@ if is_plat("windows") then
     add_packages("glew")
 end
 
+target("examples")
+    set_kind("binary")
+    add_deps("elementor")
+    add_packages("skia", "glfw")
+    add_files("src/examples/*.cpp")
+
 target("elementor-test")
     set_kind("binary")
     add_deps("elementor")
