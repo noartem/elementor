@@ -9,30 +9,45 @@ std::string ExampleFlexAlignment::getName() {
 }
 
 std::string ExampleFlexAlignment::getDescription() {
-    return "Flex children can be aligned by two axis";
+    return "Flex children can be aligned by main axis";
 }
 
-Element *makeRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
-    return flexible()
+Element *exampleAlignment(FlexAlignment alignment) {
+    return height()
+        ->setHeight(192)
         ->setChild(flex()
-            ->setSpacing(16)
+            ->setSpacing(8)
             ->setAlignment(alignment)
-            ->setCrossAlignment(crossAlignment)
-            ->appendChild(sized()
-                ->setSize(280, 200)
-                ->setChild(background()
-                    ->setColor("#457b9d")))
-            ->appendChild(sized()
-                ->setSize(200, 80)
-                ->setChild(background()
-                    ->setColor("#a8dadc"))));
+            ->appendChild(width()
+                ->setWidth(128)
+                ->setChild(height()
+                    ->setHeight(96)
+                    ->setChild(rounded()
+                        ->setRadius(8)
+                        ->setChild(background()
+                            ->setColor("#CDE8D9")))))
+            ->appendChild(width()
+                ->setWidth(128)
+                ->setChild(height()
+                    ->setHeight(192)
+                    ->setChild(rounded()
+                        ->setRadius(8)
+                        ->setChild(background()
+                            ->setColor("#BEE8FA")))))
+            ->appendChild(width()
+                ->setWidth(96)
+                ->setChild(height()
+                    ->setHeight(128)
+                    ->setChild(rounded()
+                        ->setRadius(8)
+                        ->setChild(background()
+                            ->setColor("#CDE8D9"))))));
 }
 
 Element *ExampleFlexAlignment::getScene() {
-    return flex()
-        ->setSpacing(24)
-        ->setDirection(FlexDirection::Column)
-        ->appendChild(makeRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly))
-        ->appendChild(makeRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly))
-        ->appendChild(makeRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
+    return column()
+        ->setSpacing(12)
+        ->appendChild(exampleAlignment(FlexAlignment::Start))
+        ->appendChild(exampleAlignment(FlexAlignment::Center))
+        ->appendChild(exampleAlignment(FlexAlignment::End));
 }
