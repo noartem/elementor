@@ -11,7 +11,7 @@ namespace elementor {
 
     AlignWidth *AlignWidth::setCoef(float coef, float childCoef) {
         this->coef = coef;
-        this->childCoef = coef;
+        this->childCoef = childCoef;
         return this;
     }
 
@@ -50,7 +50,7 @@ namespace elementor {
             RenderElement child;
             child.element = this->getChild();
             child.size = child.element->getSize(ctx, {{0, size.height}, size});
-            child.position = {(int) ceil(this->coef * size.width - child.size.width * this->childCoef), 0};
+            child.position = {(int) ceil(size.width * this->coef - child.size.width * this->childCoef), 0};
 
             children.push_back(child);
         }
