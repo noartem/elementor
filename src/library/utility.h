@@ -15,6 +15,7 @@
 #include "Event.h"
 #include "Flex.h"
 #include "Flexible.h"
+#include "Height.h"
 #include "Hoverable.h"
 #include "Label.h"
 #include "Padding.h"
@@ -24,8 +25,8 @@
 #include "Row.h"
 #include "Scrollable.h"
 #include "Scrollbar.h"
-#include "Sized.h"
 #include "utility.h"
+#include "Width.h"
 #include "Wrap.h"
 
 #endif //ELEMENTOR_UTILITY_H
