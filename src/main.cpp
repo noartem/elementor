@@ -2,24 +2,7 @@
 // Created by noartem on 14.04.2022.
 //
 
-#include "./library/Background.h"
-#include "./library/Padding.h"
-#include "./library/Application.h"
-#include "./library/Platform.h"
-#include "./library/Flex.h"
-#include "./library/Flexible.h"
-#include "./library/Sized.h"
-#include "./library/Align.h"
-#include "./library/Rounded.h"
-#include "./library/Label.h"
-#include "./library/Border.h"
-#include "./library/Wrap.h"
-#include "./library/Hoverable.h"
-#include "./library/Clickable.h"
-#include "./library/Scrollable.h"
-#include "./library/Column.h"
-#include "./library/Row.h"
-#include "./library/Scrollbar.h"
+#include "./library/utility.h"
 
 using namespace elementor;
 
