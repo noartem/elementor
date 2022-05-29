@@ -23,11 +23,6 @@
 
 ## TODO
 
-* include все элементы
-* align -> alignHeight, alignWidth
-* sized -> width, height
-* stretchWidth, stretchHeight - "расстягивает" - делает boundaries.min = boundaries.max
-* еще раз посмотреть скролл для examples
 * Examples gallery - все в одном месте, переключение по клику
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
