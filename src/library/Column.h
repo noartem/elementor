@@ -8,21 +8,11 @@
 #include "Element.h"
 
 namespace elementor {
-    enum class ColumnAlignment {
-        Start,
-        Center,
-        End,
-    };
-
     class Column : public Element, WithChildren {
     public:
         Column *setSpacing(float spacing);
 
         float getSpacing();
-
-        Column *setAlignment(ColumnAlignment alignment);
-
-        ColumnAlignment getAlignment();
 
         Column *appendChild(Element *child);
 
@@ -32,7 +22,6 @@ namespace elementor {
 
     private:
         float spacing = 0;
-        ColumnAlignment alignment = ColumnAlignment::Start;
     };
 
     Column *column();

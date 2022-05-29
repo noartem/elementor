@@ -18,32 +18,21 @@ namespace elementor {
         return this->spacing;
     }
 
-    Column *Column::setAlignment(ColumnAlignment alignment) {
-        this->alignment = alignment;
-        return this;
-    }
-
-    ColumnAlignment Column::getAlignment() {
-        return this->alignment;
-    }
-
     Column *Column::appendChild(Element *child) {
         this->addChild(child);
         return this;
     }
 
     Size Column::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        int spacing = ceil(this->getSpacing() * ctx->monitorPixelScale);
-
-        int maxWidth = 0;
         int totalHeight = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
-            maxWidth = std::max(childSize.width, maxWidth);
-            totalHeight += childSize.height + spacing;
+            Size childSize = childElement->getSize(ctx, {{boundaries.max.width, 0}, boundaries.max});
+            totalHeight += childSize.height;
         }
 
-        return fitSizeInBoundaries({maxWidth, totalHeight - spacing}, boundaries);
+        totalHeight += (this->getChildrenSize() - 1) * ceil(this->getSpacing() * ctx->monitorPixelScale);
+
+        return fitSizeInBoundaries({boundaries.max.width, totalHeight}, boundaries);
     }
 
     std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Size size) {
@@ -55,18 +44,10 @@ namespace elementor {
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{0, 0}, size});
+            child.size = child.element->getSize(ctx, {{size.width, 0}, size});
 
-            child.position.y = yPosition;
+            child.position = {0, yPosition};
             yPosition += child.size.height + spacing;
-
-            if (this->getAlignment() == ColumnAlignment::Center) {
-                child.position.x = (size.width - child.size.width) / 2;
-            } else if (this->getAlignment() == ColumnAlignment::End) {
-                child.position.x = size.width - child.size.width;
-            } else {
-                child.position.x = 0;
-            }
 
             children.push_back(child);
         }
