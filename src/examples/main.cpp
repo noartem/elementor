@@ -2,123 +2,9 @@
 // Created by noartem on 28.05.2022.
 //
 
-#include "../library/Element.h"
-#include "../library/Column.h"
-#include "../library/Scrollable.h"
-#include "../library/Scrollbar.h"
-#include "../library/Background.h"
-#include "../library/Rounded.h"
-#include "../library/Padding.h"
-#include "../library/Hoverable.h"
-#include "../library/Clickable.h"
-#include "../library/Flex.h"
-#include "../library/Flexible.h"
-#include "../library/Sized.h"
-#include "../library/Align.h"
-#include "../library/Label.h"
-#include "../library/Application.h"
-#include "../library/Platform.h"
-
-using namespace elementor;
-
-#include <vector>
-
-class Example {
-public:
-    virtual std::string getName() = 0;
-
-    virtual std::string getDescription() = 0;
-
-    virtual Element *getScene() = 0;
-};
-
-class ExampleFlexAlignment: public Example {
-    std::string getName() {
-        return "Flex alignment";
-    }
-
-    std::string getDescription() {
-        return "Flex children can be aligned by two axis";
-    }
-
-    Element *makeRow(FlexAlignment alignment, FlexCrossAlignment crossAlignment) {
-        return flexible()
-            ->setChild(flex()
-                ->setSpacing(16)
-                ->setAlignment(alignment)
-                ->setCrossAlignment(crossAlignment)
-                ->appendChild(sized()
-                    ->setSize(280, 200)
-                    ->setChild(background()
-                        ->setColor("#457b9d")))
-                ->appendChild(sized()
-                    ->setSize(200, 80)
-                    ->setChild(background()
-                        ->setColor("#a8dadc"))));
-    }
-
-    Element *getScene() {
-        return flex()
-            ->setSpacing(24)
-            ->setDirection(FlexDirection::Column)
-            ->appendChild(this->makeRow(FlexAlignment::Start, FlexCrossAlignment::SpaceEvenly))
-            ->appendChild(this->makeRow(FlexAlignment::Center, FlexCrossAlignment::SpaceEvenly))
-            ->appendChild(this->makeRow(FlexAlignment::End, FlexCrossAlignment::SpaceEvenly));
-    }
-};
-
-class ExampleFlexChildren: public Example {
-    std::string getName() {
-        return "Flex children";
-    }
-
-    std::string getDescription() {
-        return "Flex children can be Flexible, Expanded or Sized (by default)";
-    }
-
-    Element *getScene() {
-        return flex()
-            ->setSpacing(24)
-            ->setDirection(FlexDirection::Column)
-            ->appendChild(flexible()
-                ->setChild(flex()
-                    ->setSpacing(16)
-                    ->appendChild(flexible()
-                        ->setChild(background()
-                            ->setColor("#457B9D")))
-                    ->appendChild(flexible()
-                        ->setChild(background()
-                            ->setColor("#457B9D")))))
-            ->appendChild(flexible()
-                ->setChild(flex()
-                    ->setSpacing(16)
-                    ->appendChild(sized()
-                        ->setSize(120)
-                        ->setChild(background()
-                            ->setColor("#457B9D")))
-                    ->appendChild(sized()
-                        ->setSize(120)
-                        ->setChild(background()
-                            ->setColor("#457B9D")))))
-            ->appendChild(flexible()
-                ->setChild(flex()
-                    ->setSpacing(16)
-                    ->appendChild(flexible()
-                        ->setChild(align()
-                            ->setAlignment(Alignment::TopLeft)
-                            ->setChild(sized()
-                                ->setSize(120)
-                                ->setChild(background()
-                                    ->setColor("#457B9D")))))
-                    ->appendChild(flexible()
-                        ->setChild(align()
-                            ->setAlignment(Alignment::TopLeft)
-                            ->setChild(sized()
-                                ->setSize(120)
-                                ->setChild(background()
-                                    ->setColor("#457B9D")))))));
-    }
-};
+#include "./Example.h"
+#include "./ExampleFlexAlignment.h"
+#include "./ExampleFlexChildren.h"
 
 Element *scrollTrack() {
     return sized()->setSize(16, 16);
@@ -136,9 +22,10 @@ Element *scrollThumb() {
 }
 
 int main() {
-    std::vector <Example *> examples;
-    examples.push_back((Example *) new ExampleFlexChildren());
-    examples.push_back((Example *) new ExampleFlexAlignment());
+    Example *examples[] = {
+        new ExampleFlexChildren(),
+        new ExampleFlexAlignment(),
+    };
 
     Background *activeExampleElement = background();
 
