@@ -6,6 +6,7 @@
 #include "./ExampleFlexChildren.h"
 #include "./ExampleFlexAlignment.h"
 #include "./ExampleFlexCrossAlignment.h"
+#include "./ExampleAlign.h"
 
 Element *scrollTrack() {
     return width()
@@ -28,6 +29,7 @@ int main() {
         new ExampleFlexChildren(),
         new ExampleFlexAlignment(),
         new ExampleFlexCrossAlignment(),
+        new ExampleAlign(),
     };
 
     Empty *activeExampleElement = empty();
@@ -70,7 +72,7 @@ int main() {
         ->setColor("#FFFCF3")
         ->setChild(flex()
             ->appendChild(flexible()
-                ->setGrow(1)
+                ->setGrow(2)
                 ->setChild(background()
                     ->setColor("#EDF5F0")
                     ->setChild(flex()
@@ -89,12 +91,9 @@ int main() {
                                     ->setDirection(ScrollDirection::Vertical)
                                     ->setChild(padding()
                                         ->setPaddings(12, 18)
-                                        ->setChild(scrollbar()
-                                            ->setChild(scrollable()
-                                                ->setDirection(ScrollDirection::Vertical)
-                                                ->setChild(examplesList))))))))))
+                                        ->setChild(examplesList))))))))
             ->appendChild(flexible()
-                ->setGrow(3)
+                ->setGrow(5)
                 ->setChild(flex()
                     ->setDirection(FlexDirection::Column)
                     ->appendChild(padding()
