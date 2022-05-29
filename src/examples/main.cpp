@@ -3,28 +3,31 @@
 //
 
 #include "./Example.h"
-#include "./ExampleFlexAlignment.h"
 #include "./ExampleFlexChildren.h"
+#include "./ExampleFlexAlignment.h"
+#include "./ExampleFlexCrossAlignment.h"
 
 Element *scrollTrack() {
-    return sized()->setSize(16, 16);
+    return width()
+        ->setWidth(16)
+        ->setChild(height()
+            ->setHeight(16));
 }
 
 Element *scrollThumb() {
-    return sized()
-        ->setSize(16, 16)
-        ->setChild(padding()
-            ->setPaddings(4)
-            ->setChild(rounded()
-                ->setRadius(4)
-                ->setChild(background()
-                    ->setColor("#BBB9AE"))));
+    return padding()
+        ->setPaddings(4)
+        ->setChild(rounded()
+            ->setRadius(4)
+            ->setChild(background()
+                ->setColor("#BBB9AE")));
 }
 
 int main() {
     Example *examples[] = {
         new ExampleFlexChildren(),
         new ExampleFlexAlignment(),
+        new ExampleFlexCrossAlignment(),
     };
 
     Background *activeExampleElement = background();
@@ -38,15 +41,15 @@ int main() {
                     ->setChild(rounded()
                         ->setRadius(24)
                         ->setChild(buttonBackground
-                            ->setColor("#F7F4E8")
+                            ->setColor("#EDF5F0")
                             ->setChild(padding()
                                 ->setPaddings(12, 18)
                                 ->setChild(label()
-                                    ->setFontColor("#1C1D07")
+                                    ->setFontColor("#062016")
                                     ->setFontSize(16)
                                     ->setText(example->getName())))))
-                    ->onEnter([buttonBackground] () { buttonBackground->setColor("#E6E4C2"); })
-                    ->onLeave([buttonBackground] () { buttonBackground->setColor("#F7F4E8"); }))
+                    ->onEnter([buttonBackground] () { buttonBackground->setColor("#CDE8D9"); })
+                    ->onLeave([buttonBackground] () { buttonBackground->setColor("#EDF5F0"); }))
                 ->onClick([example, activeExampleElement] () { activeExampleElement->setChild(example->getScene()); }));
     }
 
@@ -58,7 +61,7 @@ int main() {
             ->appendChild(flexible()
                 ->setGrow(1)
                 ->setChild(background()
-                    ->setColor("#F7F4E8")
+                    ->setColor("#EDF5F0")
                     ->setChild(scrollbar()
                         ->setScrollTrack(scrollTrack)
                         ->setScrollThumb(scrollThumb)
@@ -72,10 +75,14 @@ int main() {
                                         ->setChild(examplesList))))))))
             ->appendChild(flexible()
                 ->setGrow(3)
-                ->setChild(padding()
-                    ->setPaddings(18)
-                    ->setChild(rounded()
-                        ->setChild(activeExampleElement)))));
+                ->setChild(scrollbar()
+                    ->setScrollTrack(scrollTrack)
+                    ->setScrollThumb(scrollThumb)
+                    ->setChild(scrollable()
+                        ->setDirection(ScrollDirection::Vertical)
+                        ->setChild(padding()
+                            ->setPaddings(18)
+                            ->setChild(activeExampleElement))))));
 
     Platform *platform = new Platform();
     platform->title = "Elementor examples";
