@@ -20,7 +20,7 @@ namespace elementor {
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
-            child.size = child.element->getSize(ctx, {{size.width, }, size});
+            child.size = child.element->getSize(ctx, {{0, 0}, size});
             child.position = {(int) ceil(size.width / 2.0 - child.size.width / 2.0), (int) ceil(size.height / 2.0 - child.size.height / 2.0)};
 
             children.push_back(child);
