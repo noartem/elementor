@@ -70,5 +70,18 @@ Element *ExampleFlexChildren::getScene() {
                     ->setChild(box("#CDE8D9")))
                 ->appendChild(width()
                     ->setWidth(96)
+                    ->setChild(box("#BEE8FA")))))
+        ->appendChild(height()
+            ->setHeight(128)
+            ->setChild(flex()
+                ->setSpacing(8)
+                ->appendChild(width()
+                    ->setWidth(128)
+                    ->setChild(box("#BEE8FA")))
+                ->appendChild(flexible()
+                    ->setGrow(2)
+                    ->setChild(box("#CDE8D9")))
+                ->appendChild(width()
+                    ->setWidth(96)
                     ->setChild(box("#BEE8FA")))));
 }
