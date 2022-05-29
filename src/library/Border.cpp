@@ -92,10 +92,9 @@ namespace elementor {
     Size Border::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
             int borderWidth = ceil(this->getWidth() * ctx->monitorPixelScale);
-            Size childSize = this->getChild()->getSize(ctx, boundaries);
-            int width = childSize.width + 2 * borderWidth;
-            int height = childSize.height + 2 * borderWidth;
-            return fitSizeInBoundaries({width, height}, boundaries);
+            Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2, boundaries.min.height - borderWidth * 2}, {boundaries.max.width - borderWidth * 2, boundaries.max.height - borderWidth * 2}};
+            Size childSize = this->getChild()->getSize(ctx, childBoundaries);
+            return {childSize.width + borderWidth * 2, childSize.height + borderWidth * 2};
         } else {
             return boundaries.max;
         }
