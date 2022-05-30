@@ -98,6 +98,22 @@ Element *exampleAlignHeight() {
             ->appendChild(exampleAlignHeightItem(1, 0)));
 }
 
+Element *exampleCenter() {
+    return height()
+        ->setHeight(256)
+        ->setChild(background()
+            ->setColor("#BEE8FA")
+            ->setChild(center()
+                ->setChild(rounded()
+                    ->setRadius(8)
+                    ->setChild(width()
+                        ->setWidth(64)
+                        ->setChild(height()
+                            ->setHeight(64)
+                            ->setChild(background()
+                                ->setColor("#006C4C")))))));
+}
+
 Element *ExampleAlign::getScene() {
     return scroll()
         ->setChild(padding()
@@ -117,5 +133,12 @@ Element *ExampleAlign::getScene() {
                     ->setText("Align height"))
                 ->appendChild(padding()
                     ->setPaddings(128)
-                    ->setChild(exampleAlignHeight()))));
+                    ->setChild(exampleAlignHeight()))
+                ->appendChild(label()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Center"))
+                ->appendChild(padding()
+                    ->setPaddings(0, 128)
+                    ->setChild(exampleCenter()))));
 }
