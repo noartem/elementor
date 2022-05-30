@@ -23,7 +23,25 @@
 
 ## TODO
 
-* Examples gallery - все в одном месте, переключение по клику
+* Примеры для:
+    * Background
+    * Padding
+    * Sized
+        * Height
+        * Width
+    * Label
+    * Rounded
+    * Border
+    * Element
+    * Clickable
+    * Hoverable
+    * List
+        * Column
+        * Row
+    * Wrap
+    * Scroll
+        * Scrollable
+        * Scrollbar
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
 * Перенести элементы в отедльный namespace
