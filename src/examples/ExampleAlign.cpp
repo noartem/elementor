@@ -3,6 +3,7 @@
 //
 
 #include "ExampleAlign.h"
+#include "Scroll.h"
 
 std::string ExampleAlign::getName() {
     return "Align";
@@ -98,20 +99,23 @@ Element *exampleAlignHeight() {
 }
 
 Element *ExampleAlign::getScene() {
-    return column()
-        ->setSpacing(12)
-        ->appendChild(label()
-            ->setFontColor("#062016")
-            ->setFontSize(16)
-            ->setText("Align width"))
-        ->appendChild(padding()
-            ->setPaddings(0, 128)
-            ->setChild(exampleAlignWidth()))
-        ->appendChild(label()
-            ->setFontColor("#062016")
-            ->setFontSize(16)
-            ->setText("Align height"))
-        ->appendChild(padding()
-            ->setPaddings(128)
-            ->setChild(exampleAlignHeight()));
+    return scroll()
+        ->setChild(padding()
+            ->setPaddings(12, 18)
+            ->setChild(column()
+                ->setSpacing(12)
+                ->appendChild(label()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Align width"))
+                ->appendChild(padding()
+                    ->setPaddings(0, 128)
+                    ->setChild(exampleAlignWidth()))
+                ->appendChild(label()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Align height"))
+                ->appendChild(padding()
+                    ->setPaddings(128)
+                    ->setChild(exampleAlignHeight()))));
 }

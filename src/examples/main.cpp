@@ -89,10 +89,7 @@ int main() {
                                 ->setHeight(14)
                                 ->setChild(activeExampleLabelDescription))))
                     ->appendChild(flexible()
-                        ->setChild(scroll()
-                            ->setChild(padding()
-                                ->setPaddings(12, 18)
-                                ->setChild(activeExampleElement)))))));
+                        ->setChild(activeExampleElement)))));
 
     Platform *platform = new Platform();
     platform->title = "Elementor examples";
