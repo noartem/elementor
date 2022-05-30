@@ -2,27 +2,13 @@
 // Created by noartem on 28.05.2022.
 //
 
-#include "./Example.h"
-#include "./ExampleFlexChildren.h"
-#include "./ExampleFlexAlignment.h"
-#include "./ExampleFlexCrossAlignment.h"
-#include "./ExampleAlign.h"
+#include "utility.h"
+#include "Scroll.h"
 
-Element *scrollTrack() {
-    return width()
-        ->setWidth(16)
-        ->setChild(height()
-            ->setHeight(16));
-}
-
-Element *scrollThumb() {
-    return padding()
-        ->setPaddings(4)
-        ->setChild(rounded()
-            ->setRadius(4)
-            ->setChild(background()
-                ->setColor("#BBB9AE")));
-}
+#include "ExampleFlexChildren.h"
+#include "ExampleFlexAlignment.h"
+#include "ExampleFlexCrossAlignment.h"
+#include "ExampleAlign.h"
 
 int main() {
     Example *examples[] = {
@@ -84,14 +70,10 @@ int main() {
                                 ->setFontSize(18)
                                 ->setText("Examples")))
                         ->appendChild(flexible()
-                            ->setChild(scrollbar()
-                                ->setScrollTrack(scrollTrack)
-                                ->setScrollThumb(scrollThumb)
-                                ->setChild(scrollable()
-                                    ->setDirection(ScrollDirection::Vertical)
-                                    ->setChild(padding()
-                                        ->setPaddings(12, 18)
-                                        ->setChild(examplesList))))))))
+                            ->setChild(scroll()
+                                ->setChild(padding()
+                                    ->setPaddings(12, 18)
+                                    ->setChild(examplesList)))))))
             ->appendChild(flexible()
                 ->setGrow(5)
                 ->setChild(flex()
@@ -107,14 +89,10 @@ int main() {
                                 ->setHeight(14)
                                 ->setChild(activeExampleLabelDescription))))
                     ->appendChild(flexible()
-                        ->setChild(scrollbar()
-                            ->setScrollTrack(scrollTrack)
-                            ->setScrollThumb(scrollThumb)
-                            ->setChild(scrollable()
-                                ->setDirection(ScrollDirection::Vertical)
-                                ->setChild(padding()
-                                    ->setPaddings(18)
-                                    ->setChild(activeExampleElement))))))));
+                        ->setChild(scroll()
+                            ->setChild(padding()
+                                ->setPaddings(12, 18)
+                                ->setChild(activeExampleElement)))))));
 
     Platform *platform = new Platform();
     platform->title = "Elementor examples";
