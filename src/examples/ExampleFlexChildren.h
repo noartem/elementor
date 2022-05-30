@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_EXAMPLE_FLEX_CHILDREN_H
 #define ELEMENTOR_EXAMPLE_FLEX_CHILDREN_H
 
-#include "Example.h"
+#include "utility.h"
 
 class ExampleFlexChildren: public Example {
     std::string getName() override;

@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_EXAMPLE_ALIGN_H
 #define ELEMENTOR_EXAMPLE_ALIGN_H
 
-#include "Example.h"
+#include "utility.h"
 
 class ExampleAlign: public Example {
     std::string getName() override;

@@ -2,8 +2,8 @@
 // Created by noartem on 29.05.2022.
 //
 
-#ifndef ELEMENTOR_UTILITY_H
-#define ELEMENTOR_UTILITY_H
+#ifndef ELEMENTOR_ELEMENTOR_UTILITY_H
+#define ELEMENTOR_ELEMENTOR_UTILITY_H
 
 #include "AlignWidth.h"
 #include "AlignHeight.h"
@@ -32,4 +32,4 @@
 #include "Width.h"
 #include "Wrap.h"
 
-#endif //ELEMENTOR_UTILITY_H
+#endif //ELEMENTOR_ELEMENTOR_UTILITY_H

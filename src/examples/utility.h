@@ -2,8 +2,8 @@
 // Created by noartem on 29.05.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLE_H
-#define ELEMENTOR_EXAMPLE_H
+#ifndef ELEMENTOR_EXAMPLES_UTILITY_H
+#define ELEMENTOR_EXAMPLES_UTILITY_H
 
 #include "../library/utility.h"
 
@@ -18,5 +18,4 @@ public:
     virtual Element *getScene() = 0;
 };
 
-
-#endif //ELEMENTOR_EXAMPLE_H
+#endif //ELEMENTOR_EXAMPLES_UTILITY_H

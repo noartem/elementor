@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_EXAMPLE_FLEX_ALIGNMENT_H
 #define ELEMENTOR_EXAMPLE_FLEX_ALIGNMENT_H
 
-#include "Example.h"
+#include "utility.h"
 
 class ExampleFlexAlignment: public Example {
     std::string getName() override;
