@@ -21,9 +21,10 @@ namespace elementor {
 
     enum class FlexCrossAlignment {
         Start,
+        Center,
+        End,
         SpaceBetween,
         SpaceEvenly,
-        End,
     };
 
     class Flex : public Element, WithChildren {

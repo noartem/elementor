@@ -112,6 +112,10 @@ namespace elementor {
             axisPosition += freeSize;
         }
 
+        if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::Center) {
+            axisPosition += freeSize / 2;
+        }
+
         int spaceBetween = freeSize / (childrenCount - 1);
         int addSpaceEvenly = flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceEvenly;
         int spaceEvenly = freeSize / (childrenCount + 1);
