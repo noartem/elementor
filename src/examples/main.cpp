@@ -5,16 +5,12 @@
 #include "utility.h"
 #include "Scroll.h"
 
-#include "ExampleFlexChildren.h"
-#include "ExampleFlexAlignment.h"
-#include "ExampleFlexCrossAlignment.h"
+#include "ExampleFlex.h"
 #include "ExampleAlign.h"
 
 int main() {
     Example *examples[] = {
-        new ExampleFlexChildren(),
-        new ExampleFlexAlignment(),
-        new ExampleFlexCrossAlignment(),
+        new ExampleFlex(),
         new ExampleAlign(),
     };
 
@@ -58,7 +54,7 @@ int main() {
         ->setColor("#FFFCF3")
         ->setChild(flex()
             ->appendChild(flexible()
-                ->setGrow(2)
+                ->setGrow(1)
                 ->setChild(background()
                     ->setColor("#EDF5F0")
                     ->setChild(flex()
@@ -75,7 +71,7 @@ int main() {
                                     ->setPaddings(12, 18)
                                     ->setChild(examplesList)))))))
             ->appendChild(flexible()
-                ->setGrow(5)
+                ->setGrow(3)
                 ->setChild(flex()
                     ->setDirection(FlexDirection::Column)
                     ->appendChild(padding()
