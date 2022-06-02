@@ -11,4 +11,10 @@
 using namespace elementor;
 using namespace elementor::elements;
 
+Element *box(std::string color);
+
+Element *boxSized(std::string color, int width, int height);
+
+int randInRange(int min, int max);
+
 #endif //ELEMENTOR_EXAMPLES_UTILITY_H

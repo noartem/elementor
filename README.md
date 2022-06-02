@@ -37,13 +37,11 @@
     * List
         * Column
         * Row
-    * Wrap
     * Scroll
         * Scrollable
         * Scrollbar
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
-* Перенести элементы в отедльный namespace
 * Flex Wrap alignment
 * Text
     * TextLine = text + text formatting options
@@ -51,6 +49,6 @@
     * Label just draw TextLine the simple way
     * Fix label memory leak
 * Image?
-* BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
 * Debug
-* UI elements: beauty button, text input with text selection
+* BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
+* Material ui

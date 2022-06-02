@@ -9,12 +9,14 @@
 #include "ExampleBackground.h"
 #include "ExampleAlign.h"
 #include "ExampleFlex.h"
+#include "ExampleWrap.h"
 
 int main() {
     Example *examples[] = {
         new ExampleBackground(),
         new ExampleAlign(),
         new ExampleFlex(),
+        new ExampleWrap(),
     };
 
     Empty *activeExampleElement = empty();

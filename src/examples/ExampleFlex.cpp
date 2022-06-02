@@ -13,13 +13,6 @@ std::string ExampleFlex::getDescription() {
     return "Flex allows you to easily build complex and yet flexible layout";
 }
 
-Element *box(std::string color) {
-    return rounded()
-        ->setRadius(8)
-        ->setChild(background()
-            ->setColor(color));
-}
-
 Element *exampleChildren() {
     return padding()
         ->setPaddings(12, 18)
