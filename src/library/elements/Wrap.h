@@ -31,6 +31,8 @@ namespace elementor::elements {
 
         Wrap *appendChild(Element *child);
 
+        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
     private:

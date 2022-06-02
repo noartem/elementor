@@ -47,6 +47,44 @@ namespace elementor::elements {
         return this;
     }
 
+    Size Wrap::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        int spacing = this->spacing * ctx->monitorPixelScale;
+        int crossSpacing = this->crossSpacing * ctx->monitorPixelScale;
+
+        bool isRow = this->direction == WrapDirection::Row;
+        int maxAxisSize = isRow ? boundaries.max.width : boundaries.max.height;
+        int maxCrossAxisSize = isRow ? boundaries.max.height : boundaries.max.width;
+
+        int axisPosition = 0;
+        int crossAxisPosition = 0;
+
+        int rowCrossAxisSize = 0;
+
+        for (Element *childElement : this->getChildrenList()) {
+            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+
+            int axisChildSize = isRow ? childSize.width : childSize.height;
+            int crossAxisChildSize = isRow ? childSize.height : childSize.width;
+            
+            if (axisPosition + axisChildSize > maxAxisSize) {
+                axisPosition = 0;
+                crossAxisPosition += rowCrossAxisSize + crossSpacing;
+            }
+
+            if (crossAxisChildSize > rowCrossAxisSize) {
+                rowCrossAxisSize = crossAxisChildSize;
+            }
+
+            axisPosition += axisChildSize + spacing;
+        }
+
+        int crossAxisSize = crossAxisPosition + rowCrossAxisSize;
+        int width = isRow ? boundaries.max.width : crossAxisSize;
+        int height = isRow ? crossAxisSize : boundaries.max.height;
+
+        return fitSizeInBoundaries({width, height}, boundaries);
+    }
+
     std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
