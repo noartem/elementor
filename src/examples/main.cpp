@@ -5,13 +5,15 @@
 #include "utility.h"
 #include "Scroll.h"
 
-#include "ExampleFlex.h"
+#include "ExampleBackground.h"
 #include "ExampleAlign.h"
+#include "ExampleFlex.h"
 
 int main() {
     Example *examples[] = {
-        new ExampleFlex(),
+        new ExampleBackground(),
         new ExampleAlign(),
+        new ExampleFlex(),
     };
 
     Empty *activeExampleElement = empty();

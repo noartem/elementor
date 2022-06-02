@@ -24,7 +24,6 @@
 ## TODO
 
 * Примеры для:
-    * Background
     * Padding
     * Sized
         * Height
