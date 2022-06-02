@@ -6,6 +6,7 @@
 #define ELEMENTOR_EXAMPLE_FLEX_H
 
 #include "utility.h"
+#include "Example.h"
 
 class ExampleFlex: public Example {
     std::string getName() override;

@@ -11,13 +11,4 @@
 using namespace elementor;
 using namespace elementor::elements;
 
-class Example {
-public:
-    virtual std::string getName() = 0;
-
-    virtual std::string getDescription() = 0;
-
-    virtual Element *getScene() = 0;
-};
-
 #endif //ELEMENTOR_EXAMPLES_UTILITY_H

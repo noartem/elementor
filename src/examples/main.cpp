@@ -3,6 +3,7 @@
 //
 
 #include "utility.h"
+#include "Example.h"
 #include "Scroll.h"
 
 #include "ExampleBackground.h"

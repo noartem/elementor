@@ -6,6 +6,7 @@
 #define ELEMENTOR_EXAMPLE_BACKGROUND_H
 
 #include "utility.h"
+#include "Example.h"
 
 class ExampleBackground: public Example {
     std::string getName() override;
