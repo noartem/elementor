@@ -6,8 +6,10 @@
 #define ELEMENTOR_EXAMPLES_UTILITY_H
 
 #include "../library/utility.h"
+#include "../library/elements/utility.h"
 
 using namespace elementor;
+using namespace elementor::elements;
 
 class Example {
 public:

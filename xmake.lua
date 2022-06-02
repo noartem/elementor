@@ -14,6 +14,7 @@ target("elementor")
     set_kind("static")
     add_packages("skia", "glfw", "glut")
     add_files("src/library/*.cpp")
+    add_files("src/library/elements/*.cpp")
 
 if is_plat("windows") then
     add_packages("glew")
