@@ -23,6 +23,11 @@
 
 ## TODO
 
+* Text
+    * TextLine = text + text formatting options
+    * Textable: text() => TextLine
+    * Label just draw TextLine the simple way
+    * Fix label memory leak
 * Примеры для:
     * Padding
     * Sized
@@ -42,12 +47,8 @@
         * Scrollbar
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
+* Если резко менять размер, то съезжает вниз, появляется ненужный скролл
 * Flex Wrap alignment
-* Text
-    * TextLine = text + text formatting options
-    * Textable: text() => TextLine
-    * Label just draw TextLine the simple way
-    * Fix label memory leak
 * Image?
 * Debug
 * BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
