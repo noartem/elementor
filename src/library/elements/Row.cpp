@@ -24,13 +24,13 @@ namespace elementor::elements {
     }
 
     Size Row::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        int totalWidth = 0;
+        float totalWidth = 0;
         for (Element *childElement : this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, {{0, boundaries.max.height}, boundaries.max});
             totalWidth += childSize.width;
         }
 
-        totalWidth += (this->getChildrenSize() - 1) * ceil(this->getSpacing() * ctx->monitorPixelScale);
+        totalWidth += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->monitorPixelScale;
 
         return fitSizeInBoundaries({totalWidth, boundaries.max.height}, boundaries);
     }
@@ -38,9 +38,9 @@ namespace elementor::elements {
     std::vector <RenderElement> Row::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
-        int spacing = ceil(this->getSpacing() * ctx->monitorPixelScale);
+        float spacing = this->getSpacing() * ctx->monitorPixelScale;
 
-        int xPosition = 0;
+        float xPosition = 0;
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;

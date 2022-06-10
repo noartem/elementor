@@ -81,7 +81,7 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Clickable::onEvent(EventMouseMove *event) {
-        Position cursorPosition = {(int) event->x, (int) event->y};
+        Position cursorPosition = {event->x, event->y};
         this->hovered = this->rect.visibleContains(cursorPosition);
         this->cursorPosition = this->rect.absolutePositionToContained(cursorPosition);
         return EventCallbackResponse::None;

@@ -9,12 +9,12 @@ namespace elementor::elements {
         return new Flexible();
     }
 
-    Flexible *Flexible::setGrow(int grow) {
+    Flexible *Flexible::setGrow(float grow) {
         this->grow = grow;
         return this;
     }
 
-    int Flexible::getGrow() {
+    float Flexible::getGrow() {
         return this->grow;
     }
 

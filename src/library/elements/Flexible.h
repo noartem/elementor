@@ -10,16 +10,16 @@
 namespace elementor::elements {
     class Flexible : public Element, WithChild {
     public:
-        Flexible *setGrow(int grow);
+        Flexible *setGrow(float grow);
 
-        int getGrow();
+        float getGrow();
 
         Flexible *setChild(Element *child);
 
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
     private:
-        int grow = 1;
+        float grow = 1;
     };
 
     Flexible *flexible();

@@ -60,8 +60,8 @@ namespace elementor::elements {
         Boundaries sizedChildBoundaries = {{0, 0}, size};
 
         int childrenCount = this->getChildrenSize();
-        int spacing = ceil(this->spacing * ctx->monitorPixelScale);
-        int fixedSize = this->spacing * (childrenCount - 1);
+        float spacing = this->spacing * ctx->monitorPixelScale;
+        float fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
         int flexibleGrowsSum = 0;
@@ -76,8 +76,8 @@ namespace elementor::elements {
                 child.size = child.element->getSize(ctx, sizedChildBoundaries);
                 fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             } else {
-                int childGrow = childFlexible->getGrow();
-                std::tuple<int, int> flexibleChild(i, childGrow);
+                float childGrow = childFlexible->getGrow();
+                std::tuple<int, float> flexibleChild(i, childGrow);
                 flexibleChildren.push_back(flexibleChild);
                 flexibleGrowsSum += childGrow;
             }
@@ -85,17 +85,17 @@ namespace elementor::elements {
             children.push_back(child);
         }
 
-        int axisSize = this->direction == FlexDirection::Row ? size.width : size.height;
-        int crossAxisSize = this->direction == FlexDirection::Row ? size.height : size.width;
-        int freeSize = axisSize - fixedSize;
-        int sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
+        float axisSize = this->direction == FlexDirection::Row ? size.width : size.height;
+        float crossAxisSize = this->direction == FlexDirection::Row ? size.height : size.width;
+        float freeSize = axisSize - fixedSize;
+        float sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
 
         for (std::tuple<int, int> flexibleChild: flexibleChildren) {
             int childIndex = std::get<0>(flexibleChild);
             RenderElement &child = children[childIndex];
 
-            int childGrow = std::get<1>(flexibleChild);
-            int axisSize = sizePerGrow * childGrow;
+            float childGrow = std::get<1>(flexibleChild);
+            float axisSize = sizePerGrow * childGrow;
             Boundaries childBoundaries;
             if (this->direction == FlexDirection::Row) {
                 childBoundaries = {{axisSize, 0}, {axisSize, size.height}};
@@ -106,7 +106,7 @@ namespace elementor::elements {
             child.size = child.element->getSize(ctx, childBoundaries);
         }
 
-        int axisPosition = 0;
+        float axisPosition = 0;
 
         if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::End) {
             axisPosition += freeSize;
@@ -116,18 +116,18 @@ namespace elementor::elements {
             axisPosition += freeSize / 2;
         }
 
-        int spaceBetween = freeSize / (childrenCount - 1);
-        int addSpaceEvenly = flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceEvenly;
-        int spaceEvenly = freeSize / (childrenCount + 1);
+        float spaceBetween = freeSize / (childrenCount - 1);
+        bool addSpaceEvenly = flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceEvenly;
+        float spaceEvenly = freeSize / (childrenCount + 1);
         if (addSpaceEvenly) {
             axisPosition += spaceEvenly;
         }
 
         for (RenderElement &child: children) {
-            int childAxisSize = this->direction == FlexDirection::Row ? child.size.width : child.size.height;
-            int childCrossAxisSize = this->direction == FlexDirection::Row ? child.size.height : child.size.width;
+            float childAxisSize = this->direction == FlexDirection::Row ? child.size.width : child.size.height;
+            float childCrossAxisSize = this->direction == FlexDirection::Row ? child.size.height : child.size.width;
 
-            int crossAxisPosition = 0;
+            float crossAxisPosition = 0;
             if (this->alignment == FlexAlignment::End) {
                 crossAxisPosition = crossAxisSize - childCrossAxisSize;
             } else if (this->alignment == FlexAlignment::Center) {

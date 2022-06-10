@@ -21,7 +21,7 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
             child.size = child.element->getSize(ctx, {{0, 0}, size});
-            child.position = {(int) ceil(size.width / 2.0 - child.size.width / 2.0), (int) ceil(size.height / 2.0 - child.size.height / 2.0)};
+            child.position = {size.width / 2 - child.size.width / 2, size.height / 2 - child.size.height / 2};
 
             children.push_back(child);
         }

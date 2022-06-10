@@ -50,7 +50,7 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
             child.size = child.element->getSize(ctx, {{0, size.height}, size});
-            child.position = {(int) ceil(size.width * this->coef - child.size.width * this->childCoef), 0};
+            child.position = {size.width * this->coef - child.size.width * this->childCoef, 0};
 
             children.push_back(child);
         }

@@ -5,20 +5,17 @@
 #ifndef ELEMENTOR_RENDER_H
 #define ELEMENTOR_RENDER_H
 
-#include <climits>
-
 namespace elementor {
     #define ZERO (float) 0
-    #define INF INT_MAX
 
     struct Position {
-        int x;
-        int y;
+        float x;
+        float y;
     };
 
     struct Size {
-        int width;
-        int height;
+        float width;
+        float height;
     };
 
     struct Boundaries {
@@ -40,13 +37,9 @@ namespace elementor {
 
         bool contains(float x, float y);
 
-        bool contains(int x, int y);
-
         bool contains(Position point);
 
         bool visibleContains(float x, float y);
-
-        bool visibleContains(int x, int y);
 
         bool visibleContains(Position point);
 

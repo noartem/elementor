@@ -46,8 +46,8 @@ namespace elementor {
             ElementRect childRect;
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;
-            childRect.visibleSize.width = std::min(std::max(boundary.size.width - std::max(childRect.position.x - boundary.position.x, 0), 0), child.size.width);
-            childRect.visibleSize.height = std::min(std::max(boundary.size.height - std::max(childRect.position.y - boundary.position.y, 0), 0), child.size.height);
+            childRect.visibleSize.width = std::min(std::max(boundary.size.width - std::max(childRect.position.x - boundary.position.x, ZERO), ZERO), child.size.width);
+            childRect.visibleSize.height = std::min(std::max(boundary.size.height - std::max(childRect.position.y - boundary.position.y, ZERO), ZERO), child.size.height);
             childRect.size = child.size;
             childRect.inParentPosition = child.position;
 

@@ -65,8 +65,8 @@ namespace elementor::elements {
         SkRect textBounds;
         font.measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds);
 
-        int width = std::min(std::max((int) ceil(textBounds.width()), boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max((int) ceil(textBounds.height()), boundaries.min.height), boundaries.max.height);
+        float width = std::min(std::max(textBounds.width(), boundaries.min.width), boundaries.max.width);
+        float height = std::min(std::max(textBounds.height(), boundaries.min.height), boundaries.max.height);
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 

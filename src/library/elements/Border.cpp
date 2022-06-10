@@ -91,7 +91,7 @@ namespace elementor::elements {
 
     Size Border::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            int borderWidth = ceil(this->getWidth() * ctx->monitorPixelScale);
+            float borderWidth = this->getWidth() * ctx->monitorPixelScale;
             Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2, boundaries.min.height - borderWidth * 2}, {boundaries.max.width - borderWidth * 2, boundaries.max.height - borderWidth * 2}};
             Size childSize = this->getChild()->getSize(ctx, childBoundaries);
             return {childSize.width + borderWidth * 2, childSize.height + borderWidth * 2};
@@ -134,11 +134,11 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
 
-            int borderWidth = ceil(this->getWidth() * ctx->monitorPixelScale);
+            float borderWidth = this->getWidth() * ctx->monitorPixelScale;
             child.position = {borderWidth, borderWidth};
 
-            int childWidth = size.width - 2 * borderWidth;
-            int childHeight = size.height - 2 * borderWidth;
+            float childWidth = size.width - 2 * borderWidth;
+            float childHeight = size.height - 2 * borderWidth;
             child.size = {childWidth, childHeight};
 
             children.push_back(child);

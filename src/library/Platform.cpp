@@ -24,23 +24,23 @@ namespace elementor {
     Size Platform::getWindowSize() {
         int width, height;
         glfwGetFramebufferSize(this->window, &width, &height);
-        return {width, height};
+        return {(float) width, (float) height};
     }
 
     Size Platform::getMonitorPhysicalSize() {
         int width, height;
         glfwGetMonitorPhysicalSize(this->monitor, &width, &height);
-        return {width, height};
+        return {(float) width, (float) height};
     }
 
     Size Platform::getMonitorSize() {
         const GLFWvidmode* mode = glfwGetVideoMode(this->monitor);
-        return {mode->width, mode->height};
+        return {(float) mode->width, (float) mode->height};
     }
 
     float Platform::calcMonitorPixelScale(Size monitorPhysicalSize) {
         Size monitorSize = this->getMonitorSize();
-        return ((float)monitorSize.width / (float)monitorPhysicalSize.width) / DefaultMonitorScale;
+        return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
     void Platform::refresh() {

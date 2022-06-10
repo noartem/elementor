@@ -40,13 +40,13 @@ namespace elementor::elements {
 
     Size Padding::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            int paddingTop = ceil(this->getPaddings().top * ctx->monitorPixelScale);
-            int paddingBottom = ceil(this->getPaddings().bottom * ctx->monitorPixelScale);
-            int paddingY = paddingTop + paddingBottom;
+            float paddingTop = this->getPaddings().top * ctx->monitorPixelScale;
+            float paddingBottom = this->getPaddings().bottom * ctx->monitorPixelScale;
+            float paddingY = paddingTop + paddingBottom;
 
-            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
-            int paddingLeft = ceil(this->getPaddings().left * ctx->monitorPixelScale);
-            int paddingX = paddingLeft + paddingRight;
+            float paddingRight = this->getPaddings().right * ctx->monitorPixelScale;
+            float paddingLeft = this->getPaddings().left * ctx->monitorPixelScale;
+            float paddingX = paddingLeft + paddingRight;
 
             Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
             Size childSize = this->getChild()->getSize(ctx, childBoundaries);
@@ -63,14 +63,14 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
 
-            int paddingTop = ceil(this->getPaddings().top * ctx->monitorPixelScale);
-            int paddingRight = ceil(this->getPaddings().right * ctx->monitorPixelScale);
-            int paddingBottom = ceil(this->getPaddings().bottom * ctx->monitorPixelScale);
-            int paddingLeft = ceil(this->getPaddings().left * ctx->monitorPixelScale);
+            float paddingTop = this->getPaddings().top * ctx->monitorPixelScale;
+            float paddingRight = this->getPaddings().right * ctx->monitorPixelScale;
+            float paddingBottom = this->getPaddings().bottom * ctx->monitorPixelScale;
+            float paddingLeft = this->getPaddings().left * ctx->monitorPixelScale;
             child.position = {paddingLeft, paddingTop};
 
-            int childWidth = size.width - paddingLeft - paddingRight;
-            int childHeight = size.height - paddingTop - paddingBottom;
+            float childWidth = size.width - paddingLeft - paddingRight;
+            float childHeight = size.height - paddingTop - paddingBottom;
             child.size = {childWidth, childHeight};
 
             children.push_back(child);

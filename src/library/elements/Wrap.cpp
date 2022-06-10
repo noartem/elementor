@@ -48,23 +48,23 @@ namespace elementor::elements {
     }
 
     Size Wrap::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        int spacing = this->spacing * ctx->monitorPixelScale;
-        int crossSpacing = this->crossSpacing * ctx->monitorPixelScale;
+        float spacing = this->spacing * ctx->monitorPixelScale;
+        float crossSpacing = this->crossSpacing * ctx->monitorPixelScale;
 
         bool isRow = this->direction == WrapDirection::Row;
-        int maxAxisSize = isRow ? boundaries.max.width : boundaries.max.height;
-        int maxCrossAxisSize = isRow ? boundaries.max.height : boundaries.max.width;
+        float maxAxisSize = isRow ? boundaries.max.width : boundaries.max.height;
+        float maxCrossAxisSize = isRow ? boundaries.max.height : boundaries.max.width;
 
-        int axisPosition = 0;
-        int crossAxisPosition = 0;
+        float axisPosition = 0;
+        float crossAxisPosition = 0;
 
-        int rowCrossAxisSize = 0;
+        float rowCrossAxisSize = 0;
 
         for (Element *childElement : this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
 
-            int axisChildSize = isRow ? childSize.width : childSize.height;
-            int crossAxisChildSize = isRow ? childSize.height : childSize.width;
+            float axisChildSize = isRow ? childSize.width : childSize.height;
+            float crossAxisChildSize = isRow ? childSize.height : childSize.width;
             
             if (axisPosition + axisChildSize > maxAxisSize) {
                 axisPosition = 0;
@@ -78,9 +78,9 @@ namespace elementor::elements {
             axisPosition += axisChildSize + spacing;
         }
 
-        int crossAxisSize = crossAxisPosition + rowCrossAxisSize;
-        int width = isRow ? boundaries.max.width : crossAxisSize;
-        int height = isRow ? crossAxisSize : boundaries.max.height;
+        float crossAxisSize = crossAxisPosition + rowCrossAxisSize;
+        float width = isRow ? boundaries.max.width : crossAxisSize;
+        float height = isRow ? crossAxisSize : boundaries.max.height;
 
         return fitSizeInBoundaries({width, height}, boundaries);
     }
@@ -95,22 +95,22 @@ namespace elementor::elements {
             children.push_back(child);
         }
 
-        int spacing = this->getSpacing() * ctx->monitorPixelScale;
-        int crossSpacing = this->getCrossSpacing() * ctx->monitorPixelScale;
+        float spacing = this->getSpacing() * ctx->monitorPixelScale;
+        float crossSpacing = this->getCrossSpacing() * ctx->monitorPixelScale;
 
         bool isRow = this->direction == WrapDirection::Row;
 
-        int axisSize = isRow ? size.width : size.height;
-        int crossAxisSize = isRow ? size.height : size.width;
+        float axisSize = isRow ? size.width : size.height;
+        float crossAxisSize = isRow ? size.height : size.width;
 
-        int axisPosition = 0;
-        int crossAxisPosition = 0;
+        float axisPosition = 0;
+        float crossAxisPosition = 0;
 
-        int rowCrossAxisSize = 0;
+        float rowCrossAxisSize = 0;
 
         for (RenderElement &child : children) {
-            int axisChildSize = isRow ? child.size.width : child.size.height;
-            int crossAxisChildSize = isRow ? child.size.height : child.size.width;
+            float axisChildSize = isRow ? child.size.width : child.size.height;
+            float crossAxisChildSize = isRow ? child.size.height : child.size.width;
 
             if (axisPosition + axisChildSize > axisSize) {
                 axisPosition = 0;

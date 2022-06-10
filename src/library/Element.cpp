@@ -64,8 +64,8 @@ namespace elementor {
     }
 
     Size fitSizeInBoundaries(Size size, Boundaries boundaries) {
-        int width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
-        int height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
+        float width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
+        float height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
         return {width, height};
     }
 

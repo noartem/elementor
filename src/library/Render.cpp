@@ -14,10 +14,6 @@ namespace elementor {
         );
     }
 
-    bool ElementRect::contains(int x, int y) {
-        return this->contains((float) x, (float) y);
-    }
-
     bool ElementRect::contains(Position point) {
         return this->contains(point.x, point.y);
     }
@@ -29,10 +25,6 @@ namespace elementor {
             this->position.y < y &&
             this->position.y + this->visibleSize.height > y
         );
-    }
-
-    bool ElementRect::visibleContains(int x, int y) {
-        return this->visibleContains((float) x, (float) y);
     }
 
     bool ElementRect::visibleContains(Position point) {
