@@ -8,6 +8,7 @@
 #include "Example.h"
 
 #include "ExampleBackground.h"
+#include "ExampleText.h"
 #include "ExampleAlign.h"
 #include "ExampleFlex.h"
 #include "ExampleWrap.h"
@@ -15,6 +16,7 @@
 std::vector<Example *> examples() {
     return {
         new ExampleBackground(),
+        new ExampleText(),
         new ExampleAlign(),
         new ExampleFlex(),
         new ExampleWrap(),
