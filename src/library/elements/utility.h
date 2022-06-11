@@ -17,12 +17,12 @@
 #include "Flexible.h"
 #include "Height.h"
 #include "Hoverable.h"
-#include "Label.h"
 #include "Padding.h"
 #include "Rounded.h"
 #include "Row.h"
 #include "Scrollable.h"
 #include "Scrollbar.h"
+#include "Text.h"
 #include "Width.h"
 #include "Wrap.h"
 

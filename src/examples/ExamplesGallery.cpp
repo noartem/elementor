@@ -22,7 +22,7 @@ ExamplesGallery::ExamplesGallery() {
                         ->setDirection(FlexDirection::Column)
                         ->appendChild(padding()
                             ->setPaddings(12, 18)
-                            ->setChild(label()
+                            ->setChild(text()
                                 ->setFontColor("#062016")
                                 ->setFontSize(18)
                                 ->setText("Examples")))
@@ -54,13 +54,13 @@ void ExamplesGallery::setActiveExample(Example *example) {
         ->setChild(example->getScene());
 
     this->activeExampleLabelName
-        ->setChild(label()
+        ->setChild(text()
             ->setFontColor("#062016")
             ->setFontSize(16)
             ->setText(example->getName()));
 
     this->activeExampleLabelDescription
-        ->setChild(label()
+        ->setChild(text()
             ->setFontColor("#3F4944")
             ->setFontSize(14)
             ->setText(example->getDescription()));
@@ -79,7 +79,7 @@ Column *ExamplesGallery::makeExamplesList() {
                             ->setColor("#EDF5F0")
                             ->setChild(padding()
                                 ->setPaddings(12, 18)
-                                ->setChild(label()
+                                ->setChild(text()
                                     ->setFontColor("#062016")
                                     ->setFontSize(16)
                                     ->setText(example->getName())))))
