@@ -173,7 +173,7 @@ namespace elementor::elements {
                     return EventCallbackResponse::None;
                 } else {
                     float scrollTopChaned = scrollTop - event->yOffset * this->scrollAcceleration * this->getMonitorPixelScale();
-                    this->scrollTop = std::min(std::max(scrollTopChaned, 0), maxScrollTop) / this->getMonitorPixelScale();
+                    this->scrollTop = std::min(std::max(scrollTopChaned, ZERO), maxScrollTop) / this->getMonitorPixelScale();
                 }
             }
 
