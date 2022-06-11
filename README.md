@@ -23,11 +23,11 @@
 
 ## TODO
 
-* Text
-    * TextLine = text + text formatting options
-    * Textable: text() => TextLine
-    * Label just draw TextLine the simple way
-    * Fix label memory leak
+* Paragraph
+    * Как это делать в skia?
+    * Если Text -> брать из него font, paint
+    * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
+* Text memory leak?
 * Примеры для:
     * Padding
     * Sized
