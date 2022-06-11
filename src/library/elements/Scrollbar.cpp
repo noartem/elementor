@@ -111,8 +111,8 @@ namespace elementor::elements {
 
             ScrollDirection scrollDirection = this->child->getDirection();
 
-            float scrollWidth = this->child->childSize.width;
-            float scrollHeight = this->child->childSize.height;
+            float scrollWidth = this->child->getScrollWidth() * ctx->monitorPixelScale;
+            float scrollHeight = this->child->getScrollHeight() * ctx->monitorPixelScale;
             float scrollTop = this->child->getScrollTop() * ctx->monitorPixelScale;
             float scrollLeft = this->child->getScrollLeft() * ctx->monitorPixelScale;
 
