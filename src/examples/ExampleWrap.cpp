@@ -41,7 +41,7 @@ Element *exampleWrapColumn() {
 Element *ExampleWrap::getScene() {
     return scroll()
         ->setChild(padding()
-            ->setPaddings(12, 18)
+            ->setPaddings(24, 36)
             ->setChild(column()
                 ->setSpacing(48)
                 ->appendChild(column()

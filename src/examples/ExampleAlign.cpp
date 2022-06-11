@@ -117,7 +117,7 @@ Element *exampleCenter() {
 Element *ExampleAlign::getScene() {
     return scroll()
         ->setChild(padding()
-            ->setPaddings(12, 18)
+            ->setPaddings(24, 36)
             ->setChild(column()
                 ->setSpacing(12)
                 ->appendChild(text()
