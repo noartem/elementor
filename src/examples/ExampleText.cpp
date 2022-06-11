@@ -22,7 +22,7 @@ Element *exampleColor() {
             ->appendChild(text()
                 ->setFontColor(color)
                 ->setFontWeight(600)
-                ->setText("Font color #" + color));
+                ->setText("Font color " + color));
     }
 
     return examples;
