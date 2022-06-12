@@ -23,6 +23,7 @@
 
 ## TODO
 
+* Text font fallback (например, fallback для эмодзи)
 * Paragraph
     * Как это делать в skia?
     * Если Text -> брать из него font, paint
