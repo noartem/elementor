@@ -24,15 +24,17 @@ namespace elementor::elements {
     }
 
     Size Column::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        float maxWidth = 0;
         float totalHeight = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{boundaries.max.width, 0}, boundaries.max});
+            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+            maxWidth = std::max(childSize.width, maxWidth);
             totalHeight += childSize.height;
         }
 
         totalHeight += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->monitorPixelScale;
 
-        return fitSizeInBoundaries({boundaries.max.width, totalHeight}, boundaries);
+        return fitSizeInBoundaries({maxWidth, totalHeight}, boundaries);
     }
 
     std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Size size) {
