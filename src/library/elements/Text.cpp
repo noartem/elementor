@@ -19,7 +19,7 @@ namespace elementor::elements {
         return this;
     }
 
-    std::string Text::setText() {
+    std::string Text::getText() {
         return this->text;
     }
 
@@ -211,5 +211,5 @@ namespace elementor::elements {
 
         canvas->translate(0, rect.size.height);
         canvas->drawString(this->text.c_str(), 0, 0, this->font.value(), this->paint.value());
-    }
+	}
 }

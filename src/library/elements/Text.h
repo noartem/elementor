@@ -29,7 +29,7 @@ namespace elementor::elements {
     public:
         Text *setText(std::string text);
 
-        std::string setText();
+        std::string getText();
 
         Text *setFontColor(SkColor color);
 
