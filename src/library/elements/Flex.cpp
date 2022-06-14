@@ -54,6 +54,24 @@ namespace elementor::elements {
         return this;
     }
 
+    Size Flex::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        float maxCrossAxisSize = 0;
+        for (Element *childElement : this->getChildrenList()) {
+            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+            float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;
+            maxCrossAxisSize = std::max(childCrossAxisSize, maxCrossAxisSize);
+        }
+
+        Size size = {boundaries.max.width, boundaries.max.height};
+        if (this->direction == FlexDirection::Row) {
+            size.height = maxCrossAxisSize;
+        } else {
+            size.width = maxCrossAxisSize;
+        }
+
+        return fitSizeInBoundaries(size, boundaries);
+    }
+
     std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
