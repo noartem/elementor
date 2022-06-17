@@ -136,7 +136,7 @@ namespace elementor::elements {
                     RenderElement thumb;
                     thumb.element = this->thumbX;
 
-                    float thumbWidth = (size.width * size.width) / scrollWidth;
+                    float thumbWidth = size.width * (size.width / scrollWidth);
                     if (trackHeight == 0) {
                         thumb.size = thumb.element->getSize(ctx, {{thumbWidth, 0}, {thumbWidth, size.height}});
                         trackHeight = thumb.size.height;
@@ -145,7 +145,7 @@ namespace elementor::elements {
                         thumb.size = thumb.element->getSize(ctx, {{thumbWidth, 0}, {thumbWidth, trackHeight}});
                     }
 
-                    thumb.position = {(scrollLeft * size.width) / scrollWidth, childHeight};
+                    thumb.position = {scrollLeft * (size.width / scrollWidth), childHeight};
 
                     children.push_back(thumb);
                 }
@@ -171,7 +171,7 @@ namespace elementor::elements {
                     RenderElement thumb;
                     thumb.element = this->thumbY;
 
-                    float thumbHeight = (size.height * size.height) / scrollHeight;
+                    float thumbHeight = size.height * (size.height / scrollHeight);
                     if (trackWidth == 0) {
                         thumb.size = thumb.element->getSize(ctx, {{0, thumbHeight}, {size.width, thumbHeight}});
                         trackWidth = thumb.size.width;
@@ -180,7 +180,7 @@ namespace elementor::elements {
                         thumb.size = thumb.element->getSize(ctx, {{0, thumbHeight}, {trackWidth, thumbHeight}});
                     }
 
-                    thumb.position = {childWidth, (scrollTop * size.height) / scrollHeight};
+                    thumb.position = {childWidth, scrollTop * (size.height / scrollHeight)};
 
                     children.push_back(thumb);
                 }
