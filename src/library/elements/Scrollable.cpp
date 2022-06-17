@@ -102,8 +102,8 @@ namespace elementor::elements {
     }
 
     Size Scrollable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
-        return boundaries.max;
+        this->childSize = this->getChildSize(ctx, boundaries);
+        return fitSizeInBoundaries(this->childSize, boundaries);
     }
 
     void Scrollable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
