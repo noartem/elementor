@@ -13,6 +13,8 @@
 #include "Clickable.h"
 #include "Column.h"
 #include "Empty.h"
+#include "ExpandedHeight.h"
+#include "ExpandedWidth.h"
 #include "Flex.h"
 #include "Flexible.h"
 #include "Height.h"
