@@ -42,6 +42,17 @@ namespace elementor {
 
         element->element->paintBackground(ctx, canvas, rect);
 
+#ifdef DEBUG
+        SkPaint debugPaint;
+        debugPaint.setColor(SK_ColorRED);
+        debugPaint.setStrokeWidth(2);
+        debugPaint.setStyle(SkPaint::kStroke_Style);
+        debugPaint.setAntiAlias(true);
+
+        SkRect debugRect = SkRect::MakeXYWH(0, 0, element->size.width, element->size.height);
+        canvas->drawRect(debugRect, debugPaint);
+#endif
+
         for (RenderElement child: element->element->getChildren(ctx, element->size)) {
             ElementRect childRect;
             childRect.position.x = rect.position.x + child.position.x;
