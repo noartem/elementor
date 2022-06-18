@@ -23,6 +23,10 @@ namespace elementor::elements {
         return this;
     }
 
+    Size Flexible::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+        return fitSizeInBoundaries(this->getChild()->getSize(ctx, boundaries), boundaries);
+    }
+
     std::vector <RenderElement> Flexible::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
