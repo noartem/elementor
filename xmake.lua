@@ -10,6 +10,10 @@ if is_plat("windows") then
     add_requires("glew")
 end
 
+if is_mode("debug") then
+    add_defines("DEBUG")
+end
+
 target("elementor")
     set_kind("static")
     add_packages("skia", "glfw", "glut")
