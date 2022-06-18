@@ -209,7 +209,6 @@ namespace elementor::elements {
         this->updateSkFont();
         this->updateSkPaint();
 
-        canvas->translate(0, rect.size.height);
-        canvas->drawString(this->text.c_str(), 0, 0, this->font.value(), this->paint.value());
+        canvas->drawString(this->text.c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
 	}
 }
