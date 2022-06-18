@@ -23,17 +23,13 @@
 
 ## TODO
 
-* Text font fallback (например, fallback для эмодзи)
 * Paragraph
     * Как это делать в skia?
     * Если Text -> брать из него font, paint
     * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
-* Text memory leak?
+* Text font fallback (например, fallback для эмодзи)
 * Примеры для:
     * Padding
-    * Sized
-        * Height
-        * Width
     * Label
     * Rounded
     * Border
@@ -48,7 +44,6 @@
         * Scrollbar
 * Если скролл x и y, то друг на друга
 * Scroll на зажатие и перемещение thumb -> перемещать скролл
-* Если резко менять размер, то съезжает вниз, появляется ненужный скролл
 * Flex Wrap alignment
 * Image?
 * Debug
