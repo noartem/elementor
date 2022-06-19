@@ -23,10 +23,12 @@
 
 ## TODO
 
+* Image
 * Paragraph
     * Как это делать в skia?
     * Если Text -> брать из него font, paint
     * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
+* Transform
 * Text font fallback (например, fallback для эмодзи)
 * Примеры для:
     * Padding
@@ -42,10 +44,11 @@
     * Scroll
         * Scrollable
         * Scrollbar
-* Если скролл x и y, то друг на друга
-* Scroll на зажатие и перемещение thumb -> перемещать скролл
+* Scroll issues:
+    * Исправить если скролл и x и y, то друг наслаиваются на друга
+    * Добавить scroll на зажатие и перемещение thumb -> перемещать скролл
 * Flex Wrap alignment
-* Image?
-* Debug
+* Tests
+* Debug elements inspector
 * BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
 * Material ui
