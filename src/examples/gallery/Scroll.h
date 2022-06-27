@@ -2,8 +2,8 @@
 // Created by noartem on 30.05.2022.
 //
 
-#ifndef ELEMENTOR_SCROLL_H
-#define ELEMENTOR_SCROLL_H
+#ifndef GALLERY_SCROLL_H
+#define GALLERY_SCROLL_H
 
 #include "utility.h"
 
@@ -24,4 +24,4 @@ private:
 
 Scroll *scroll();
 
-#endif //ELEMENTOR_SCROLL_H
+#endif //GALLERY_SCROLL_H

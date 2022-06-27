@@ -2,8 +2,8 @@
 // Created by noartem on 29.05.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLE_ALIGN_H
-#define ELEMENTOR_EXAMPLE_ALIGN_H
+#ifndef GALLERY_EXAMPLE_ALIGN_H
+#define GALLERY_EXAMPLE_ALIGN_H
 
 #include "utility.h"
 #include "Example.h"
@@ -17,4 +17,4 @@ class ExampleAlign: public Example {
 };
 
 
-#endif //ELEMENTOR_EXAMPLE_ALIGN_H
+#endif //GALLERY_EXAMPLE_ALIGN_H

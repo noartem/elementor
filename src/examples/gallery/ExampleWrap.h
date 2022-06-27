@@ -2,8 +2,8 @@
 // Created by noartem on 30.05.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLE_WRAP_H
-#define ELEMENTOR_EXAMPLE_WRAP_H
+#ifndef GALLERY_EXAMPLE_WRAP_H
+#define GALLERY_EXAMPLE_WRAP_H
 
 #include "utility.h"
 #include "Example.h"
@@ -17,4 +17,4 @@ class ExampleWrap: public Example {
 };
 
 
-#endif //ELEMENTOR_EXAMPLE_WRAP_H
+#endif //GALLERY_EXAMPLE_WRAP_H

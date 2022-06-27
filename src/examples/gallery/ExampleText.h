@@ -2,8 +2,8 @@
 // Created by noartem on 11.06.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLE_TEXT_H
-#define ELEMENTOR_EXAMPLE_TEXT_H
+#ifndef GALLERY_EXAMPLE_TEXT_H
+#define GALLERY_EXAMPLE_TEXT_H
 
 #include "utility.h"
 #include "Example.h"
@@ -17,4 +17,4 @@ class ExampleText: public Example {
 };
 
 
-#endif //ELEMENTOR_EXAMPLE_TEXT_H
+#endif //GALLERY_EXAMPLE_TEXT_H

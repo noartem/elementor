@@ -2,8 +2,8 @@
 // Created by noartem on 18.06.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLE_SIZED_H
-#define ELEMENTOR_EXAMPLE_SIZED_H
+#ifndef GALLERY_EXAMPLE_SIZED_H
+#define GALLERY_EXAMPLE_SIZED_H
 
 #include "utility.h"
 #include "Example.h"
@@ -17,4 +17,4 @@ class ExampleSized: public Example {
 };
 
 
-#endif //ELEMENTOR_EXAMPLE_SIZED_H
+#endif //GALLERY_EXAMPLE_SIZED_H

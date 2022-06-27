@@ -2,8 +2,8 @@
 // Created by noartem on 29.05.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLES_UTILITY_H
-#define ELEMENTOR_EXAMPLES_UTILITY_H
+#ifndef GALLERY_EXAMPLES_UTILITY_H
+#define GALLERY_EXAMPLES_UTILITY_H
 
 #include "../library/utility.h"
 #include "../library/elements/utility.h"
@@ -17,4 +17,4 @@ Element *boxSized(std::string color, int width, int height);
 
 int randInRange(int min, int max);
 
-#endif //ELEMENTOR_EXAMPLES_UTILITY_H
+#endif //GALLERY_EXAMPLES_UTILITY_H

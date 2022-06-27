@@ -2,8 +2,8 @@
 // Created by noartem on 03.06.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLES_H
-#define ELEMENTOR_EXAMPLES_H
+#ifndef GALLERY_EXAMPLES_H
+#define GALLERY_EXAMPLES_H
 
 #include "Example.h"
 
@@ -26,4 +26,4 @@ std::vector<Example *> examples() {
 }
 
 
-#endif //ELEMENTOR_EXAMPLES_H
+#endif //GALLERY_EXAMPLES_H

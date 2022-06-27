@@ -2,8 +2,8 @@
 // Created by noartem on 03.06.2022.
 //
 
-#ifndef ELEMENTOR_EXAMPLES_GALLERY_H
-#define ELEMENTOR_EXAMPLES_GALLERY_H
+#ifndef GALLERY_EXAMPLES_GALLERY_H
+#define GALLERY_EXAMPLES_GALLERY_H
 
 #include "utility.h"
 #include "Example.h"
@@ -28,4 +28,4 @@ private:
     Column *makeExamplesList();
 };
 
-#endif //ELEMENTOR_EXAMPLES_GALLERY_H
+#endif //GALLERY_EXAMPLES_GALLERY_H
