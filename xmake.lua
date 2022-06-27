@@ -24,11 +24,11 @@ if is_plat("windows") then
     add_packages("glew")
 end
 
-target("examples")
+target("example-gallery")
     set_kind("binary")
     add_deps("elementor")
     add_packages("skia", "glfw")
-    add_files("src/examples/*.cpp")
+    add_files("src/examples/gallery/*.cpp")
 
 target("tests")
     set_kind("binary")
