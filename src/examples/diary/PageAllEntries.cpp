@@ -14,7 +14,7 @@ std::string PageAllEntries::getName() {
 }
 
 std::string PageAllEntries::getDescription() {
-    return "Displays all listed entries";
+    return "Displays all entries from diary";
 }
 
 Element *PageAllEntries::getScene() {
