@@ -5,8 +5,8 @@
 #ifndef GALLERY_EXAMPLES_UTILITY_H
 #define GALLERY_EXAMPLES_UTILITY_H
 
-#include "../library/utility.h"
-#include "../library/elements/utility.h"
+#include "../../library/utility.h"
+#include "../../library/elements/utility.h"
 
 using namespace elementor;
 using namespace elementor::elements;
