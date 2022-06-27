@@ -3,11 +3,18 @@
 //
 
 #include "utility.h"
+#include "DiaryService.h"
+#include "DiaryApplication.h"
+
+#include "PageAllEntries.h"
 
 int main() {
+    DiaryService *diaryService = new DiaryService();
+
     Application *application = new Application();
-    application->root = background()
-        ->setColor("#FFFCF3");
+    application->root = new DiaryApplication({
+        new PageAllEntries(diaryService),
+    });
 
     Platform *platform = new Platform();
     platform->title = "Diary";
