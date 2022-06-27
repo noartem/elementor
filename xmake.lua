@@ -30,6 +30,12 @@ target("example-gallery")
     add_packages("skia", "glfw")
     add_files("src/examples/gallery/*.cpp")
 
+target("example-diary")
+    set_kind("binary")
+    add_deps("elementor")
+    add_packages("skia", "glfw")
+    add_files("src/examples/diary/*.cpp")
+
 target("tests")
     set_kind("binary")
     add_packages("doctest")
