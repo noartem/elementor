@@ -19,6 +19,7 @@
 #include "Flexible.h"
 #include "Height.h"
 #include "Hoverable.h"
+#include "Inputable.h"
 #include "Padding.h"
 #include "Rounded.h"
 #include "Row.h"
