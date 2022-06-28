@@ -31,26 +31,26 @@ namespace elementor {
     EventCallbackResponse callElementEventHandler(Element *element, Event *event);
 
     enum class MouseButton {
-        Left,
-        Right,
-        Middle,
-        Back,
-        Forward
+        Left = 0,
+        Right = 1,
+        Middle = 2,
+        Back = 3,
+        Forward = 4,
     };
 
     enum class Action {
-        Release,
-        Press,
-        Repeat,
+        Release = 0,
+        Press = 1,
+        Repeat = 2,
     };
 
     enum class Mod {
-        Shift,
-        Control,
-        Alt,
-        Super,
-        CapsLock,
-        NumLock,
+        Shift = 1,
+        Control = 2,
+        Alt = 4,
+        Super = 8,
+        CapsLock = 10,
+        NumLock = 20,
     };
 
     enum class KeyboardKey {
@@ -62,7 +62,9 @@ namespace elementor {
         Period = 46,
         Slash = 47,
         Number0 = 48,
+        Number1World = 161,
         Number1 = 49,
+        Number2World = 162,
         Number2 = 50,
         Number3 = 51,
         Number4 = 52,
