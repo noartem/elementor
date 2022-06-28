@@ -73,11 +73,12 @@ namespace elementor {
         glfwSwapBuffers(this->window);
     }
 
-    void Platform::onMouseButton(int button, int action, int mods) {
-        EventMouseButton *event = new EventMouseButton();
-        event->button = static_cast<MouseButton>(button);
-        event->action = static_cast<MouseAction>(action);
-        event->mod = static_cast<MouseMod>(mods);
+    void Platform::onMouseButton(int key, int scancode, int action, int mods) {
+        EventKeyboard *event = new EventKeyboard();
+        event->key = static_cast<KeyboardKey>(button);
+        event->scancode = scancode;
+        event->action = static_cast<Action>(action);
+        event->mod = static_cast<Mod>(mod);
 
         this->application->dispatchEvent(event);
     }
@@ -86,6 +87,15 @@ namespace elementor {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
         event->y = y;
+
+        this->application->dispatchEvent(event);
+    }
+
+    void Platform::onKeyboard(int button, int action, int mods) {
+        EventMouseButton *event = new EventMouseButton();
+        event->button = static_cast<MouseButton>(button);
+        event->action = static_cast<Action>(action);
+        event->mod = static_cast<Mod>(mods);
 
         this->application->dispatchEvent(event);
     }
@@ -143,6 +153,9 @@ namespace elementor {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
             }
+
+            Platform *platform = getWindowPlatform(window);
+            platform->onMouseButton(key, scancode, action, mods);
         });
 
         glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {
