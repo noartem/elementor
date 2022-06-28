@@ -13,8 +13,6 @@
 namespace elementor::elements {
     class Inputable : public Element, public WithOnKeyboard, public WithOnMouseButton, public WithOnMouseMove, WithChild {
     public:
-        Inputable *onChange(std::function<void (std::string text)> callback);
-
         Inputable *onChange(std::function<std::string (std::string text)> callback);
 
         Inputable *onFocus(std::function<void ()> callback);
