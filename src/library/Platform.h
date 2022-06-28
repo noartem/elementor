@@ -46,6 +46,8 @@ namespace elementor {
 
         void onMouseButton(int button, int action, int mods);
 
+        void onKeyboard(int key, int scancode, int action, int mods);
+
         void onMouseMove(double x, double y);
 
         void onScroll(double xOffset, double yOffset);

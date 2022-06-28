@@ -73,12 +73,21 @@ namespace elementor {
         glfwSwapBuffers(this->window);
     }
 
-    void Platform::onMouseButton(int key, int scancode, int action, int mods) {
+    void Platform::onMouseButton(int button, int action, int mods) {
+        EventMouseButton *event = new EventMouseButton();
+        event->button = static_cast<MouseButton>(button);
+        event->action = static_cast<Action>(action);
+        event->mod = static_cast<Mod>(mods);
+
+        this->application->dispatchEvent(event);
+    }
+
+    void Platform::onKeyboard(int key, int scancode, int action, int mods) {
         EventKeyboard *event = new EventKeyboard();
-        event->key = static_cast<KeyboardKey>(button);
+        event->key = static_cast<KeyboardKey>(key);
         event->scancode = scancode;
         event->action = static_cast<Action>(action);
-        event->mod = static_cast<Mod>(mod);
+        event->mod = static_cast<Mod>(mods);
 
         this->application->dispatchEvent(event);
     }
@@ -87,15 +96,6 @@ namespace elementor {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
         event->y = y;
-
-        this->application->dispatchEvent(event);
-    }
-
-    void Platform::onKeyboard(int button, int action, int mods) {
-        EventMouseButton *event = new EventMouseButton();
-        event->button = static_cast<MouseButton>(button);
-        event->action = static_cast<Action>(action);
-        event->mod = static_cast<Mod>(mods);
 
         this->application->dispatchEvent(event);
     }
@@ -155,7 +155,7 @@ namespace elementor {
             }
 
             Platform *platform = getWindowPlatform(window);
-            platform->onMouseButton(key, scancode, action, mods);
+            platform->onKeyboard(key, scancode, action, mods);
         });
 
         glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {
