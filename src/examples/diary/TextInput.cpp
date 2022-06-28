@@ -34,8 +34,9 @@ TextInput::TextInput() {
         ->setChild(hoverable()
             ->setChild(inputable()
                 ->setChild(inputableContent)
-                ->onChange([inputableText] (std::string value) {
+                ->onChange([this, inputableText] (std::string value) {
                     inputableText->setText(value);
+                    this->value = value;
                     return value;
                 })
                 ->onFocus([this, inputableContent] () {
@@ -56,6 +57,10 @@ TextInput::TextInput() {
                     inputableContent->setColor("#FFDAD8"); 
                 }
             }));
+}
+
+std::string TextInput::getValue() {
+    return this->value;
 }
 
 Size TextInput::getSize(ApplicationContext *ctx, Boundaries boundaries) {

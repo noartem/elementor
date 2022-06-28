@@ -11,12 +11,15 @@ class TextInput : public Element {
 public:
     TextInput();
 
+    std::string getValue();
+
     Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
     std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
 private:
     Element *child;
+    std::string value;
     bool focused;
 };
 
