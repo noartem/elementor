@@ -9,7 +9,8 @@
 #include "PageAllEntries.h"
 
 int main() {
-    DiaryService *diaryService = new DiaryService();
+    DiaryService *diaryService = DiaryService::MakeFromFile("diary.csv");
+    diaryService->log();
 
     Application *application = new Application();
     application->root = new DiaryApplication({

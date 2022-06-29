@@ -5,4 +5,4 @@ build/
 # MacOS Cache
 .DS_Store
 
-
+src/examples/diary/diary.csv

@@ -20,14 +20,14 @@ std::string PageAllEntries::getDescription() {
 Element *PageAllEntries::getScene() {
     Column *entriesColumn = column()
         ->setSpacing(12);
-    
-    for (Entry entry : this->service->getEntries()) {
+
+    for (DiaryEntry *entry : this->service->findAll()) {
         entriesColumn
             ->appendChild(text()
                 ->setFontColor("#2B1615")
                 ->setFontFamily("Times New Roman")
-                ->setFontSize(16)
-                ->setText(entry.place));
+                ->setFontSize(18)
+                ->setText(entry->toString()));
     }
 
     return scroll()
