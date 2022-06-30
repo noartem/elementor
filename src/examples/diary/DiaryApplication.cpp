@@ -55,11 +55,13 @@ void DiaryApplication::setActivePage(Page *page) {
         ->setChild(page->getScene());
 
     this->activePageLabel
-        ->setChild(text()
-            ->setFontColor("#2B1615")
-            ->setFontFamily("Times New Roman")
-            ->setFontSize(24)
-            ->setText(page->getName()));
+        ->setChild(height()
+            ->setHeight(24)
+            ->setChild(text()
+                ->setFontColor("#2B1615")
+                ->setFontFamily("Times New Roman")
+                ->setFontSize(24)
+                ->setText(page->getName())));
 
     this->activePageDescription
         ->setChild(text()
