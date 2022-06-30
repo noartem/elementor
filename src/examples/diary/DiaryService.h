@@ -29,9 +29,9 @@ public:
 
     DiaryEntry *findWhereDatetime(std::string datetime);
 
-    std::vector<DiaryEntry *> findWhereDatetimeIn(std::tm start, std::tm end);
+    std::vector<DiaryEntry *> findWhereDatetimeBetween(std::tm start, std::tm end);
 
-    std::vector<DiaryEntry *> findWhereDatetimeIn(std::string start, std::string end);
+    std::vector<DiaryEntry *> findWhereDatetimeBetween(std::string start, std::string end);
 
 private:
     std::vector<DiaryEntry *> entries;

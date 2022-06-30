@@ -78,7 +78,7 @@ DiaryEntry *DiaryService::findWhereDatetime(std::string datetime) {
     return this->findWhereDatetime(parseDate(datetime));
 }
 
-std::vector<DiaryEntry *> DiaryService::findWhereDatetimeIn(std::tm start, std::tm end) {
+std::vector<DiaryEntry *> DiaryService::findWhereDatetimeBetween(std::tm start, std::tm end) {
     std::time_t startT = std::mktime(&start);
     std::time_t endT = std::mktime(&end);
 
@@ -94,6 +94,6 @@ std::vector<DiaryEntry *> DiaryService::findWhereDatetimeIn(std::tm start, std::
     return result;
 }
 
-std::vector<DiaryEntry *> DiaryService::findWhereDatetimeIn(std::string start, std::string end) {
-    return this->findWhereDatetimeIn(parseDate(start), parseDate(end));
+std::vector<DiaryEntry *> DiaryService::findWhereDatetimeBetween(std::string start, std::string end) {
+    return this->findWhereDatetimeBetween(parseDate(start), parseDate(end));
 }
