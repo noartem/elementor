@@ -1,0 +1,43 @@
+//
+// Created by noartem on 30.06.2022.
+//
+
+#include "PageTodayEntries.h"
+#include "DiaryEntryElement.h"
+#include "Scroll.h"
+
+PageTodayEntries::PageTodayEntries(DiaryService *service) {
+    this->service = service;
+}
+
+std::string PageTodayEntries::getName() {
+    return "Today Entries";
+}
+
+std::string PageTodayEntries::getDescription() {
+    return "Displays entries attached to today";
+}
+
+std::tm *now() {
+    std::time_t t = std::time(0);
+    return std::localtime(&t);
+}
+
+Element *PageTodayEntries::getScene() {
+    Column *entriesColumn = column()
+        ->setSpacing(12);
+
+    std::time_t tNow = std::time(0) + 6*1000;
+    std::tm *now = std::localtime(&tNow);
+    std::tm todayStart = {0, 0, 0, now->tm_mday, now->tm_mon, now->tm_year};
+    std::tm todayEnd = {59, 59, 23, now->tm_mday, now->tm_mon, now->tm_year};
+
+    for (DiaryEntry *entry : this->service->findWhereDatetimeBetween(todayStart, todayEnd)) {
+        entriesColumn->appendChild(diaryEntryElement(entry));
+    }
+
+    return scroll()
+        ->setChild(padding()
+            ->setPaddings(24, 36)
+            ->setChild(entriesColumn));
+}
