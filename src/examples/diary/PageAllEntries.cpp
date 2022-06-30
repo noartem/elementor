@@ -3,6 +3,7 @@
 //
 
 #include "PageAllEntries.h"
+#include "DiaryEntryElement.h"
 #include "Scroll.h"
 
 PageAllEntries::PageAllEntries(DiaryService *service) {
@@ -22,12 +23,7 @@ Element *PageAllEntries::getScene() {
         ->setSpacing(12);
 
     for (DiaryEntry *entry : this->service->findAll()) {
-        entriesColumn
-            ->appendChild(text()
-                ->setFontColor("#2B1615")
-                ->setFontFamily("Times New Roman")
-                ->setFontSize(18)
-                ->setText(entry->toString()));
+        entriesColumn->appendChild(diaryEntryElement(entry));
     }
 
     return scroll()
