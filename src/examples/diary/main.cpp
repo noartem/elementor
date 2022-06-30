@@ -6,6 +6,8 @@
 #include "DiaryService.h"
 #include "DiaryApplication.h"
 
+#include "PageTodayEntries.h"
+#include "PageTomorrowEntries.h"
 #include "PageAllEntries.h"
 
 int main() {
@@ -14,6 +16,8 @@ int main() {
 
     Application *application = new Application();
     application->root = new DiaryApplication({
+        new PageTodayEntries(diaryService),
+        new PageTomorrowEntries(diaryService),
         new PageAllEntries(diaryService),
     });
 
