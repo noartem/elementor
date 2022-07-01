@@ -7,8 +7,22 @@
 #include <fmt/format.h>
 
 #include <chrono>
+#include <time.h>
+#include <iomanip>
+#include <sstream>
 
 #define TIME_FORMAT "%Y-%m-%d %H:%M"
+
+extern "C" char* strptime(const char* s, const char* f, struct tm* tm) {
+  std::istringstream input(s);
+  input.imbue(std::locale(setlocale(LC_ALL, nullptr)));
+  input >> std::get_time(tm, f);
+  if (input.fail()) {
+    return NULL;
+  } else {
+    return (char*)(s + input.tellg());
+  }
+}
 
 std::tm parseDate(std::string value) {
     std::tm tm = {};
