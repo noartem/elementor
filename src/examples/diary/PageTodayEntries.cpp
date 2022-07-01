@@ -33,7 +33,9 @@ Element *PageTodayEntries::getScene() {
     std::tm todayEnd = {59, 59, 23, now->tm_mday, now->tm_mon, now->tm_year};
 
     for (DiaryEntry *entry : this->service->findWhereDatetimeBetween(todayStart, todayEnd)) {
-        entriesColumn->appendChild(diaryEntryElement(entry));
+        entriesColumn
+            ->appendChild(alignWidth()
+                ->setChild(diaryEntryElement(entry)));
     }
 
     return scroll()

@@ -10,7 +10,9 @@
 
 class DiaryApplication: public Element {
 public:
-    DiaryApplication(std::vector<Page *> pages);
+    DiaryApplication(Page *pageDefault, std::vector<Page *> pages);
+
+    DiaryApplication(std::vector<Page *> pages) : DiaryApplication(NULL, pages) {};
 
     void setActivePage(Page *activeExample);
 

@@ -23,7 +23,9 @@ Element *PageAllEntries::getScene() {
         ->setSpacing(12);
 
     for (DiaryEntry *entry : this->service->findAll()) {
-        entriesColumn->appendChild(diaryEntryElement(entry));
+        entriesColumn
+            ->appendChild(alignWidth()
+                ->setChild(diaryEntryElement(entry)));
     }
 
     return scroll()

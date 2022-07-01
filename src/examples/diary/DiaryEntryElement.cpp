@@ -4,26 +4,59 @@
 
 #include "DiaryEntryElement.h"
 
-DiaryEntryElement *diaryEntryElement(DiaryEntry *entry) {
-    return new DiaryEntryElement(entry);
-}
+#include <fmt/format.h>
 
-DiaryEntryElement::DiaryEntryElement(DiaryEntry *entry) {
-    this->child = text()
-        ->setFontColor("#2B1615")
-        ->setFontFamily("Times New Roman")
-        ->setFontSize(18)
-        ->setText(entry->toString());
-}
-
-Size DiaryEntryElement::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-    return this->child->getSize(ctx, boundaries);
-}
-
-std::vector <RenderElement> DiaryEntryElement::getChildren(ApplicationContext *ctx, Size size) {
-    RenderElement child;
-    child.element = this->child;
-    child.size = size;
-    child.position = {0, 0};
-    return {child};
+Element *diaryEntryElement(DiaryEntry *entry) {
+    return border()
+        ->setWidth(2)
+        ->setColor("#E5BEBD")
+        ->setRadius(6)
+        ->setChild(rounded()
+            ->setRadius(6)
+            ->setChild(background()
+                ->setColor("#FFFFFF")
+                ->setChild(padding()
+                    ->setPaddings(12)
+                    ->setChild(column()
+                        ->setSpacing(4)
+                        ->appendChild(row()
+                            ->setSpacing(6)
+                            ->appendChild(width()
+                                ->setWidth(160)
+                                ->setChild(text()
+                                    ->setFontColor("#2B1615")
+                                    ->setFontSize(16)
+                                    ->setFontWeight(600)
+                                    ->setText("Date and Time")))
+                            ->appendChild(text()
+                                ->setFontColor("#2B1615")
+                                ->setFontSize(16)
+                                ->setText(entry->getDatetimeFormatted())))
+                        ->appendChild(empty())
+                        ->appendChild(row()
+                            ->setSpacing(6)
+                            ->appendChild(width()
+                                ->setWidth(160)
+                                ->setChild(text()
+                                    ->setFontColor("#2B1615")
+                                    ->setFontSize(16)
+                                    ->setFontWeight(600)
+                                    ->setText("Duration")))
+                            ->appendChild(text()
+                                ->setFontColor("#2B1615")
+                                ->setFontSize(16)
+                                ->setText(fmt::format("{} hours", entry->getDuration()))))
+                        ->appendChild(row()
+                            ->setSpacing(6)
+                            ->appendChild(width()
+                                ->setWidth(160)
+                                ->setChild(text()
+                                    ->setFontColor("#2B1615")
+                                    ->setFontSize(16)
+                                    ->setFontWeight(600)
+                                    ->setText("Place")))
+                            ->appendChild(text()
+                                ->setFontColor("#2B1615")
+                                ->setFontSize(16)
+                                ->setText(entry->getPlace())))))));
 }

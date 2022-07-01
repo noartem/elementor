@@ -6,12 +6,16 @@
 
 #include "Scroll.h"
 
-DiaryApplication::DiaryApplication(std::vector<Page *> pages) {
+DiaryApplication::DiaryApplication(Page *pageDefault, std::vector<Page *> pages) {
     this->pages = pages;
 
     this->activePageElement = empty();
     this->activePageLabel = empty();
     this->activePageDescription = empty();
+
+    if (pageDefault != NULL) {
+        this->setActivePage(pageDefault);
+    }
 
     this->scene = background()
         ->setColor("#FFFBFF")
