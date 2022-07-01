@@ -32,7 +32,6 @@ Element *diaryEntryElement(DiaryEntry *entry) {
                                 ->setFontColor("#2B1615")
                                 ->setFontSize(16)
                                 ->setText(entry->getDatetimeFormatted())))
-                        ->appendChild(empty())
                         ->appendChild(row()
                             ->setSpacing(6)
                             ->appendChild(width()
