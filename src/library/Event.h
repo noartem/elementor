@@ -14,6 +14,7 @@
 #define EVENT_MOUSE_MOVE "mouse-move"
 #define EVENT_SCROLL "scroll"
 #define EVENT_KEYBOARD "keyboard"
+#define EVENT_CHAR "char"
 
 namespace elementor {
     class Event {
@@ -31,6 +32,7 @@ namespace elementor {
     EventCallbackResponse callElementEventHandler(Element *element, Event *event);
 
     enum class MouseButton {
+        // TODO: Map number to enum in Platform
         Left = 0,
         Right = 1,
         Middle = 2,
@@ -39,12 +41,14 @@ namespace elementor {
     };
 
     enum class Action {
+        // TODO: Map number to enum in Platform
         Release = 0,
         Press = 1,
         Repeat = 2,
     };
 
     enum class Mod {
+        // TODO: Map number to enum in Platform
         Shift = 1,
         Control = 2,
         Alt = 4,
@@ -54,6 +58,7 @@ namespace elementor {
     };
 
     enum class KeyboardKey {
+        // TODO: Map number to enum in Platform
         Unknow = -1,
         Space = 32,
         Apostraphe = 39,
@@ -230,6 +235,18 @@ namespace elementor {
     class WithOnKeyboard {
     public:
         virtual EventCallbackResponse onEvent(EventKeyboard *event) = 0;
+    };
+
+    class EventChar: public Event {
+    public:
+        char32_t value;
+
+        std::string getName() { return EVENT_CHAR; };
+    };
+
+    class WithOnChar {
+    public:
+        virtual EventCallbackResponse onEvent(EventChar *event) = 0;
     };
 }
 

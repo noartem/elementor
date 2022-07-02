@@ -92,6 +92,13 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
+    void Platform::onChar(unsigned int codepoint) {
+        EventChar *event = new EventChar();
+        event->value = codepoint;
+
+        this->application->dispatchEvent(event);
+    }
+
     void Platform::onMouseMove(double x, double y) {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
@@ -152,6 +159,11 @@ namespace elementor {
         glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
             Platform *platform = getWindowPlatform(window);
             platform->onKeyboard(key, scancode, action, mods);
+        });
+
+        glfwSetCharCallback(window, [] (GLFWwindow *window, unsigned int codepoint) {
+            Platform *platform = getWindowPlatform(window);
+            platform->onChar(codepoint);
         });
 
         glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {

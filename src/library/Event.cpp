@@ -24,6 +24,10 @@ namespace elementor {
             events.push_back(EVENT_KEYBOARD);
         }
 
+        if (dynamic_cast<WithOnChar *>(element) != NULL) {
+            events.push_back(EVENT_CHAR);
+        }
+
         return events;
     }
 
@@ -37,6 +41,8 @@ namespace elementor {
             return dynamic_cast<WithOnScroll *>(element)->onEvent(dynamic_cast<EventScroll *>(event));
         } else if (eventName == EVENT_KEYBOARD) {
             return dynamic_cast<WithOnKeyboard *>(element)->onEvent(dynamic_cast<EventKeyboard *>(event));
+        } else if (eventName == EVENT_CHAR) {
+            return dynamic_cast<WithOnChar *>(element)->onEvent(dynamic_cast<EventChar *>(event));
         }
 
         return EventCallbackResponse::None;
