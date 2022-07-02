@@ -5,6 +5,77 @@
 #include "Inputable.h"
 
 #include <iostream>
+#include <iomanip>
+#include <string_view>
+#include <clocale>
+#include <cuchar>
+#include <climits>
+
+std::string unicode_to_utf8(char32_t unicode) {
+    std::string s;
+
+    if (unicode>=0 and unicode <= 0x7f) { // 7F(16) = 127(10)
+        s += static_cast<char>(unicode);
+    } else if (unicode <= 0x7ff) { // 7FF(16) = 2047(10)
+        unsigned char c1 = 192;
+        unsigned char c2 = 128;
+
+        for (int k=0; k<11; ++k) {
+            if (k < 6)  c2 |= (unicode % 64) & (1 << k);
+            else c1 |= (unicode >> 6) & (1 << (k - 6));
+        }
+
+        s += c1;
+        s += c2;
+    } else if (unicode <= 0xffff) { // FFFF(16) = 65535(10)
+        unsigned char c1 = 224;
+        unsigned char c2 = 128;
+        unsigned char c3 = 128;
+
+        for (int k = 0; k < 16; ++k) {
+            if (k < 6)  c3 |= (unicode % 64) & (1 << k);
+            else if (k < 12) c2 |= (unicode >> 6) & (1 << (k - 6));
+            else c1 |= (unicode >> 12) & (1 << (k - 12));
+        }
+
+        s += c1;
+        s += c2;
+        s += c3;
+    } else if (unicode <= 0x1fffff) { // 1FFFFF(16) = 2097151(10)
+        unsigned char c1 = 240;
+        unsigned char c2 = 128;
+        unsigned char c3 = 128;
+        unsigned char c4 = 128;
+
+        for (int k = 0; k < 21; ++k) {
+            if (k < 6)  c4 |= (unicode % 64) & (1 << k);
+            else if (k < 12) c3 |= (unicode >> 6) & (1 << (k - 6));
+            else if (k < 18) c2 |= (unicode >> 12) & (1 << (k - 12));
+            else c1 |= (unicode >> 18) & (1 << (k - 18));
+        }
+
+        s += c1;
+        s += c2;
+        s += c3;
+        s += c4;
+    }
+
+    return s;
+}
+
+void pop_back_utf8(std::string& utf8) {
+    if(utf8.empty()){
+        return;
+    }
+
+    auto cp = utf8.data() + utf8.size();
+
+    while(--cp >= utf8.data() && ((*cp & 0b10000000) && !(*cp & 0b01000000))) {}
+
+    if(cp >= utf8.data()) {
+        utf8.resize(cp - utf8.data());
+    }
+}
 
 namespace elementor::elements {
     Inputable *inputable() {
@@ -88,171 +159,33 @@ namespace elementor::elements {
         if (this->focused && event->action == Action::Press) {
             if (event->key == KeyboardKey::Escape) {
                 this->focused = false;
-            }
-
-            bool isShift = event->mod == Mod::Shift;
-            bool isCapslock = event->mod == Mod::CapsLock;
-            bool isCapital = isCapslock || isShift;
-
-            std::string newText = this->text;
-            switch (event->key){
-                case KeyboardKey::A:
-                    newText += (isCapital ? "A" : "a");
-                    break;
-                case KeyboardKey::B:
-                    newText += (isCapital ? "B" : "b");
-                    break;
-                case KeyboardKey::C:
-                    newText += (isCapital ? "C" : "c");
-                    break;
-                case KeyboardKey::D:
-                    newText += (isCapital ? "D" : "d");
-                    break;
-                case KeyboardKey::E:
-                    newText += (isCapital ? "E" : "e");
-                    break;
-                case KeyboardKey::F:
-                    newText += (isCapital ? "F" : "f");
-                    break;
-                case KeyboardKey::G:
-                    newText += (isCapital ? "G" : "g");
-                    break;
-                case KeyboardKey::H:
-                    newText += (isCapital ? "H" : "h");
-                    break;
-                case KeyboardKey::I:
-                    newText += (isCapital ? "I" : "i");
-                    break;
-                case KeyboardKey::J:
-                    newText += (isCapital ? "J" : "j");
-                    break;
-                case KeyboardKey::K:
-                    newText += (isCapital ? "K" : "k");
-                    break;
-                case KeyboardKey::L:
-                    newText += (isCapital ? "L" : "l");
-                    break;
-                case KeyboardKey::M:
-                    newText += (isCapital ? "M" : "m");
-                    break;
-                case KeyboardKey::N:
-                    newText += (isCapital ? "N" : "n");
-                    break;
-                case KeyboardKey::O:
-                    newText += (isCapital ? "O" : "o");
-                    break;
-                case KeyboardKey::P:
-                    newText += (isCapital ? "P" : "p");
-                    break;
-                case KeyboardKey::Q:
-                    newText += (isCapital ? "Q" : "q");
-                    break;
-                case KeyboardKey::R:
-                    newText += (isCapital ? "R" : "r");
-                    break;
-                case KeyboardKey::S:
-                    newText += (isCapital ? "S" : "s");
-                    break;
-                case KeyboardKey::T:
-                    newText += (isCapital ? "T" : "t");
-                    break;
-                case KeyboardKey::U:
-                    newText += (isCapital ? "U" : "u");
-                    break;
-                case KeyboardKey::V:
-                    newText += (isCapital ? "V" : "v");
-                    break;
-                case KeyboardKey::W:
-                    newText += (isCapital ? "W" : "w");
-                    break;
-                case KeyboardKey::X:
-                    newText += (isCapital ? "X" : "x");
-                    break;
-                case KeyboardKey::Y:
-                    newText += (isCapital ? "Y" : "y");
-                    break;
-                case KeyboardKey::Z:
-                    newText += (isCapital ? "Z" : "z");
-                    break;
-                case KeyboardKey::Number0:
-                    newText += isShift ? ")" : "0";
-                    break;
-                case KeyboardKey::Number1World:
-                case KeyboardKey::Number1:
-                    newText += isShift ? "!" : "1";
-                    break;
-                case KeyboardKey::Number2World:
-                case KeyboardKey::Number2:
-                    newText += isShift ? "@" : "2";
-                    break;
-                case KeyboardKey::Number3:
-                    newText += isShift ? "#" : "3";
-                    break;
-                case KeyboardKey::Number4:
-                    newText += isShift ? "$" : "4";
-                    break;
-                case KeyboardKey::Number5:
-                    newText += isShift ? "%" : "5";
-                    break;
-                case KeyboardKey::Number6:
-                    newText += isShift ? "^" : "6";
-                    break;
-                case KeyboardKey::Number7:
-                    newText += isShift ? "&" : "7";
-                    break;
-                case KeyboardKey::Number8:
-                    newText += isShift ? "*" : "8";
-                    break;
-                case KeyboardKey::Number9:
-                    newText += isShift ? "(" : "9";
-                    break;
-                case KeyboardKey::Space:
-                    newText += " ";
-                    break;
-                case KeyboardKey::Apostraphe:
-                    newText += isShift ? "\"" : "'";
-                    break;
-                case KeyboardKey::Comma:
-                    newText += isShift ? "<" : ",";
-                    break;
-                case KeyboardKey::Period:
-                    newText += isShift ? ">" : ".";
-                    break;
-                case KeyboardKey::Minus:
-                    newText += isShift ? "_" : "-";
-                    break;
-                case KeyboardKey::Slash:
-                    newText += isShift ? "?" : "/";
-                    break;
-                case KeyboardKey::Semicolon:
-                    newText += isShift ? ":" : ";";
-                    break;
-                case KeyboardKey::Equal:
-                    newText += isShift ? "+" : "=";
-                    break;
-                case KeyboardKey::LeftBracket:
-                    newText += isShift ? "{" : "[";
-                    break;
-                case KeyboardKey::Backslash:
-                    newText += isShift ? "|" : "\\";
-                    break;
-                case KeyboardKey::RightBracket:
-                    newText += isShift ? "}" : "]";
-                    break;
-                case KeyboardKey::Backspace:
-                    if (newText.size() > 0){
-                        newText.pop_back();
-                    }
-                    break;
-            }
-
-            if (newText != this->text) {
-                if (this->callbackChange) {
-                    newText = this->callbackChange(newText);
+                if (this->callbackBlur) {
+                    this->callbackBlur();
                 }
-                this->text = newText;
                 return EventCallbackResponse::StopPropagation;
             }
+
+            if (event->key == KeyboardKey::Backspace && this->text.size() > 0) {
+                pop_back_utf8(this->text);
+                if (this->callbackChange) {
+                    this->text = this->callbackChange(this->text);
+                }
+                std::cout << "EventKeyboard: " << this->text.size() << ", " << this->text << std::endl;
+                return EventCallbackResponse::StopPropagation;
+            }
+        }
+
+        return EventCallbackResponse::None;
+    }
+
+    EventCallbackResponse Inputable::onEvent(EventChar *event) {
+        if (this->focused) {
+            this->text += unicode_to_utf8(event->value);
+            if (this->callbackChange) {
+                this->text = this->callbackChange(this->text);
+            }
+            std::cout << "EventChar: " << this->text.size() << ", " << this->text << std::endl;
+            return EventCallbackResponse::StopPropagation;
         }
 
         return EventCallbackResponse::None;

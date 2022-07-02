@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Inputable : public Element, public WithOnKeyboard, public WithOnMouseButton, public WithOnMouseMove, WithChild {
+    class Inputable : public Element, public WithOnKeyboard, public WithOnChar, public WithOnMouseButton, public WithOnMouseMove, WithChild {
     public:
         Inputable *onChange(std::function<std::string (std::string text)> callback);
 
@@ -36,6 +36,8 @@ namespace elementor::elements {
         EventCallbackResponse onEvent(EventMouseButton *event) override;
 
         EventCallbackResponse onEvent(EventKeyboard *event) override;
+
+        EventCallbackResponse onEvent(EventChar *event) override;
 
     private:
         std::string text;
