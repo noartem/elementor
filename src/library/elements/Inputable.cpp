@@ -4,13 +4,6 @@
 
 #include "Inputable.h"
 
-#include <iostream>
-#include <iomanip>
-#include <string_view>
-#include <clocale>
-#include <cuchar>
-#include <climits>
-
 std::string unicode_to_utf8(char32_t unicode) {
     std::string s;
 
@@ -170,7 +163,6 @@ namespace elementor::elements {
                 if (this->callbackChange) {
                     this->text = this->callbackChange(this->text);
                 }
-                std::cout << "EventKeyboard: " << this->text.size() << ", " << this->text << std::endl;
                 return EventCallbackResponse::StopPropagation;
             }
         }
@@ -184,7 +176,6 @@ namespace elementor::elements {
             if (this->callbackChange) {
                 this->text = this->callbackChange(this->text);
             }
-            std::cout << "EventChar: " << this->text.size() << ", " << this->text << std::endl;
             return EventCallbackResponse::StopPropagation;
         }
 
