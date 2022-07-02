@@ -35,6 +35,9 @@ TextInput::TextInput() {
             ->setChild(inputable()
                 ->setChild(inputableContent)
                 ->onChange([this, inputableText] (std::string value) {
+                    if (this->callbackChange) {
+                        value = this->callbackChange(value);
+                    }
                     inputableText->setText(value);
                     this->value = value;
                     return value;
@@ -61,6 +64,11 @@ TextInput::TextInput() {
 
 std::string TextInput::getValue() {
     return this->value;
+}
+
+TextInput *TextInput::onChange(std::function<std::string (std::string value)> callback) {
+    this->callbackChange = callback;
+    return this;
 }
 
 Size TextInput::getSize(ApplicationContext *ctx, Boundaries boundaries) {
