@@ -52,6 +52,10 @@ std::string DiaryEntry::getDatetimeFormatted() {
     return datetimeFormatted;
 }
 
+std::string DiaryEntry::getDurationFormatted() {
+    return fmt::format("{}", this->duration);
+}
+
 float DiaryEntry::getDuration() {
     return this->duration;
 }

@@ -29,27 +29,30 @@ TextInput::TextInput() {
                 ->setHeight(18)
                 ->setChild(inputableText))));
 
+    this->inputableChild = inputable()
+        ->setChild(inputableContent)
+        ->setText(this->value)
+        ->onChange([this, inputableText] (std::string value) {
+            if (this->callbackChange) {
+                value = this->callbackChange(value);
+            }
+            inputableText->setText(value);
+            this->value = value;
+            return value;
+        })
+        ->onFocus([this, inputableContent] () {
+            this->focused = true;
+            inputableContent->setColor("#FFB4AD");
+        })
+        ->onBlur([this, inputableContent] () {
+            this->focused = false;
+            inputableContent->setColor("#FFDAD8");
+        });
+
     this->child = background()
         ->setColor("#FFFFFF")
         ->setChild(hoverable()
-            ->setChild(inputable()
-                ->setChild(inputableContent)
-                ->onChange([this, inputableText] (std::string value) {
-                    if (this->callbackChange) {
-                        value = this->callbackChange(value);
-                    }
-                    inputableText->setText(value);
-                    this->value = value;
-                    return value;
-                })
-                ->onFocus([this, inputableContent] () {
-                    this->focused = true;
-                    inputableContent->setColor("#FFB4AD");
-                })
-                ->onBlur([this, inputableContent] () {
-                    this->focused = false;
-                    inputableContent->setColor("#FFDAD8");
-                }))
+            ->setChild(this->inputableChild)
             ->onEnter([this, inputableContent] () {
                 if (!this->focused) {
                     inputableContent->setColor("#E5BEBD"); 
@@ -60,6 +63,14 @@ TextInput::TextInput() {
                     inputableContent->setColor("#FFDAD8"); 
                 }
             }));
+}
+
+TextInput *TextInput::setValue(std::string value) {
+    this->value = value;
+    if (this->inputableChild) {
+        this->inputableChild->setText(value);
+    } 
+    return this;
 }
 
 std::string TextInput::getValue() {

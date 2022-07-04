@@ -55,6 +55,10 @@ DiaryApplication::DiaryApplication(Page *pageDefault, std::vector<Page *> pages)
 }
 
 void DiaryApplication::setActivePage(Page *page) {
+    page->setPageChanger([this] (Page *newPage) {
+        this->setActivePage(newPage);
+    });
+
     this->activePageElement
         ->setChild(page->getScene());
 

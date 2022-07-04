@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <stdint.h>
 
 std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
     std::vector<DiaryEntry *> entries;
@@ -26,7 +28,9 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
 
 DiaryService *DiaryService::MakeFromFile(std::string filename) {
     DiaryService *service = new DiaryService();
+    service->filename = filename;
     service->entries = readEntriesFromFile(filename);
+    service->sort();
     return service;
 }
 
@@ -34,6 +38,33 @@ void DiaryService::log() {
     std::cout << "Diary: " << std::endl;
     for(DiaryEntry *entry : this->entries) {
         std::cout << "\t* " << entry->toString() << std::endl;
+    }
+}
+
+void DiaryService::sort() {
+    std::sort(this->entries.begin(), this->entries.end(), [] (DiaryEntry *a, DiaryEntry *b) {
+        std::tm aTime = a->getDatetime();
+        std::tm bTime = b->getDatetime();
+        return std::mktime(&aTime) < std::mktime(&bTime);
+    });
+}
+
+void DiaryService::save(std::string filename) {
+    this->sort();
+    std::ofstream o;
+    o.open(filename);
+    o << "datetime,duration,place\n";
+    for (DiaryEntry *entry : this->entries) {
+        o << entry->getDatetimeFormatted() << ",";
+        o << entry->getDurationFormatted() << ",";
+        o << entry->getPlace() << "\n";
+    }
+    o.close();
+}
+
+void DiaryService::save() {
+    if (this->filename.size() > 0) {
+        this->save(this->filename);
     }
 }
 
@@ -45,21 +76,29 @@ void DiaryService::add(DiaryEntry *entry) {
     this->entries.push_back(entry);
 }
 
-bool DiaryService::remove(unsigned int index) {
-    if (this->entries.size() < index) {
-        this->entries.erase(this->entries.begin() + index);
-        return true;
-    } else {
-        return false;
+void DiaryService::remove(unsigned int index) {
+    this->entries.erase(this->entries.begin() + index);
+}
+
+void DiaryService::remove(DiaryEntry *entry) {
+    for (unsigned int i = 0; i < this->entries.size(); ++i) {
+        if (this->entries[i] == entry) {
+            this->remove(i);
+            return;
+        }
     }
 }
 
-bool DiaryService::replace(DiaryEntry *entry, unsigned int index) {
-    if (this->entries.size() < index) {
-        this->entries[index] = entry;
-        return true;
-    } else {
-        return false;
+void DiaryService::replace(DiaryEntry *entry, unsigned int index) {
+    this->entries[index] = entry;
+}
+
+void DiaryService::replace(DiaryEntry *oldEntry, DiaryEntry *newEntry) {
+    for (unsigned int i = 0; i < this->entries.size(); ++i) {
+        if (this->entries[i] == oldEntry) {
+            this->replace(newEntry, i);
+            return;
+        }
     }
 }
 

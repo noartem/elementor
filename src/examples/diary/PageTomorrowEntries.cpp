@@ -3,6 +3,7 @@
 //
 
 #include "PageTomorrowEntries.h"
+#include "PageEntry.h"
 #include "DiaryEntryElement.h"
 #include "Scroll.h"
 
@@ -18,6 +19,10 @@ std::string PageTomorrowEntries::getDescription() {
     return "Displays entries attached to tomorrow";
 }
 
+void PageTomorrowEntries::setPageChanger(PAGE_CHANGER pageChanger) {
+    this->pageChanger = pageChanger;
+}
+
 Element *PageTomorrowEntries::getScene() {
     Column *entriesColumn = column()
         ->setSpacing(12);
@@ -30,7 +35,11 @@ Element *PageTomorrowEntries::getScene() {
     for (DiaryEntry *entry : this->service->findWhereDatetimeBetween(tomorrowStart, tomorrowEnd)) {
         entriesColumn
             ->appendChild(alignWidth()
-                ->setChild(diaryEntryElement(entry)));
+                ->setChild(clickable()
+                    ->setChild(diaryEntryElement(entry))
+                    ->onClick([this, entry] () {
+                        this->pageChanger(new PageEntry(this->service, entry, this));
+                    })));
     }
 
     return scroll()

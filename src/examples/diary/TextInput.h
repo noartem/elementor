@@ -11,6 +11,8 @@ class TextInput : public Element {
 public:
     TextInput();
 
+    TextInput *setValue(std::string value);
+
     std::string getValue();
 
     TextInput *onChange(std::function<std::string (std::string text)> callback);
@@ -21,6 +23,7 @@ public:
 
 private:
     Element *child;
+    Inputable *inputableChild;
     std::string value;
     bool focused;
     std::function<std::string (std::string text)> callbackChange;

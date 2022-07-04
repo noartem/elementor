@@ -22,6 +22,8 @@ public:
 
     float getDuration();
 
+    std::string getDurationFormatted();
+
     std::string getPlace();
 
     std::string toString();

@@ -19,8 +19,11 @@ public:
 
     Element *getScene() override;
 
+    void setPageChanger(PAGE_CHANGER pageChanger);
+
 private:
     DiaryService *service;
+    PAGE_CHANGER pageChanger;
 };
 
 

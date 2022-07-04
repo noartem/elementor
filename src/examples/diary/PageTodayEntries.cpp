@@ -3,6 +3,7 @@
 //
 
 #include "PageTodayEntries.h"
+#include "PageEntry.h"
 #include "DiaryEntryElement.h"
 #include "Scroll.h"
 
@@ -16,6 +17,10 @@ std::string PageTodayEntries::getName() {
 
 std::string PageTodayEntries::getDescription() {
     return "Displays entries attached to today";
+}
+
+void PageTodayEntries::setPageChanger(PAGE_CHANGER pageChanger) {
+    this->pageChanger = pageChanger;
 }
 
 std::tm *now() {
@@ -35,7 +40,11 @@ Element *PageTodayEntries::getScene() {
     for (DiaryEntry *entry : this->service->findWhereDatetimeBetween(todayStart, todayEnd)) {
         entriesColumn
             ->appendChild(alignWidth()
-                ->setChild(diaryEntryElement(entry)));
+                ->setChild(clickable()
+                    ->setChild(diaryEntryElement(entry))
+                    ->onClick([this, entry] () {
+                        this->pageChanger(new PageEntry(this->service, entry, this));
+                    })));
     }
 
     return scroll()

@@ -17,11 +17,21 @@ public:
 
     void log();
 
+    void sort();
+
+    void save(std::string filename);
+
+    void save();
+
     void add(DiaryEntry *entry);
 
-    bool remove(unsigned int index);
+    void remove(unsigned int index);
 
-    bool replace(DiaryEntry *entry, unsigned int index);
+    void remove(DiaryEntry *entry);
+
+    void replace(DiaryEntry *entry, unsigned int index);
+
+    void replace(DiaryEntry *oldEntry, DiaryEntry *newEntry);
 
     std::vector<DiaryEntry *> findAll();
 
@@ -34,6 +44,7 @@ public:
     std::vector<DiaryEntry *> findWhereDatetimeBetween(std::string start, std::string end);
 
 private:
+    std::string filename;
     std::vector<DiaryEntry *> entries;
 };
 

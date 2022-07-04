@@ -4,8 +4,6 @@
 
 #include "DiaryEntryElement.h"
 
-#include <fmt/format.h>
-
 Element *diaryEntryElement(DiaryEntry *entry) {
     return border()
         ->setWidth(2)
@@ -44,7 +42,7 @@ Element *diaryEntryElement(DiaryEntry *entry) {
                             ->appendChild(text()
                                 ->setFontColor("#2B1615")
                                 ->setFontSize(16)
-                                ->setText(fmt::format("{} hours", entry->getDuration()))))
+                                ->setText(entry->getDurationFormatted())))
                         ->appendChild(row()
                             ->setSpacing(6)
                             ->appendChild(width()
