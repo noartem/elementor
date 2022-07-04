@@ -28,7 +28,6 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
 
 DiaryService *DiaryService::MakeFromFile(std::string filename) {
     DiaryService *service = new DiaryService();
-    service->filename = filename;
     service->entries = readEntriesFromFile(filename);
     service->sort();
     return service;
@@ -49,7 +48,7 @@ void DiaryService::sort() {
     });
 }
 
-void DiaryService::save(std::string filename) {
+void DiaryService::saveToFile(std::string filename) {
     this->sort();
     std::ofstream o;
     o.open(filename);
@@ -60,12 +59,6 @@ void DiaryService::save(std::string filename) {
         o << entry->getPlace() << "\n";
     }
     o.close();
-}
-
-void DiaryService::save() {
-    if (this->filename.size() > 0) {
-        this->save(this->filename);
-    }
 }
 
 std::vector<DiaryEntry *> DiaryService::findAll() {

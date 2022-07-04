@@ -17,11 +17,7 @@ public:
 
     void log();
 
-    void sort();
-
-    void save(std::string filename);
-
-    void save();
+    void saveToFile(std::string filename);
 
     void add(DiaryEntry *entry);
 
@@ -44,8 +40,9 @@ public:
     std::vector<DiaryEntry *> findWhereDatetimeBetween(std::string start, std::string end);
 
 private:
-    std::string filename;
     std::vector<DiaryEntry *> entries;
+
+    void sort();
 };
 
 #endif //DIARY_DIARY_SERVICE_H
