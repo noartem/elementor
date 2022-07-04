@@ -92,6 +92,11 @@ namespace elementor::elements {
 
     Inputable *Inputable::setText(std::string text) {
         this->text = text;
+
+        if (this->callbackChange) {
+            this->callbackChange(this->text);
+        }
+
         return this;
     }
 
