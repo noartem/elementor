@@ -10,7 +10,7 @@ namespace elementor::elements {
     }
 
     Padding *Padding::setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
-        this->paddings = {paddingTop, paddingLeft, paddingBottom, paddingRight};
+        this->paddings = {paddingTop, paddingRight, paddingBottom, paddingLeft};
         return this;
     }
 
