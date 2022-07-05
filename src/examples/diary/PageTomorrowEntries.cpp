@@ -15,10 +15,6 @@ std::string PageTomorrowEntries::getName() {
     return "Tomorrow Entries";
 }
 
-std::string PageTomorrowEntries::getDescription() {
-    return "Displays entries attached to tomorrow";
-}
-
 void PageTomorrowEntries::setPageChanger(PAGE_CHANGER pageChanger) {
     this->pageChanger = pageChanger;
 }
@@ -45,5 +41,12 @@ Element *PageTomorrowEntries::getScene() {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
-            ->setChild(entriesColumn));
+            ->setChild(column()
+                ->setSpacing(32)
+                ->appendChild(text()
+                    ->setFontColor("#2B1615")
+                    ->setFontFamily("Times New Roman")
+                    ->setFontSize(24)
+                    ->setText("Tomorrow entries"))
+                ->appendChild(entriesColumn)));
 }

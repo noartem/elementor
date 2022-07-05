@@ -13,8 +13,6 @@ class Page {
 public:
     virtual std::string getName() = 0;
 
-    virtual std::string getDescription() = 0;
-
     virtual Element *getScene() = 0;
 
     virtual void setPageChanger(PAGE_CHANGER pageChanger) {};

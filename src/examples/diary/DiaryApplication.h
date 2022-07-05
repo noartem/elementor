@@ -10,23 +10,19 @@
 
 class DiaryApplication: public Element {
 public:
-    DiaryApplication(Page *pageDefault, std::vector<Page *> pages);
-
-    DiaryApplication(std::vector<Page *> pages) : DiaryApplication(NULL, pages) {};
+    DiaryApplication(std::vector<Page *> pages);
 
     void setActivePage(Page *activeExample);
+
+    Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
     std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
 
 private:
-    Element *scene;
-    Page *activePage;
+    Element *child;
     Empty *activePageElement;
-    Empty *activePageLabel;
-    Empty *activePageDescription;
-    std::vector<Page *> pages;
 
-    Column *makePagesList();
+    Column *makePagesList(std::vector<Page *> pages);
 };
 
 #endif //DIARY_APPLICATION_H

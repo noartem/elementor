@@ -6,18 +6,10 @@
 
 #include "Scroll.h"
 
-DiaryApplication::DiaryApplication(Page *pageDefault, std::vector<Page *> pages) {
-    this->pages = pages;
-
+DiaryApplication::DiaryApplication(std::vector<Page *> pages) {
     this->activePageElement = empty();
-    this->activePageLabel = empty();
-    this->activePageDescription = empty();
 
-    if (pageDefault != NULL) {
-        this->setActivePage(pageDefault);
-    }
-
-    this->scene = background()
+    this->child = background()
         ->setColor("#FFFBFF")
         ->setChild(flex()
             ->appendChild(flexible()
@@ -39,49 +31,15 @@ DiaryApplication::DiaryApplication(Page *pageDefault, std::vector<Page *> pages)
                                 ->setChild(scroll()
                                     ->setChild(padding()
                                         ->setPaddings(12, 18)
-                                        ->setChild(this->makePagesList()))))))))
+                                        ->setChild(this->makePagesList(pages)))))))))
             ->appendChild(flexible()
                 ->setGrow(3)
-                ->setChild(flex()
-                    ->setDirection(FlexDirection::Column)
-                    ->appendChild(padding()
-                        ->setPaddings(12, 18)
-                        ->setChild(column()
-                            ->setSpacing(8)
-                            ->appendChild(this->activePageLabel)
-                            ->appendChild(this->activePageDescription)))
-                    ->appendChild(flexible()
-                        ->setChild(this->activePageElement)))));
+                ->setChild(this->activePageElement)));
 }
 
-void DiaryApplication::setActivePage(Page *page) {
-    page->setPageChanger([this] (Page *newPage) {
-        this->setActivePage(newPage);
-    });
-
-    this->activePageElement
-        ->setChild(page->getScene());
-
-    this->activePageLabel
-        ->setChild(height()
-            ->setHeight(24)
-            ->setChild(text()
-                ->setFontColor("#2B1615")
-                ->setFontFamily("Times New Roman")
-                ->setFontSize(24)
-                ->setText(page->getName())));
-
-    this->activePageDescription
-        ->setChild(text()
-            ->setFontColor("#2B1615")
-            ->setFontFamily("Times New Roman")
-            ->setFontSize(18)
-            ->setText(page->getDescription()));
-}
-
-Column *DiaryApplication::makePagesList() {
+Column *DiaryApplication::makePagesList(std::vector<Page *> pages) {
     Column *pagesList = column();
-    for (Page *page : this->pages) {
+    for (Page *page : pages) {
         Background *buttonBackground = background();
         pagesList
             ->appendChild(clickable()
@@ -105,9 +63,18 @@ Column *DiaryApplication::makePagesList() {
     return pagesList;
 }
 
+void DiaryApplication::setActivePage(Page *page) {
+    page->setPageChanger([this] (Page *newPage) { this->setActivePage(newPage); });
+    this->activePageElement->setChild(page->getScene());
+}
+
+Size DiaryApplication::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    return this->child->getSize(ctx, boundaries);
+}
+
 std::vector <RenderElement> DiaryApplication::getChildren(ApplicationContext *ctx, Size size) {
     RenderElement sceneElement;
-    sceneElement.element = this->scene;
+    sceneElement.element = this->child;
     sceneElement.position = {0, 0};
     sceneElement.size = size;
     return {sceneElement};

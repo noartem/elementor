@@ -15,10 +15,6 @@ std::string PageAllEntries::getName() {
     return "All Entries";
 }
 
-std::string PageAllEntries::getDescription() {
-    return "Displays all entries from diary";
-}
-
 void PageAllEntries::setPageChanger(PAGE_CHANGER pageChanger) {
     this->pageChanger = pageChanger;
 }
@@ -40,5 +36,12 @@ Element *PageAllEntries::getScene() {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
-            ->setChild(entriesColumn));
+            ->setChild(column()
+                ->setSpacing(32)
+                ->appendChild(text()
+                    ->setFontColor("#2B1615")
+                    ->setFontFamily("Times New Roman")
+                    ->setFontSize(24)
+                    ->setText("All entries"))
+                ->appendChild(entriesColumn)));
 }

@@ -15,12 +15,15 @@ int main() {
     DiaryService *diaryService = DiaryService::MakeFromFile("diary.csv");
     diaryService->log();
 
-    Application *application = new Application();
-    application->root = new DiaryApplication(new PageHome(), {
+    DiaryApplication *diaryApplication = new DiaryApplication({
         new PageTodayEntries(diaryService),
         new PageTomorrowEntries(diaryService),
         new PageAllEntries(diaryService),
     });
+    diaryApplication->setActivePage(new PageHome());
+
+    Application *application = new Application();
+    application->root = diaryApplication;
 
     Platform *platform = new Platform();
     platform->title = "Diary";

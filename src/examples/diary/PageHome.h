@@ -12,8 +12,6 @@ class PageHome: public Page {
 public:
     std::string getName() override;
 
-    std::string getDescription() override;
-
     Element *getScene() override;
 };
 

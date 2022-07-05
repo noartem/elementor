@@ -5,11 +5,7 @@
 #include "PageHome.h"
 
 std::string PageHome::getName() {
-    return "";
-}
-
-std::string PageHome::getDescription() {
-    return "";
+    return "Home";
 }
 
 Element *PageHome::getScene() {

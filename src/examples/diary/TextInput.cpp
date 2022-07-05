@@ -13,8 +13,7 @@ TextInput *textInput() {
 TextInput::TextInput() {
     Text *inputableText = text()
         ->setFontColor("#2B1615")
-        ->setFontFamily("Times New Roman")
-        ->setFontSize(20)
+        ->setFontSize(18)
         ->setText("");
 
     Border *inputableContent = border()

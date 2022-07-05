@@ -15,10 +15,6 @@ std::string PageTodayEntries::getName() {
     return "Today Entries";
 }
 
-std::string PageTodayEntries::getDescription() {
-    return "Displays entries attached to today";
-}
-
 void PageTodayEntries::setPageChanger(PAGE_CHANGER pageChanger) {
     this->pageChanger = pageChanger;
 }
@@ -50,5 +46,12 @@ Element *PageTodayEntries::getScene() {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
-            ->setChild(entriesColumn));
+            ->setChild(column()
+                ->setSpacing(32)
+                ->appendChild(text()
+                    ->setFontColor("#2B1615")
+                    ->setFontFamily("Times New Roman")
+                    ->setFontSize(24)
+                    ->setText("Today entries"))
+                ->appendChild(entriesColumn)));
 }
