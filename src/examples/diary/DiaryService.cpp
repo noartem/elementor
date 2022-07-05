@@ -26,13 +26,6 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
     return entries;
 }
 
-DiaryService *DiaryService::MakeFromFile(std::string filename) {
-    DiaryService *service = new DiaryService();
-    service->entries = readEntriesFromFile(filename);
-    service->sort();
-    return service;
-}
-
 void DiaryService::log() {
     std::cout << "Diary: " << std::endl;
     for(DiaryEntry *entry : this->entries) {
@@ -67,6 +60,13 @@ std::vector<DiaryEntry *> DiaryService::findAll() {
 
 void DiaryService::add(DiaryEntry *entry) {
     this->entries.push_back(entry);
+}
+
+void DiaryService::add(std::vector<DiaryEntry *> entries) {
+    for (DiaryEntry *entry : entries) {
+        this->add(entry);
+    }
+    this->sort();
 }
 
 void DiaryService::remove(unsigned int index) {

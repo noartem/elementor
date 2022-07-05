@@ -6,11 +6,12 @@
 #define DIARY_APPLICATION_H
 
 #include "utility.h"
+#include "DiaryService.h"
 #include "Page.h"
 
 class DiaryApplication: public Element {
 public:
-    DiaryApplication(std::vector<Page *> pages);
+    DiaryApplication(DiaryService *diaryService, std::vector<Page *> pages);
 
     void setActivePage(Page *activeExample);
 

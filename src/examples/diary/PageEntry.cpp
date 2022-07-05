@@ -25,13 +25,11 @@ void PageEntry::setPageChanger(PAGE_CHANGER pageChanger) {
 
 void PageEntry::saveEntry() {
     this->service->replace(this->entry, new DiaryEntry(this->datetime, std::stof(this->duration), this->place));
-    this->service->saveToFile(this->filename);
     this->pageChanger(this->backPage);
 }
 
 void PageEntry::deleteEntry() {
     this->service->remove(this->entry);
-    this->service->saveToFile(this->filename);
     this->pageChanger(this->backPage);
 }
 

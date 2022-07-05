@@ -6,7 +6,9 @@
 
 #include "Scroll.h"
 
-DiaryApplication::DiaryApplication(std::vector<Page *> pages) {
+#include "portable-file-dialogs.h"
+
+DiaryApplication::DiaryApplication(DiaryService *diaryService, std::vector<Page *> pages) {
     this->activePageElement = empty();
 
     this->child = background()
@@ -31,7 +33,51 @@ DiaryApplication::DiaryApplication(std::vector<Page *> pages) {
                                 ->setChild(scroll()
                                     ->setChild(padding()
                                         ->setPaddings(12, 18)
-                                        ->setChild(this->makePagesList(pages)))))))))
+                                        ->setChild(this->makePagesList(pages))))))
+                        ->appendChild(padding()
+                            ->setPaddings(18, 24)
+                            ->setChild(flex()
+                                ->setSpacing(8)
+                                ->appendChild(flexible()
+                                    ->setChild(clickable()
+                                        ->onClick([diaryService] () {
+                                            auto f = pfd::open_file("Choose file", pfd::path::home(), {"CSV Files", "*.csv"});
+                                            if (f.result().size() > 0) {
+                                                diaryService->add(readEntriesFromFile(f.result()[0]));
+                                            }
+                                        })
+                                        ->setChild(rounded()
+                                            ->setRadius(6)
+                                            ->setChild(background()
+                                                ->setColor("#E5BEBD")
+                                                ->setChild(padding()
+                                                    ->setPaddings(12, 18, 12, 16)
+                                                    ->setChild(alignWidth()
+                                                        ->setCoef(0.5, 0.5)
+                                                        ->setChild(text()
+                                                            ->setFontColor("#001E28")
+                                                            ->setFontSize(18)
+                                                            ->setText("Load"))))))))
+                            ->appendChild(flexible()
+                                ->setChild(clickable()
+                                    ->onClick([diaryService] () {
+                                        auto f = pfd::save_file("Choose file", pfd::path::home() + pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}, pfd::opt::force_overwrite);
+                                        if (f.result().size() > 0) {
+                                            diaryService->saveToFile(f.result());
+                                        }
+                                    })
+                                    ->setChild(rounded()
+                                        ->setRadius(6)
+                                        ->setChild(background()
+                                            ->setColor("#E5BEBD")
+                                            ->setChild(padding()
+                                                ->setPaddings(12, 18, 12, 16)
+                                                ->setChild(alignWidth()
+                                                    ->setCoef(0.5, 0.5)
+                                                    ->setChild(text()
+                                                        ->setFontColor("#001E28")
+                                                        ->setFontSize(18)
+                                                        ->setText("Save")))))))))))))
             ->appendChild(flexible()
                 ->setGrow(3)
                 ->setChild(this->activePageElement)));

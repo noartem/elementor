@@ -12,10 +12,10 @@
 #include "PageAllEntries.h"
 
 int main() {
-    DiaryService *diaryService = DiaryService::MakeFromFile("diary.csv");
+    DiaryService *diaryService = new DiaryService();
     diaryService->log();
 
-    DiaryApplication *diaryApplication = new DiaryApplication({
+    DiaryApplication *diaryApplication = new DiaryApplication(diaryService, {
         new PageTodayEntries(diaryService),
         new PageTomorrowEntries(diaryService),
         new PageAllEntries(diaryService),

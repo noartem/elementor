@@ -13,13 +13,13 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string filename);
 
 class DiaryService {
 public:
-    static DiaryService *MakeFromFile(std::string filename);
-
     void log();
 
     void saveToFile(std::string filename);
 
     void add(DiaryEntry *entry);
+
+    void add(std::vector<DiaryEntry *> entries);
 
     void remove(unsigned int index);
 

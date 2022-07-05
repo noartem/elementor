@@ -2,11 +2,14 @@ add_rules("mode.debug", "mode.release")
 
 set_languages("c99", "cxx17")
 
+includes("portable-file-dialogs.lua")
+
 add_requires("skia")
 add_requires("glfw")
 add_requires("doctest")
 add_requires("fmt")
 add_requires("fastcppcsvparser")
+add_requires("portable-file-dialogs")
 
 if is_plat("windows") then
     add_requires("glew")
@@ -36,7 +39,7 @@ target("example-diary")
     set_kind("binary")
     add_deps("elementor")
     add_packages("skia", "glfw")
-    add_packages("fmt", "fastcppcsvparser")
+    add_packages("fmt", "fastcppcsvparser", "portable-file-dialogs")
     add_files("src/examples/diary/*.cpp")
 
 target("tests")
