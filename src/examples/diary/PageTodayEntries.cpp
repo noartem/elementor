@@ -42,10 +42,12 @@ Element *PageTodayEntries::makeElement() {
             ->setPaddings(24, 36)
             ->setChild(column()
                 ->setSpacing(32)
-                ->appendChild(text()
-                    ->setFontColor("#2B1615")
-                    ->setFontFamily("Times New Roman")
-                    ->setFontSize(24)
-                    ->setText("Today entries"))
+                ->appendChild(height()
+                    ->setHeight(17.6)
+                    ->setChild(text()
+                        ->setFontColor("#2B1615")
+                        ->setFontFamily("Times New Roman")
+                        ->setFontSize(24)
+                        ->setText("Today entries")))
                 ->appendChild(entriesColumn)));
 }
