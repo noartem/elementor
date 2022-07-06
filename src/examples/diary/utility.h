@@ -5,10 +5,8 @@
 #ifndef DIARY_UTILITY_H
 #define DIARY_UTILITY_H
 
-#include "../../library/utility.h"
-#include "../../library/elements/utility.h"
-
-using namespace elementor;
-using namespace elementor::elements;
+#include "elementor.h"
+#include "TextInput.h"
+#include "Scroll.h"
 
 #endif //DIARY_UTILITY_H

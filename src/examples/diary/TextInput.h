@@ -5,7 +5,7 @@
 #ifndef DIARY_TEXT_INPUT_H
 #define DIARY_TEXT_INPUT_H
 
-#include "utility.h"
+#include "elementor.h"
 
 class TextInput : public Element {
 public:

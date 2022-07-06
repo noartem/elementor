@@ -5,21 +5,17 @@
 #include "PageAllEntries.h"
 #include "PageEntry.h"
 #include "DiaryEntryElement.h"
-#include "Scroll.h"
 
-PageAllEntries::PageAllEntries(DiaryService *service) {
+PageAllEntries::PageAllEntries(DiaryService *service, PAGE_CHANGER pageChanger) {
     this->service = service;
+    this->pageChanger = pageChanger;
 }
 
 std::string PageAllEntries::getName() {
     return "All Entries";
 }
 
-void PageAllEntries::setPageChanger(PAGE_CHANGER pageChanger) {
-    this->pageChanger = pageChanger;
-}
-
-Element *PageAllEntries::getScene() {
+Element *PageAllEntries::makeElement() {
     Column *entriesColumn = column()
         ->setSpacing(12);
 
@@ -28,9 +24,7 @@ Element *PageAllEntries::getScene() {
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () {
-                        this->pageChanger(new PageEntry(this->service, entry, this));
-                    })));
+                    ->onClick([this, entry] () { this->pageChanger(new PageEntry(this->service, entry, this, this->pageChanger)); })));
     }
 
     return scroll()

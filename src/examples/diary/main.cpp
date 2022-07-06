@@ -6,24 +6,12 @@
 #include "DiaryService.h"
 #include "DiaryApplication.h"
 
-#include "PageHome.h"
-#include "PageTodayEntries.h"
-#include "PageTomorrowEntries.h"
-#include "PageAllEntries.h"
-
 int main() {
     DiaryService *diaryService = new DiaryService();
-    diaryService->log();
-
-    DiaryApplication *diaryApplication = new DiaryApplication(diaryService, {
-        new PageTodayEntries(diaryService),
-        new PageTomorrowEntries(diaryService),
-        new PageAllEntries(diaryService),
-    });
-    diaryApplication->setActivePage(new PageHome());
+    DiaryApplication *diaryApplication = new DiaryApplication(diaryService);
 
     Application *application = new Application();
-    application->root = diaryApplication;
+    application->root = diaryApplication->makeElement();
 
     Platform *platform = new Platform();
     platform->title = "Diary";

@@ -9,21 +9,30 @@
 #include "DiaryService.h"
 #include "Page.h"
 
-class DiaryApplication: public Element {
+class DiaryApplication {
 public:
-    DiaryApplication(DiaryService *diaryService, std::vector<Page *> pages);
+    DiaryApplication(DiaryService *diaryService);
 
-    void setActivePage(Page *activeExample);
-
-    Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
-
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+    Element *makeElement();
 
 private:
+    DiaryService *diaryService;
     Element *child;
     Empty *activePageElement;
 
-    Column *makePagesList(std::vector<Page *> pages);
+    Element *makeAboutSection();
+
+    Element *makeLogo();
+
+    std::vector<Page *> makePages();
+
+    Element *makePagesList();
+
+    Element *makeLoadControl();
+
+    Element *makeSaveControl();
+
+    Element *makeControls();
 };
 
 #endif //DIARY_APPLICATION_H

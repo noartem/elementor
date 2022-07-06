@@ -13,9 +13,7 @@ class Page {
 public:
     virtual std::string getName() = 0;
 
-    virtual Element *getScene() = 0;
-
-    virtual void setPageChanger(PAGE_CHANGER pageChanger) {};
+    virtual Element *makeElement() = 0;
 };
 
 #endif //DIARY_PAGE_H

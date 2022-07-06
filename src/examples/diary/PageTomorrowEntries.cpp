@@ -5,21 +5,17 @@
 #include "PageTomorrowEntries.h"
 #include "PageEntry.h"
 #include "DiaryEntryElement.h"
-#include "Scroll.h"
 
-PageTomorrowEntries::PageTomorrowEntries(DiaryService *service) {
+PageTomorrowEntries::PageTomorrowEntries(DiaryService *service, PAGE_CHANGER pageChanger) {
     this->service = service;
+    this->pageChanger = pageChanger;
 }
 
 std::string PageTomorrowEntries::getName() {
     return "Tomorrow Entries";
 }
 
-void PageTomorrowEntries::setPageChanger(PAGE_CHANGER pageChanger) {
-    this->pageChanger = pageChanger;
-}
-
-Element *PageTomorrowEntries::getScene() {
+Element *PageTomorrowEntries::makeElement() {
     Column *entriesColumn = column()
         ->setSpacing(12);
 
@@ -33,9 +29,7 @@ Element *PageTomorrowEntries::getScene() {
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () {
-                        this->pageChanger(new PageEntry(this->service, entry, this));
-                    })));
+                    ->onClick([this, entry] () { this->pageChanger(new PageEntry(this->service, entry, this, this->pageChanger)); })));
     }
 
     return scroll()

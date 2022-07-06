@@ -11,13 +11,11 @@
 
 class PageAllEntries: public Page {
 public:
-    PageAllEntries(DiaryService *service);
+    PageAllEntries(DiaryService *service, PAGE_CHANGER pageChanger);
 
     std::string getName() override;
 
-    Element *getScene() override;
-
-    void setPageChanger(PAGE_CHANGER pageChanger);
+    Element *makeElement() override;
 
 private:
     DiaryService *service;

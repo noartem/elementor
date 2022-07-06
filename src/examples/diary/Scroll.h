@@ -5,7 +5,7 @@
 #ifndef DIARY_SCROLL_H
 #define DIARY_SCROLL_H
 
-#include "utility.h"
+#include "elementor.h"
 
 class Scroll : public Element {
 public:

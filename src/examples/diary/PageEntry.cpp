@@ -3,28 +3,30 @@
 //
 
 #include "PageEntry.h"
-#include "TextInput.h"
 
-PageEntry::PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage) {
+PageEntry::PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger) {
     this->service = service;
     this->entry = entry;
     this->backPage = backPage;
+    this->pageChanger = pageChanger;
 
-    this->datetime = entry->getDatetimeFormatted();
-    this->duration = entry->getDurationFormatted();
-    this->place = entry->getPlace();
+    this->inputDatetime = textInput()
+        ->setValue(entry->getDatetimeFormatted());
+    this->inputDuration = textInput()
+        ->setValue(entry->getDurationFormatted());
+    this->inputPlace = textInput()
+        ->setValue(entry->getPlace());
 }
 
 std::string PageEntry::getName() {
     return "Entry";
 }
 
-void PageEntry::setPageChanger(PAGE_CHANGER pageChanger) {
-    this->pageChanger = pageChanger;
-}
-
 void PageEntry::saveEntry() {
-    this->service->replace(this->entry, new DiaryEntry(this->datetime, std::stof(this->duration), this->place));
+    std::string datetime = this->inputDatetime->getValue();
+    float duration = std::stof(this->inputDuration->getValue());
+    std::string place = this->inputPlace->getValue();
+    this->service->replace(this->entry, new DiaryEntry(datetime, duration, place));
     this->pageChanger(this->backPage);
 }
 
@@ -33,7 +35,7 @@ void PageEntry::deleteEntry() {
     this->pageChanger(this->backPage);
 }
 
-Element *PageEntry::getScene() {
+Element *PageEntry::makeElement() {
     return padding()
         ->setPaddings(24, 36)
         ->setChild(column()
@@ -59,12 +61,7 @@ Element *PageEntry::getScene() {
                             ->setFontSize(18)
                             ->setText("In format \"YYYY-mm-dd HH:MM\"")))
                     ->appendChild(expandedWidth()
-                        ->setChild(textInput()
-                            ->setValue(this->entry->getDatetimeFormatted())
-                            ->onChange([this] (std::string text) {
-                                this->datetime = text;
-                                return text;
-                            })))))
+                        ->setChild(this->inputDatetime))))
             ->appendChild(padding()
                 ->setPaddings(12, 16)
                 ->setChild(column()
@@ -74,12 +71,7 @@ Element *PageEntry::getScene() {
                         ->setFontSize(18)
                         ->setText("Duration"))
                     ->appendChild(expandedWidth()
-                        ->setChild(textInput()
-                            ->setValue(this->entry->getDurationFormatted())
-                            ->onChange([this] (std::string text) {
-                                this->duration = text;
-                                return text;
-                            })))))
+                        ->setChild(this->inputDuration))))
             ->appendChild(padding()
                 ->setPaddings(12, 16)
                 ->setChild(column()
@@ -89,12 +81,7 @@ Element *PageEntry::getScene() {
                         ->setFontSize(18)
                         ->setText("Place"))
                     ->appendChild(expandedWidth()
-                        ->setChild(textInput()
-                            ->setValue(this->entry->getPlace())
-                            ->onChange([this] (std::string text) {
-                                this->place = text;
-                                return text;
-                            })))))
+                        ->setChild(this->inputPlace))))
             ->appendChild(padding()
                 ->setPaddings(12, 16)
                 ->setChild(row()

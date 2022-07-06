@@ -11,22 +11,20 @@
 
 class PageEntry: public Page {
 public:
-    PageEntry(DiaryService *service, DiaryEntry *entry, Page *homePage);
+    PageEntry(DiaryService *service, DiaryEntry *entry, Page *homePage, PAGE_CHANGER pageChanger);
 
     std::string getName() override;
 
-    Element *getScene() override;
-
-    void setPageChanger(PAGE_CHANGER pageChanger);
+    Element *makeElement() override;
 
 private:
     DiaryService *service;
     DiaryEntry *entry;
     PAGE_CHANGER pageChanger;
     Page *backPage;
-    std::string datetime;
-    std::string duration;
-    std::string place;
+    TextInput *inputDatetime;
+    TextInput *inputDuration;
+    TextInput *inputPlace;
 
     void saveEntry();
 

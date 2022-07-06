@@ -5,18 +5,14 @@
 #include "PageTodayEntries.h"
 #include "PageEntry.h"
 #include "DiaryEntryElement.h"
-#include "Scroll.h"
 
-PageTodayEntries::PageTodayEntries(DiaryService *service) {
+PageTodayEntries::PageTodayEntries(DiaryService *service, PAGE_CHANGER pageChanger) {
     this->service = service;
+    this->pageChanger = pageChanger;
 }
 
 std::string PageTodayEntries::getName() {
     return "Today Entries";
-}
-
-void PageTodayEntries::setPageChanger(PAGE_CHANGER pageChanger) {
-    this->pageChanger = pageChanger;
 }
 
 std::tm *now() {
@@ -24,7 +20,7 @@ std::tm *now() {
     return std::localtime(&t);
 }
 
-Element *PageTodayEntries::getScene() {
+Element *PageTodayEntries::makeElement() {
     Column *entriesColumn = column()
         ->setSpacing(12);
 
@@ -38,9 +34,7 @@ Element *PageTodayEntries::getScene() {
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () {
-                        this->pageChanger(new PageEntry(this->service, entry, this));
-                    })));
+                    ->onClick([this, entry] () { this->pageChanger(new PageEntry(this->service, entry, this, this->pageChanger)); })));
     }
 
     return scroll()
