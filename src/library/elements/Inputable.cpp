@@ -7,7 +7,7 @@
 std::string unicode_to_utf8(char32_t unicode) {
     std::string s;
 
-    if (unicode>=0 and unicode <= 0x7f) { // 7F(16) = 127(10)
+    if (unicode <= 0x7f) { // 7F(16) = 127(10)
         s += static_cast<char>(unicode);
     } else if (unicode <= 0x7ff) { // 7FF(16) = 2047(10)
         unsigned char c1 = 192;
