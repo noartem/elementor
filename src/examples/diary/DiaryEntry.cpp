@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 
 #include <iomanip>
+#include <sstream> // DO NOT REMOVE, REQUIRED FOR WINDOWS BUILD
 
 #define TIME_FORMAT "%Y-%m-%d %H:%M"
 
