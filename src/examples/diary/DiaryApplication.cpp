@@ -81,7 +81,7 @@ Element *DiaryApplication::makePagesList() {
 Element *DiaryApplication::makeLoadControl() {
     return clickable()
         ->onClick([this] () {
-            auto f = pfd::open_file("Choose file", pfd::path::home(), {"CSV Files", "*.csv"});
+            auto f = pfd::open_file("Choose file", "", {"CSV Files", "*.csv"});
             if (f.result().size() > 0) {
                 this->diaryService->add(readEntriesFromFile(f.result()[0]));
             }
@@ -103,7 +103,7 @@ Element *DiaryApplication::makeLoadControl() {
 Element *DiaryApplication::makeSaveControl() {
     return clickable()
         ->onClick([this] () {
-            auto f = pfd::save_file("Choose file", pfd::path::home() + pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}, pfd::opt::force_overwrite);
+            auto f = pfd::save_file("Choose file", pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}, pfd::opt::force_overwrite);
             if (f.result().size() > 0) {
                 this->diaryService->saveToFile(f.result());
             }
