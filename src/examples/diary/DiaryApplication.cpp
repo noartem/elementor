@@ -10,6 +10,21 @@
 
 #include "portable-file-dialogs.h"
 
+void DiaryApplication::loadFromFile() {
+    auto paths = pfd::open_file("Choose file", "", {"CSV", "*.csv"}).result();
+    if (!paths.empty()) {
+        std::vector<DiaryEntry *> entries = readEntriesFromFile(paths[0]);
+        this->diaryService->add(entries);
+    }
+}
+
+void DiaryApplication::saveToFile() {
+    std::string path = pfd::save_file("Choose file", pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}).result();
+    if (!path.empty()) {
+        this->diaryService->saveToFile(path);
+    }
+}
+
 Element *DiaryApplication::makeAboutSection() {
     return padding()
         ->setPaddings(24, 36)
@@ -80,12 +95,7 @@ Element *DiaryApplication::makePagesList() {
 
 Element *DiaryApplication::makeLoadControl() {
     return clickable()
-        ->onClick([this] () {
-            auto f = pfd::open_file("Choose file", "", {"CSV Files", "*.csv"});
-            if (f.result().size() > 0) {
-                this->diaryService->add(readEntriesFromFile(f.result()[0]));
-            }
-        })
+        ->onClick([this] () { this->loadFromFile(); })
         ->setChild(rounded()
             ->setRadius(6)
             ->setChild(background()
@@ -102,12 +112,7 @@ Element *DiaryApplication::makeLoadControl() {
 
 Element *DiaryApplication::makeSaveControl() {
     return clickable()
-        ->onClick([this] () {
-            auto f = pfd::save_file("Choose file", pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}, pfd::opt::force_overwrite);
-            if (f.result().size() > 0) {
-                this->diaryService->saveToFile(f.result());
-            }
-        })
+        ->onClick([this] () { this->saveToFile(); })
         ->setChild(rounded()
             ->setRadius(6)
             ->setChild(background()

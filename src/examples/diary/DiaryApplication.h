@@ -20,6 +20,10 @@ private:
     Element *child;
     Empty *activePageElement;
 
+    void loadFromFile();
+
+    void saveToFile();
+
     Element *makeAboutSection();
 
     Element *makeLogo();
