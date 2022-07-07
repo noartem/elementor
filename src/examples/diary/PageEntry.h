@@ -26,6 +26,20 @@ private:
     TextInput *inputDuration;
     TextInput *inputPlace;
 
+    Element *makeDatetimeField();
+
+    Element *makeDurationField();
+
+    Element *makePlaceField();
+
+    Element *makeForm();
+
+    Element *makeSaveControl();
+
+    Element *makeDeleteControl();
+
+    Element *makeControls();
+
     void saveEntry();
 
     void deleteEntry();
