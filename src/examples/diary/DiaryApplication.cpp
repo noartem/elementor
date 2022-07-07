@@ -59,8 +59,13 @@ Element *DiaryApplication::makeLogo() {
         ->setText("Diary");
 }
 
+void DiaryApplication::changePage(Page *page) {
+    Element *pageElement = page->makeElement();
+    this->activePageElement->setChild(pageElement);
+}
+
 std::vector<Page *> DiaryApplication::makePages() {
-    auto pageChanger = [this] (Page *page) { this->activePageElement->setChild(page->makeElement()); };
+    auto pageChanger = [this] (Page *page) { this->changePage(page); };
     return {
         new PageTodayEntries(this->diaryService, pageChanger),
         new PageTomorrowEntries(this->diaryService, pageChanger),
@@ -88,7 +93,7 @@ Element *DiaryApplication::makePagesList() {
                                     ->setText(page->getName())))))
                     ->onEnter([buttonBackground] () { buttonBackground->setColor("#E5BEBD"); })
                     ->onLeave([buttonBackground] () { buttonBackground->setColor("#FFDAD8"); }))
-                ->onClick([this, page] () { this->activePageElement->setChild(page->makeElement()); }));
+                ->onClick([this, page] () { this->changePage(page); }));
     }
     return pagesList;
 }

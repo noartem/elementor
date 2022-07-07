@@ -20,6 +20,8 @@ private:
     Element *child;
     Empty *activePageElement;
 
+    void changePage(Page *page);
+
     void loadFromFile();
 
     void saveToFile();
