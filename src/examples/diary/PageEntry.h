@@ -26,6 +26,10 @@ private:
     TextInput *inputDuration;
     TextInput *inputPlace;
 
+    void saveEntry();
+
+    void deleteEntry();
+
     Element *makeDatetimeField();
 
     Element *makeDurationField();
@@ -39,10 +43,6 @@ private:
     Element *makeDeleteControl();
 
     Element *makeControls();
-
-    void saveEntry();
-
-    void deleteEntry();
 };
 
 
