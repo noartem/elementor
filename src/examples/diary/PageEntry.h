@@ -11,7 +11,7 @@
 
 class PageEntry: public Page {
 public:
-    PageEntry(DiaryService *service, DiaryEntry *entry, Page *homePage, PAGE_CHANGER pageChanger);
+    PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger);
 
     std::string getName() override;
 

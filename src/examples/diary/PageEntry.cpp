@@ -11,11 +11,11 @@ PageEntry::PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, P
     this->pageChanger = pageChanger;
 
     this->inputDatetime = textInput()
-        ->setValue(entry->getDatetimeFormatted());
+        ->setValue(entry == NULL ? "2022-07-07 08:00" : entry->getDatetimeFormatted());
     this->inputDuration = textInput()
-        ->setValue(entry->getDurationFormatted());
+        ->setValue(entry == NULL ? "1" : entry->getDurationFormatted());
     this->inputPlace = textInput()
-        ->setValue(entry->getPlace());
+        ->setValue(entry == NULL ? "" : entry->getPlace());
 }
 
 std::string PageEntry::getName() {
@@ -113,10 +113,16 @@ Element *PageEntry::makeDeleteControl() {
 }
 
 Element *PageEntry::makeControls() {
-    return row()
-        ->setSpacing(8)
-        ->appendChild(this->makeSaveControl())
-        ->appendChild(this->makeDeleteControl());
+    Row *controls = row()
+        ->setSpacing(8);
+
+    controls->appendChild(this->makeSaveControl());
+
+    if (this->entry != NULL) {
+        controls->appendChild(this->makeDeleteControl());
+    }
+
+    return controls;
 }
 
 Element *PageEntry::makeElement() {

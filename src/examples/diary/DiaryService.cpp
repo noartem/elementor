@@ -93,6 +93,8 @@ void DiaryService::replace(DiaryEntry *oldEntry, DiaryEntry *newEntry) {
             return;
         }
     }
+
+    this->add(newEntry);
 }
 
 DiaryEntry *DiaryService::findWhereDatetime(std::tm datetime) {

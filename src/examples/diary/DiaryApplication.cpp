@@ -7,6 +7,7 @@
 #include "PageTodayEntries.h"
 #include "PageTomorrowEntries.h"
 #include "PageAllEntries.h"
+#include "PageEntry.h"
 
 #include "portable-file-dialogs.h"
 
@@ -60,16 +61,15 @@ Element *DiaryApplication::makeLogo() {
 }
 
 void DiaryApplication::changePage(Page *page) {
-    Element *pageElement = page->makeElement();
+    Element *pageElement = page == NULL ? this->makeAboutSection() : page->makeElement();
     this->activePageElement->setChild(pageElement);
 }
 
 std::vector<Page *> DiaryApplication::makePages() {
-    auto pageChanger = [this] (Page *page) { this->changePage(page); };
     return {
-        new PageTodayEntries(this->diaryService, pageChanger),
-        new PageTomorrowEntries(this->diaryService, pageChanger),
-        new PageAllEntries(this->diaryService, pageChanger),
+        new PageTodayEntries(this->diaryService, this->pageChanger),
+        new PageTomorrowEntries(this->diaryService, this->pageChanger),
+        new PageAllEntries(this->diaryService, this->pageChanger),
     };
 }
 
@@ -96,6 +96,23 @@ Element *DiaryApplication::makePagesList() {
                 ->onClick([this, page] () { this->changePage(page); }));
     }
     return pagesList;
+}
+
+Element *DiaryApplication::makeNewControl() {
+    return clickable()
+        ->onClick([this] () { this->changePage(new PageEntry(this->diaryService, NULL, NULL, this->pageChanger)); })
+        ->setChild(rounded()
+            ->setRadius(6)
+            ->setChild(background()
+                ->setColor("#E5BEBD")
+                ->setChild(padding()
+                    ->setPaddings(12, 16)
+                    ->setChild(alignWidth()
+                        ->setCoef(0.5, 0.5)
+                        ->setChild(text()
+                            ->setFontColor("#001E28")
+                            ->setFontSize(18)
+                            ->setText("New"))))));
 }
 
 Element *DiaryApplication::makeLoadControl() {
@@ -133,12 +150,15 @@ Element *DiaryApplication::makeSaveControl() {
 }
 
 Element *DiaryApplication::makeControls() {
-    return flex()
+    return column()
         ->setSpacing(8)
-        ->appendChild(flexible()
-            ->setChild(this->makeLoadControl()))
-        ->appendChild(flexible()
-            ->setChild(this->makeSaveControl()));
+        ->appendChild(this->makeNewControl())
+        ->appendChild(flex()
+            ->setSpacing(8)
+            ->appendChild(flexible()
+                ->setChild(this->makeLoadControl()))
+            ->appendChild(flexible()
+                ->setChild(this->makeSaveControl())));
 }
 
 DiaryApplication::DiaryApplication(DiaryService *diaryService) {

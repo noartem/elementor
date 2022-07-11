@@ -19,6 +19,7 @@ private:
     DiaryService *diaryService;
     Element *child;
     Empty *activePageElement;
+    PAGE_CHANGER pageChanger = [this] (Page *page) { this->changePage(page); };
 
     void changePage(Page *page);
 
@@ -33,6 +34,8 @@ private:
     std::vector<Page *> makePages();
 
     Element *makePagesList();
+
+    Element *makeNewControl();
 
     Element *makeLoadControl();
 
