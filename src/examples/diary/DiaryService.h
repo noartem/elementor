@@ -9,14 +9,12 @@
 
 #include <vector>
 
-std::vector<DiaryEntry *> readEntriesFromFile(std::string filename);
+std::vector<DiaryEntry *> readEntriesFromFile(std::string path);
+
+void saveEntriesToFile(std::string path, std::vector<DiaryEntry *>);
 
 class DiaryService {
 public:
-    void log();
-
-    void saveToFile(std::string filename);
-
     void add(DiaryEntry *entry);
 
     void add(std::vector<DiaryEntry *> entries);
@@ -25,24 +23,12 @@ public:
 
     void remove(DiaryEntry *entry);
 
-    void replace(DiaryEntry *entry, unsigned int index);
-
-    void replace(DiaryEntry *oldEntry, DiaryEntry *newEntry);
-
     std::vector<DiaryEntry *> findAll();
-
-    DiaryEntry *findWhereDatetime(std::tm datetime);
-
-    DiaryEntry *findWhereDatetime(std::string datetime);
 
     std::vector<DiaryEntry *> findWhereDatetimeBetween(std::tm start, std::tm end);
 
-    std::vector<DiaryEntry *> findWhereDatetimeBetween(std::string start, std::string end);
-
 private:
     std::vector<DiaryEntry *> entries;
-
-    void sort();
 };
 
 #endif //DIARY_DIARY_SERVICE_H

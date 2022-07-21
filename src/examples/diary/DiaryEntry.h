@@ -26,10 +26,6 @@ public:
 
     std::string getPlace();
 
-    std::string toString();
-
-    operator std::string();
-
 private:
     std::tm datetime;
     float duration;

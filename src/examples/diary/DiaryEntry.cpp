@@ -61,11 +61,3 @@ float DiaryEntry::getDuration() {
 std::string DiaryEntry::getPlace() {
     return this->place;
 }
-
-std::string DiaryEntry::toString() {
-    return fmt::format("DateTime = {}, Duration = {}, Place = {}.", this->getDatetimeFormatted(), this->duration, this->place);
-}
-
-DiaryEntry::operator std::string() {
-    return this->toString();
-}

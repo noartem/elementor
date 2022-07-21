@@ -26,7 +26,11 @@ void PageEntry::saveEntry() {
     std::string datetime = this->inputDatetime->getValue();
     float duration = std::stof(this->inputDuration->getValue());
     std::string place = this->inputPlace->getValue();
-    this->service->replace(this->entry, new DiaryEntry(datetime, duration, place));
+    DiaryEntry *newEntry = new DiaryEntry(datetime, duration, place);
+    if (this->entry != NULL) {
+        this->service->remove(this->entry);
+    }
+    this->service->add(newEntry);
     this->pageChanger(this->backPage);
 }
 

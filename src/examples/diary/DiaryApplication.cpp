@@ -22,7 +22,8 @@ void DiaryApplication::loadFromFile() {
 void DiaryApplication::saveToFile() {
     std::string path = pfd::save_file("Choose file", pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}).result();
     if (!path.empty()) {
-        this->diaryService->saveToFile(path);
+        std::vector<DiaryEntry *> entries = this->diaryService->findAll();
+        saveEntriesToFile(path, entries);
     }
 }
 

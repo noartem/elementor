@@ -14,9 +14,9 @@
 #include <fstream>
 #include <stdint.h>
 
-std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
+std::vector<DiaryEntry *> readEntriesFromFile(std::string path) {
     std::vector<DiaryEntry *> entries;
-    io::CSVReader<3> in(filename);
+    io::CSVReader<3> in(path);
     in.read_header(io::ignore_extra_column, "datetime", "duration", "place");
     std::string datetime; float duration; std::string place;
     while(in.read_row(datetime, duration, place)){
@@ -26,27 +26,11 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string filename) {
     return entries;
 }
 
-void DiaryService::log() {
-    std::cout << "Diary: " << std::endl;
-    for(DiaryEntry *entry : this->entries) {
-        std::cout << "\t* " << entry->toString() << std::endl;
-    }
-}
-
-void DiaryService::sort() {
-    std::sort(this->entries.begin(), this->entries.end(), [] (DiaryEntry *a, DiaryEntry *b) {
-        std::tm aTime = a->getDatetime();
-        std::tm bTime = b->getDatetime();
-        return std::mktime(&aTime) < std::mktime(&bTime);
-    });
-}
-
-void DiaryService::saveToFile(std::string filename) {
-    this->sort();
+void saveEntriesToFile(std::string path, std::vector<DiaryEntry *> entries) {
     std::ofstream o;
-    o.open(filename);
+    o.open(path);
     o << "datetime,duration,place\n";
-    for (DiaryEntry *entry : this->entries) {
+    for (DiaryEntry *entry : entries) {
         o << entry->getDatetimeFormatted() << ",";
         o << entry->getDurationFormatted() << ",";
         o << entry->getPlace() << "\n";
@@ -59,18 +43,30 @@ std::vector<DiaryEntry *> DiaryService::findAll() {
 }
 
 void DiaryService::add(DiaryEntry *entry) {
-    this->entries.push_back(entry);
+    if (entry == NULL) {
+        return;
+    }
+
+    std::tm entryTime = entry->getDatetime();
+    time_t entryTimeT = std::mktime(&entryTime);
+    auto i = std::upper_bound(this->entries.begin(), this->entries.end(), entryTimeT, [](time_t value, DiaryEntry *otherEntry) {
+        std::tm otherEntryTime = otherEntry->getDatetime();
+        time_t otherEntryTimeT = std::mktime(&otherEntryTime);
+        return value < otherEntryTimeT;
+    });
+    this->entries.insert(i, entry);
 }
 
 void DiaryService::add(std::vector<DiaryEntry *> entries) {
     for (DiaryEntry *entry : entries) {
         this->add(entry);
     }
-    this->sort();
 }
 
 void DiaryService::remove(unsigned int index) {
-    this->entries.erase(this->entries.begin() + index);
+    if (index < this->entries.size()) {
+        this->entries.erase(this->entries.begin() + index);
+    }
 }
 
 void DiaryService::remove(DiaryEntry *entry) {
@@ -80,36 +76,6 @@ void DiaryService::remove(DiaryEntry *entry) {
             return;
         }
     }
-}
-
-void DiaryService::replace(DiaryEntry *entry, unsigned int index) {
-    this->entries[index] = entry;
-}
-
-void DiaryService::replace(DiaryEntry *oldEntry, DiaryEntry *newEntry) {
-    for (unsigned int i = 0; i < this->entries.size(); ++i) {
-        if (this->entries[i] == oldEntry) {
-            this->replace(newEntry, i);
-            return;
-        }
-    }
-
-    this->add(newEntry);
-}
-
-DiaryEntry *DiaryService::findWhereDatetime(std::tm datetime) {
-    std::time_t datetimeT = std::mktime(&datetime);
-    for (DiaryEntry *entry : this->entries) {
-        std::tm entryDateTime = entry->getDatetime();
-        std::time_t entryDateTimeT = std::mktime(&entryDateTime);
-        if (entryDateTimeT == datetimeT) {
-            return entry;
-        }
-    }
-}
-
-DiaryEntry *DiaryService::findWhereDatetime(std::string datetime) {
-    return this->findWhereDatetime(parseDate(datetime));
 }
 
 std::vector<DiaryEntry *> DiaryService::findWhereDatetimeBetween(std::tm start, std::tm end) {
@@ -126,8 +92,4 @@ std::vector<DiaryEntry *> DiaryService::findWhereDatetimeBetween(std::tm start, 
     }
 
     return result;
-}
-
-std::vector<DiaryEntry *> DiaryService::findWhereDatetimeBetween(std::string start, std::string end) {
-    return this->findWhereDatetimeBetween(parseDate(start), parseDate(end));
 }
