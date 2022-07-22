@@ -8,7 +8,6 @@
 #include "Application.h"
 #include "Element.h"
 #include "Event.h"
-#include "Platform.h"
 #include "Render.h"
 
 #endif //ELEMENTOR_ELEMENTOR_UTILITY_H

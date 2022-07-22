@@ -2,8 +2,8 @@
 // Created by noartem on 14.04.2022.
 //
 
-#ifndef ELEMENTOR_PLATFORM_H
-#define ELEMENTOR_PLATFORM_H
+#ifndef ELEMENTOR_GLPLATFORM_H
+#define ELEMENTOR_GLPLATFORM_H
 
 #include "Application.h"
 
@@ -22,7 +22,7 @@ namespace elementor {
         GLFWwindow *window;
     };
 
-    class Platform {
+    class GLPlatform {
     public:
         std::string title;
         Size size;
@@ -59,4 +59,4 @@ namespace elementor {
 };
 
 
-#endif //ELEMENTOR_PLATFORM_H
+#endif //ELEMENTOR_GLPLATFORM_H

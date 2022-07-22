@@ -13,7 +13,7 @@ int main() {
     Application *application = new Application();
     application->root = diaryApplication->makeElement();
 
-    Platform *platform = new Platform();
+    GLPlatform *platform = new GLPlatform();
     platform->title = "Diary";
     platform->size = {920, 640};
     platform->minSize = {640, 320};

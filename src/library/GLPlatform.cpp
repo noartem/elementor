@@ -13,7 +13,7 @@
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
 
-#include "Platform.h"
+#include "GLPlatform.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,33 +21,33 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    Size Platform::getWindowSize() {
+    Size GLPlatform::getWindowSize() {
         int width, height;
         glfwGetFramebufferSize(this->window, &width, &height);
         return {(float) width, (float) height};
     }
 
-    Size Platform::getMonitorPhysicalSize() {
+    Size GLPlatform::getMonitorPhysicalSize() {
         int width, height;
         glfwGetMonitorPhysicalSize(this->monitor, &width, &height);
         return {(float) width, (float) height};
     }
 
-    Size Platform::getMonitorSize() {
+    Size GLPlatform::getMonitorSize() {
         const GLFWvidmode* mode = glfwGetVideoMode(this->monitor);
         return {(float) mode->width, (float) mode->height};
     }
 
-    float Platform::calcMonitorPixelScale(Size monitorPhysicalSize) {
+    float GLPlatform::calcMonitorPixelScale(Size monitorPhysicalSize) {
         Size monitorSize = this->getMonitorSize();
         return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
-    Clipboard *Platform::makeClipboard() {
+    Clipboard *GLPlatform::makeClipboard() {
         return new GLClipboard(this->window);
     }
 
-    void Platform::refresh() {
+    void GLPlatform::refresh() {
         ApplicationContext applicationContext;
         applicationContext.windowSize = this->getWindowSize();
         applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
@@ -70,7 +70,7 @@ namespace elementor {
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }
 
-    void Platform::draw() {
+    void GLPlatform::draw() {
         this->skiaCanvas->clear(SK_ColorBLACK);
         this->application->draw(&this->applicationContext, this->skiaCanvas);
 
@@ -78,7 +78,7 @@ namespace elementor {
         glfwSwapBuffers(this->window);
     }
 
-    void Platform::onMouseButton(int button, int action, int mods) {
+    void GLPlatform::onMouseButton(int button, int action, int mods) {
         EventMouseButton *event = new EventMouseButton();
         event->button = static_cast<MouseButton>(button);
         event->action = static_cast<Action>(action);
@@ -87,7 +87,7 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
-    void Platform::onKeyboard(int key, int scancode, int action, int mods) {
+    void GLPlatform::onKeyboard(int key, int scancode, int action, int mods) {
         EventKeyboard *event = new EventKeyboard();
         event->key = static_cast<KeyboardKey>(key);
         event->scancode = scancode;
@@ -97,14 +97,14 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
-    void Platform::onChar(unsigned int codepoint) {
+    void GLPlatform::onChar(unsigned int codepoint) {
         EventChar *event = new EventChar();
         event->value = codepoint;
 
         this->application->dispatchEvent(event);
     }
 
-    void Platform::onMouseMove(double x, double y) {
+    void GLPlatform::onMouseMove(double x, double y) {
         EventMouseMove *event = new EventMouseMove();
         event->x = x;
         event->y = y;
@@ -112,7 +112,7 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
-    void Platform::onScroll(double xOffset, double yOffset) {
+    void GLPlatform::onScroll(double xOffset, double yOffset) {
         EventScroll *event = new EventScroll();
         event->xOffset = xOffset;
         event->yOffset = yOffset;
@@ -120,15 +120,15 @@ namespace elementor {
         this->application->dispatchEvent(event);
     }
 
-    Platform *getWindowPlatform(GLFWwindow *window) {
-        return static_cast<Platform *>(glfwGetWindowUserPointer(window));
+    GLPlatform *getWindowGLPlatform(GLFWwindow *window) {
+        return static_cast<GLPlatform *>(glfwGetWindowUserPointer(window));
     }
 
-    void Platform::forceUpdate() {
+    void GLPlatform::forceUpdate() {
         glfwPostEmptyEvent();
     }
 
-    int Platform::run() {
+    int GLPlatform::run() {
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
         }
@@ -166,27 +166,27 @@ namespace elementor {
         }
 
         glfwSetKeyCallback(window, [] (GLFWwindow *window, int key, int scancode, int action, int mods) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->onKeyboard(key, scancode, action, mods);
         });
 
         glfwSetCharCallback(window, [] (GLFWwindow *window, unsigned int codepoint) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->onChar(codepoint);
         });
 
         glfwSetMouseButtonCallback(window, [] (GLFWwindow* window, int button, int action, int mods) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->onMouseButton(button, action, mods);
         });
 
         glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double x, double y) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->onMouseMove(x, y);
         });
 
         glfwSetScrollCallback(window, [] (GLFWwindow* window, double xOffset, double yOffset) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->onScroll(xOffset, yOffset);
         });
 
@@ -201,7 +201,7 @@ namespace elementor {
         this->skiaContext = GrDirectContext::MakeGL(interface).release();
 
         glfwSetWindowRefreshCallback(window, [] (GLFWwindow* window) {
-            Platform *platform = getWindowPlatform(window);
+            GLPlatform *platform = getWindowGLPlatform(window);
             platform->refresh();
             platform->draw();
         });

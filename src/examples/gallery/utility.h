@@ -5,11 +5,7 @@
 #ifndef GALLERY_EXAMPLES_UTILITY_H
 #define GALLERY_EXAMPLES_UTILITY_H
 
-#include "../../library/utility.h"
-#include "../../library/elements/utility.h"
-
-using namespace elementor;
-using namespace elementor::elements;
+#include "elementor.h"
 
 Element *box(std::string color);
 
