@@ -47,12 +47,27 @@ namespace elementor {
         virtual std::string get() = 0;
     };
 
+    enum class CursorShape {
+        Arrow,
+        IBeam,
+        Crosshair,
+        Hand,
+        HorizontalResize,
+        VerticalResize
+    };
+
+    class Cursor {
+    public:
+        virtual void set(CursorShape shape) = 0;
+    };
+
     struct ApplicationContext {
         Size windowSize;
         Size monitorPhysicalSize;
         float monitorPixelScale;
         Element *root;
         Clipboard *clipboard;
+        Cursor *cursor;
     };
 
     class WithChild {
