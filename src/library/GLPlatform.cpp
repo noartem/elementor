@@ -47,6 +47,10 @@ namespace elementor {
         return new GLClipboard(this->window);
     }
 
+    Cursor *GLPlatform::makeCursor() {
+        return new GLCursor(this->window);
+    }
+
     void GLPlatform::refresh() {
         ApplicationContext applicationContext;
         applicationContext.windowSize = this->getWindowSize();
@@ -54,6 +58,7 @@ namespace elementor {
         applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
         applicationContext.root = NULL;
         applicationContext.clipboard = this->makeClipboard();
+        applicationContext.cursor = this->makeCursor();
         this->applicationContext = applicationContext;
 
         GrGLFramebufferInfo framebufferInfo;
@@ -231,5 +236,36 @@ namespace elementor {
 
     std::string GLClipboard::get() {
         return glfwGetClipboardString(window);
+    }
+
+    GLCursor::GLCursor(GLFWwindow *window) {
+        this->window = window;
+    }
+
+    unsigned int GLCursor::mapCursorShape(CursorShape shape) {
+        switch (shape) {
+            case CursorShape::Arrow:
+                return GLFW_ARROW_CURSOR;
+            case CursorShape::IBeam:
+                return GLFW_IBEAM_CURSOR;
+            case CursorShape::Crosshair:
+                return GLFW_CROSSHAIR_CURSOR;
+            case CursorShape::Hand:
+                return GLFW_HAND_CURSOR;
+            case CursorShape::HorizontalResize:
+                return GLFW_HRESIZE_CURSOR;
+            case CursorShape::VerticalResize:
+                return GLFW_VRESIZE_CURSOR;
+        }
+    }
+
+    void GLCursor::set(CursorShape shape) {
+        if (this->cursor) {
+            glfwDestroyCursor(this->cursor);
+            this->cursor = NULL;
+        }
+
+        this->cursor = glfwCreateStandardCursor(this->mapCursorShape(shape));
+        glfwSetCursor(this->window, this->cursor);
     }
 }

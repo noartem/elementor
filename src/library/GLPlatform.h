@@ -22,6 +22,17 @@ namespace elementor {
         GLFWwindow *window;
     };
 
+    class GLCursor : public Cursor {
+    public:
+        GLCursor(GLFWwindow *window);
+        void set(CursorShape shape) override;
+        unsigned int mapCursorShape(CursorShape shape);
+
+    private:
+        GLFWwindow *window;
+        GLFWcursor *cursor;
+    };
+
     class GLPlatform {
     public:
         std::string title;
@@ -48,6 +59,7 @@ namespace elementor {
         Size getMonitorPhysicalSize();
         Size getMonitorSize();
         Clipboard *makeClipboard();
+        Cursor *makeCursor();
         float calcMonitorPixelScale(Size monitorPhysicalSize);
 
         void onMouseButton(int button, int action, int mods);
