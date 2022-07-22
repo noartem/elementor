@@ -154,7 +154,7 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Inputable::onEvent(EventKeyboard *event) {
-        if (this->focused && event->action == Action::Press) {
+        if (this->focused && (event->action == Action::Press || event->action == Action::Repeat)) {
             if (event->key == KeyboardKey::Escape) {
                 this->focused = false;
                 if (this->callbackBlur) {
