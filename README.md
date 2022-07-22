@@ -24,15 +24,6 @@
 ## TODO
 
 * Перенести Text, Inputable на `EString : public SkString`
-* Inputable
-    * залипание клавиш `action == GLFW_REPEAT`
-    * Backspace, delete
-    * CTRL+V
-        glfwGetClipboardString (GLFWwindow *window)
-            if (event->key == KeyboardKey::V && event->mod == Mod::Control) {
-                std::cout << "PASTE!" << std::endl;
-                return EventCallbackResponse::StopPropagation;
-* Clickable Cursor
 * Image
 * Paragraph
     * Просто скопировать skpargraph себе
