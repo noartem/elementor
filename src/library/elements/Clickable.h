@@ -38,6 +38,7 @@ namespace elementor::elements {
         EventCallbackResponse onEvent(EventMouseButton *event) override;
 
     private:
+        ApplicationContext *ctx;
         ElementRect rect;
         Position cursorPosition;
         bool hovered;

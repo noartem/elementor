@@ -62,6 +62,7 @@ namespace elementor::elements {
     }
 
     void Clickable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+        this->ctx = ctx;
         this->rect = rect;
     }
 
@@ -82,7 +83,15 @@ namespace elementor::elements {
 
     EventCallbackResponse Clickable::onEvent(EventMouseMove *event) {
         Position cursorPosition = {event->x, event->y};
-        this->hovered = this->rect.visibleContains(cursorPosition);
+        bool newHovered = this->rect.visibleContains(cursorPosition);
+        if (newHovered && !this->hovered) {
+            this->ctx->cursor->set(CursorShape::Hand);
+        }
+        if (!newHovered && this->hovered) {
+            this->ctx->cursor->set(CursorShape::Arrow);
+        }
+        this->hovered = newHovered;
+
         this->cursorPosition = this->rect.absolutePositionToContained(cursorPosition);
         return EventCallbackResponse::None;
     }
