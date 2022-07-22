@@ -119,6 +119,10 @@ namespace elementor {
         return static_cast<Platform *>(glfwGetWindowUserPointer(window));
     }
 
+    void Platform::forceUpdate() {
+        glfwPostEmptyEvent();
+    }
+
     int Platform::run() {
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
