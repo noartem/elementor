@@ -41,11 +41,18 @@ namespace elementor {
     // Default monitor scale is 38 logical pixels per centimeter
     #define DefaultMonitorScale 3.8;
 
+    class Clipboard {
+    public:
+        virtual void set(std::string) = 0;
+        virtual std::string get() = 0;
+    };
+
     struct ApplicationContext {
         Size windowSize;
         Size monitorPhysicalSize;
         float monitorPixelScale;
         Element *root;
+        Clipboard *clipboard;
     };
 
     class WithChild {
