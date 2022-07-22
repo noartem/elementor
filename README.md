@@ -23,13 +23,26 @@
 
 ## TODO
 
+* Перенести Text, Inputable на `EString : public SkString`
+* Inputable
+    * залипание клавиш `action == GLFW_REPEAT`
+    * Backspace, delete
+    * CTRL+V
+        glfwGetClipboardString (GLFWwindow *window)
+            if (event->key == KeyboardKey::V && event->mod == Mod::Control) {
+                std::cout << "PASTE!" << std::endl;
+                return EventCallbackResponse::StopPropagation;
+* Clickable Cursor
 * Image
 * Paragraph
+    * Просто скопировать skpargraph себе
     * Как это делать в skia?
     * Если Text -> брать из него font, paint
     * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
 * Transform
 * Text font fallback (например, fallback для эмодзи)
+* Баг с ненужным скролом
+* Неправильные размеры текста на линухе
 * Примеры для:
     * Padding
     * Label
@@ -52,3 +65,7 @@
 * Debug elements inspector
 * BoxShadow? - `#include <include/utils/SkShadowUtils.h>`
 * Material ui
+* Video
+    * [GStreamer with Skia](https://stackoverflow.com/questions/65687577/is-there-a-way-i-can-turn-video-frames-from-gstreamer-to-skimage-instances-to-be)
+    * [gl_ffmpeg](https://gist.github.com/rcolinray/7552384)
+    
