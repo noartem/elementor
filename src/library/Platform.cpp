@@ -43,12 +43,17 @@ namespace elementor {
         return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
+    Clipboard *Platform::makeClipboard() {
+        return new GLClipboard(this->window);
+    }
+
     void Platform::refresh() {
         ApplicationContext applicationContext;
         applicationContext.windowSize = this->getWindowSize();
         applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
         applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
         applicationContext.root = NULL;
+        applicationContext.clipboard = this->makeClipboard();
         this->applicationContext = applicationContext;
 
         GrGLFramebufferInfo framebufferInfo;
@@ -214,5 +219,17 @@ namespace elementor {
         glfwDestroyWindow(window);
         glfwTerminate();
         exit(EXIT_SUCCESS);
+    }
+
+    GLClipboard::GLClipboard(GLFWwindow *window) {
+        this->window = window;
+    }
+
+    void GLClipboard::set(std::string value) {
+        glfwSetClipboardString(this->window, value.c_str());
+    }
+
+    std::string GLClipboard::get() {
+        return glfwGetClipboardString(window);
     }
 }

@@ -12,6 +12,16 @@
 #include <optional>
 
 namespace elementor {
+    class GLClipboard : public Clipboard {
+    public:
+        GLClipboard(GLFWwindow *window);
+        void set(std::string value) override;
+        std::string get() override;
+
+    private:
+        GLFWwindow *window;
+    };
+
     class Platform {
     public:
         std::string title;
@@ -21,7 +31,6 @@ namespace elementor {
         Application *application;
 
         int run();
-
         void forceUpdate();
 
     private:
@@ -33,25 +42,18 @@ namespace elementor {
         ApplicationContext applicationContext;
 
         void refresh();
-
         void draw();
 
         Size getWindowSize();
-
         Size getMonitorPhysicalSize();
-
         Size getMonitorSize();
-
+        Clipboard *makeClipboard();
         float calcMonitorPixelScale(Size monitorPhysicalSize);
 
         void onMouseButton(int button, int action, int mods);
-
         void onKeyboard(int key, int scancode, int action, int mods);
-
         void onChar(unsigned int codepoint);
-
         void onMouseMove(double x, double y);
-
         void onScroll(double xOffset, double yOffset);
     };
 };
