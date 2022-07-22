@@ -40,6 +40,7 @@ namespace elementor::elements {
         EventCallbackResponse onEvent(EventChar *event) override;
 
     private:
+        ApplicationContext *ctx;
         std::string text;
         ElementRect rect;
         bool hovered;

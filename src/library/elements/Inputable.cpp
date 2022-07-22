@@ -122,6 +122,7 @@ namespace elementor::elements {
     }
 
     std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Size size) {
+        this->ctx = ctx;
         RenderElement child;
         child.element = this->getChild();
         child.position = {0, 0};
@@ -159,6 +160,19 @@ namespace elementor::elements {
                 this->focused = false;
                 if (this->callbackBlur) {
                     this->callbackBlur();
+                }
+                return EventCallbackResponse::StopPropagation;
+            }
+
+            if (event->key == KeyboardKey::C && event->mod == Mod::Control) {
+                this->ctx->clipboard->set(this->text);
+                return EventCallbackResponse::StopPropagation;
+            }
+
+            if (event->key == KeyboardKey::V && event->mod == Mod::Control) {
+                this->text += this->ctx->clipboard->get();
+                if (this->callbackChange) {
+                    this->text = this->callbackChange(this->text);
                 }
                 return EventCallbackResponse::StopPropagation;
             }
