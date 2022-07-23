@@ -3,6 +3,7 @@
 //
 
 #include "DiaryEntry.h"
+#include "utility.h"
 
 #include <fmt/format.h>
 
@@ -22,19 +23,19 @@ extern "C" char* strptime(const char* s, const char* f, struct tm* tm) {
   }
 }
 
-std::tm parseDate(std::string value) {
+std::tm parseDate(std::u32string value) {
     std::tm tm = {};
-    strptime(value.c_str(), TIME_FORMAT, &tm);
+    strptime(toUTF8(value).c_str(), TIME_FORMAT, &tm);
     return tm;
 }
 
-DiaryEntry::DiaryEntry(std::tm datetime, float duration, std::string place) {
+DiaryEntry::DiaryEntry(std::tm datetime, float duration, std::u32string place) {
     this->datetime = datetime;
     this->duration = duration;
     this->place = place;
 }
 
-DiaryEntry::DiaryEntry(std::string datetime, float duration, std::string place) {
+DiaryEntry::DiaryEntry(std::u32string datetime, float duration, std::u32string place) {
     this->datetime = parseDate(datetime);
     this->duration = duration;
     this->place = place;
@@ -44,20 +45,22 @@ std::tm DiaryEntry::getDatetime() {
     return this->datetime;
 }
 
-std::string DiaryEntry::getDatetimeFormatted() {
-    char datetimeFormatted[32];
-    std::strftime(datetimeFormatted, 32, TIME_FORMAT, &this->datetime);
-    return datetimeFormatted;
+std::u32string DiaryEntry::getDatetimeFormatted() {
+    // char32_t datetimeFormatted[32];
+    // std::strftime(datetimeFormatted, 32, TIME_FORMAT, &this->datetime);
+    // return datetimeFormatted;
+    return U"";
 }
 
-std::string DiaryEntry::getDurationFormatted() {
-    return fmt::format("{}", this->duration);
+std::u32string DiaryEntry::getDurationFormatted() {
+    // return fmt::format("{}", this->duration);
+    return U"";
 }
 
 float DiaryEntry::getDuration() {
     return this->duration;
 }
 
-std::string DiaryEntry::getPlace() {
+std::u32string DiaryEntry::getPlace() {
     return this->place;
 }
