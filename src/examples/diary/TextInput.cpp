@@ -31,7 +31,7 @@ TextInput::TextInput() {
     this->inputableChild = inputable()
         ->setChild(inputableContent)
         ->setText(this->value)
-        ->onChange([this, inputableText] (std::string value) {
+        ->onChange([this, inputableText] (std::u32string value) {
             if (this->callbackChange) {
                 value = this->callbackChange(value);
             }
@@ -64,7 +64,7 @@ TextInput::TextInput() {
             }));
 }
 
-TextInput *TextInput::setValue(std::string value) {
+TextInput *TextInput::setValue(std::u32string value) {
     this->value = value;
     if (this->inputableChild) {
         this->inputableChild->setText(value);
@@ -72,11 +72,11 @@ TextInput *TextInput::setValue(std::string value) {
     return this;
 }
 
-std::string TextInput::getValue() {
+std::u32string TextInput::getValue() {
     return this->value;
 }
 
-TextInput *TextInput::onChange(std::function<std::string (std::string value)> callback) {
+TextInput *TextInput::onChange(std::function<std::u32string (std::u32string value)> callback) {
     this->callbackChange = callback;
     return this;
 }

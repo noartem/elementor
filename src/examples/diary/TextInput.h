@@ -11,11 +11,11 @@ class TextInput : public Element {
 public:
     TextInput();
 
-    TextInput *setValue(std::string value);
+    TextInput *setValue(std::u32string value);
 
-    std::string getValue();
+    std::u32string getValue();
 
-    TextInput *onChange(std::function<std::string (std::string text)> callback);
+    TextInput *onChange(std::function<std::u32string (std::u32string text)> callback);
 
     Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
 
@@ -24,9 +24,9 @@ public:
 private:
     Element *child;
     Inputable *inputableChild;
-    std::string value;
+    std::u32string value;
     bool focused;
-    std::function<std::string (std::string text)> callbackChange;
+    std::function<std::u32string (std::u32string text)> callbackChange;
 };
 
 TextInput *textInput();

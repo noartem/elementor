@@ -43,8 +43,8 @@ namespace elementor {
 
     class Clipboard {
     public:
-        virtual void set(std::string) = 0;
-        virtual std::string get() = 0;
+        virtual void set(std::u32string) = 0;
+        virtual std::u32string get() = 0;
     };
 
     enum class CursorShape {

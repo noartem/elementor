@@ -9,5 +9,6 @@
 #include "Element.h"
 #include "Event.h"
 #include "Render.h"
+#include "String.h"
 
 #endif //ELEMENTOR_ELEMENTOR_UTILITY_H
