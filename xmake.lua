@@ -2,9 +2,10 @@ add_rules("mode.debug", "mode.release")
 
 set_languages("c99", "cxx17")
 
+includes("humble-ui-skia-build.lua")
 includes("portable-file-dialogs.lua")
 
-add_requires("skia")
+add_requires("skia-build")
 add_requires("glfw")
 add_requires("doctest")
 add_requires("fmt")
@@ -21,7 +22,7 @@ end
 
 target("elementor")
     set_kind("static")
-    add_packages("skia", "glfw")
+    add_packages("skia-build", "glfw")
     add_files("src/library/*.cpp")
     add_files("src/library/elements/*.cpp")
 
@@ -32,13 +33,13 @@ end
 target("example-gallery")
     set_kind("binary")
     add_deps("elementor")
-    add_packages("skia", "glfw")
+    add_packages("skia-build", "glfw")
     add_files("src/examples/gallery/*.cpp")
 
 target("example-diary")
     set_kind("binary")
     add_deps("elementor")
-    add_packages("skia", "glfw")
+    add_packages("skia-build", "glfw")
     add_packages("fmt", "fastcppcsvparser", "portable-file-dialogs")
     add_files("src/examples/diary/*.cpp")
 

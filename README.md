@@ -23,7 +23,7 @@
 
 ## TODO
 
-* Перенести Text, Inputable на `EString : public SkString`
+* Перенести Text, Inputable на u32string
 * Image
 * Paragraph
     * Просто скопировать skpargraph себе
