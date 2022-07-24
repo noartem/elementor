@@ -4,6 +4,7 @@
 
 #include "DiaryService.h"
 #include "DiaryEntry.h"
+#include "utility.h"
 
 #include "csv.h"
 
@@ -20,7 +21,11 @@ std::vector<DiaryEntry *> readEntriesFromFile(std::string path) {
     in.read_header(io::ignore_extra_column, "datetime", "duration", "place");
     std::string datetime; float duration; std::string place;
     while(in.read_row(datetime, duration, place)){
-        DiaryEntry *entry = new DiaryEntry(datetime, duration, place);
+        std::u32string datetimeU32;
+        fromUTF8(datetime, datetimeU32);
+        std::u32string placeU32;
+        fromUTF8(place, placeU32);
+        DiaryEntry *entry = new DiaryEntry(datetimeU32, duration, placeU32);
         entries.push_back(entry);
     }
     return entries;
@@ -31,9 +36,12 @@ void saveEntriesToFile(std::string path, std::vector<DiaryEntry *> entries) {
     o.open(path);
     o << "datetime,duration,place\n";
     for (DiaryEntry *entry : entries) {
-        o << entry->getDatetimeFormatted() << ",";
-        o << entry->getDurationFormatted() << ",";
-        o << entry->getPlace() << "\n";
+        std::u32string datetime = entry->getDatetimeFormatted();
+        o << toUTF8(datetime) << ",";
+        std::u32string duration = entry->getDurationFormatted();
+        o << toUTF8(duration) << ",";
+        std::u32string place = entry->getPlace();
+        o << toUTF8(place) << "\n";
     }
     o.close();
 }

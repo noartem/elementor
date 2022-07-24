@@ -11,11 +11,11 @@ PageEntry::PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, P
     this->pageChanger = pageChanger;
 
     this->inputDatetime = textInput()
-        ->setValue(entry == NULL ? "2022-07-07 08:00" : entry->getDatetimeFormatted());
+        ->setValue(entry == NULL ? U"2022-07-07 08:00" : entry->getDatetimeFormatted());
     this->inputDuration = textInput()
-        ->setValue(entry == NULL ? "1" : entry->getDurationFormatted());
+        ->setValue(entry == NULL ? U"1" : entry->getDurationFormatted());
     this->inputPlace = textInput()
-        ->setValue(entry == NULL ? "" : entry->getPlace());
+        ->setValue(entry == NULL ? U"" : entry->getPlace());
 }
 
 std::string PageEntry::getName() {
@@ -23,9 +23,10 @@ std::string PageEntry::getName() {
 }
 
 void PageEntry::saveEntry() {
-    std::string datetime = this->inputDatetime->getValue();
-    float duration = std::stof(this->inputDuration->getValue());
-    std::string place = this->inputPlace->getValue();
+    std::u32string datetime = this->inputDatetime->getValue();
+    std::u32string durationU32 = this->inputDuration->getValue();
+    float duration = std::stof(toUTF8(durationU32));
+    std::u32string place = this->inputPlace->getValue();
     DiaryEntry *newEntry = new DiaryEntry(datetime, duration, place);
     if (this->entry != NULL) {
         this->service->remove(this->entry);

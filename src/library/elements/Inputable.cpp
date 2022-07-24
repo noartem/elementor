@@ -3,79 +3,14 @@
 //
 
 #include "Inputable.h"
-
-std::string unicode_to_utf8(char32_t unicode) {
-    std::string s;
-
-    if (unicode <= 0x7f) { // 7F(16) = 127(10)
-        s += static_cast<char>(unicode);
-    } else if (unicode <= 0x7ff) { // 7FF(16) = 2047(10)
-        unsigned char c1 = 192;
-        unsigned char c2 = 128;
-
-        for (int k=0; k<11; ++k) {
-            if (k < 6)  c2 |= (unicode % 64) & (1 << k);
-            else c1 |= (unicode >> 6) & (1 << (k - 6));
-        }
-
-        s += c1;
-        s += c2;
-    } else if (unicode <= 0xffff) { // FFFF(16) = 65535(10)
-        unsigned char c1 = 224;
-        unsigned char c2 = 128;
-        unsigned char c3 = 128;
-
-        for (int k = 0; k < 16; ++k) {
-            if (k < 6)  c3 |= (unicode % 64) & (1 << k);
-            else if (k < 12) c2 |= (unicode >> 6) & (1 << (k - 6));
-            else c1 |= (unicode >> 12) & (1 << (k - 12));
-        }
-
-        s += c1;
-        s += c2;
-        s += c3;
-    } else if (unicode <= 0x1fffff) { // 1FFFFF(16) = 2097151(10)
-        unsigned char c1 = 240;
-        unsigned char c2 = 128;
-        unsigned char c3 = 128;
-        unsigned char c4 = 128;
-
-        for (int k = 0; k < 21; ++k) {
-            if (k < 6)  c4 |= (unicode % 64) & (1 << k);
-            else if (k < 12) c3 |= (unicode >> 6) & (1 << (k - 6));
-            else if (k < 18) c2 |= (unicode >> 12) & (1 << (k - 12));
-            else c1 |= (unicode >> 18) & (1 << (k - 18));
-        }
-
-        s += c1;
-        s += c2;
-        s += c3;
-        s += c4;
-    }
-
-    return s;
-}
-
-void pop_back_utf8(std::string& utf8) {
-    if(utf8.empty()){
-        return;
-    }
-
-    auto cp = utf8.data() + utf8.size();
-
-    while(--cp >= utf8.data() && ((*cp & 0b10000000) && !(*cp & 0b01000000))) {}
-
-    if(cp >= utf8.data()) {
-        utf8.resize(cp - utf8.data());
-    }
-}
+#include "../String.h"
 
 namespace elementor::elements {
     Inputable *inputable() {
         return new Inputable();
     }
 
-    Inputable *Inputable::onChange(std::function<std::string (std::string value)> callback) {
+    Inputable *Inputable::onChange(std::function<std::u32string (std::u32string value)> callback) {
         this->callbackChange = callback;
         return this;
     }
@@ -90,7 +25,7 @@ namespace elementor::elements {
         return this;
     }
 
-    Inputable *Inputable::setText(std::string text) {
+    Inputable *Inputable::setText(std::u32string text) {
         this->text = text;
 
         if (this->callbackChange) {
@@ -100,7 +35,13 @@ namespace elementor::elements {
         return this;
     }
 
-    std::string Inputable::getText() {
+    Inputable *Inputable::setText(std::string text) {
+        std::u32string textU32;
+        fromUTF8(text, textU32);
+        return this->setText(textU32);
+    }
+
+    std::u32string Inputable::getText() {
         return this->text;
     }
 
@@ -178,7 +119,7 @@ namespace elementor::elements {
             }
 
             if (event->key == KeyboardKey::Backspace && this->text.size() > 0) {
-                pop_back_utf8(this->text);
+                this->text.pop_back();
                 if (this->callbackChange) {
                     this->text = this->callbackChange(this->text);
                 }
@@ -191,7 +132,7 @@ namespace elementor::elements {
 
     EventCallbackResponse Inputable::onEvent(EventChar *event) {
         if (this->focused) {
-            this->text += unicode_to_utf8(event->value);
+            this->text += event->value;
             if (this->callbackChange) {
                 this->text = this->callbackChange(this->text);
             }

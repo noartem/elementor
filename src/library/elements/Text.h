@@ -27,9 +27,11 @@ namespace elementor::elements {
 
     class Text : public Element {
     public:
+        Text *setText(std::u32string text);
+
         Text *setText(std::string text);
 
-        std::string getText();
+        std::u32string getText();
 
         Text *setFontColor(SkColor color);
 
@@ -81,7 +83,7 @@ namespace elementor::elements {
 
     private:
         ApplicationContext *ctx;
-        std::string text;
+        std::u32string text;
         SkColor fontColor = SK_ColorBLACK;
         float fontSize = 16.0;
         float fontSkew = 0.0;

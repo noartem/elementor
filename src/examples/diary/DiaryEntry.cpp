@@ -3,8 +3,7 @@
 //
 
 #include "DiaryEntry.h"
-
-#include <fmt/format.h>
+#include "utility.h"
 
 #include <iomanip>
 #include <sstream> // DO NOT REMOVE, REQUIRED FOR WINDOWS BUILD
@@ -22,19 +21,26 @@ extern "C" char* strptime(const char* s, const char* f, struct tm* tm) {
   }
 }
 
-std::tm parseDate(std::string value) {
+std::u32string floatToU32String(float value) {
+    std::string text = std::to_string(value);
+    std::u32string textU32;
+    fromUTF8(text, textU32);
+    return textU32;
+}
+
+std::tm parseDate(std::u32string value) {
     std::tm tm = {};
-    strptime(value.c_str(), TIME_FORMAT, &tm);
+    strptime(toUTF8(value).c_str(), TIME_FORMAT, &tm);
     return tm;
 }
 
-DiaryEntry::DiaryEntry(std::tm datetime, float duration, std::string place) {
+DiaryEntry::DiaryEntry(std::tm datetime, float duration, std::u32string place) {
     this->datetime = datetime;
     this->duration = duration;
     this->place = place;
 }
 
-DiaryEntry::DiaryEntry(std::string datetime, float duration, std::string place) {
+DiaryEntry::DiaryEntry(std::u32string datetime, float duration, std::u32string place) {
     this->datetime = parseDate(datetime);
     this->duration = duration;
     this->place = place;
@@ -44,20 +50,23 @@ std::tm DiaryEntry::getDatetime() {
     return this->datetime;
 }
 
-std::string DiaryEntry::getDatetimeFormatted() {
-    char datetimeFormatted[32];
-    std::strftime(datetimeFormatted, 32, TIME_FORMAT, &this->datetime);
-    return datetimeFormatted;
+std::u32string DiaryEntry::getDatetimeFormatted() {
+    char datetimeFormattedRaw[32];
+    std::strftime(datetimeFormattedRaw, 32, TIME_FORMAT, &this->datetime);
+    std::string datetimeFormatted = datetimeFormattedRaw;
+    std::u32string datetimeFormattedU32;
+    fromUTF8(datetimeFormatted, datetimeFormattedU32);
+    return datetimeFormattedU32;
 }
 
-std::string DiaryEntry::getDurationFormatted() {
-    return fmt::format("{}", this->duration);
+std::u32string DiaryEntry::getDurationFormatted() {
+    return floatToU32String(this->duration);
 }
 
 float DiaryEntry::getDuration() {
     return this->duration;
 }
 
-std::string DiaryEntry::getPlace() {
+std::u32string DiaryEntry::getPlace() {
     return this->place;
 }

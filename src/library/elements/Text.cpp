@@ -3,6 +3,7 @@
 //
 
 #include "Text.h"
+#include "../String.h"
 
 #include <include/core/SkTypeface.h>
 
@@ -13,13 +14,19 @@ namespace elementor::elements {
         return new Text();
     }
 
-    Text *Text::setText(std::string text) {
+    Text *Text::setText(std::u32string text) {
         this->text = text;
         this->font = std::nullopt;
         return this;
     }
 
-    std::string Text::getText() {
+    Text *Text::setText(std::string text) {
+        std::u32string textU32;
+        fromUTF8(text, textU32);
+        return this->setText(textU32);
+    }
+
+    std::u32string Text::getText() {
         return this->text;
     }
 
@@ -211,7 +218,8 @@ namespace elementor::elements {
         this->updateSkPaint();
 
         SkRect textBounds;
-        this->font.value().measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
+        std::string textU8 = toUTF8(this->text);
+        this->font.value().measureText(textU8.c_str(), textU8.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
 
         float width = std::min(std::max(textBounds.width(), boundaries.min.width), boundaries.max.width);
         float height = std::min(std::max(textBounds.height(), boundaries.min.height), boundaries.max.height);
@@ -223,6 +231,6 @@ namespace elementor::elements {
         this->updateSkFont();
         this->updateSkPaint();
 
-        canvas->drawString(this->text.c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
+        canvas->drawString(toUTF8(this->text).c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
 	}
 }

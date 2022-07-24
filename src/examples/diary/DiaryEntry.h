@@ -12,24 +12,24 @@ std::tm parseDate(std::string value);
 
 class DiaryEntry {
 public:
-    DiaryEntry(std::tm datetime, float duration, std::string place);
+    DiaryEntry(std::tm datetime, float duration, std::u32string place);
 
-    DiaryEntry(std::string datetime, float duration, std::string place);
+    DiaryEntry(std::u32string datetime, float duration, std::u32string place);
 
     std::tm getDatetime();
 
-    std::string getDatetimeFormatted();
+    std::u32string getDatetimeFormatted();
 
     float getDuration();
 
-    std::string getDurationFormatted();
+    std::u32string getDurationFormatted();
 
-    std::string getPlace();
+    std::u32string getPlace();
 
 private:
     std::tm datetime;
     float duration;
-    std::string place;
+    std::u32string place;
 };
 
 #endif //DIARY_DIARY_ENTRY_H

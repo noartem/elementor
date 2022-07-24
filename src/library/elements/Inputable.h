@@ -13,15 +13,17 @@
 namespace elementor::elements {
     class Inputable : public Element, public WithOnKeyboard, public WithOnChar, public WithOnMouseButton, public WithOnMouseMove, WithChild {
     public:
-        Inputable *onChange(std::function<std::string (std::string text)> callback);
+        Inputable *onChange(std::function<std::u32string (std::u32string text)> callback);
 
         Inputable *onFocus(std::function<void ()> callback);
 
         Inputable *onBlur(std::function<void ()> callback);
 
+        Inputable *setText(std::u32string text);
+
         Inputable *setText(std::string text);
 
-        std::string getText();
+        std::u32string getText();
 
         Inputable *setChild(Element *child);
 
@@ -41,11 +43,11 @@ namespace elementor::elements {
 
     private:
         ApplicationContext *ctx;
-        std::string text;
+        std::u32string text;
         ElementRect rect;
         bool hovered;
         bool focused;
-        std::function<std::string (std::string text)> callbackChange;
+        std::function<std::u32string (std::u32string text)> callbackChange;
         std::function<void ()> callbackFocus;
         std::function<void ()> callbackBlur;
     };
