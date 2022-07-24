@@ -23,14 +23,15 @@ std::string PageEntry::getName() {
 }
 
 void PageEntry::saveEntry() {
-    // std::u32string datetime = this->inputDatetime->getValue();
-    // float duration = std::stof((std::string) toUTF8(this->inputDuration->getValue()));
-    // std::u32string place = this->inputPlace->getValue();
-    // DiaryEntry *newEntry = new DiaryEntry(datetime, duration, place);
-    // if (this->entry != NULL) {
-    //     this->service->remove(this->entry);
-    // }
-    // this->service->add(newEntry);
+    std::u32string datetime = this->inputDatetime->getValue();
+    std::u32string durationU32 = this->inputDuration->getValue();
+    float duration = std::stof(toUTF8(durationU32));
+    std::u32string place = this->inputPlace->getValue();
+    DiaryEntry *newEntry = new DiaryEntry(datetime, duration, place);
+    if (this->entry != NULL) {
+        this->service->remove(this->entry);
+    }
+    this->service->add(newEntry);
     this->pageChanger(this->backPage);
 }
 

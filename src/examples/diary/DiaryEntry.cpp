@@ -5,8 +5,6 @@
 #include "DiaryEntry.h"
 #include "utility.h"
 
-#include <fmt/format.h>
-
 #include <iomanip>
 #include <sstream> // DO NOT REMOVE, REQUIRED FOR WINDOWS BUILD
 
@@ -21,6 +19,13 @@ extern "C" char* strptime(const char* s, const char* f, struct tm* tm) {
   } else {
     return (char*)(s + input.tellg());
   }
+}
+
+std::u32string floatToU32String(float value) {
+    std::string text = std::to_string(value);
+    std::u32string textU32;
+    fromUTF8(text, textU32);
+    return textU32;
 }
 
 std::tm parseDate(std::u32string value) {
@@ -46,15 +51,16 @@ std::tm DiaryEntry::getDatetime() {
 }
 
 std::u32string DiaryEntry::getDatetimeFormatted() {
-    // char32_t datetimeFormatted[32];
-    // std::strftime(datetimeFormatted, 32, TIME_FORMAT, &this->datetime);
-    // return datetimeFormatted;
-    return U"";
+    char datetimeFormattedRaw[32];
+    std::strftime(datetimeFormattedRaw, 32, TIME_FORMAT, &this->datetime);
+    std::string datetimeFormatted = datetimeFormattedRaw;
+    std::u32string datetimeFormattedU32;
+    fromUTF8(datetimeFormatted, datetimeFormattedU32);
+    return datetimeFormattedU32;
 }
 
 std::u32string DiaryEntry::getDurationFormatted() {
-    // return fmt::format("{}", this->duration);
-    return U"";
+    return floatToU32String(this->duration);
 }
 
 float DiaryEntry::getDuration() {
