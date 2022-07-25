@@ -3,7 +3,7 @@ package("skia-build")
     set_description("Automated Skia builds")
 
     if is_host("windows") then
-        if os.arch() == "x64" then
+	if os.arch() == "x64" then
             add_urls("https://github.com/HumbleUI/SkiaBuild/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-windows-Release-x64.zip")
             add_versions("102", "d07fcb40340699fcba08e353367235b439f5e43552782996f85c7d4eb0748bab")
         end
@@ -24,7 +24,7 @@ package("skia-build")
 
     add_includedirs("")
     if is_plat("windows") then
-        add_syslinks("gdi32", "user32", "opengl32")
+        add_syslinks("gdi32", "user32", "opengl32", "d3d12", "d3dcompiler", "dxgi", "dxguid")
     elseif is_plat("macosx") then
         add_frameworks("CoreFoundation", "CoreGraphics", "CoreText", "CoreServices")
     elseif is_plat("linux") then
