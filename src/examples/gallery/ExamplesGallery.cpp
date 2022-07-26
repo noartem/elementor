@@ -12,10 +12,10 @@ ExamplesGallery::ExamplesGallery() {
     this->activeExampleLabelDescription = empty();
 
     this->scene = background()
-        ->setColor("#FFFCF3")
+        ->setColor("#FFFFFF")
         ->setChild(flex()
-            ->appendChild(flexible()
-                ->setGrow(1)
+            ->appendChild(width()
+                ->setWidth(200)
                 ->setChild(background()
                     ->setColor("#EDF5F0")
                     ->setChild(flex()
