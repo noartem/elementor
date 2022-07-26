@@ -23,6 +23,10 @@
 
 ## TODO
 
+* Resize bug
+* Image
+    * SrcRectConstraint
+    * SamplingOptions
 * Paragraph
     * Просто скопировать skpargraph себе
     * Как это делать в skia?
@@ -64,13 +68,3 @@
 ## Examples
 
 * [Пример SkParagraph](https://github.com/lamarrr/Valkyrie/blob/main/ui/src/widgets/text.cc)
-
-```cpp
-SkBitmap bitmap;
-bool ret = SkImageDecoder::DecodeFile("/sdcard/loading.png", &bitmap,
-SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
-bitmap.lockPixels();
-char* data = (char*)(bitmap.getPixels());
-printf("%3d,%3d,%3d,%3d", data[0], data[1], data[2], data[3]); // Dump
-RGBA data
-```
