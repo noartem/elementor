@@ -23,15 +23,16 @@
 
 ## TODO
 
-* Перенести Text, Inputable на u32string
-* Image
 * Paragraph
     * Просто скопировать skpargraph себе
     * Как это делать в skia?
     * Если Text -> брать из него font, paint
     * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
-* Transform
 * Text font fallback (например, fallback для эмодзи)
+* SVG
+* Сделать использование элементов безопасным
+    * Добавить проверки на null
+* Transform
 * Баг с ненужным скролом
 * Неправильные размеры текста на линухе
 * Примеры для:
@@ -59,4 +60,17 @@
 * Video
     * [GStreamer with Skia](https://stackoverflow.com/questions/65687577/is-there-a-way-i-can-turn-video-frames-from-gstreamer-to-skimage-instances-to-be)
     * [gl_ffmpeg](https://gist.github.com/rcolinray/7552384)
-    
+
+## Examples
+
+* [Пример SkParagraph](https://github.com/lamarrr/Valkyrie/blob/main/ui/src/widgets/text.cc)
+
+```cpp
+SkBitmap bitmap;
+bool ret = SkImageDecoder::DecodeFile("/sdcard/loading.png", &bitmap,
+SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
+bitmap.lockPixels();
+char* data = (char*)(bitmap.getPixels());
+printf("%3d,%3d,%3d,%3d", data[0], data[1], data[2], data[3]); // Dump
+RGBA data
+```
