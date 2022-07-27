@@ -85,10 +85,10 @@ namespace elementor::elements {
         Position cursorPosition = {event->x, event->y};
         bool newHovered = this->rect.visibleContains(cursorPosition);
         if (newHovered && !this->hovered) {
-            // this->ctx->cursor->set(CursorShape::Hand);
+            this->ctx->cursor->set(CursorShape::Hand);
         }
         if (!newHovered && this->hovered) {
-            // this->ctx->cursor->set(CursorShape::Arrow);
+            this->ctx->cursor->set(CursorShape::Arrow);
         }
         this->hovered = newHovered;
 

@@ -268,8 +268,8 @@ namespace elementor {
     }
 
     void GLCursor::set(CursorShape shape) {
-        if (this->cursor) {
-            glfwDestroyCursor(this->cursor);
+        if (this->cursor != NULL) {
+            glfwSetCursor(this->window, NULL);
             this->cursor = NULL;
         }
 
