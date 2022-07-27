@@ -78,5 +78,20 @@ Element *ExampleImage::getScene() {
                                 ->setChild(height()
                                     ->setHeight(128)
                                     ->setChild(image()
-                                        ->fromPath(currentPath + "src/examples/gallery/test-transparent.png")))))))));
+                                        ->fromPath(currentPath + "src/examples/gallery/test-transparent.png")))))))
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Fit size contain"))
+                ->appendChild(background()
+                    ->setColor("#EDF5F0")
+                    ->setChild(height()
+                        ->setHeight(512)
+                        ->setChild(fitContain()
+                            ->setChild(width()
+                                ->setWidth(2048)
+                                ->setChild(height()
+                                    ->setHeight(2048)
+                                    ->setChild(image()
+                                        ->fromPath(currentPath + "src/examples/gallery/test.png")))))))));
 }
