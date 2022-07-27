@@ -23,7 +23,7 @@
 
 ## TODO
 
-* Resize bug
+* Resize bug - Cursor???
 * Clickable через Hoverable
 * Paragraph
     * Просто скопировать skpargraph себе
