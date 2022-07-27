@@ -15,6 +15,7 @@
 #include "Empty.h"
 #include "ExpandedHeight.h"
 #include "ExpandedWidth.h"
+#include "FitContain.h"
 #include "Flex.h"
 #include "Flexible.h"
 #include "Height.h"
