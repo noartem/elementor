@@ -14,11 +14,17 @@
 namespace elementor::elements {
     class Image : public Element {
     public:
-        Image *fromPath(std::string path);
+        Image *fromSkImage(sk_sp<SkImage> image);
+
+        sk_sp<SkImage> getSkImage();
 
         Image *fromSkData(sk_sp<SkData> data);
 
-        Image *fromSkImage(sk_sp<SkImage> image);
+        Image *fromPath(std::string path);
+
+        Image *setSamplingOptions(SkSamplingOptions samplingOptions);
+
+        SkSamplingOptions getSamplingOptions();
 
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
@@ -26,6 +32,7 @@ namespace elementor::elements {
 
     private:
         sk_sp<SkImage> skImage;
+        SkSamplingOptions samplingOptions = SkSamplingOptions(SkCubicResampler::Mitchell());
 
         sk_sp<SkImage> makeImageFromFile(std::string path);
     };

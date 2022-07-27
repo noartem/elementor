@@ -14,6 +14,10 @@ namespace elementor::elements {
         return this;
     }
 
+    sk_sp<SkImage> Image::getSkImage() {
+        return this->skImage;
+    }
+
     sk_sp<SkImage> Image::makeImageFromFile(std::string path) {
         sk_sp<SkData> encodedData = SkData::MakeFromFileName(path.c_str());
         return SkImage::MakeFromEncoded(encodedData);
@@ -27,9 +31,18 @@ namespace elementor::elements {
         return this->fromSkImage(SkImage::MakeFromEncoded(data));
     }
 
+    Image *Image::setSamplingOptions(SkSamplingOptions samplingOptions) {
+        this->samplingOptions = samplingOptions;
+        return this;
+    }
+
+    SkSamplingOptions Image::getSamplingOptions() {
+        return this->samplingOptions;
+    }
+
     void Image::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        canvas->drawImageRect(this->skImage, skRect, SkSamplingOptions(SkCubicResampler::Mitchell()));
+        canvas->drawImageRect(this->skImage, skRect, this->samplingOptions);
     }
 
     Size Image::getSize(ApplicationContext *ctx, Boundaries boundaries) {
