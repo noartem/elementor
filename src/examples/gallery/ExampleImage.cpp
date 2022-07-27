@@ -93,5 +93,16 @@ Element *ExampleImage::getScene() {
                                 ->setChild(height()
                                     ->setHeight(2048)
                                     ->setChild(image()
-                                        ->fromPath(currentPath + "src/examples/gallery/test.png")))))))));
+                                        ->fromPath(currentPath + "src/examples/gallery/test.png")))))))
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Fit size cover"))
+                ->appendChild(background()
+                    ->setColor("#EDF5F0")
+                    ->setChild(height()
+                        ->setHeight(512)
+                        ->setChild(fitCover()
+                            ->setChild(image()
+                                ->fromPath(currentPath + "src/examples/gallery/test.png")))))));
 }
