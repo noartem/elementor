@@ -24,9 +24,7 @@
 ## TODO
 
 * Resize bug
-* Image
-    * SrcRectConstraint
-    * SamplingOptions
+* Clickable через Hoverable
 * Paragraph
     * Просто скопировать skpargraph себе
     * Как это делать в skia?
