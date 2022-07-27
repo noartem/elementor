@@ -44,6 +44,17 @@ namespace elementor {
         return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
+    ApplicationContext GLPlatform::makeApplicationContext() {
+        ApplicationContext applicationContext;
+        applicationContext.windowSize = this->getWindowSize();
+        applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
+        applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
+        applicationContext.root = this->application->root;
+        applicationContext.clipboard = this->makeClipboard();
+        applicationContext.cursor = this->makeCursor();
+        return applicationContext;
+    }
+
     Clipboard *GLPlatform::makeClipboard() {
         return new GLClipboard(this->window);
     }
@@ -53,25 +64,18 @@ namespace elementor {
     }
 
     void GLPlatform::refresh() {
-        ApplicationContext applicationContext;
-        applicationContext.windowSize = this->getWindowSize();
-        applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
-        applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
-        applicationContext.root = NULL;
-        applicationContext.clipboard = this->makeClipboard();
-        applicationContext.cursor = this->makeCursor();
-        this->applicationContext = applicationContext;
-
-        GrGLFramebufferInfo framebufferInfo;
-        framebufferInfo.fFBOID = 0;
-        framebufferInfo.fFormat = GL_RGBA8;
+        this->applicationContext = this->makeApplicationContext();
 
         if (this->skiaSurface) {
             delete this->skiaSurface;
         }
 
+        GrGLFramebufferInfo framebufferInfo;
+        framebufferInfo.fFBOID = 0;
+        framebufferInfo.fFormat = GL_RGBA8;
+
         // create skia canvas
-        GrBackendRenderTarget backendRenderTarget(applicationContext.windowSize.width, applicationContext.windowSize.height, 0, 0, framebufferInfo);
+        GrBackendRenderTarget backendRenderTarget(this->applicationContext.windowSize.width, this->applicationContext.windowSize.height, 0, 0, framebufferInfo);
         this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }

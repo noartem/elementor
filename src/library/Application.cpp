@@ -8,8 +8,6 @@ namespace elementor {
     void Application::draw(ApplicationContext *ctx, SkCanvas *canvas) {
         this->eventListeners.clear();
 
-        ctx->root = this->root;
-
         RenderElement rootElement;
         rootElement.position = {0, 0};
         rootElement.size = ctx->windowSize;

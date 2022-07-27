@@ -61,6 +61,7 @@ namespace elementor {
         Clipboard *makeClipboard();
         Cursor *makeCursor();
         float calcMonitorPixelScale(Size monitorPhysicalSize);
+        ApplicationContext makeApplicationContext();
 
         void onMouseButton(int button, int action, int mods);
         void onKeyboard(int key, int scancode, int action, int mods);
