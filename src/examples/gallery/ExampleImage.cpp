@@ -16,6 +16,8 @@ std::string ExampleImage::getDescription() {
 }
 
 Element *ExampleImage::getScene() {
+    std::string currentPath = std::filesystem::current_path().string() + "/../../../../";
+
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
@@ -30,7 +32,7 @@ Element *ExampleImage::getScene() {
                     ->setChild(height()
                         ->setHeight(256)
                         ->setChild(image()
-                            ->fromPath(std::filesystem::current_path().string() + "/../../../../src/examples/gallery/test.png"))))
+                            ->fromPath(currentPath + "src/examples/gallery/test.png"))))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)
@@ -40,7 +42,7 @@ Element *ExampleImage::getScene() {
                     ->setChild(height()
                         ->setHeight(256)
                         ->setChild(image()
-                            ->fromPath(std::filesystem::current_path().string() + "/../../../../src/examples/gallery/test.png"))))
+                            ->fromPath(currentPath + "src/examples/gallery/test.png"))))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)
@@ -56,7 +58,7 @@ Element *ExampleImage::getScene() {
                                 ->setChild(height()
                                     ->setHeight(128)
                                     ->setChild(image()
-                                        ->fromPath(std::filesystem::current_path().string() + "/../../../../src/examples/gallery/test-transparent.png"))))))
+                                        ->fromPath(currentPath + "src/examples/gallery/test-transparent.png"))))))
                     ->appendChild(background()
                         ->setColor("#AAFFAA")
                         ->setChild(padding()
@@ -66,7 +68,7 @@ Element *ExampleImage::getScene() {
                                 ->setChild(height()
                                     ->setHeight(128)
                                     ->setChild(image()
-                                        ->fromPath(std::filesystem::current_path().string() + "/../../../../src/examples/gallery/test-transparent.png"))))))
+                                        ->fromPath(currentPath + "src/examples/gallery/test-transparent.png"))))))
                     ->appendChild(background()
                         ->setColor("#AAAAFF")
                         ->setChild(padding()
@@ -76,5 +78,5 @@ Element *ExampleImage::getScene() {
                                 ->setChild(height()
                                     ->setHeight(128)
                                     ->setChild(image()
-                                        ->fromPath(std::filesystem::current_path().string() + "/../../../../src/examples/gallery/test-transparent.png")))))))));
+                                        ->fromPath(currentPath + "src/examples/gallery/test-transparent.png")))))))));
 }
