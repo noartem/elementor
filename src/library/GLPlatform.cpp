@@ -252,6 +252,7 @@ namespace elementor {
 
     unsigned int GLCursor::mapCursorShape(CursorShape shape) {
         switch (shape) {
+            case CursorShape::Default:
             case CursorShape::Arrow:
                 return GLFW_ARROW_CURSOR;
             case CursorShape::IBeam:

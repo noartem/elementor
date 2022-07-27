@@ -48,6 +48,7 @@ namespace elementor {
     };
 
     enum class CursorShape {
+        Default,
         Arrow,
         IBeam,
         Crosshair,
