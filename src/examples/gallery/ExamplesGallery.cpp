@@ -68,7 +68,7 @@ void ExamplesGallery::setActiveExample(Example *example) {
 }
 
 Column *ExamplesGallery::makeExamplesList() {
-    Column *examplesList = column();
+    Column *examplesList = column()->setSpacing(4);
     for (Example *example : examples()) {
         Background *buttonBackground = background();
         examplesList
