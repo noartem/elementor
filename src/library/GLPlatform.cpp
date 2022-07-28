@@ -18,7 +18,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 
 #define GL_RGBA8 0x8058
 
@@ -594,9 +593,6 @@ namespace elementor {
     }
 
     void GLCursor::updateCursor() {
-        std::cout << "GLCursor::updateCursor " << std::endl;
-        std::cout << "    this->appliedShape = " << (int) this->appliedShape << std::endl;
-        std::cout << "    this->currentShape = " << (int) this->currentShape << std::endl;
         if (this->appliedShape != this->currentShape) {
             this->cursor = glfwCreateStandardCursor(mapCursorShape(this->currentShape));
             glfwSetCursor(this->window, this->cursor);    
