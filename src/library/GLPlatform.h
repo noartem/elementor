@@ -26,7 +26,6 @@ namespace elementor {
     public:
         GLCursor(GLFWwindow *window);
         void set(CursorShape shape) override;
-        unsigned int mapCursorShape(CursorShape shape);
 
     private:
         GLFWwindow *window;
