@@ -23,9 +23,6 @@
 
 ## TODO
 
-* Check TODO
-* ctx->requestAnimationFrame()
-* Cursor bug, через RAF
 * Clickable через Hoverable
 * Анимации, через RAF
 * Paragraph
