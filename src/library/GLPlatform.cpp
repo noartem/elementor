@@ -105,10 +105,23 @@ namespace elementor {
         }
     }
 
+    Action mapIntToAction(int action) {
+        switch (action) {
+            case 0:
+                return Action::Release
+            case 1:
+                return Action::Press
+            case 2:
+                return Action::Repeat
+            default:
+                return Action::Release
+        }
+    }
+
     void GLPlatform::onMouseButton(int button, int action, int mods) {
         EventMouseButton *event = new EventMouseButton();
         event->button = mapIntToMouseButton(button);
-        event->action = static_cast<Action>(action);
+        event->action = mapIntToAction(action);
         event->mod = static_cast<Mod>(mods);
 
         this->application->dispatchEvent(event);

@@ -40,10 +40,9 @@ namespace elementor {
     };
 
     enum class Action {
-        // TODO: Map number to enum in Platform
-        Release = 0,
-        Press = 1,
-        Repeat = 2,
+        Release,
+        Press,
+        Repeat,
     };
 
     enum class Mod {
