@@ -44,14 +44,14 @@ namespace elementor {
         return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
     }
 
-    ApplicationContext GLPlatform::makeApplicationContext() {
-        ApplicationContext applicationContext;
-        applicationContext.windowSize = this->getWindowSize();
-        applicationContext.monitorPhysicalSize = this->getMonitorPhysicalSize();
-        applicationContext.monitorPixelScale = this->calcMonitorPixelScale(applicationContext.monitorPhysicalSize);
-        applicationContext.root = this->application->root;
-        applicationContext.clipboard = this->makeClipboard();
-        applicationContext.cursor = this->makeCursor();
+    ApplicationContext *GLPlatform::makeApplicationContext() {
+        ApplicationContext *applicationContext = new GLApplicationContext(this);
+        applicationContext->windowSize = this->getWindowSize();
+        applicationContext->monitorPhysicalSize = this->getMonitorPhysicalSize();
+        applicationContext->monitorPixelScale = this->calcMonitorPixelScale(applicationContext->monitorPhysicalSize);
+        applicationContext->root = this->application->root;
+        applicationContext->clipboard = this->makeClipboard();
+        applicationContext->cursor = this->makeCursor();
         return applicationContext;
     }
 
@@ -75,14 +75,16 @@ namespace elementor {
         framebufferInfo.fFormat = GL_RGBA8;
 
         // create skia canvas
-        GrBackendRenderTarget backendRenderTarget(this->applicationContext.windowSize.width, this->applicationContext.windowSize.height, 0, 0, framebufferInfo);
+        GrBackendRenderTarget backendRenderTarget(this->applicationContext->windowSize.width, this->applicationContext->windowSize.height, 0, 0, framebufferInfo);
         this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }
 
     void GLPlatform::draw() {
+        this->applyRnfQueue();
+
         this->skiaCanvas->clear(SK_ColorBLACK);
-        this->application->draw(&this->applicationContext, this->skiaCanvas);
+        this->application->draw(this->applicationContext, this->skiaCanvas);
 
         this->skiaContext->flush();
         glfwSwapBuffers(this->window);
@@ -525,6 +527,31 @@ namespace elementor {
         glfwDestroyWindow(window);
         glfwTerminate();
         exit(EXIT_SUCCESS);
+    }
+
+    void GLPlatform::requestNextFrame(std::function<void ()> callback) {
+        this->rnfNextQueue.push_back(callback);
+    }
+
+    void GLPlatform::applyRnfQueue() {
+        if (this->rnfCurrentQueue.size() > 0 && this->rnfNextQueue.size() > 0) {
+            return;
+        }
+
+        for (std::function<void ()> callback : this->rnfCurrentQueue) {
+            callback();
+        }
+
+        this->rnfCurrentQueue = this->rnfNextQueue;
+        this->rnfNextQueue = {};
+    }
+
+    GLApplicationContext::GLApplicationContext(GLPlatform *platform) {
+        this->platform = platform;
+    }
+
+    void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
+        this->platform->requestNextFrame(callback);
     }
 
     GLClipboard::GLClipboard(GLFWwindow *window) {

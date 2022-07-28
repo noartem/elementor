@@ -12,6 +12,61 @@
 #include <optional>
 
 namespace elementor {
+    class GLApplicationContext;
+    class GLClipboard;
+    class GLCursor;
+
+    class GLPlatform {
+    public:
+        std::string title;
+        Size size;
+        std::optional <Size> minSize;
+        std::optional <Size> maxSize;
+        Application *application;
+
+        int run();
+        void forceUpdate();
+        void requestNextFrame(std::function<void ()> callback);
+
+    private:
+        GLFWwindow *window;
+        GLFWmonitor *monitor;
+        SkSurface *skiaSurface;
+        SkCanvas *skiaCanvas;
+        GrDirectContext *skiaContext;
+        ApplicationContext *applicationContext;
+
+        void refresh();
+        void draw();
+
+        Size getWindowSize();
+        Size getMonitorPhysicalSize();
+        Size getMonitorSize();
+        Clipboard *makeClipboard();
+        Cursor *makeCursor();
+        float calcMonitorPixelScale(Size monitorPhysicalSize);
+        ApplicationContext *makeApplicationContext();
+
+        void onMouseButton(int button, int action, int mods);
+        void onKeyboard(int key, int scancode, int action, int mods);
+        void onChar(unsigned int codepoint);
+        void onMouseMove(double x, double y);
+        void onScroll(double xOffset, double yOffset);
+
+        std::vector<std::function<void ()>> rnfNextQueue;
+        std::vector<std::function<void ()>> rnfCurrentQueue;
+        void applyRnfQueue();
+    };
+
+    class GLApplicationContext : public ApplicationContext {
+    public:
+        GLApplicationContext(GLPlatform *glPlatform);
+        void requestNextFrame(std::function<void ()> callback) override;
+
+    private:
+        GLPlatform *platform;
+    };
+
     class GLClipboard : public Clipboard {
     public:
         GLClipboard(GLFWwindow *window);
@@ -30,43 +85,6 @@ namespace elementor {
     private:
         GLFWwindow *window;
         GLFWcursor *cursor;
-    };
-
-    class GLPlatform {
-    public:
-        std::string title;
-        Size size;
-        std::optional <Size> minSize;
-        std::optional <Size> maxSize;
-        Application *application;
-
-        int run();
-        void forceUpdate();
-
-    private:
-        GLFWwindow *window;
-        GLFWmonitor *monitor;
-        SkSurface *skiaSurface;
-        SkCanvas *skiaCanvas;
-        GrDirectContext *skiaContext;
-        ApplicationContext applicationContext;
-
-        void refresh();
-        void draw();
-
-        Size getWindowSize();
-        Size getMonitorPhysicalSize();
-        Size getMonitorSize();
-        Clipboard *makeClipboard();
-        Cursor *makeCursor();
-        float calcMonitorPixelScale(Size monitorPhysicalSize);
-        ApplicationContext makeApplicationContext();
-
-        void onMouseButton(int button, int action, int mods);
-        void onKeyboard(int key, int scancode, int action, int mods);
-        void onChar(unsigned int codepoint);
-        void onMouseMove(double x, double y);
-        void onScroll(double xOffset, double yOffset);
     };
 };
 

@@ -62,13 +62,15 @@ namespace elementor {
         virtual void set(CursorShape shape) = 0;
     };
 
-    struct ApplicationContext {
+    class ApplicationContext {
+    public:
         Size windowSize;
         Size monitorPhysicalSize;
         float monitorPixelScale;
         Element *root;
         Clipboard *clipboard;
         Cursor *cursor;
+        virtual void requestNextFrame(std::function<void ()> callback) = 0;
     };
 
     class WithChild {
