@@ -32,12 +32,11 @@ namespace elementor {
     EventCallbackResponse callElementEventHandler(Element *element, Event *event);
 
     enum class MouseButton {
-        // TODO: Map number to enum in Platform
-        Left = 0,
-        Right = 1,
-        Middle = 2,
-        Back = 3,
-        Forward = 4,
+        Left,
+        Right,
+        Middle,
+        Back,
+        Forward,
     };
 
     enum class Action {

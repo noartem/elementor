@@ -88,9 +88,26 @@ namespace elementor {
         glfwSwapBuffers(this->window);
     }
 
+    MouseButton mapIntToMouseButton(int button) {
+        switch (button) {
+            case 0:
+                return MouseButton::Left
+            case 1:
+                return MouseButton::Right
+            case 2:
+                return MouseButton::Middle
+            case 3:
+                return MouseButton::Back
+            case 4:
+                return MouseButton::Forward
+            default:
+                return MouseButton::Left
+        }
+    }
+
     void GLPlatform::onMouseButton(int button, int action, int mods) {
         EventMouseButton *event = new EventMouseButton();
-        event->button = static_cast<MouseButton>(button);
+        event->button = mapIntToMouseButton(button);
         event->action = static_cast<Action>(action);
         event->mod = static_cast<Mod>(mods);
 
@@ -250,7 +267,7 @@ namespace elementor {
         this->window = window;
     }
 
-    unsigned int GLCursor::mapCursorShape(CursorShape shape) {
+    unsigned int mapCursorShape(CursorShape shape) {
         switch (shape) {
             case CursorShape::Default:
             case CursorShape::Arrow:
@@ -274,7 +291,7 @@ namespace elementor {
             this->cursor = NULL;
         }
 
-        this->cursor = glfwCreateStandardCursor(this->mapCursorShape(shape));
+        this->cursor = glfwCreateStandardCursor(mapCursorShape(shape));
         glfwSetCursor(this->window, this->cursor);
     }
 }
