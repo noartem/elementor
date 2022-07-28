@@ -79,7 +79,7 @@ namespace elementor::elements {
 
     EventCallbackResponse Inputable::onEvent(EventMouseButton *event) {
         if (this->hovered) {
-            if (event->action == Action::Press && event->button == MouseButton::Left) {
+            if (event->action == KeyAction::Press && event->button == MouseButton::Left) {
                 this->focused = true;
                 if (this->callbackFocus) {
                     this->callbackFocus();
@@ -96,7 +96,7 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Inputable::onEvent(EventKeyboard *event) {
-        if (this->focused && (event->action == Action::Press || event->action == Action::Repeat)) {
+        if (this->focused && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
             if (event->key == KeyboardKey::Escape) {
                 this->focused = false;
                 if (this->callbackBlur) {

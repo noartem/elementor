@@ -105,16 +105,16 @@ namespace elementor {
         }
     }
 
-    Action mapIntToAction(int action) {
+    KeyAction mapIntToKeyAction(int action) {
         switch (action) {
             case 0:
-                return Action::Release;
+                return KeyAction::Release;
             case 1:
-                return Action::Press;
+                return KeyAction::Press;
             case 2:
-                return Action::Repeat;
+                return KeyAction::Repeat;
             default:
-                return Action::Release;
+                return KeyAction::Release;
         }
     }
 
@@ -140,7 +140,7 @@ namespace elementor {
     void GLPlatform::onMouseButton(int button, int action, int mods) {
         EventMouseButton *event = new EventMouseButton();
         event->button = mapIntToMouseButton(button);
-        event->action = mapIntToAction(action);
+        event->action = mapIntToKeyAction(action);
         event->mod = mapIntToMod(mods);
 
         this->application->dispatchEvent(event);
@@ -150,7 +150,7 @@ namespace elementor {
         EventKeyboard *event = new EventKeyboard();
         event->key = static_cast<KeyboardKey>(key);
         event->scancode = scancode;
-        event->action = mapIntToAction(action);
+        event->action = mapIntToKeyAction(action);
         event->mod = mapIntToMod(mods);
 
         this->application->dispatchEvent(event);

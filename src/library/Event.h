@@ -39,7 +39,7 @@ namespace elementor {
         Forward,
     };
 
-    enum class Action {
+    enum class KeyAction {
         Release,
         Press,
         Repeat,
@@ -183,7 +183,7 @@ namespace elementor {
     class EventMouseButton: public Event {
     public:
         MouseButton button;
-        Action action;
+        KeyAction action;
         Mod mod;
 
         std::string getName() { return EVENT_MOUSE_BUTTON; };
@@ -224,7 +224,7 @@ namespace elementor {
     public:
         KeyboardKey key;
         int scancode;
-        Action action;
+        KeyAction action;
         Mod mod;
 
         std::string getName() { return EVENT_KEYBOARD; };

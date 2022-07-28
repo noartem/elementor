@@ -105,14 +105,14 @@ namespace elementor::elements {
                 }
             }
 
-            if (event->action == Action::Press && event->button == MouseButton::Left && this->callbackClick) {
+            if (event->action == KeyAction::Press && event->button == MouseButton::Left && this->callbackClick) {
                 EventCallbackResponse callbackResponse = this->callbackClick(event, this->cursorPosition);
                 if (callbackResponse != EventCallbackResponse::None) {
                     return callbackResponse;
                 }
             }
 
-            if (event->action == Action::Press && event->button == MouseButton::Right && this->callbackRightClick) {
+            if (event->action == KeyAction::Press && event->button == MouseButton::Right && this->callbackRightClick) {
                 EventCallbackResponse callbackResponse = this->callbackRightClick(event, this->cursorPosition);
                 if (callbackResponse != EventCallbackResponse::None) {
                     return callbackResponse;
