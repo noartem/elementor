@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #define GL_RGBA8 0x8058
 
@@ -60,7 +61,7 @@ namespace elementor {
     }
 
     Cursor *GLPlatform::makeCursor() {
-        return new GLCursor(this->window);
+        return new GLCursor(this->window, this);
     }
 
     void GLPlatform::refresh() {
@@ -534,7 +535,7 @@ namespace elementor {
     }
 
     void GLPlatform::applyRnfQueue() {
-        if (this->rnfCurrentQueue.size() > 0 && this->rnfNextQueue.size() > 0) {
+        if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty() > 0) {
             return;
         }
 
@@ -569,8 +570,9 @@ namespace elementor {
         return valueU32;
     }
 
-    GLCursor::GLCursor(GLFWwindow *window) {
+    GLCursor::GLCursor(GLFWwindow *window, GLPlatform *platform) {
         this->window = window;
+        this->platform = platform;
     }
 
     unsigned int mapCursorShape(CursorShape shape) {
@@ -591,13 +593,21 @@ namespace elementor {
         }
     }
 
-    void GLCursor::set(CursorShape shape) {
-        if (this->cursor != NULL) {
-            glfwSetCursor(this->window, NULL);
-            this->cursor = NULL;
+    void GLCursor::updateCursor() {
+        std::cout << "GLCursor::updateCursor " << std::endl;
+        std::cout << "    this->appliedShape = " << (int) this->appliedShape << std::endl;
+        std::cout << "    this->currentShape = " << (int) this->currentShape << std::endl;
+        if (this->appliedShape != this->currentShape) {
+            this->cursor = glfwCreateStandardCursor(mapCursorShape(this->currentShape));
+            glfwSetCursor(this->window, this->cursor);    
+            this->appliedShape = this->currentShape;
         }
+    }
 
-        this->cursor = glfwCreateStandardCursor(mapCursorShape(shape));
-        glfwSetCursor(this->window, this->cursor);
+    void GLCursor::set(CursorShape shape) {
+        this->currentShape = shape;
+        this->platform->requestNextFrame([this] () {
+            this->updateCursor();
+        });
     }
 }

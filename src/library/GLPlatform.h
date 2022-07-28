@@ -79,12 +79,17 @@ namespace elementor {
 
     class GLCursor : public Cursor {
     public:
-        GLCursor(GLFWwindow *window);
+        GLCursor(GLFWwindow *window, GLPlatform *platform);
         void set(CursorShape shape) override;
 
     private:
         GLFWwindow *window;
         GLFWcursor *cursor;
+        GLPlatform *platform;
+        CursorShape currentShape = CursorShape::Default;
+        CursorShape appliedShape = CursorShape::Default;
+
+        void updateCursor();
     };
 };
 
