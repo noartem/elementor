@@ -23,8 +23,11 @@
 
 ## TODO
 
-* Resize bug - Cursor???
+* Check TODO
+* ctx->requestAnimationFrame()
+* Cursor bug, через RAF
 * Clickable через Hoverable
+* Анимации, через RAF
 * Paragraph
     * Просто скопировать skpargraph себе
     * Как это делать в skia?
@@ -34,6 +37,7 @@
 * SVG
 * Сделать использование элементов безопасным
     * Добавить проверки на null
+    * Деструкторы
 * Transform
 * Баг с ненужным скролом
 * Неправильные размеры текста на линухе
