@@ -46,13 +46,13 @@ namespace elementor {
     };
 
     enum class Mod {
-        // TODO: Map number to enum in Platform
-        Shift = 1,
-        Control = 2,
-        Alt = 4,
-        Super = 8,
-        CapsLock = 10,
-        NumLock = 20,
+        None,
+        Shift,
+        Control,
+        Alt,
+        Super,
+        CapsLock,
+        NumLock,
     };
 
     enum class KeyboardKey {

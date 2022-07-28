@@ -91,30 +91,49 @@ namespace elementor {
     MouseButton mapIntToMouseButton(int button) {
         switch (button) {
             case 0:
-                return MouseButton::Left
+                return MouseButton::Left;
             case 1:
-                return MouseButton::Right
+                return MouseButton::Right;
             case 2:
-                return MouseButton::Middle
+                return MouseButton::Middle;
             case 3:
-                return MouseButton::Back
+                return MouseButton::Back;
             case 4:
-                return MouseButton::Forward
+                return MouseButton::Forward;
             default:
-                return MouseButton::Left
+                return MouseButton::Left;
         }
     }
 
     Action mapIntToAction(int action) {
         switch (action) {
             case 0:
-                return Action::Release
+                return Action::Release;
             case 1:
-                return Action::Press
+                return Action::Press;
             case 2:
-                return Action::Repeat
+                return Action::Repeat;
             default:
-                return Action::Release
+                return Action::Release;
+        }
+    }
+
+    Mod mapIntToMod(int mod) {
+        switch (mod) {
+            case 1:
+                return Mod::Shift;
+            case 2:
+                return Mod::Control;
+            case 4:
+                return Mod::Alt;
+            case 8:
+                return Mod::Super;
+            case 10:
+                return Mod::CapsLock;
+            case 20:
+                return Mod::NumLock;
+            default:
+                return Mod::None;
         }
     }
 
@@ -122,7 +141,7 @@ namespace elementor {
         EventMouseButton *event = new EventMouseButton();
         event->button = mapIntToMouseButton(button);
         event->action = mapIntToAction(action);
-        event->mod = static_cast<Mod>(mods);
+        event->mod = mapIntToMod(mods);
 
         this->application->dispatchEvent(event);
     }
@@ -131,8 +150,8 @@ namespace elementor {
         EventKeyboard *event = new EventKeyboard();
         event->key = static_cast<KeyboardKey>(key);
         event->scancode = scancode;
-        event->action = static_cast<Action>(action);
-        event->mod = static_cast<Mod>(mods);
+        event->action = mapIntToAction(action);
+        event->mod = mapIntToMod(mods);
 
         this->application->dispatchEvent(event);
     }
