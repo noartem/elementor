@@ -105,12 +105,12 @@ namespace elementor::elements {
                 return EventCallbackResponse::StopPropagation;
             }
 
-            if (event->key == KeyboardKey::C && event->mod == Mod::Control) {
+            if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
                 this->ctx->clipboard->set(this->text);
                 return EventCallbackResponse::StopPropagation;
             }
 
-            if (event->key == KeyboardKey::V && event->mod == Mod::Control) {
+            if (event->key == KeyboardKey::V && event->mod == KeyMod::Control) {
                 this->text += this->ctx->clipboard->get();
                 if (this->callbackChange) {
                     this->text = this->callbackChange(this->text);

@@ -45,7 +45,7 @@ namespace elementor {
         Repeat,
     };
 
-    enum class Mod {
+    enum class KeyMod {
         None,
         Shift,
         Control,
@@ -184,7 +184,7 @@ namespace elementor {
     public:
         MouseButton button;
         KeyAction action;
-        Mod mod;
+        KeyMod mod;
 
         std::string getName() { return EVENT_MOUSE_BUTTON; };
     };
@@ -225,7 +225,7 @@ namespace elementor {
         KeyboardKey key;
         int scancode;
         KeyAction action;
-        Mod mod;
+        KeyMod mod;
 
         std::string getName() { return EVENT_KEYBOARD; };
     };

@@ -118,22 +118,22 @@ namespace elementor {
         }
     }
 
-    Mod mapIntToMod(int mod) {
+    KeyMod mapIntToKeyMod(int mod) {
         switch (mod) {
             case 1:
-                return Mod::Shift;
+                return KeyMod::Shift;
             case 2:
-                return Mod::Control;
+                return KeyMod::Control;
             case 4:
-                return Mod::Alt;
+                return KeyMod::Alt;
             case 8:
-                return Mod::Super;
+                return KeyMod::Super;
             case 10:
-                return Mod::CapsLock;
+                return KeyMod::CapsLock;
             case 20:
-                return Mod::NumLock;
+                return KeyMod::NumLock;
             default:
-                return Mod::None;
+                return KeyMod::None;
         }
     }
 
@@ -141,7 +141,7 @@ namespace elementor {
         EventMouseButton *event = new EventMouseButton();
         event->button = mapIntToMouseButton(button);
         event->action = mapIntToKeyAction(action);
-        event->mod = mapIntToMod(mods);
+        event->mod = mapIntToKeyMod(mods);
 
         this->application->dispatchEvent(event);
     }
@@ -151,7 +151,7 @@ namespace elementor {
         event->key = static_cast<KeyboardKey>(key);
         event->scancode = scancode;
         event->action = mapIntToKeyAction(action);
-        event->mod = mapIntToMod(mods);
+        event->mod = mapIntToKeyMod(mods);
 
         this->application->dispatchEvent(event);
     }
