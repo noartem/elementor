@@ -10,6 +10,7 @@
 #include <include/core/SkCanvas.h>
 
 #include <vector>
+#include <functional>
 
 namespace elementor {
     class Element;
