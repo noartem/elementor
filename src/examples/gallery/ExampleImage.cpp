@@ -116,10 +116,8 @@ Element *ExampleImage::getScene() {
                     ->setFontColor("#062016")
                     ->setFontSize(16)
                     ->setText("SVG"))
-                ->appendChild(width()
-                    ->setWidth(256)
-                    ->setChild(height()
-                        ->setHeight(256)
-                        ->setChild(svg()
-                            ->fromPath(currentPath + "src/examples/gallery/test.svg"))))));
+                ->appendChild(height()
+                    ->setHeight(256)
+                    ->setChild(svg()
+                        ->fromPath(currentPath + "src/examples/gallery/test.svg")))));
 }
