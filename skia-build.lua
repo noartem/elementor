@@ -1,28 +1,31 @@
 package("skia-build")
-    set_homepage("https://github.com/HumbleUI/SkiaBuild")
+    set_homepage("https://github.com/noartem/skia-build")
     set_description("Automated Skia builds")
 
     if is_host("windows") then
-	if os.arch() == "x64" then
-            add_urls("https://github.com/HumbleUI/SkiaBuild/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-windows-Release-x64.zip")
-            add_versions("102", "d07fcb40340699fcba08e353367235b439f5e43552782996f85c7d4eb0748bab")
+	    if os.arch() == "x64" then
+            add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-windows-Release-x64.zip")
+            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
         end
     elseif is_host("linux") then
         if os.arch() == "x86_64" then
-            add_urls("https://github.com/HumbleUI/SkiaBuild/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-linux-Release-x64.zip")
-            add_versions("102", "2491d52a7839ed970d0cfa69566fb6b9595671e8803e3675163e0d674771df80")
+            add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-linux-Release-x64.zip")
+            add_versions("102", "d3ab60a9bf01046c3b837df7bc4394511ded28c9d94816905bd9e7f6ec5159fa")
         end
     elseif is_host("macosx") then
         if os.arch() == "arm64" then
-            add_urls("https://github.com/HumbleUI/SkiaBuild/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-arm64.zip")
-            add_versions("102", "aed98380a5bbe1becd803cd1cc5af48fef2a674dc0c4e3a74d912c066d454997")
+            add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-arm64.zip")
+            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
         else
-            add_urls("https://github.com/HumbleUI/SkiaBuild/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-x64.zip")
-            add_versions("102", "ae61e08113e4e51c4889741e9fd110e3c8885dd171bc5b52fbbb1869e2b0d547")
+            add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-x64.zip")
+            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
         end
     end
 
     add_includedirs("")
+    add_links("skottie", "svg", "skparagraph", "skshaper", "skunicode", "dng_sdk", "skia", "sksg",
+              "skresources", "z", "tinfo", "ncurses", "freetype", "fontconfig", "webp_sse41", "jpeg",
+              "harfbuzz", "particles", "zlib", "icu", "png", "expat", "piex", "webp")
     if is_plat("windows") then
         add_syslinks("gdi32", "user32", "opengl32", "d3d12", "d3dcompiler", "dxgi", "dxguid")
     elseif is_plat("macosx") then

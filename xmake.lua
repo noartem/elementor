@@ -2,7 +2,7 @@ add_rules("mode.debug", "mode.release")
 
 set_languages("c99", "cxx17")
 
-includes("humble-ui-skia-build.lua")
+includes("skia-build.lua")
 includes("portable-file-dialogs.lua")
 
 add_requires("skia-build")
