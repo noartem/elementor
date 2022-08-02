@@ -26,14 +26,11 @@ namespace elementor::elements {
 
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
-
     private:
         sk_sp<SkSVGDOM> skSVGDOM;
         sk_sp<SkImage> skImage;
 
         sk_sp<SkImage> renderSVGImage(Size size);
-        sk_sp<SkImage> getOrRenderSVGImage(Size size);
     };
 
     SVG *svg();

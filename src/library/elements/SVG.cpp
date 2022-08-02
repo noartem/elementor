@@ -5,9 +5,13 @@
 #include "SVG.h"
 
 #include <include/core/SkSurface.h>
+#include <include/core/SkSize.h>
+#include <include/core/SkSamplingOptions.h>
 #include <modules/svg/include/SkSVGSVG.h>
 #include <modules/svg/include/SkSVGTypes.h>
-#include <include/core/SkSamplingOptions.h>
+#include <modules/svg/include/SkSVGRenderContext.h>
+
+#include <iostream>
 
 namespace elementor::elements {
     SVG *svg() {
@@ -49,27 +53,12 @@ namespace elementor::elements {
         return surface->makeImageSnapshot();
     }
 
-    sk_sp<SkImage> SVG::getOrRenderSVGImage(Size size) {
-        if (this->skImage) {
-            if (this->skImage->width() != size.width || this->skImage->height() != size.height) {
-                // delete this->skImage;
-                // this->skImage->delete();
-                this->skImage = NULL;
-            }
-        } else {
-            this->skImage = this->renderSVGImage(size);
+    void SVG::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+        if (this->skImage == NULL || (abs(this->skImage->width() - rect.size.width) > 5) || (abs(this->skImage->height() - rect.size.height) > 5)) {
+            this->skImage = this->renderSVGImage(rect.size);
         }
 
-        return this->skImage;
-    }
-
-    void SVG::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        sk_sp<SkImage> image = this->getOrRenderSVGImage(rect.size);
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        canvas->drawImageRect(image, skRect, SkSamplingOptions(SkCubicResampler::Mitchell()));
-    }
-
-    Size SVG::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        return fitSizeInBoundaries({(float) this->skImage->width(), (float) this->skImage->height()}, boundaries);
+        canvas->drawImageRect(this->skImage, skRect, SkSamplingOptions(SkCubicResampler::Mitchell()));
     }
 }
