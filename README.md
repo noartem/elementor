@@ -23,7 +23,6 @@
 
 ## TODO
 
-* SVG
 * Paragraph
     * Просто скопировать skpargraph себе
     * Как это делать в skia?
