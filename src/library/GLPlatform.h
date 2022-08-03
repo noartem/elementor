@@ -15,9 +15,12 @@ namespace elementor {
     class GLApplicationContext;
     class GLClipboard;
     class GLCursor;
+    class GLPerfomance;
 
     class GLPlatform {
     public:
+        GLPlatform();
+
         std::string title;
         Size size;
         std::optional <Size> minSize;
@@ -35,6 +38,7 @@ namespace elementor {
         SkCanvas *skiaCanvas;
         GrDirectContext *skiaContext;
         ApplicationContext *applicationContext;
+        GLPerfomance *perfomance;
 
         void refresh();
         void draw();
@@ -90,6 +94,20 @@ namespace elementor {
         CursorShape appliedShape = CursorShape::Default;
 
         void updateCursor();
+    };
+
+    #define METRICS_SIZE 10
+
+    class GLPerfomance : public Perfomance {
+    public:
+        double getFPS() override;
+        void addDrawDurationMetric(double duration);
+
+    private:
+        double drawDurationMetrics[METRICS_SIZE];
+        int drawDurationMetricsCount;
+        int drawDurationMetricsIndex;
+        double getAverageDuration();
     };
 };
 

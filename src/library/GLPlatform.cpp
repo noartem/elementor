@@ -22,6 +22,10 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
+    GLPlatform::GLPlatform() {
+        this->perfomance = new GLPerfomance();
+    }
+
     Size GLPlatform::getWindowSize() {
         int width, height;
         glfwGetFramebufferSize(this->window, &width, &height);
@@ -52,6 +56,7 @@ namespace elementor {
         applicationContext->root = this->application->root;
         applicationContext->clipboard = this->makeClipboard();
         applicationContext->cursor = this->makeCursor();
+        applicationContext->perfomance = this->perfomance;
         return applicationContext;
     }
 
@@ -81,6 +86,8 @@ namespace elementor {
     }
 
     void GLPlatform::draw() {
+        double drawStartTime = glfwGetTime();
+
         this->applyRnfQueue();
 
         this->skiaCanvas->clear(SK_ColorBLACK);
@@ -88,6 +95,10 @@ namespace elementor {
 
         this->skiaContext->flush();
         glfwSwapBuffers(this->window);
+
+        double drawEndTime = glfwGetTime();
+        double drawDuration = drawEndTime - drawStartTime;
+        this->perfomance->addDrawDurationMetric(drawDuration);
     }
 
     MouseButton mapIntToMouseButton(int button) {
@@ -605,5 +616,32 @@ namespace elementor {
         this->platform->requestNextFrame([this] () {
             this->updateCursor();
         });
+    }
+
+    void GLPerfomance::addDrawDurationMetric(double duration) {
+        this->drawDurationMetrics[this->drawDurationMetricsIndex] = duration;
+        this->drawDurationMetricsIndex = (this->drawDurationMetricsIndex + 1) % METRICS_SIZE;
+        this->drawDurationMetricsCount++;
+    }
+
+    double GLPerfomance::getAverageDuration() {
+        if (this->drawDurationMetricsCount < METRICS_SIZE) {
+            return this->drawDurationMetrics[0];
+        }
+
+        double sum = 0;
+        for (double duration : this->drawDurationMetrics) {
+            sum += duration;
+        }
+        return sum / METRICS_SIZE;
+    }
+
+    double GLPerfomance::getFPS() {
+        double duration = this->getAverageDuration();
+        if (duration == 0) {
+            return 0;
+        } else {
+            return 1 / duration;
+        }
     }
 }

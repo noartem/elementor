@@ -63,6 +63,11 @@ namespace elementor {
         virtual void set(CursorShape shape) = 0;
     };
 
+    class Perfomance {
+    public:
+        virtual double getFPS() = 0;
+    };
+
     class ApplicationContext {
     public:
         Size windowSize;
@@ -71,6 +76,7 @@ namespace elementor {
         Element *root;
         Clipboard *clipboard;
         Cursor *cursor;
+        Perfomance *perfomance;
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
     };
 
