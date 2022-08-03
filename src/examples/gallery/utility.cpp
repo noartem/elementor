@@ -22,3 +22,8 @@ Element *boxSized(std::string color, int boxWidth, int boxHeight) {
 int randInRange(int min, int max) {
     return min + (std::rand() % (max - min + 1));
 }
+
+std::string floatToString(float value, int precision) {
+    std::string text = std::to_string(value);
+    return text.substr(0, text.find(".") + precision + 1);
+}

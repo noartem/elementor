@@ -13,11 +13,6 @@ std::string ExampleAlign::getDescription() {
     return "Align child in bigger element";
 }
 
-std::string floatToString(float value, int precision = 1) {
-    std::string text = std::to_string(value);
-    return text.substr(0, text.find(".") + precision + 1);
-}
-
 Element *exampleAlignWidthItem(float coef, float childCoef) {
     return height()
         ->setHeight(36)

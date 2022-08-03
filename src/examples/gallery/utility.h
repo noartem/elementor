@@ -13,4 +13,6 @@ Element *boxSized(std::string color, int width, int height);
 
 int randInRange(int min, int max);
 
+std::string floatToString(float value, int precision = 1);
+
 #endif //GALLERY_EXAMPLES_UTILITY_H
