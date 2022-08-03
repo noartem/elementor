@@ -119,5 +119,13 @@ Element *ExampleImage::getScene() {
                 ->appendChild(height()
                     ->setHeight(256)
                     ->setChild(svg()
+                        ->fromPath(currentPath + "src/examples/gallery/test.svg")))
+                ->appendChild(height()
+                    ->setHeight(512)
+                    ->setChild(svg()
+                        ->fromPath(currentPath + "src/examples/gallery/test.svg")))
+                ->appendChild(height()
+                    ->setHeight(1024)
+                    ->setChild(svg()
                         ->fromPath(currentPath + "src/examples/gallery/test.svg")))));
 }
