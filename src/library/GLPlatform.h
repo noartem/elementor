@@ -96,18 +96,15 @@ namespace elementor {
         void updateCursor();
     };
 
-    #define METRICS_SIZE 10
-
     class GLPerfomance : public Perfomance {
     public:
         double getFPS() override;
-        void addDrawDurationMetric(double duration);
+        void incrementFramesCount();
 
     private:
-        double drawDurationMetrics[METRICS_SIZE];
-        int drawDurationMetricsCount;
-        int drawDurationMetricsIndex;
-        double getAverageDuration();
+        double framesLastTime;
+        double framesCount;
+        double lastFPS;
     };
 };
 

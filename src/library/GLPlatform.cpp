@@ -86,8 +86,6 @@ namespace elementor {
     }
 
     void GLPlatform::draw() {
-        double drawStartTime = glfwGetTime();
-
         this->applyRnfQueue();
 
         this->skiaCanvas->clear(SK_ColorBLACK);
@@ -96,9 +94,7 @@ namespace elementor {
         this->skiaContext->flush();
         glfwSwapBuffers(this->window);
 
-        double drawEndTime = glfwGetTime();
-        double drawDuration = drawEndTime - drawStartTime;
-        this->perfomance->addDrawDurationMetric(drawDuration);
+        this->perfomance->incrementFramesCount();
     }
 
     MouseButton mapIntToMouseButton(int button) {
@@ -618,30 +614,18 @@ namespace elementor {
         });
     }
 
-    void GLPerfomance::addDrawDurationMetric(double duration) {
-        this->drawDurationMetrics[this->drawDurationMetricsIndex] = duration;
-        this->drawDurationMetricsIndex = (this->drawDurationMetricsIndex + 1) % METRICS_SIZE;
-        this->drawDurationMetricsCount++;
-    }
+    void GLPerfomance::incrementFramesCount() {
+        this->framesCount++;
 
-    double GLPerfomance::getAverageDuration() {
-        if (this->drawDurationMetricsCount < METRICS_SIZE) {
-            return this->drawDurationMetrics[0];
+        double now = glfwGetTime();
+        if ((now - this->framesLastTime) >= 1) {
+            this->lastFPS = this->framesCount;
+            this->framesLastTime = now;
+            this->framesCount = 0;
         }
-
-        double sum = 0;
-        for (double duration : this->drawDurationMetrics) {
-            sum += duration;
-        }
-        return sum / METRICS_SIZE;
     }
 
     double GLPerfomance::getFPS() {
-        double duration = this->getAverageDuration();
-        if (duration == 0) {
-            return 0;
-        } else {
-            return 1 / duration;
-        }
+        return this->lastFPS;
     }
 }
