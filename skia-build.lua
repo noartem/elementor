@@ -5,20 +5,20 @@ package("skia-build")
     if is_host("windows") then
 	    if os.arch() == "x64" then
             add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-windows-Release-x64.zip")
-            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
+            add_versions("102", "df2370473e0ed690f83ca056611c0c43346cad23ca76c61c82d70de44e862818")
         end
     elseif is_host("linux") then
         if os.arch() == "x86_64" then
             add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-linux-Release-x64.zip")
-            add_versions("102", "d3ab60a9bf01046c3b837df7bc4394511ded28c9d94816905bd9e7f6ec5159fa")
+            add_versions("102", "782b13ac32f2c391566f5a991ce3fc090f312e4a1a61c2d90d74f6b220f510b3")
         end
     elseif is_host("macosx") then
         if os.arch() == "arm64" then
             add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-arm64.zip")
-            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
+            add_versions("102", "c5d6e555e52a8d0509320152ad63bfb34fb12905187df7a6c9482cb2de14c7d4")
         else
             add_urls("https://github.com/noartem/skia-build/releases/download/m102-32283b3f00/Skia-m102-32283b3f00-macos-Release-x64.zip")
-            add_versions("102", "46e511e3b22c6698b5f1d68cc2b607e6f43f9919a702f791100347831e8ce953")
+            add_versions("102", "4c30353ca0467bf1680352ee99062dfc13af39c600c94cb0572cf4284f35ef02")
         end
     end
 
