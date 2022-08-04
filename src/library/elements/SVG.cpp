@@ -11,8 +11,6 @@
 #include <modules/svg/include/SkSVGTypes.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
 
-#include <iostream>
-
 namespace elementor::elements {
     SVG *svg() {
         return new SVG();
