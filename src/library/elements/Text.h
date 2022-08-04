@@ -9,10 +9,27 @@
 
 #include <include/core/SkFont.h>
 #include <include/core/SkFontStyle.h>
+#include <modules/skparagraph/include/TextStyle.h>
 
 #include <optional>
 
+namespace sktext = skia::textlayout;
+
 namespace elementor::elements {
+    enum class TextAlign {
+        Left,
+        Right,
+        Center,
+        Justify,
+        Start,
+        End,
+    };
+
+    enum class TextDirection {
+        LTR,
+        RTL,
+    };
+
     enum class FontSlant {
         Upright,
         Italic,
@@ -76,6 +93,8 @@ namespace elementor::elements {
         Text *setFontEdging(FontEdging edging);
 
         FontEdging getFontEdging();
+
+        sktext::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
         Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;    
 

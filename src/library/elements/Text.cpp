@@ -212,6 +212,16 @@ namespace elementor::elements {
         }
     }
 
+    sktext::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
+        this->ctx = ctx;
+        sktext::TextStyle textStyle;
+        textStyle.setFontSize(this->fontSize * this->ctx->monitorPixelScale);
+        textStyle.setTypeface(this->makeSkTypeface());
+        textStyle.setForegroundColor(this->makeSkPaint());
+        textStyle.setFontStyle(this->makeSkFontStyle());
+        return textStyle;
+    }
+
     Size Text::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         this->ctx = ctx;
         this->updateSkFont();
