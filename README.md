@@ -24,10 +24,11 @@
 ## TODO
 
 * Paragraph
-    * Просто скопировать skpargraph себе
-    * Как это делать в skia?
-    * Если Text -> брать из него font, paint
     * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
+* CMAKE
+* Debug:
+    * Save nodes tree
+    * Dump in console nodes tree on some shortcut
 * Clickable через Hoverable
 * Анимации, через RAF
 * Text font fallback (например, fallback для эмодзи)
