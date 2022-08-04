@@ -12,7 +12,7 @@ FPSLabel::FPSLabel() {
     this->child = text()
         ->setFontColor("#062016")
         ->setFontSize(16)
-        ->setText("FPS: 00.00");
+        ->setText("FPS: 00");
 }
 
 Size FPSLabel::getSize(ApplicationContext *ctx, Boundaries boundaries) {
@@ -20,7 +20,7 @@ Size FPSLabel::getSize(ApplicationContext *ctx, Boundaries boundaries) {
 }
 
 std::vector <RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Size size) {
-    this->child->setText("FPS: " + floatToString(ctx->perfomance->getFPS(), 2));
+    this->child->setText("FPS: " + std::to_string((int) ctx->perfomance->getFPS()));
 
     RenderElement child;
     child.element = this->child;
