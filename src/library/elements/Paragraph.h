@@ -29,10 +29,14 @@ namespace elementor::elements {
 
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+
     private:
         TextAlign textAlign = TextAlign::Left;
         TextDirection textDirection = TextDirection::LTR;
         std::unique_ptr<sktext::Paragraph> skParagraph;
+        std::vector<Text *> childrenText;
+        std::vector<Element *> childrenElements;
 
         sk_sp<sktext::FontCollection> makeDefaultFontCollection();
 
@@ -47,8 +51,6 @@ namespace elementor::elements {
         sktext::TextDirection getSkTextDirection();
 
         std::unique_ptr<sktext::Paragraph> makeSkParagraph(ApplicationContext *ctx);
-
-        std::unique_ptr<sktext::Paragraph> getOrMakeSkParagraph(ApplicationContext *ctx);
     };
 
     Paragraph *paragraph();

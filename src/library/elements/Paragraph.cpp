@@ -35,6 +35,14 @@ namespace elementor::elements {
 
     Paragraph *Paragraph::appendChild(Element *child) {
         this->addChild(child);
+
+        Text *childText = dynamic_cast<Text *>(child);
+        if (childText) {
+            this->childrenText.push_back(childText);
+        } else {
+            this->childrenElements.push_back(child);
+        }
+
         this->skParagraph = NULL;
         return this;
     }
@@ -112,6 +120,11 @@ namespace elementor::elements {
                 builder.pushStyle(childText->makeSkTextStyle(ctx));
                 builder.addText(textU8.c_str(), textU8.size());
                 builder.pop();
+            } else {
+                Size childSize = child->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
+                sktext::PlaceholderStyle childPlaceholder(childSize.width, childSize.height,
+                                                          sktext::PlaceholderAlignment::kMiddle, sktext::TextBaseline::kAlphabetic, 6);
+                builder.addPlaceholder(childPlaceholder);
             }
         }
 
@@ -138,5 +151,25 @@ namespace elementor::elements {
 
         this->skParagraph->layout(rect.size.width);
         this->skParagraph->paint(canvas, 0, 0);
+    }
+
+    std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Size size) {
+        if (this->skParagraph == NULL) {
+            this->skParagraph = this->makeSkParagraph(ctx);
+        }
+
+        std::vector <RenderElement> children;
+        std::vector<sktext::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
+        int childrenSize = std::min((int) childsRects.size(), (int) this->getChildrenSize());
+        for (unsigned int i = 0; i < childrenSize; i++) {
+            RenderElement child;
+            child.element = this->childrenElements[i];
+            SkRect childRect = childsRects[i].rect;
+            child.position = {childRect.x(), childRect.y()};
+            child.size = {childRect.width(), childRect.height()};        
+            children.push_back(child);
+        }
+
+        return children;
     }
 }
