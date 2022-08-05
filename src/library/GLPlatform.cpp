@@ -9,6 +9,7 @@
 #include "include/gpu/GrBackendSurface.h"
 #include "include/gpu/GrDirectContext.h"
 #include "include/gpu/gl/GrGLInterface.h"
+#include <include/core/SkTypeface.h>
 #include "include/core/SkCanvas.h"
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
@@ -24,6 +25,7 @@
 namespace elementor {
     GLPlatform::GLPlatform() {
         this->perfomance = new GLPerfomance();
+        this->fontManager = new GLFontManager();
     }
 
     Size GLPlatform::getWindowSize() {
@@ -553,12 +555,24 @@ namespace elementor {
         this->rnfNextQueue = {};
     }
 
+    GLFontManager *GLPlatform::getFontManager() {
+        return this->fontManager;
+    }
+
+    sk_sp<SkFontMgr> GLPlatform::getSkFontManager() {
+        return this->fontManager->getSkFontManager();
+    }
+
     GLApplicationContext::GLApplicationContext(GLPlatform *platform) {
         this->platform = platform;
     }
 
     void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
         this->platform->requestNextFrame(callback);
+    }
+
+    sk_sp<SkFontMgr> GLApplicationContext::getSkFontManager() {
+        return this->platform->getSkFontManager();
     }
 
     GLClipboard::GLClipboard(GLFWwindow *window) {
@@ -627,5 +641,21 @@ namespace elementor {
 
     double GLPerfomance::getFPS() {
         return this->lastFPS;
+    }
+
+    GLFontManager::GLFontManager() {
+        this->skFontManager = sk_make_sp<sktext::TypefaceFontProvider>();
+    }
+
+    sk_sp<SkFontMgr> GLFontManager::getSkFontManager() {
+        return this->skFontManager;
+    }
+
+    void GLFontManager::registerFontFromSkData(sk_sp<SkData> data) {
+        this->skFontManager->registerTypeface(SkTypeface::MakeFromData(data));
+    }
+
+    void GLFontManager::registerFontFromPath(std::string path) {
+        this->registerFontFromSkData(SkData::MakeFromFileName(path.c_str()));
     }
 }

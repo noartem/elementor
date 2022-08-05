@@ -9,13 +9,17 @@
 
 #include "GLFW/glfw3.h"
 #include "include/gpu/GrDirectContext.h"
+#include <modules/skparagraph/include/TypefaceFontProvider.h>
 #include <optional>
+
+namespace sktext = skia::textlayout;
 
 namespace elementor {
     class GLApplicationContext;
     class GLClipboard;
     class GLCursor;
     class GLPerfomance;
+    class GLFontManager;
 
     class GLPlatform {
     public:
@@ -31,18 +35,23 @@ namespace elementor {
         void forceUpdate();
         void requestNextFrame(std::function<void ()> callback);
 
+        GLFontManager *getFontManager();
+        sk_sp<SkFontMgr> getSkFontManager();
+
     private:
         GLFWwindow *window;
         GLFWmonitor *monitor;
         SkSurface *skiaSurface;
         SkCanvas *skiaCanvas;
         GrDirectContext *skiaContext;
-        ApplicationContext *applicationContext;
-        GLPerfomance *perfomance;
+
+        GLFontManager *fontManager;
 
         void refresh();
         void draw();
 
+        ApplicationContext *applicationContext;
+        GLPerfomance *perfomance;
         Size getWindowSize();
         Size getMonitorPhysicalSize();
         Size getMonitorSize();
@@ -66,6 +75,7 @@ namespace elementor {
     public:
         GLApplicationContext(GLPlatform *glPlatform);
         void requestNextFrame(std::function<void ()> callback) override;
+        sk_sp<SkFontMgr> getSkFontManager() override;
 
     private:
         GLPlatform *platform;
@@ -105,6 +115,17 @@ namespace elementor {
         double framesLastTime;
         double framesCount;
         double lastFPS;
+    };
+
+    class GLFontManager {
+    public:
+        GLFontManager();
+        sk_sp<SkFontMgr> getSkFontManager();
+        void registerFontFromSkData(sk_sp<SkData> data);
+        void registerFontFromPath(std::string path);
+
+    private:
+        sk_sp<sktext::TypefaceFontProvider> skFontManager;
     };
 };
 
