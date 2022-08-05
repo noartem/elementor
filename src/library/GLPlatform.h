@@ -32,7 +32,6 @@ namespace elementor {
         Application *application;
 
         int run();
-        void forceUpdate();
         void requestNextFrame(std::function<void ()> callback);
 
         GLFontManager *getFontManager();

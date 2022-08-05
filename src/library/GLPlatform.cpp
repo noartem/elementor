@@ -441,10 +441,6 @@ namespace elementor {
         return static_cast<GLPlatform *>(glfwGetWindowUserPointer(window));
     }
 
-    void GLPlatform::forceUpdate() {
-        glfwPostEmptyEvent();
-    }
-
     int GLPlatform::run() {
         if (!glfwInit()) {
             exit(EXIT_FAILURE);
@@ -539,6 +535,7 @@ namespace elementor {
     }
 
     void GLPlatform::requestNextFrame(std::function<void ()> callback) {
+        glfwPostEmptyEvent();
         this->rnfNextQueue.push_back(callback);
     }
 
