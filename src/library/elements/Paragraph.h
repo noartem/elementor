@@ -50,6 +50,8 @@ namespace elementor::elements {
 
         sktext::TextDirection getSkTextDirection();
 
+        sktext::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child);
+
         std::unique_ptr<sktext::Paragraph> makeSkParagraph(ApplicationContext *ctx);
     };
 

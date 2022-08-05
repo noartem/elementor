@@ -1,9 +1,10 @@
 //
-// Created by noartem on 30.07.2022.
+// Created by noartem on 04.08.2022.
 //
 
 #include "Paragraph.h"
 #include "../String.h"
+#include "ParagraphPlaceholder.h"
 
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkFontStyle.h>
@@ -109,6 +110,23 @@ namespace elementor::elements {
         }
     }
 
+    sktext::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child) {
+        Size childSize = child->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
+
+        ParagraphPlaceholder *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
+        if (childPlaceholder) {
+            return sktext::PlaceholderStyle(childSize.width, childSize.height,
+                                            childPlaceholder->getSkPlaceholderAlignment(),
+                                            childPlaceholder->getSkBaseline(),
+                                            childPlaceholder->getOffset());
+        } else {
+            return sktext::PlaceholderStyle(childSize.width, childSize.height,
+                                            sktext::PlaceholderAlignment::kMiddle,
+                                            sktext::TextBaseline::kAlphabetic,
+                                            ZERO);
+        }
+    }
+
     std::unique_ptr<sktext::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx) {
         sktext::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
@@ -122,10 +140,7 @@ namespace elementor::elements {
                 builder.addText(textU8.c_str(), textU8.size());
                 builder.pop();
             } else {
-                Size childSize = child->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
-                sktext::PlaceholderStyle childPlaceholder(childSize.width, childSize.height,
-                                                          sktext::PlaceholderAlignment::kMiddle, sktext::TextBaseline::kAlphabetic, 6);
-                builder.addPlaceholder(childPlaceholder);
+                builder.addPlaceholder(this->makeChildPlaceholderStyle(ctx, child));
             }
         }
 

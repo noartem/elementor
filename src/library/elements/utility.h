@@ -25,6 +25,7 @@
 #include "Inputable.h"
 #include "Padding.h"
 #include "Paragraph.h"
+#include "ParagraphPlaceholder.h"
 #include "Rounded.h"
 #include "Row.h"
 #include "Scrollable.h"

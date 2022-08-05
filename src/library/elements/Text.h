@@ -30,6 +30,11 @@ namespace elementor::elements {
         RTL,
     };
 
+    enum class TextBaseline {
+        Alphabetic,
+        Ideographic,
+    };
+
     enum class FontSlant {
         Upright,
         Italic,
