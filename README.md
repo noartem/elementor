@@ -23,8 +23,8 @@
 
 ## TODO
 
-* Paragraph
-    * Если не Text, то вставлять как прямоугольник посреди текста (Если такое можно)
+* Text -> TextLine
+* Examples: font fallback (emoji), !=;==;<=
 * CMAKE
 * Debug:
     * Save nodes tree
