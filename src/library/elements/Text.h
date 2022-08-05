@@ -86,10 +86,6 @@ namespace elementor::elements {
 
         std::string getFontFamily();
 
-        Text *setFontFile(std::string fontFile);
-
-        std::string getFontFile();
-
         Text *setFontEdging(FontEdging edging);
 
         FontEdging getFontEdging();
@@ -111,7 +107,6 @@ namespace elementor::elements {
         float fontWidth = SkFontStyle::kNormal_Width;
         FontSlant fontSlant = FontSlant::Upright;
         std::string fontFamily;
-        std::string fontFile;
         FontEdging fontEdging = FontEdging::AntiAlias;
 
         std::optional<SkFont> font;

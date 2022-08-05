@@ -130,16 +130,6 @@ namespace elementor::elements {
         return this->fontFamily;
     }
 
-    Text *Text::setFontFile(std::string fontFile) {
-        this->fontFile = fontFile;
-        this->font = std::nullopt;
-        return this;
-    }
-
-    std::string Text::getFontFile() {
-        return this->fontFile;
-    }
-
     Text *Text::setFontEdging(FontEdging edging) {
         this->fontEdging = edging;
         this->font = std::nullopt;
@@ -177,11 +167,7 @@ namespace elementor::elements {
     }
 
     sk_sp<SkTypeface> Text::makeSkTypeface() {
-        if (this->fontFile.size() > 0) {
-            return SkTypeface::MakeFromFile(this->fontFile.c_str());
-        } else {
-            return SkTypeface::MakeFromName(this->fontFamily.c_str(), this->makeSkFontStyle());
-        }
+        return SkTypeface::MakeFromName(this->fontFamily.c_str(), this->makeSkFontStyle());
     }
 
     SkFont Text::makeSkFont() {
@@ -216,7 +202,7 @@ namespace elementor::elements {
         this->ctx = ctx;
         sktext::TextStyle textStyle;
         textStyle.setFontSize(this->fontSize * this->ctx->monitorPixelScale);
-        textStyle.setTypeface(this->makeSkTypeface());
+        textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
         return textStyle;
