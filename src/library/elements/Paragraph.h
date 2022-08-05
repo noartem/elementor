@@ -38,13 +38,13 @@ namespace elementor::elements {
         std::vector<Text *> childrenText;
         std::vector<Element *> childrenElements;
 
-        sk_sp<sktext::FontCollection> makeDefaultFontCollection();
+        sk_sp<sktext::FontCollection> makeFontCollection(ApplicationContext *ctx);
 
         sktext::TextStyle makeDefaultTextStyle();
 
-        sktext::ParagraphStyle makeDefaultParagraphStyle();
+        sktext::ParagraphStyle makeParagraphStyle();
 
-        sktext::ParagraphBuilderImpl makeBuilder();
+        sktext::ParagraphBuilderImpl makeBuilder(ApplicationContext *ctx);
 
         sktext::TextAlign getSkTextAlign();
 

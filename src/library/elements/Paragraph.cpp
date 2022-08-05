@@ -7,6 +7,7 @@
 
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkFontStyle.h>
+#include <modules/skparagraph/include/TypefaceFontProvider.h>
 
 #include <memory>
 
@@ -47,10 +48,10 @@ namespace elementor::elements {
         return this;
     }
 
-    sk_sp<sktext::FontCollection> Paragraph::makeDefaultFontCollection() {
+    sk_sp<sktext::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
         sk_sp<sktext::FontCollection> fontCollection = sk_make_sp<sktext::FontCollection>();
-        sk_sp<SkFontMgr> fontMgr = SkFontMgr::RefDefault();
-        fontCollection->setDefaultFontManager(fontMgr);
+        fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
+        fontCollection->setDynamicFontManager(ctx->getSkFontManager());
         return fontCollection;
     }
 
@@ -64,16 +65,16 @@ namespace elementor::elements {
         return textStyle;
     }
 
-    sktext::ParagraphStyle Paragraph::makeDefaultParagraphStyle() {
+    sktext::ParagraphStyle Paragraph::makeParagraphStyle() {
         sktext::ParagraphStyle paragrphStyle{};
         paragrphStyle.setTextStyle(this->makeDefaultTextStyle());
         paragrphStyle.setTextDirection(this->getSkTextDirection());
         return paragrphStyle;
     }
 
-    sktext::ParagraphBuilderImpl Paragraph::makeBuilder() {
-        sktext::ParagraphStyle paragrphStyle = this->makeDefaultParagraphStyle();
-        sk_sp<sktext::FontCollection> fontCollection = this->makeDefaultFontCollection();
+    sktext::ParagraphBuilderImpl Paragraph::makeBuilder(ApplicationContext *ctx) {
+        sktext::ParagraphStyle paragrphStyle = this->makeParagraphStyle();
+        sk_sp<sktext::FontCollection> fontCollection = this->makeFontCollection(ctx);
         sktext::ParagraphBuilderImpl builder {paragrphStyle, fontCollection};
         return builder;
     }
@@ -109,7 +110,7 @@ namespace elementor::elements {
     }
 
     std::unique_ptr<sktext::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx) {
-        sktext::ParagraphBuilderImpl builder = this->makeBuilder();
+        sktext::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
         for (Element *child : this->getChildrenList()) {
             Text *childText = dynamic_cast<Text *>(child);
