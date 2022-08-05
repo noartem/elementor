@@ -8,6 +8,7 @@
 #include "Render.h"
 
 #include <include/core/SkCanvas.h>
+#include <include/core/SkFontMgr.h>
 
 #include <vector>
 #include <functional>
@@ -78,6 +79,7 @@ namespace elementor {
         Cursor *cursor;
         Perfomance *perfomance;
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
+        virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
     };
 
     class WithChild {
