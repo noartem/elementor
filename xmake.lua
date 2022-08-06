@@ -2,8 +2,8 @@ add_rules("mode.debug", "mode.release")
 
 set_languages("c99", "cxx17")
 
-includes("skia-build.lua")
-includes("portable-file-dialogs.lua")
+includes("third_party/skia-build.lua")
+includes("third_party/portable-file-dialogs.lua")
 
 add_requires("skia-build")
 add_requires("glfw")
