@@ -170,20 +170,14 @@ namespace elementor::elements {
         return SkTypeface::MakeFromName(this->fontFamily.c_str(), this->makeSkFontStyle());
     }
 
-    SkFont Text::makeSkFont() {
+    SkFont Text::makeSkFont(ApplicationContext *ctx) {
         SkFont font;
         font.setTypeface(this->makeSkTypeface());
-        font.setSize(this->fontSize * this->ctx->monitorPixelScale);
+        font.setSize(this->fontSize * ctx->monitorPixelScale);
         font.setScaleX(this->fontScale);
         font.setSkewX(this->fontSkew);
         font.setEdging(this->getSkFontEdging());
         return font;
-    }
-
-    void Text::updateSkFont() {
-        if (!this->font) {
-            this->font = this->makeSkFont();
-        }
     }
 
     SkPaint Text::makeSkPaint() {
@@ -192,16 +186,9 @@ namespace elementor::elements {
         return paint;
     }
 
-    void Text::updateSkPaint() {
-        if (!this->paint) {
-            this->paint = this->makeSkPaint();
-        }
-    }
-
     sktext::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
-        this->ctx = ctx;
         sktext::TextStyle textStyle;
-        textStyle.setFontSize(this->fontSize * this->ctx->monitorPixelScale);
+        textStyle.setFontSize(this->fontSize * ctx->monitorPixelScale);
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
@@ -209,23 +196,18 @@ namespace elementor::elements {
     }
 
     Size Text::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        this->ctx = ctx;
-        this->updateSkFont();
-        this->updateSkPaint();
+        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
         SkRect textBounds;
         std::string textU8 = toUTF8(this->text);
         this->font.value().measureText(textU8.c_str(), textU8.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
-
-        float width = std::min(std::max(textBounds.width(), boundaries.min.width), boundaries.max.width);
-        float height = std::min(std::max(textBounds.height(), boundaries.min.height), boundaries.max.height);
-        return fitSizeInBoundaries({width, height}, boundaries);
+        return fitSizeInBoundaries({textBounds.width(), textBounds.height()}, boundaries);
     }
 
     void Text::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        this->ctx = ctx;
-        this->updateSkFont();
-        this->updateSkPaint();
+        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
         canvas->drawString(toUTF8(this->text).c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
 	}

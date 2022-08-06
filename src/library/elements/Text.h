@@ -102,7 +102,6 @@ namespace elementor::elements {
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
     private:
-        ApplicationContext *ctx;
         std::u32string text;
         SkColor fontColor = SK_ColorBLACK;
         float fontSize = 16.0;
@@ -125,13 +124,9 @@ namespace elementor::elements {
 
         sk_sp<SkTypeface> makeSkTypeface();
 
-        SkFont makeSkFont();
+        SkFont makeSkFont(ApplicationContext *ctx);
 
         SkPaint makeSkPaint();
-
-        void updateSkFont();
-
-        void updateSkPaint();
     };
 
     Text *text();
