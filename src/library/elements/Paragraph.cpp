@@ -152,9 +152,7 @@ namespace elementor::elements {
     }
 
     Size Paragraph::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        if (this->skParagraph == NULL) {
-            this->skParagraph = this->makeSkParagraph(ctx);
-        }
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
 
         this->skParagraph->layout(boundaries.max.width);
         return fitSizeInBoundaries({this->skParagraph->getMaxWidth(), this->skParagraph->getHeight()}, boundaries);
