@@ -6,14 +6,10 @@
 #include "ExamplesGallery.h"
 
 int main() {
-    Application *application = new Application();
-    application->root = new ExamplesGallery();
-
-    GLPlatform *platform = new GLPlatform();
-    platform->title = "Elementor examples";
-    platform->size = {920, 640};
-    platform->minSize = {640, 320};
-    platform->application = application;
-
-    platform->run();
+    glApplication()
+        ->setTitle("Elementor Examples")
+        ->setRoot(new ExamplesGallery())
+        ->setDefaultSize({920, 640})
+        ->setMinSize({630, 320})
+        ->run();
 }

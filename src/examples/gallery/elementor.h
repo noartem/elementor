@@ -6,7 +6,7 @@
 #define GALLERY_EXAMPLES_ELEMENTOR_H
 
 #include "../../library/utility.h"
-#include "../../library/GLPlatform.h"
+#include "../../library/GLApplication.h"
 #include "../../library/elements/utility.h"
 
 using namespace elementor;
