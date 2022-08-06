@@ -161,18 +161,14 @@ namespace elementor::elements {
     }
 
     void Paragraph::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        if (this->skParagraph == NULL) {
-            this->skParagraph = this->makeSkParagraph(ctx);
-        }
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
 
         this->skParagraph->layout(rect.size.width);
         this->skParagraph->paint(canvas, 0, 0);
     }
 
     std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Size size) {
-        if (this->skParagraph == NULL) {
-            this->skParagraph = this->makeSkParagraph(ctx);
-        }
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
 
         std::vector <RenderElement> children;
         std::vector<sktext::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
