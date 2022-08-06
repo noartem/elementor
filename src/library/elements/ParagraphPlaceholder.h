@@ -18,7 +18,7 @@ namespace elementor::elements {
         Middle,
     };
 
-    class ParagraphPlaceholder : public Element, WithChild {
+    class ParagraphPlaceholder : public Element, public WithChild {
     public:
         ParagraphPlaceholder *setChild(Element *child);
 

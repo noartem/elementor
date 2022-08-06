@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Background : public Element, WithChild {
+    class Background : public Element, public WithChild {
     public:
         Background *setColor(SkColor color);
 

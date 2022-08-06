@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Empty : public Element, WithChild {
+    class Empty : public Element, public WithChild {
     public:
         Empty *setChild(Element *child);
 

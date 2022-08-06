@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Inputable : public Element, public WithOnKeyboard, public WithOnChar, public WithOnMouseButton, public WithOnMouseMove, WithChild {
+    class Inputable : public Element, public WithOnKeyboard, public WithOnChar, public WithOnMouseButton, public WithOnMouseMove, public WithChild {
     public:
         Inputable *onChange(std::function<std::u32string (std::u32string text)> callback);
 

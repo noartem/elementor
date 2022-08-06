@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Flexible : public Element, WithChild {
+    class Flexible : public Element, public WithChild {
     public:
         Flexible *setGrow(float grow);
 

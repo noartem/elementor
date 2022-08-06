@@ -27,7 +27,7 @@ namespace elementor::elements {
         SpaceEvenly,
     };
 
-    class Flex : public Element, WithChildren {
+    class Flex : public Element, public WithChildren {
     public:
         Flex *setSpacing(float spacing);
 

@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class ExpandedHeight : public Element, WithChild {
+    class ExpandedHeight : public Element, public WithChild {
     public:
         ExpandedHeight *setChild(Element *child);
 

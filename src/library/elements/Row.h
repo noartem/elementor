@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Row : public Element, WithChildren {
+    class Row : public Element, public WithChildren {
     public:
         Row *setSpacing(float spacing);
 

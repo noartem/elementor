@@ -13,7 +13,7 @@
 namespace sktext = skia::textlayout;
 
 namespace elementor::elements {
-    class Paragraph : public Element, WithChildren {
+    class Paragraph : public Element, public WithChildren {
     public:
         Paragraph *setTextAlign(TextAlign textAlign);
 

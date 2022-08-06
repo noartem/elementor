@@ -13,7 +13,7 @@ namespace elementor::elements {
         Column,
     };
 
-    class Wrap : public Element, WithChildren {
+    class Wrap : public Element, public WithChildren {
     public:
         Wrap *setSpacing(float spacing);
 

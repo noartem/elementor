@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Rounded : public Element, WithChild {
+    class Rounded : public Element, public WithChild {
     public:
         Rounded *setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomLeft, float radiusBottomRight);
 

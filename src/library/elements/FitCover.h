@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class FitCover : public Element, WithChild {
+    class FitCover : public Element, public WithChild {
     public:
         FitCover *setChild(Element *child);
 

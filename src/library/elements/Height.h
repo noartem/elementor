@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Height : public Element, WithChild {
+    class Height : public Element, public WithChild {
     public:
         Height *setHeight(float height);
 

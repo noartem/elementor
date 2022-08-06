@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Center : public Element, WithChild {
+    class Center : public Element, public WithChild {
     public:
         Center *setChild(Element *child);
 

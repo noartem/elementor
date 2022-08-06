@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Width : public Element, WithChild {
+    class Width : public Element, public WithChild {
     public:
         Width *setWidth(float width);
 

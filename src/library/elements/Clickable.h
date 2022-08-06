@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Clickable : public Element, public WithOnMouseButton, public WithOnMouseMove, WithChild {
+    class Clickable : public Element, public WithOnMouseButton, public WithOnMouseMove, public WithChild {
     public:
         Clickable *onButton(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
 

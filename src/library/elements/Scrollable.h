@@ -15,7 +15,7 @@ namespace elementor::elements {
         Both,
     };
 
-    class Scrollable : public Element, public WithOnMouseMove, public WithOnScroll, WithChild {
+    class Scrollable : public Element, public WithOnMouseMove, public WithOnScroll, public WithChild {
     public:
         Scrollable *setDirection(ScrollDirection direction);
 

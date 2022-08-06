@@ -15,7 +15,7 @@ namespace elementor::elements {
         float left;
     };
 
-    class Padding : public Element, WithChild {
+    class Padding : public Element, public WithChild {
     public:
         Padding *setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 

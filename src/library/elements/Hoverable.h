@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Hoverable : public Element, public WithOnMouseMove, WithChild {
+    class Hoverable : public Element, public WithOnMouseMove, public WithChild {
     public:
         Hoverable *onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
 

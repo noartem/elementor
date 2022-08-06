@@ -8,7 +8,7 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class AlignWidth : public Element, WithChild {
+    class AlignWidth : public Element, public WithChild {
     public:
         AlignWidth *setCoef(float coef, float childCoef);
 

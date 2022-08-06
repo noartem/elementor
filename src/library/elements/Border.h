@@ -14,7 +14,7 @@ namespace elementor::elements {
         Dashed,
     };
 
-    class Border : public Element, WithChild {
+    class Border : public Element, public WithChild {
     public:
         Border *setColor(SkColor color);
 
