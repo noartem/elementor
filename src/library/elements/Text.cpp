@@ -4,6 +4,7 @@
 
 #include "Text.h"
 #include "../String.h"
+#include "../Color.h"
 
 #include <include/core/SkTypeface.h>
 
@@ -36,23 +37,21 @@ namespace elementor::elements {
         return this;
     }
 
+    Text *Text::setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        this->fontColor = makeSkColorFromRGBA(r, g, b, a);
+        this->paint = std::nullopt;
+        return this;
+    }
+
     Text *Text::setFontColor(uint8_t r, uint8_t g, uint8_t b) {
-        this->setFontColor(SkColorSetRGB(r, g, b));
+        this->fontColor = makeSkColorFromRGB(r, g, b);
+        this->paint = std::nullopt;
         return this;
     }
 
     Text *Text::setFontColor(std::string hex) {
-        if (hex.size() == 7) {
-            hex = hex.substr(1);
-        }
-
-        if (hex.size() == 6) {
-            uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
-            uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
-            uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
-            this->setFontColor(r, g, b);
-        }
-
+        this->fontColor = makeSkColorFromHex(hex);
+        this->paint = std::nullopt;
         return this;
     }
 

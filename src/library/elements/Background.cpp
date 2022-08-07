@@ -3,6 +3,7 @@
 //
 
 #include "Background.h"
+#include "../Color.h"
 
 namespace elementor::elements {
     Background *background() {
@@ -15,27 +16,17 @@ namespace elementor::elements {
     }
 
     Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-        this->setColor(SkColorSetARGB(a, r, g, b));
+        this->color = makeSkColorFromRGBA(r, g, b, a);
         return this;
     }
 
     Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
-        this->setColor(r, g, b, 255);
+        this->color = makeSkColorFromRGB(r, g, b);
         return this;
     }
 
     Background *Background::setColor(std::string hex) {
-        if (hex.size() == 7) {
-            hex = hex.substr(1);
-        }
-
-        if (hex.size() == 6) {
-            uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
-            uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
-            uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
-            this->setColor(r, g, b);
-        }
-
+        this->color = makeSkColorFromHex(hex);
         return this;
     }
 

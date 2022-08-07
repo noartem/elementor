@@ -6,6 +6,7 @@
 #define ELEMENTOR_ELEMENTOR_UTILITY_H
 
 #include "Application.h"
+#include "Color.h"
 #include "Element.h"
 #include "Event.h"
 #include "Render.h"
