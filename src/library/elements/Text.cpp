@@ -16,18 +16,16 @@ namespace elementor::elements {
     }
 
     Text *Text::setText(std::u32string text) {
-        this->text = text;
-        this->font = std::nullopt;
+        this->text = toUTF8(text);
         return this;
     }
 
     Text *Text::setText(std::string text) {
-        std::u32string textU32;
-        fromUTF8(text, textU32);
-        return this->setText(textU32);
+        this->text = text;
+        return this;
     }
 
-    std::u32string Text::getText() {
+    std::string Text::getText() {
         return this->text;
     }
 
@@ -199,8 +197,7 @@ namespace elementor::elements {
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
         SkRect textBounds;
-        std::string textU8 = toUTF8(this->text);
-        this->font.value().measureText(textU8.c_str(), textU8.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
+        this->font.value().measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
         return fitSizeInBoundaries({textBounds.width(), textBounds.height()}, boundaries);
     }
 
@@ -208,6 +205,6 @@ namespace elementor::elements {
         if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
-        canvas->drawString(toUTF8(this->text).c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
+        canvas->drawString(this->text.c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
 	}
 }

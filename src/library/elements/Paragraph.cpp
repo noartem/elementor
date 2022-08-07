@@ -133,11 +133,8 @@ namespace elementor::elements {
         for (Element *child : this->getChildrenList()) {
             Text *childText = dynamic_cast<Text *>(child);
             if (childText) {
-                std::u32string textU32 = childText->getText();
-                std::string textU8 = toUTF8(textU32);
-
                 builder.pushStyle(childText->makeSkTextStyle(ctx));
-                builder.addText(textU8.c_str(), textU8.size());
+                builder.addText(childText->getText().c_str(), childText->getText().size());
                 builder.pop();
             } else {
                 builder.addPlaceholder(this->makeChildPlaceholderStyle(ctx, child));

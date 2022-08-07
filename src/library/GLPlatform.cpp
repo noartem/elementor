@@ -576,15 +576,12 @@ namespace elementor {
         this->window = window;
     }
 
-    void GLClipboard::set(std::u32string value) {
-        glfwSetClipboardString(this->window, toUTF8(value).c_str());
+    void GLClipboard::set(std::string value) {
+        glfwSetClipboardString(this->window, value.c_str());
     }
 
-    std::u32string GLClipboard::get() {
-        std::string value = glfwGetClipboardString(window);
-        std::u32string valueU32;
-        fromUTF8(value, valueU32);
-        return valueU32;
+    std::string GLClipboard::get() {
+        return glfwGetClipboardString(window);
     }
 
     GLCursor::GLCursor(GLFWwindow *window, GLPlatform *platform) {

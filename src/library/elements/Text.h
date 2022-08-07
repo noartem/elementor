@@ -53,7 +53,7 @@ namespace elementor::elements {
 
         Text *setText(std::string text);
 
-        std::u32string getText();
+        std::string getText();
 
         Text *setFontColor(SkColor color);
 
@@ -104,7 +104,7 @@ namespace elementor::elements {
         void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
 
     private:
-        std::u32string text;
+        std::string text;
         SkColor fontColor = SK_ColorBLACK;
         float fontSize = 16.0;
         float fontSkew = 0.0;

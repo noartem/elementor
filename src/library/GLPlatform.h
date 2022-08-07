@@ -83,8 +83,8 @@ namespace elementor {
     class GLClipboard : public Clipboard {
     public:
         GLClipboard(GLFWwindow *window);
-        void set(std::u32string value) override;
-        std::u32string get() override;
+        void set(std::string value) override;
+        std::string get() override;
 
     private:
         GLFWwindow *window;
