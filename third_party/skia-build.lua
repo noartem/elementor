@@ -38,7 +38,7 @@ package("skia-build")
               "skresources", "z", "tinfo", "ncurses", "freetype", "fontconfig", "webp_sse41", "jpeg",
               "harfbuzz", "particles", "zlib", "icu", "png", "expat", "piex", "webp")
     if is_plat("windows") then
-        add_syslinks("gdi32", "user32", "opengl32", "d3d12", "d3dcompiler", "dxgi", "dxguid")
+        add_syslinks("advapi32", "gdi32", "user32", "opengl32", "d3d12", "d3dcompiler", "dxgi", "dxguid")
     elseif is_plat("macosx") then
         add_frameworks("CoreFoundation", "CoreGraphics", "CoreText", "CoreServices")
     elseif is_plat("linux") then
