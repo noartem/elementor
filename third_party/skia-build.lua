@@ -10,26 +10,26 @@ package("skia-build")
             add_urls("https://github.com/noartem/skia-build/releases/download/$(version)/Skia-$(version)-windows-Release-x64.zip",
             {version = function (version) return codes[tostring(version)] end})
             add_versions("102", "df2370473e0ed690f83ca056611c0c43346cad23ca76c61c82d70de44e862818")
-            add_versions("105", "e2e07304ff2f735dc0ef50c60ac22fb3259df4b1bb7e4a21e00de08f47d464a9")
+            add_versions("105", "6694eb8346e0e9e51976425755aa2fbd1ddaf92bf1417dbcebbdd54ba20a6337")
         end
     elseif is_host("linux") then
         if os.arch() == "x86_64" then
             add_urls("https://github.com/noartem/skia-build/releases/download/$(version)/Skia-$(version)-linux-Release-x64.zip",
                      {version = function (version) return codes[tostring(version)] end})
             add_versions("102", "782b13ac32f2c391566f5a991ce3fc090f312e4a1a61c2d90d74f6b220f510b3")
-            add_versions("105", "faea9844cfc43e826171e67c5f7c51faef0eee47af6f06a4fb25a0ea377daf8e")
+            add_versions("105", "48293711d2477fb2fafeaba1e1a67d0277b27d877ba92d5c0a08e4aaf8eb85d3")
         end
     elseif is_host("macosx") then
         if os.arch() == "arm64" then
             add_urls("https://github.com/noartem/skia-build/releases/download/$(version)/Skia-$(version)-macos-Release-arm64.zip",
                      {version = function (version) return codes[tostring(version)] end})
             add_versions("102", "c5d6e555e52a8d0509320152ad63bfb34fb12905187df7a6c9482cb2de14c7d4")
-            add_versions("105", "9f6fdb223b16e9d83d3ac3f2b810bc93ee04983fa3635caec5aead9658d6234b")
+            add_versions("105", "6cfde3a6dcee59b6830f346f5b550abca13c4be5c643603f2dd17ea1c74f88e7")
         else
             add_urls("https://github.com/noartem/skia-build/releases/download/$(version)/Skia-$(version)-macos-Release-x64.zip",
                      {version = function (version) return codes[tostring(version)] end})
             add_versions("102", "4c30353ca0467bf1680352ee99062dfc13af39c600c94cb0572cf4284f35ef02")
-            add_versions("105", "4ded987a413a6fc58c318c4ace862a4f25ca4d7f826edc83f3659940f7076211")
+            add_versions("105", "1e353994d02f7b71e912c3139aa22fdac19a165d780dc268e6e79b1a08ee0a6d")
         end
     end
 
