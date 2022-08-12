@@ -73,10 +73,6 @@ namespace elementor {
     void GLPlatform::refresh() {
         this->applicationContext = this->makeApplicationContext();
 
-        if (this->skiaSurface) {
-            delete this->skiaSurface;
-        }
-
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_RGBA8;
@@ -604,6 +600,8 @@ namespace elementor {
                 return GLFW_HRESIZE_CURSOR;
             case CursorShape::VerticalResize:
                 return GLFW_VRESIZE_CURSOR;
+            default:
+                return GLFW_ARROW_CURSOR;
         }
     }
 
