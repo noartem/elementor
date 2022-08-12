@@ -183,8 +183,8 @@ namespace elementor::elements {
         return paint;
     }
 
-    sktext::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
-        sktext::TextStyle textStyle;
+    sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
+        sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(this->fontSize * ctx->monitorPixelScale);
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());

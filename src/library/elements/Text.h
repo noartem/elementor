@@ -13,7 +13,7 @@
 
 #include <optional>
 
-namespace sktext = skia::textlayout;
+namespace sktextlayout = skia::textlayout;
 
 namespace elementor::elements {
     enum class TextAlign {
@@ -97,7 +97,7 @@ namespace elementor::elements {
 
         FontEdging getFontEdging();
 
-        sktext::TextStyle makeSkTextStyle(ApplicationContext *ctx);
+        sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
         Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;    
 

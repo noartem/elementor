@@ -26,13 +26,13 @@ namespace elementor::elements {
 
         PlaceholderAlignment getAlignment();
 
-        sktext::PlaceholderAlignment getSkPlaceholderAlignment();
+        sktextlayout::PlaceholderAlignment getSkPlaceholderAlignment();
 
         ParagraphPlaceholder *setBaseline(TextBaseline baseline);
 
         TextBaseline getBaseline();
 
-        sktext::TextBaseline getSkBaseline();
+        sktextlayout::TextBaseline getSkBaseline();
 
         ParagraphPlaceholder *setOffset(float offset);
 

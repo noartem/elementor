@@ -27,22 +27,22 @@ namespace elementor::elements {
         return this->alignment;
     }
 
-    sktext::PlaceholderAlignment ParagraphPlaceholder::getSkPlaceholderAlignment() {
+    sktextlayout::PlaceholderAlignment ParagraphPlaceholder::getSkPlaceholderAlignment() {
         switch (this->alignment) {
             case PlaceholderAlignment::Baseline:
-                return sktext::PlaceholderAlignment::kBaseline;
+                return sktextlayout::PlaceholderAlignment::kBaseline;
             case PlaceholderAlignment::AboveBaseline:
-                return sktext::PlaceholderAlignment::kAboveBaseline;
+                return sktextlayout::PlaceholderAlignment::kAboveBaseline;
             case PlaceholderAlignment::BelowBaseline:
-                return sktext::PlaceholderAlignment::kBelowBaseline;
+                return sktextlayout::PlaceholderAlignment::kBelowBaseline;
             case PlaceholderAlignment::Top:
-                return sktext::PlaceholderAlignment::kTop;
+                return sktextlayout::PlaceholderAlignment::kTop;
             case PlaceholderAlignment::Bottom:
-                return sktext::PlaceholderAlignment::kBottom;
+                return sktextlayout::PlaceholderAlignment::kBottom;
             case PlaceholderAlignment::Middle:
-                return sktext::PlaceholderAlignment::kMiddle;
+                return sktextlayout::PlaceholderAlignment::kMiddle;
             default:
-                return sktext::PlaceholderAlignment::kBaseline;
+                return sktextlayout::PlaceholderAlignment::kBaseline;
         }
     }
 
@@ -55,14 +55,14 @@ namespace elementor::elements {
         return this->baseline;
     }
 
-    sktext::TextBaseline ParagraphPlaceholder::getSkBaseline() {
+    sktextlayout::TextBaseline ParagraphPlaceholder::getSkBaseline() {
         switch (this->baseline) {
             case TextBaseline::Alphabetic:
-                return sktext::TextBaseline::kAlphabetic;
+                return sktextlayout::TextBaseline::kAlphabetic;
             case TextBaseline::Ideographic:
-                return sktext::TextBaseline::kIdeographic;
+                return sktextlayout::TextBaseline::kIdeographic;
             default:
-                return sktext::TextBaseline::kAlphabetic;
+                return sktextlayout::TextBaseline::kAlphabetic;
         }
     }
 

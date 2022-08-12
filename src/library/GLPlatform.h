@@ -12,7 +12,7 @@
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
 #include <optional>
 
-namespace sktext = skia::textlayout;
+namespace sktextlayout = skia::textlayout;
 
 namespace elementor {
     class GLApplicationContext;
@@ -124,7 +124,7 @@ namespace elementor {
         void registerFontFromPath(std::string path);
 
     private:
-        sk_sp<sktext::TypefaceFontProvider> skFontManager;
+        sk_sp<sktextlayout::TypefaceFontProvider> skFontManager;
     };
 };
 

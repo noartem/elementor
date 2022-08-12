@@ -638,7 +638,7 @@ namespace elementor {
     }
 
     GLFontManager::GLFontManager() {
-        this->skFontManager = sk_make_sp<sktext::TypefaceFontProvider>();
+        this->skFontManager = sk_make_sp<sktextlayout::TypefaceFontProvider>();
     }
 
     sk_sp<SkFontMgr> GLFontManager::getSkFontManager() {

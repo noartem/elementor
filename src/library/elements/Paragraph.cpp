@@ -49,15 +49,15 @@ namespace elementor::elements {
         return this;
     }
 
-    sk_sp<sktext::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
-        sk_sp<sktext::FontCollection> fontCollection = sk_make_sp<sktext::FontCollection>();
+    sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
+        sk_sp<sktextlayout::FontCollection> fontCollection = sk_make_sp<sktextlayout::FontCollection>();
         fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
         fontCollection->setDynamicFontManager(ctx->getSkFontManager());
         return fontCollection;
     }
 
-    sktext::TextStyle Paragraph::makeDefaultTextStyle() {
-        sktext::TextStyle textStyle;
+    sktextlayout::TextStyle Paragraph::makeDefaultTextStyle() {
+        sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(16);
         textStyle.setColor(SK_ColorBLACK);
         textStyle.setFontStyle(SkFontStyle{SkFontStyle::Weight::kNormal_Weight, 
@@ -66,69 +66,69 @@ namespace elementor::elements {
         return textStyle;
     }
 
-    sktext::ParagraphStyle Paragraph::makeParagraphStyle() {
-        sktext::ParagraphStyle paragrphStyle{};
+    sktextlayout::ParagraphStyle Paragraph::makeParagraphStyle() {
+        sktextlayout::ParagraphStyle paragrphStyle{};
         paragrphStyle.setTextStyle(this->makeDefaultTextStyle());
         paragrphStyle.setTextDirection(this->getSkTextDirection());
         return paragrphStyle;
     }
 
-    sktext::ParagraphBuilderImpl Paragraph::makeBuilder(ApplicationContext *ctx) {
-        sktext::ParagraphStyle paragrphStyle = this->makeParagraphStyle();
-        sk_sp<sktext::FontCollection> fontCollection = this->makeFontCollection(ctx);
-        sktext::ParagraphBuilderImpl builder {paragrphStyle, fontCollection};
+    sktextlayout::ParagraphBuilderImpl Paragraph::makeBuilder(ApplicationContext *ctx) {
+        sktextlayout::ParagraphStyle paragrphStyle = this->makeParagraphStyle();
+        sk_sp<sktextlayout::FontCollection> fontCollection = this->makeFontCollection(ctx);
+        sktextlayout::ParagraphBuilderImpl builder {paragrphStyle, fontCollection};
         return builder;
     }
 
-    sktext::TextAlign Paragraph::getSkTextAlign() {
+    sktextlayout::TextAlign Paragraph::getSkTextAlign() {
         switch(this->textAlign) {
             case TextAlign::Left:
-                return sktext::TextAlign::kLeft;
+                return sktextlayout::TextAlign::kLeft;
             case TextAlign::Right:
-                return sktext::TextAlign::kRight;
+                return sktextlayout::TextAlign::kRight;
             case TextAlign::Center:
-                return sktext::TextAlign::kCenter;
+                return sktextlayout::TextAlign::kCenter;
             case TextAlign::Justify:
-                return sktext::TextAlign::kJustify;
+                return sktextlayout::TextAlign::kJustify;
             case TextAlign::Start:
-                return sktext::TextAlign::kStart;
+                return sktextlayout::TextAlign::kStart;
             case TextAlign::End:
-                return sktext::TextAlign::kEnd; 
+                return sktextlayout::TextAlign::kEnd; 
             default:
-                return sktext::TextAlign::kLeft;
+                return sktextlayout::TextAlign::kLeft;
         }
     }
 
-    sktext::TextDirection Paragraph::getSkTextDirection() {
+    sktextlayout::TextDirection Paragraph::getSkTextDirection() {
         switch(this->textDirection) {
             case TextDirection::LTR:
-                return sktext::TextDirection::kLtr;
+                return sktextlayout::TextDirection::kLtr;
             case TextDirection::RTL:
-                return sktext::TextDirection::kRtl;
+                return sktextlayout::TextDirection::kRtl;
             default:
-                return sktext::TextDirection::kLtr;
+                return sktextlayout::TextDirection::kLtr;
         }
     }
 
-    sktext::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child) {
+    sktextlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child) {
         Size childSize = child->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
 
         ParagraphPlaceholder *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
         if (childPlaceholder) {
-            return sktext::PlaceholderStyle(childSize.width, childSize.height,
+            return sktextlayout::PlaceholderStyle(childSize.width, childSize.height,
                                             childPlaceholder->getSkPlaceholderAlignment(),
                                             childPlaceholder->getSkBaseline(),
                                             childPlaceholder->getOffset());
         } else {
-            return sktext::PlaceholderStyle(childSize.width, childSize.height,
-                                            sktext::PlaceholderAlignment::kMiddle,
-                                            sktext::TextBaseline::kAlphabetic,
+            return sktextlayout::PlaceholderStyle(childSize.width, childSize.height,
+                                            sktextlayout::PlaceholderAlignment::kMiddle,
+                                            sktextlayout::TextBaseline::kAlphabetic,
                                             ZERO);
         }
     }
 
-    std::unique_ptr<sktext::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx) {
-        sktext::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
+    std::unique_ptr<sktextlayout::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx) {
+        sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
         for (Element *child : this->getChildrenList()) {
             Text *childText = dynamic_cast<Text *>(child);
@@ -141,7 +141,7 @@ namespace elementor::elements {
             }
         }
 
-        std::unique_ptr<sktext::Paragraph> paragraph = builder.Build();
+        std::unique_ptr<sktextlayout::Paragraph> paragraph = builder.Build();
 
         paragraph->updateTextAlign(this->getSkTextAlign());
 
@@ -166,7 +166,7 @@ namespace elementor::elements {
         if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
 
         std::vector <RenderElement> children;
-        std::vector<sktext::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
+        std::vector<sktextlayout::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
         int childrenSize = std::min((int) childsRects.size(), (int) this->getChildrenSize());
         for (unsigned int i = 0; i < childrenSize; i++) {
             RenderElement child;

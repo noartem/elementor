@@ -10,7 +10,7 @@
 
 #include <modules/skparagraph/src/ParagraphBuilderImpl.h>
 
-namespace sktext = skia::textlayout;
+namespace sktextlayout = skia::textlayout;
 
 namespace elementor::elements {
     class Paragraph : public Element, public WithChildren {
@@ -34,25 +34,25 @@ namespace elementor::elements {
     private:
         TextAlign textAlign = TextAlign::Left;
         TextDirection textDirection = TextDirection::LTR;
-        std::unique_ptr<sktext::Paragraph> skParagraph;
+        std::unique_ptr<sktextlayout::Paragraph> skParagraph;
         std::vector<Text *> childrenText;
         std::vector<Element *> childrenElements;
 
-        sk_sp<sktext::FontCollection> makeFontCollection(ApplicationContext *ctx);
+        sk_sp<sktextlayout::FontCollection> makeFontCollection(ApplicationContext *ctx);
 
-        sktext::TextStyle makeDefaultTextStyle();
+        sktextlayout::TextStyle makeDefaultTextStyle();
 
-        sktext::ParagraphStyle makeParagraphStyle();
+        sktextlayout::ParagraphStyle makeParagraphStyle();
 
-        sktext::ParagraphBuilderImpl makeBuilder(ApplicationContext *ctx);
+        sktextlayout::ParagraphBuilderImpl makeBuilder(ApplicationContext *ctx);
 
-        sktext::TextAlign getSkTextAlign();
+        sktextlayout::TextAlign getSkTextAlign();
 
-        sktext::TextDirection getSkTextDirection();
+        sktextlayout::TextDirection getSkTextDirection();
 
-        sktext::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child);
+        sktextlayout::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child);
 
-        std::unique_ptr<sktext::Paragraph> makeSkParagraph(ApplicationContext *ctx);
+        std::unique_ptr<sktextlayout::Paragraph> makeSkParagraph(ApplicationContext *ctx);
     };
 
     Paragraph *paragraph();
