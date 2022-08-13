@@ -28,57 +28,15 @@ namespace elementor {
         this->fontManager = new GLFontManager();
     }
 
-    Size GLPlatform::getWindowSize() {
-        int width, height;
-        glfwGetFramebufferSize(this->window, &width, &height);
-        return {(float) width, (float) height};
-    }
-
-    Size GLPlatform::getMonitorPhysicalSize() {
-        int width, height;
-        glfwGetMonitorPhysicalSize(this->monitor, &width, &height);
-        return {(float) width, (float) height};
-    }
-
-    Size GLPlatform::getMonitorSize() {
-        const GLFWvidmode* mode = glfwGetVideoMode(this->monitor);
-        return {(float) mode->width, (float) mode->height};
-    }
-
-    float GLPlatform::calcMonitorPixelScale(Size monitorPhysicalSize) {
-        Size monitorSize = this->getMonitorSize();
-        return (monitorSize.width / monitorPhysicalSize.width) / DefaultMonitorScale;
-    }
-
-    ApplicationContext *GLPlatform::makeApplicationContext() {
-        ApplicationContext *applicationContext = new GLApplicationContext(this);
-        applicationContext->windowSize = this->getWindowSize();
-        applicationContext->monitorPhysicalSize = this->getMonitorPhysicalSize();
-        applicationContext->monitorPixelScale = this->calcMonitorPixelScale(applicationContext->monitorPhysicalSize);
-        applicationContext->root = this->application->root;
-        applicationContext->clipboard = this->makeClipboard();
-        applicationContext->cursor = this->makeCursor();
-        applicationContext->perfomance = this->perfomance;
-        return applicationContext;
-    }
-
-    Clipboard *GLPlatform::makeClipboard() {
-        return new GLClipboard(this->window);
-    }
-
-    Cursor *GLPlatform::makeCursor() {
-        return new GLCursor(this->window, this);
-    }
-
     void GLPlatform::refresh() {
-        this->applicationContext = this->makeApplicationContext();
+        this->applicationContext = new GLApplicationContext(this, window, this->application->root);
 
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_RGBA8;
 
         // create skia canvas
-        GrBackendRenderTarget backendRenderTarget(this->applicationContext->windowSize.width, this->applicationContext->windowSize.height, 0, 0, framebufferInfo);
+        GrBackendRenderTarget backendRenderTarget(this->applicationContext->window->size.width, this->applicationContext->window->size.height, 0, 0, framebufferInfo);
         this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }
@@ -552,12 +510,95 @@ namespace elementor {
         return this->fontManager;
     }
 
+    GLPerfomance *GLPlatform::getPerfomance() {
+        return this->perfomance;
+    }
+
     sk_sp<SkFontMgr> GLPlatform::getSkFontManager() {
         return this->fontManager->getSkFontManager();
     }
 
-    GLApplicationContext::GLApplicationContext(GLPlatform *platform) {
+    Size getWindowSize(GLFWwindow *window) {
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        return {(float) width, (float) height};
+    }
+
+    Position getWindowPosition(GLFWwindow *window) {
+        int x, y;
+        glfwGetWindowPos(window, &x, &y);
+        return {(float) x, (float) y};
+    }
+
+    Rect getWindowRect(GLFWwindow *window) {
+        return {getWindowSize(window), getWindowPosition(window)};
+    }
+
+    Size getMonitorSize(GLFWmonitor *monitor) {
+        const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+        return {(float) mode->width, (float) mode->height};
+    }
+
+    Size getMonitorPhysicalSize(GLFWmonitor *monitor) {
+        int width, height;
+        glfwGetMonitorPhysicalSize(monitor, &width, &height);
+        return {(float) width, (float) height};
+    }
+
+    Position getMonitorPosition(GLFWmonitor *monitor) {
+        int x, y;
+        glfwGetMonitorPos(monitor, &x, &y);
+        return {(float) x, (float) y};
+    }
+
+    Rect getMonitorRect(GLFWmonitor *monitor) {
+        return {getMonitorSize(monitor), getMonitorPosition(monitor)};
+    }
+
+    GLFWmonitor* getWindowMonitor(GLFWwindow* window) {
+        Rect windowRect = getWindowRect(window);
+
+        int monitorsSize = 0;
+        GLFWmonitor** monitors = glfwGetMonitors(&monitorsSize);
+
+        GLFWmonitor* closestMonitor;
+        int maxOverlapArea = 0;
+
+        for (unsigned int i = 0; i < monitorsSize; i++) {
+            GLFWmonitor *monitor = monitors[i];
+            Rect monitorRect = getMonitorRect(monitor);
+
+            float overlapWidth = windowRect.size.width - std::max((monitorRect.position.x - windowRect.position.x), ZERO) - std::max((windowRect.position.x + windowRect.size.width) - (monitorRect.position.x + monitorRect.size.width), ZERO);
+            float overlapHeight = windowRect.size.height - std::max((monitorRect.position.y - windowRect.position.y), ZERO) - std::max((windowRect.position.y + windowRect.size.height) - (monitorRect.position.y + monitorRect.size.height), ZERO);
+            float overlapArea = overlapWidth * overlapHeight;
+            if (overlapArea > maxOverlapArea) {
+                closestMonitor = monitor;
+            }
+        }
+
+        return closestMonitor;
+    }
+
+    float calcMonitorPixelScale(Size pixelSize, Size physicalSize) {
+        return (pixelSize.width / physicalSize.width) / DefaultMonitorScale;
+    }
+
+    GLWindowContext::GLWindowContext(GLFWwindow *window, Element *root) {
+        this->root = root;
+        this->size = getWindowSize(window);
+        GLFWmonitor *monitor = getWindowMonitor(window);
+        this->monitorSize = getMonitorSize(monitor);
+        this->monitorPhysicalSize = getMonitorPhysicalSize(monitor);
+        this->monitorPixelScale = calcMonitorPixelScale(this->monitorSize, this->monitorPhysicalSize);
+    }
+
+    GLApplicationContext::GLApplicationContext(GLPlatform *platform, GLFWwindow *window, Element *root) {
         this->platform = platform;
+        this->root = root;
+        this->window = new GLWindowContext(window, root);
+        this->clipboard = new GLClipboard(window);
+        this->cursor = new GLCursor(window, platform);
+        this->perfomance = this->platform->getPerfomance();
     }
 
     void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
@@ -585,7 +626,7 @@ namespace elementor {
         this->platform = platform;
     }
 
-    unsigned int mapCursorShape(CursorShape shape) {
+    unsigned int getGLFWCursorShape(CursorShape shape) {
         switch (shape) {
             case CursorShape::Default:
             case CursorShape::Arrow:
@@ -607,7 +648,7 @@ namespace elementor {
 
     void GLCursor::updateCursor() {
         if (this->appliedShape != this->currentShape) {
-            this->cursor = glfwCreateStandardCursor(mapCursorShape(this->currentShape));
+            this->cursor = glfwCreateStandardCursor(getGLFWCursorShape(this->currentShape));
             glfwSetCursor(this->window, this->cursor);    
             this->appliedShape = this->currentShape;
         }
@@ -651,3 +692,4 @@ namespace elementor {
         this->registerFontFromSkData(SkData::MakeFromFileName(path.c_str()));
     }
 }
+

@@ -78,7 +78,7 @@ namespace elementor::elements {
         Boundaries sizedChildBoundaries = {{0, 0}, size};
 
         int childrenCount = this->getChildrenSize();
-        float spacing = this->spacing * ctx->monitorPixelScale;
+        float spacing = this->spacing * ctx->window->monitorPixelScale;
         float fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;

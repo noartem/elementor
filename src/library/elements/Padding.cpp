@@ -40,12 +40,12 @@ namespace elementor::elements {
 
     Size Padding::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            float paddingTop = this->getPaddings().top * ctx->monitorPixelScale;
-            float paddingBottom = this->getPaddings().bottom * ctx->monitorPixelScale;
+            float paddingTop = this->getPaddings().top * ctx->window->monitorPixelScale;
+            float paddingBottom = this->getPaddings().bottom * ctx->window->monitorPixelScale;
             float paddingY = paddingTop + paddingBottom;
 
-            float paddingRight = this->getPaddings().right * ctx->monitorPixelScale;
-            float paddingLeft = this->getPaddings().left * ctx->monitorPixelScale;
+            float paddingRight = this->getPaddings().right * ctx->window->monitorPixelScale;
+            float paddingLeft = this->getPaddings().left * ctx->window->monitorPixelScale;
             float paddingX = paddingLeft + paddingRight;
 
             Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
@@ -63,10 +63,10 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
 
-            float paddingTop = this->getPaddings().top * ctx->monitorPixelScale;
-            float paddingRight = this->getPaddings().right * ctx->monitorPixelScale;
-            float paddingBottom = this->getPaddings().bottom * ctx->monitorPixelScale;
-            float paddingLeft = this->getPaddings().left * ctx->monitorPixelScale;
+            float paddingTop = this->getPaddings().top * ctx->window->monitorPixelScale;
+            float paddingRight = this->getPaddings().right * ctx->window->monitorPixelScale;
+            float paddingBottom = this->getPaddings().bottom * ctx->window->monitorPixelScale;
+            float paddingLeft = this->getPaddings().left * ctx->window->monitorPixelScale;
             child.position = {paddingLeft, paddingTop};
 
             float childWidth = size.width - paddingLeft - paddingRight;

@@ -69,12 +69,19 @@ namespace elementor {
         virtual double getFPS() = 0;
     };
 
-    class ApplicationContext {
+    class WindowContext {
     public:
-        Size windowSize;
+        Size size;
+        Size monitorSize;
         Size monitorPhysicalSize;
         float monitorPixelScale;
         Element *root;
+    };
+
+    class ApplicationContext {
+    public:
+        Element *root;
+        WindowContext *window;
         Clipboard *clipboard;
         Cursor *cursor;
         Perfomance *perfomance;

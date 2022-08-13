@@ -15,6 +15,7 @@
 namespace sktextlayout = skia::textlayout;
 
 namespace elementor {
+    class GLWindowContext;
     class GLApplicationContext;
     class GLClipboard;
     class GLCursor;
@@ -35,6 +36,7 @@ namespace elementor {
         void requestNextFrame(std::function<void ()> callback);
 
         GLFontManager *getFontManager();
+        GLPerfomance *getPerfomance();
         sk_sp<SkFontMgr> getSkFontManager();
 
     private:
@@ -51,13 +53,6 @@ namespace elementor {
 
         ApplicationContext *applicationContext;
         GLPerfomance *perfomance;
-        Size getWindowSize();
-        Size getMonitorPhysicalSize();
-        Size getMonitorSize();
-        Clipboard *makeClipboard();
-        Cursor *makeCursor();
-        float calcMonitorPixelScale(Size monitorPhysicalSize);
-        ApplicationContext *makeApplicationContext();
 
         void onMouseButton(int button, int action, int mods);
         void onKeyboard(int key, int scancode, int action, int mods);
@@ -70,9 +65,17 @@ namespace elementor {
         void applyRnfQueue();
     };
 
+    class GLWindowContext : public WindowContext {
+    public:
+        GLWindowContext(GLFWwindow *window, Element *root);
+
+    private:
+        GLFWwindow *window;
+    };
+
     class GLApplicationContext : public ApplicationContext {
     public:
-        GLApplicationContext(GLPlatform *glPlatform);
+        GLApplicationContext(GLPlatform *glPlatform, GLFWwindow *window, Element *root);
         void requestNextFrame(std::function<void ()> callback) override;
         sk_sp<SkFontMgr> getSkFontManager() override;
 

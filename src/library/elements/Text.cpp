@@ -231,7 +231,7 @@ namespace elementor::elements {
     SkFont Text::makeSkFont(ApplicationContext *ctx) {
         SkFont font;
         font.setTypeface(this->makeSkTypeface());
-        font.setSize(this->fontSize * ctx->monitorPixelScale);
+        font.setSize(this->fontSize * ctx->window->monitorPixelScale);
         font.setScaleX(this->fontScale);
         font.setSkewX(this->fontSkew);
         font.setEdging(this->getSkFontEdging());
@@ -289,7 +289,7 @@ namespace elementor::elements {
 
     sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
         sktextlayout::TextStyle textStyle;
-        textStyle.setFontSize(this->fontSize * ctx->monitorPixelScale);
+        textStyle.setFontSize(this->fontSize * ctx->window->monitorPixelScale);
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());

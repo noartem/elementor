@@ -10,18 +10,18 @@ namespace elementor {
 
         RenderElement rootElement;
         rootElement.position = {0, 0};
-        rootElement.size = ctx->windowSize;
+        rootElement.size = ctx->window->size;
         rootElement.element = this->root;
 
         ElementRect rootRect;
-        rootRect.position = rootElement.position;
-        rootRect.inParentPosition = rootElement.position;
-        rootRect.size = rootElement.size;
-        rootRect.visibleSize = rootElement.size;
+        rootRect.position = {0, 0};
+        rootRect.inParentPosition = {0, 0};
+        rootRect.size = ctx->window->size;
+        rootRect.visibleSize = ctx->window->size;
 
         Rect rootBoundary;
-        rootBoundary.position = rootElement.position;
-        rootBoundary.size = rootElement.size;
+        rootBoundary.position = {0, 0};
+        rootBoundary.size = ctx->window->size;
 
         this->drawElement(ctx, canvas, &rootElement, rootRect, rootBoundary);
     }
