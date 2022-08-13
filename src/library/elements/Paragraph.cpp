@@ -23,6 +23,7 @@ namespace elementor::elements {
 
     Paragraph *Paragraph::setTextAlign(TextAlign textAlign) {
         this->textAlign = textAlign;
+        this->skParagraph = NULL;
         return this;
     }
 
@@ -32,6 +33,7 @@ namespace elementor::elements {
 
     Paragraph *Paragraph::setTextDirection(TextDirection textDirection) {
         this->textDirection = textDirection;
+        this->skParagraph = NULL;
         return this;
     }
 
