@@ -32,7 +32,7 @@ namespace elementor::elements {
             maxHeight = std::max(childSize.height, maxHeight);
         }
 
-        totalWidth += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->window->monitorPixelScale;
+        totalWidth += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->window->getMonitorPixelScale();
 
         return fitSizeInBoundaries({totalWidth, maxHeight}, boundaries);
     }
@@ -40,7 +40,7 @@ namespace elementor::elements {
     std::vector <RenderElement> Row::getChildren(ApplicationContext *ctx, Size size) {
         std::vector <RenderElement> children;
 
-        float spacing = this->getSpacing() * ctx->window->monitorPixelScale;
+        float spacing = this->getSpacing() * ctx->window->getMonitorPixelScale();
 
         float xPosition = 0;
         for (Element *childElement : this->getChildrenList()) {

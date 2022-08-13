@@ -11,8 +11,6 @@
 #include <include/core/SkFontStyle.h>
 #include <modules/skparagraph/include/TextStyle.h>
 
-#include <optional>
-
 namespace sktextlayout = skia::textlayout;
 
 namespace elementor::elements {

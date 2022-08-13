@@ -27,7 +27,7 @@ namespace elementor::elements {
     }
 
     float Scrollable::getMonitorPixelScale() {
-        return this->ctx->window->monitorPixelScale;
+        return this->ctx->window->getMonitorPixelScale();
     }
 
     float Scrollable::getHeight() {
@@ -133,8 +133,8 @@ namespace elementor::elements {
             this->ctx = ctx;
             this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
             child.size = this->childSize;
-            child.position.x = -1 * this->getScrollLeft() * ctx->window->monitorPixelScale;
-            child.position.y = -1 * this->getScrollTop() * ctx->window->monitorPixelScale;
+            child.position.x = -1 * this->getScrollLeft() * ctx->window->getMonitorPixelScale();
+            child.position.y = -1 * this->getScrollTop() * ctx->window->getMonitorPixelScale();
 
             children.push_back(child);
         }

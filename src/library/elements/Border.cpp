@@ -91,7 +91,7 @@ namespace elementor::elements {
 
     Size Border::getSize(ApplicationContext *ctx, Boundaries boundaries) {
         if (this->hasChild()) {
-            float borderWidth = this->getWidth() * ctx->window->monitorPixelScale;
+            float borderWidth = this->getWidth() * ctx->window->getMonitorPixelScale();
             Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2, boundaries.min.height - borderWidth * 2}, {boundaries.max.width - borderWidth * 2, boundaries.max.height - borderWidth * 2}};
             Size childSize = this->getChild()->getSize(ctx, childBoundaries);
             return {childSize.width + borderWidth * 2, childSize.height + borderWidth * 2};
@@ -120,8 +120,8 @@ namespace elementor::elements {
         }
 
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        float radiusX = this->radiusX * ctx->window->monitorPixelScale;
-        float radiusY = this->radiusY * ctx->window->monitorPixelScale;
+        float radiusX = this->radiusX * ctx->window->getMonitorPixelScale();
+        float radiusY = this->radiusY * ctx->window->getMonitorPixelScale();
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
         canvas->drawRRect(skRRect, paint);
@@ -134,7 +134,7 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
 
-            float borderWidth = this->getWidth() * ctx->window->monitorPixelScale;
+            float borderWidth = this->getWidth() * ctx->window->getMonitorPixelScale();
             child.position = {borderWidth, borderWidth};
 
             float childWidth = size.width - 2 * borderWidth;

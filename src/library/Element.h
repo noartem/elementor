@@ -11,6 +11,7 @@
 #include <include/core/SkFontMgr.h>
 
 #include <vector>
+#include <optional>
 #include <functional>
 
 namespace elementor {
@@ -31,12 +32,9 @@ namespace elementor {
 
     class Element {
     public:
-        virtual Size getSize(ApplicationContext *ctx, Boundaries boundaries);
-
-        virtual void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect);
-
-        virtual std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size);
-
+        virtual Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries);
+        virtual void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect);
+        virtual std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size);
         virtual ClipBehavior getClipBehaviour();
     };
 
@@ -45,7 +43,7 @@ namespace elementor {
 
     class Clipboard {
     public:
-        virtual void set(std::string) = 0;
+        virtual void set(std::string text) = 0;
         virtual std::string get() = 0;
     };
 
@@ -62,6 +60,7 @@ namespace elementor {
     class Cursor {
     public:
         virtual void set(CursorShape shape) = 0;
+        virtual CursorShape get() = 0;
     };
 
     class Perfomance {
@@ -69,21 +68,37 @@ namespace elementor {
         virtual double getFPS() = 0;
     };
 
-    class WindowContext {
+    class Window {
     public:
-        Size size;
-        Size monitorSize;
-        Size monitorPhysicalSize;
-        float monitorPixelScale;
-        Element *root;
+        virtual Size getSize() = 0;
+        virtual std::optional<Size> getMinSize() = 0;
+        virtual std::optional<Size> getMaxSize() = 0;
+        virtual void setMinSize(Size size) = 0;
+        virtual void setMaxSize(Size size) = 0;
+
+        virtual Position getPosition() = 0;
+        virtual void setPosition(Position Position) = 0;
+
+        virtual Size getMonitorSize() = 0;
+        virtual Size getMonitorPhysicalSize() = 0;
+        virtual float getMonitorPixelScale() = 0;
+        virtual void setMonitorPixelScale(float scale) = 0;
+
+        virtual Element *getRoot() = 0;
+        virtual setRoot(Element *root) = 0;
+
+        virtual void setTitle(std::string title) = 0;
+        virtual std::string getTitle() = 0;
+
+        virtual void close() = 0;
+
+        Cursor *getCursor();
     };
 
     class ApplicationContext {
     public:
         Element *root;
-        WindowContext *window;
         Clipboard *clipboard;
-        Cursor *cursor;
         Perfomance *perfomance;
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
