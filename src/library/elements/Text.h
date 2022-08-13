@@ -47,6 +47,26 @@ namespace elementor::elements {
         SubpixelAntiAlias,
     };
 
+    enum class TextDecoration {
+        NoDecoration,
+        Underline,
+        Overline,
+        LineThrough,
+    };
+
+    enum class TextDecorationMode {
+        Gaps,
+        Through,
+    };
+
+    enum class TextDecorationStyle {
+        Solid,
+        Double,
+        Dotted,
+        Dashed,
+        Wavy,
+    };
+
     class Text : public Element {
     public:
         Text *setText(std::u32string text);
@@ -97,6 +117,32 @@ namespace elementor::elements {
 
         FontEdging getFontEdging();
 
+        Text *setDecoration(TextDecoration decoration);
+
+        TextDecoration getDecoration();
+
+        Text *setDecorationMode(TextDecorationMode decorationMode);
+
+        TextDecorationMode getDecorationMode();
+
+        Text *setDecorationStyle(TextDecorationStyle decorationStyle);
+
+        TextDecorationStyle getDecorationStyle();
+
+        Text *setDecorationColor(SkColor color);
+
+        Text *setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+        Text *setDecorationColor(uint8_t r, uint8_t g, uint8_t b);
+
+        Text *setDecorationColor(std::string color);
+
+        SkColor getDecorationColor();
+
+        Text *setDecorationThicknessMultiplier(float multiplier);
+
+        float getDecorationThicknessMultiplier();
+
         sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
         Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;    
@@ -114,6 +160,11 @@ namespace elementor::elements {
         FontSlant fontSlant = FontSlant::Upright;
         std::string fontFamily;
         FontEdging fontEdging = FontEdging::AntiAlias;
+        TextDecoration decoration = TextDecoration::NoDecoration;
+        TextDecorationMode decorationMode = TextDecorationMode::Through;
+        TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
+        SkColor decorationColor = SK_ColorTRANSPARENT; 
+        float decorationThicknessMultiplier = 1;
 
         std::optional<SkFont> font;
         std::optional<SkPaint> paint;
@@ -129,6 +180,12 @@ namespace elementor::elements {
         SkFont makeSkFont(ApplicationContext *ctx);
 
         SkPaint makeSkPaint();
+
+        sktextlayout::TextDecoration getSkTextDecoration();
+
+        sktextlayout::TextDecorationMode getSkTextDecorationMode();
+
+        sktextlayout::TextDecorationStyle getSkTextDecorationStyle();
     };
 
     Text *text();

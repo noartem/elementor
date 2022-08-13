@@ -137,6 +137,67 @@ namespace elementor::elements {
         return this->fontEdging;
     }
 
+    Text *Text::setDecoration(TextDecoration decoration) {
+        this->decoration = decoration;
+        return this;
+    }
+
+    TextDecoration Text::getDecoration() {
+        return this->decoration;
+    }
+
+    Text *Text::setDecorationMode(TextDecorationMode decorationMode) {
+        this->decorationMode = decorationMode;
+        return this;
+    }
+
+    TextDecorationMode Text::getDecorationMode() {
+        return this->decorationMode;
+    }
+
+    Text *Text::setDecorationStyle(TextDecorationStyle decorationStyle) {
+        this->decorationStyle = decorationStyle;
+        return this;
+    }
+
+    TextDecorationStyle Text::getDecorationStyle() {
+        return this->decorationStyle;
+    }
+
+    Text *Text::setDecorationColor(SkColor decorationColor) {
+        this->decorationColor = decorationColor;
+        return this;
+    }
+
+    Text *Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        this->decorationColor = makeSkColorFromRGBA(r, g, b, a);
+        this->decoration = decoration;
+        return this;
+    }
+
+    Text *Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b) {
+        this->decorationColor = makeSkColorFromRGB(r, g, b);
+        return this;
+    }
+
+    Text *Text::setDecorationColor(std::string hex) {
+        this->decorationColor = makeSkColorFromHex(hex);
+        return this;
+    }
+
+    SkColor Text::getDecorationColor() {
+        return this->decorationColor;
+    }
+
+    Text *Text::setDecorationThicknessMultiplier(float multiplier) {
+        this->decorationThicknessMultiplier = multiplier;
+        return this;
+    }
+
+    float Text::getDecorationThicknessMultiplier() {
+        return this->decorationThicknessMultiplier;
+    }
+
     SkFontStyle::Slant Text::getSkFontStyleSlant() {
         switch (this->fontSlant) {
             case FontSlant::Italic:
@@ -183,12 +244,60 @@ namespace elementor::elements {
         return paint;
     }
 
+    sktextlayout::TextDecoration Text::getSkTextDecoration() {
+        switch (this->decoration) {
+            case TextDecoration::NoDecoration:
+                return sktextlayout::TextDecoration::kNoDecoration;
+            case TextDecoration::Underline:
+                return sktextlayout::TextDecoration::kUnderline;
+            case TextDecoration::Overline:
+                return sktextlayout::TextDecoration::kOverline;
+            case TextDecoration::LineThrough:
+                return sktextlayout::TextDecoration::kLineThrough;
+            default:
+                return sktextlayout::TextDecoration::kNoDecoration;
+        }
+    }
+
+    sktextlayout::TextDecorationMode Text::getSkTextDecorationMode() {
+        switch (this->decorationMode) {
+            case TextDecorationMode::Gaps:
+                return sktextlayout::TextDecorationMode::kGaps;
+            case TextDecorationMode::Through:
+                return sktextlayout::TextDecorationMode::kThrough;
+            default:
+                return sktextlayout::TextDecorationMode::kGaps;
+        }
+    }
+
+    sktextlayout::TextDecorationStyle Text::getSkTextDecorationStyle() {
+        switch (this->decorationStyle) {
+            case TextDecorationStyle::Solid:
+                return sktextlayout::TextDecorationStyle::kSolid;
+            case TextDecorationStyle::Double:
+                return sktextlayout::TextDecorationStyle::kDouble;
+            case TextDecorationStyle::Dotted:
+                return sktextlayout::TextDecorationStyle::kDotted;
+            case TextDecorationStyle::Dashed:
+                return sktextlayout::TextDecorationStyle::kDashed;
+            case TextDecorationStyle::Wavy:
+                return sktextlayout::TextDecorationStyle::kWavy;
+            default:
+                return sktextlayout::TextDecorationStyle::kSolid;
+        }
+    }
+
     sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
         sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(this->fontSize * ctx->monitorPixelScale);
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
+        textStyle.setDecoration(this->getSkTextDecoration());
+        textStyle.setDecorationMode(this->getSkTextDecorationMode());
+        textStyle.setDecorationStyle(this->getSkTextDecorationStyle());
+        textStyle.setDecorationColor(this->getDecorationColor());
+        textStyle.setDecorationThicknessMultiplier(this->getDecorationThicknessMultiplier());
         return textStyle;
     }
 
