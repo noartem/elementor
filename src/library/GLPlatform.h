@@ -41,7 +41,6 @@ namespace elementor {
 
     private:
         GLFWwindow *window;
-        GLFWmonitor *monitor;
         SkSurface *skiaSurface;
         SkCanvas *skiaCanvas;
         GrDirectContext *skiaContext;

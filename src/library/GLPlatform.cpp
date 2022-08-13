@@ -457,12 +457,6 @@ namespace elementor {
             platform->onScroll(xOffset, yOffset);
         });
 
-        GLFWmonitor* monitor = glfwGetWindowMonitor(window);
-        if (monitor == NULL) {
-            monitor = glfwGetPrimaryMonitor();
-        }
-        this->monitor = monitor;
-
         // init skia
         auto interface = GrGLMakeNativeInterface();
         this->skiaContext = GrDirectContext::MakeGL(interface).release();
@@ -573,6 +567,7 @@ namespace elementor {
             float overlapArea = overlapWidth * overlapHeight;
             if (overlapArea > maxOverlapArea) {
                 closestMonitor = monitor;
+                maxOverlapArea = overlapArea;
             }
         }
 
