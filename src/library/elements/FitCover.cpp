@@ -18,11 +18,11 @@ namespace elementor::elements {
         return ClipBehavior::AntiAlias;
     }
 
-    std::vector <RenderElement> FitCover::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> FitCover::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         RenderElement child;
         child.element = this->getChild();
 
-        Size childSize = child.element->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
+        Size childSize = child.element->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
         float ratio = childSize.width / childSize.height;
         if (size.width > size.height) {
             child.size.width = size.width;

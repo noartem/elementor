@@ -23,30 +23,30 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Column::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Column::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         float maxWidth = 0;
         float totalHeight = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
             maxWidth = std::max(childSize.width, maxWidth);
             totalHeight += childSize.height;
         }
 
-        totalHeight += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->window->getMonitorPixelScale();
+        totalHeight += (this->getChildrenSize() - 1) * this->getSpacing() * window->getMonitorPixelScale();
 
         return fitSizeInBoundaries({maxWidth, totalHeight}, boundaries);
     }
 
-    std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
-        float spacing = this->getSpacing() * ctx->window->getMonitorPixelScale();
+        float spacing = this->getSpacing() * window->getMonitorPixelScale();
 
         float yPosition = 0;
         for (Element *childElement : this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = child.element->getSize(ctx, {{size.width, 0}, size});
+            child.size = child.element->getSize(ctx, window, {{size.width, 0}, size});
 
             child.position = {0, yPosition};
             yPosition += child.size.height + spacing;

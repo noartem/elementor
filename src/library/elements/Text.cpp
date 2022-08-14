@@ -228,10 +228,10 @@ namespace elementor::elements {
         return SkTypeface::MakeFromName(this->fontFamily.c_str(), this->makeSkFontStyle());
     }
 
-    SkFont Text::makeSkFont(ApplicationContext *ctx) {
+    SkFont Text::makeSkFont(Window *window) {
         SkFont font;
         font.setTypeface(this->makeSkTypeface());
-        font.setSize(this->fontSize * ctx->window->getMonitorPixelScale());
+        font.setSize(this->fontSize * window->getMonitorPixelScale());
         font.setScaleX(this->fontScale);
         font.setSkewX(this->fontSkew);
         font.setEdging(this->getSkFontEdging());
@@ -289,7 +289,7 @@ namespace elementor::elements {
 
     sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
         sktextlayout::TextStyle textStyle;
-        textStyle.setFontSize(this->fontSize * ctx->window->getMonitorPixelScale());
+        textStyle.setFontSize(this->fontSize * window->getMonitorPixelScale());
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
@@ -301,7 +301,7 @@ namespace elementor::elements {
         return textStyle;
     }
 
-    Size Text::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Text::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
@@ -310,7 +310,7 @@ namespace elementor::elements {
         return fitSizeInBoundaries({textBounds.width(), textBounds.height()}, boundaries);
     }
 
-    void Text::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Text::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 

@@ -61,12 +61,12 @@ namespace elementor::elements {
     }
 
     void Scrollbar::scrollToX(int x) {
-        float position = ((x / this->ctx->window->getMonitorPixelScale()) / this->child->getWidth()) * this->child->getScrollWidth();
+        float position = ((x / this->window->getMonitorPixelScale()) / this->child->getWidth()) * this->child->getScrollWidth();
         this->child->setScrollLeft(position - (this->child->getWidth() / 2));
     }
 
     void Scrollbar::scrollToY(int y) {
-        float position = ((y / this->ctx->window->getMonitorPixelScale()) / this->child->getHeight()) * this->child->getScrollHeight();
+        float position = ((y / this->window->getMonitorPixelScale()) / this->child->getHeight()) * this->child->getScrollHeight();
         this->child->setScrollTop(position - (this->child->getHeight() / 2));
     }
 
@@ -93,12 +93,12 @@ namespace elementor::elements {
         }
     }
 
-    Size Scrollbar::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        return this->child->getSize(ctx, boundaries);
+    Size Scrollbar::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        return this->child->getSize(ctx, window, boundaries);
     }
 
-    std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Size size) {
-        this->ctx = ctx;
+    std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+        this->window = window;
         this->initChild();
 
         std::vector <RenderElement> children;
@@ -107,14 +107,14 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->child;
             child.position = {0, 0};
-            Size childSize = this->child->getSize(ctx, {size, size});
+            Size childSize = this->child->getSize(ctx, window, {size, size});
 
             ScrollDirection scrollDirection = this->child->getDirection();
 
-            float scrollWidth = this->child->getScrollWidth() * ctx->window->getMonitorPixelScale();
-            float scrollHeight = this->child->getScrollHeight() * ctx->window->getMonitorPixelScale();
-            float scrollTop = this->child->getScrollTop() * ctx->window->getMonitorPixelScale();
-            float scrollLeft = this->child->getScrollLeft() * ctx->window->getMonitorPixelScale();
+            float scrollWidth = this->child->getScrollWidth() * window->getMonitorPixelScale();
+            float scrollHeight = this->child->getScrollHeight() * window->getMonitorPixelScale();
+            float scrollTop = this->child->getScrollTop() * window->getMonitorPixelScale();
+            float scrollLeft = this->child->getScrollLeft() * window->getMonitorPixelScale();
 
             float childHeight = childSize.height;
             if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > size.width)) {
@@ -123,7 +123,7 @@ namespace elementor::elements {
                 if (this->trackX) {
                     RenderElement track;
                     track.element = this->trackX;
-                    track.size = track.element->getSize(ctx, {{size.width, 0}, size});
+                    track.size = track.element->getSize(ctx, window, {{size.width, 0}, size});
 
                     trackHeight = track.size.height;
                     childHeight -= trackHeight;
@@ -138,11 +138,11 @@ namespace elementor::elements {
 
                     float thumbWidth = size.width * (size.width / scrollWidth);
                     if (trackHeight == 0) {
-                        thumb.size = thumb.element->getSize(ctx, {{thumbWidth, 0}, {thumbWidth, size.height}});
+                        thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, size.height}});
                         trackHeight = thumb.size.height;
                         childHeight -= trackHeight;
                     } else {
-                        thumb.size = thumb.element->getSize(ctx, {{thumbWidth, 0}, {thumbWidth, trackHeight}});
+                        thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, trackHeight}});
                     }
 
                     thumb.position = {scrollLeft * (size.width / scrollWidth), childHeight};
@@ -158,7 +158,7 @@ namespace elementor::elements {
                 if (this->trackY) {
                     RenderElement track;
                     track.element = this->trackY;
-                    track.size = track.element->getSize(ctx, {{0, size.height}, size});
+                    track.size = track.element->getSize(ctx, window, {{0, size.height}, size});
 
                     trackWidth = track.size.width;
                     childWidth -= trackWidth;
@@ -173,11 +173,11 @@ namespace elementor::elements {
 
                     float thumbHeight = size.height * (size.height / scrollHeight);
                     if (trackWidth == 0) {
-                        thumb.size = thumb.element->getSize(ctx, {{0, thumbHeight}, {size.width, thumbHeight}});
+                        thumb.size = thumb.element->getSize(ctx, window, {{0, thumbHeight}, {size.width, thumbHeight}});
                         trackWidth = thumb.size.width;
                         childWidth -= trackWidth;
                     } else {
-                        thumb.size = thumb.element->getSize(ctx, {{0, thumbHeight}, {trackWidth, thumbHeight}});
+                        thumb.size = thumb.element->getSize(ctx, window, {{0, thumbHeight}, {trackWidth, thumbHeight}});
                     }
 
                     thumb.position = {childWidth, scrollTop * (size.height / scrollHeight)};

@@ -11,9 +11,9 @@ class FPSLabel : public Element {
 public:
     FPSLabel();
 
-    Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+    Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
 private:
     Text *child;

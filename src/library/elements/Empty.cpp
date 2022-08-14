@@ -14,15 +14,15 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Empty::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Empty::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, boundaries);
+            return this->getChild()->getSize(ctx, window, boundaries);
         } else {
             return boundaries.min;
         }
     }
 
-    std::vector <RenderElement> Empty::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Empty::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

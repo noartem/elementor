@@ -15,7 +15,7 @@ namespace elementor {
     public:
         Element *root;
 
-        void draw(ApplicationContext *ctx, SkCanvas *canvas);
+        void draw(ApplicationContext *ctx, Window *window, SkCanvas *canvas);
 
         void dispatchEvent(Event *event);
     
@@ -24,7 +24,7 @@ namespace elementor {
 
         void saveElementEventListeners(Element *element);
 
-        void drawElement(ApplicationContext *ctx, SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary);
+        void drawElement(ApplicationContext *ctx, Window *window, SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary);
     };
 };
 

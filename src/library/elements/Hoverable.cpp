@@ -53,19 +53,19 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Hoverable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Hoverable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, boundaries);
+            return this->getChild()->getSize(ctx, window, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    void Hoverable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Hoverable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Hoverable::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Hoverable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

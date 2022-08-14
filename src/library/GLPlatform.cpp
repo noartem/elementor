@@ -36,7 +36,7 @@ namespace elementor {
         framebufferInfo.fFormat = GL_RGBA8;
 
         // create skia canvas
-        GrBackendRenderTarget backendRenderTarget(this->applicationContext->window->size.width, this->applicationContext->window->size.height, 0, 0, framebufferInfo);
+        GrBackendRenderTarget backendRenderTarget(window->getSize().width, window->getSize().height, 0, 0, framebufferInfo);
         this->skiaSurface = SkSurface::MakeFromBackendRenderTarget(this->skiaContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr).release();
         this->skiaCanvas = this->skiaSurface->getCanvas();
     }
@@ -467,19 +467,16 @@ namespace elementor {
             platform->draw();
         });
 
-        while (!glfwWindowShouldClose(window)) {
-            glfwWaitEvents();
-            this->draw();
+        for (;;) {
+            if (glfwWindowShouldClose(window)) {
+                glfwDestroyWindow(window);
+                glfwTerminate();
+                exit(EXIT_SUCCESS);
+            } else {
+                glfwWaitEvents();
+                this->draw();
+            }
         }
-
-        // cleanup skia
-        if (this->skiaSurface) delete this->skiaSurface;
-        if (this->skiaContext) delete this->skiaContext;
-
-        // cleanup glfw
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        exit(EXIT_SUCCESS);
     }
 
     void GLPlatform::requestNextFrame(std::function<void ()> callback) {

@@ -89,18 +89,18 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Border::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Border::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            float borderWidth = this->getWidth() * ctx->window->getMonitorPixelScale();
+            float borderWidth = this->getWidth() * window->getMonitorPixelScale();
             Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2, boundaries.min.height - borderWidth * 2}, {boundaries.max.width - borderWidth * 2, boundaries.max.height - borderWidth * 2}};
-            Size childSize = this->getChild()->getSize(ctx, childBoundaries);
+            Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
             return {childSize.width + borderWidth * 2, childSize.height + borderWidth * 2};
         } else {
             return boundaries.max;
         }
     }
 
-    void Border::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Border::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->getColor());
         paint.setStrokeWidth(this->getWidth());
@@ -120,21 +120,21 @@ namespace elementor::elements {
         }
 
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        float radiusX = this->radiusX * ctx->window->getMonitorPixelScale();
-        float radiusY = this->radiusY * ctx->window->getMonitorPixelScale();
+        float radiusX = this->radiusX * window->getMonitorPixelScale();
+        float radiusY = this->radiusY * window->getMonitorPixelScale();
         SkRRect skRRect = SkRRect::MakeRectXY(skRect, radiusX, radiusY);
 
         canvas->drawRRect(skRRect, paint);
     }
 
-    std::vector <RenderElement> Border::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Border::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
 
-            float borderWidth = this->getWidth() * ctx->window->getMonitorPixelScale();
+            float borderWidth = this->getWidth() * window->getMonitorPixelScale();
             child.position = {borderWidth, borderWidth};
 
             float childWidth = size.width - 2 * borderWidth;

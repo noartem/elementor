@@ -50,19 +50,19 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Inputable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Inputable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, boundaries);
+            return this->getChild()->getSize(ctx, window, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    void Inputable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Inputable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         this->ctx = ctx;
         RenderElement child;
         child.element = this->getChild();

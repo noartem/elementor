@@ -40,12 +40,12 @@ namespace elementor::elements {
         return this->samplingOptions;
     }
 
-    void Image::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Image::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
         canvas->drawImageRect(this->skImage, skRect, this->samplingOptions);
     }
 
-    Size Image::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Image::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         return fitSizeInBoundaries({(float) this->skImage->width(), (float) this->skImage->height()}, boundaries);
     }
 }

@@ -16,6 +16,7 @@
 
 namespace elementor {
     class Element;
+    class Window;
     class ApplicationContext;
 
     struct RenderElement {
@@ -85,7 +86,7 @@ namespace elementor {
         virtual void setMonitorPixelScale(float scale) = 0;
 
         virtual Element *getRoot() = 0;
-        virtual setRoot(Element *root) = 0;
+        virtual void setRoot(Element *root) = 0;
 
         virtual void setTitle(std::string title) = 0;
         virtual std::string getTitle() = 0;

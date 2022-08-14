@@ -38,35 +38,35 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Padding::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Padding::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            float paddingTop = this->getPaddings().top * ctx->window->getMonitorPixelScale();
-            float paddingBottom = this->getPaddings().bottom * ctx->window->getMonitorPixelScale();
+            float paddingTop = this->getPaddings().top * window->getMonitorPixelScale();
+            float paddingBottom = this->getPaddings().bottom * window->getMonitorPixelScale();
             float paddingY = paddingTop + paddingBottom;
 
-            float paddingRight = this->getPaddings().right * ctx->window->getMonitorPixelScale();
-            float paddingLeft = this->getPaddings().left * ctx->window->getMonitorPixelScale();
+            float paddingRight = this->getPaddings().right * window->getMonitorPixelScale();
+            float paddingLeft = this->getPaddings().left * window->getMonitorPixelScale();
             float paddingX = paddingLeft + paddingRight;
 
             Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
-            Size childSize = this->getChild()->getSize(ctx, childBoundaries);
+            Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
             return {childSize.width + paddingX, childSize.height + paddingY};
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
 
-            float paddingTop = this->getPaddings().top * ctx->window->getMonitorPixelScale();
-            float paddingRight = this->getPaddings().right * ctx->window->getMonitorPixelScale();
-            float paddingBottom = this->getPaddings().bottom * ctx->window->getMonitorPixelScale();
-            float paddingLeft = this->getPaddings().left * ctx->window->getMonitorPixelScale();
+            float paddingTop = this->getPaddings().top * window->getMonitorPixelScale();
+            float paddingRight = this->getPaddings().right * window->getMonitorPixelScale();
+            float paddingBottom = this->getPaddings().bottom * window->getMonitorPixelScale();
+            float paddingLeft = this->getPaddings().left * window->getMonitorPixelScale();
             child.position = {paddingLeft, paddingTop};
 
             float childWidth = size.width - paddingLeft - paddingRight;

@@ -51,7 +51,7 @@ namespace elementor::elements {
         return surface->makeImageSnapshot();
     }
 
-    void SVG::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void SVG::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         if (this->skImage == NULL || (abs(this->skImage->width() - rect.size.width) > 5) || (abs(this->skImage->height() - rect.size.height) > 5)) {
             this->skImage = this->renderSVGImage(rect.size);
         }

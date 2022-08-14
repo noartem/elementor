@@ -29,9 +29,9 @@ namespace elementor::elements {
 
         Padding *setChild(Element *child);
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
     private:
         PaddingsValue paddings;

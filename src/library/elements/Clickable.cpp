@@ -53,20 +53,20 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Clickable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Clickable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, boundaries);
+            return this->getChild()->getSize(ctx, window, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    void Clickable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        this->ctx = ctx;
+    void Clickable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+        this->window = window;
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Clickable::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Clickable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
@@ -85,10 +85,10 @@ namespace elementor::elements {
         Position cursorPosition = {event->x, event->y};
         bool newHovered = this->rect.visibleContains(cursorPosition);
         if (newHovered && !this->hovered) {
-            this->ctx->cursor->set(CursorShape::Hand);
+            this->window->getCursor()->set(CursorShape::Hand);
         }
         if (!newHovered && this->hovered) {
-            this->ctx->cursor->set(CursorShape::Arrow);
+            this->window->getCursor()->set(CursorShape::Arrow);
         }
         this->hovered = newHovered;
 

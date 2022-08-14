@@ -112,8 +112,8 @@ namespace elementor::elements {
         }
     }
 
-    sktextlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child) {
-        Size childSize = child->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
+    sktextlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child) {
+        Size childSize = child->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
 
         ParagraphPlaceholder *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
         if (childPlaceholder) {
@@ -129,7 +129,7 @@ namespace elementor::elements {
         }
     }
 
-    std::unique_ptr<sktextlayout::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx) {
+    std::unique_ptr<sktextlayout::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx, Window *window) {
         sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
         for (Element *child : this->getChildrenList()) {
@@ -150,22 +150,22 @@ namespace elementor::elements {
         return paragraph;
     }
 
-    Size Paragraph::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
+    Size Paragraph::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
 
         this->skParagraph->layout(boundaries.max.width);
         return fitSizeInBoundaries({this->skParagraph->getMaxWidth(), this->skParagraph->getHeight()}, boundaries);
     }
 
-    void Paragraph::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
+    void Paragraph::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
 
         this->skParagraph->layout(rect.size.width);
         this->skParagraph->paint(canvas, 0, 0);
     }
 
-    std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Size size) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx);
+    std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
 
         std::vector <RenderElement> children;
         std::vector<sktextlayout::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();

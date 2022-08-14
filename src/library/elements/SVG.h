@@ -24,7 +24,7 @@ namespace elementor::elements {
 
         SVG *fromPath(std::string path);
 
-        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
     private:
         sk_sp<SkSVGDOM> skSVGDOM;

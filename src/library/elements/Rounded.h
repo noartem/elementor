@@ -26,11 +26,11 @@ namespace elementor::elements {
 
         Rounded *setChild(Element *child);
 
-        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
         ClipBehavior getClipBehaviour() override;
 

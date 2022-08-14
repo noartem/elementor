@@ -26,9 +26,9 @@ namespace elementor::elements {
 
         SkSamplingOptions getSamplingOptions();
 
-        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
     private:
         sk_sp<SkImage> skImage;

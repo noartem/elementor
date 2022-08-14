@@ -7,14 +7,14 @@
 #include <algorithm>
 
 namespace elementor {
-    Size Element::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Element::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         return boundaries.max;
     }
 
-    void Element::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Element::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
     }
 
-    std::vector <RenderElement> Element::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Element::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
         return children;
     }

@@ -25,11 +25,11 @@ namespace elementor::elements {
 
         Paragraph *appendChild(Element *child);
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;
+        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
     private:
         TextAlign textAlign = TextAlign::Left;
@@ -50,9 +50,9 @@ namespace elementor::elements {
 
         sktextlayout::TextDirection getSkTextDirection();
 
-        sktextlayout::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Element *child);
+        sktextlayout::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child);
 
-        std::unique_ptr<sktextlayout::Paragraph> makeSkParagraph(ApplicationContext *ctx);
+        std::unique_ptr<sktextlayout::Paragraph> makeSkParagraph(ApplicationContext *ctx, Window *window);
     };
 
     Paragraph *paragraph();

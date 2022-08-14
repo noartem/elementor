@@ -47,9 +47,9 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Wrap::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        float spacing = this->spacing * ctx->window->getMonitorPixelScale();
-        float crossSpacing = this->crossSpacing * ctx->window->getMonitorPixelScale();
+    Size Wrap::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        float spacing = this->spacing * window->getMonitorPixelScale();
+        float crossSpacing = this->crossSpacing * window->getMonitorPixelScale();
 
         bool isRow = this->direction == WrapDirection::Row;
         float maxAxisSize = isRow ? boundaries.max.width : boundaries.max.height;
@@ -61,7 +61,7 @@ namespace elementor::elements {
         float rowCrossAxisSize = 0;
 
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
 
             float axisChildSize = isRow ? childSize.width : childSize.height;
             float crossAxisChildSize = isRow ? childSize.height : childSize.width;
@@ -85,18 +85,18 @@ namespace elementor::elements {
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         for (Element *childElement: this->getChildrenList()) {
             RenderElement child;
             child.element = childElement;
-            child.size = childElement->getSize(ctx, {{0, 0}, size});
+            child.size = childElement->getSize(ctx, window, {{0, 0}, size});
             children.push_back(child);
         }
 
-        float spacing = this->getSpacing() * ctx->window->getMonitorPixelScale();
-        float crossSpacing = this->getCrossSpacing() * ctx->window->getMonitorPixelScale();
+        float spacing = this->getSpacing() * window->getMonitorPixelScale();
+        float crossSpacing = this->getCrossSpacing() * window->getMonitorPixelScale();
 
         bool isRow = this->direction == WrapDirection::Row;
 

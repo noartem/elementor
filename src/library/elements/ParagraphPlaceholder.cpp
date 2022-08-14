@@ -75,11 +75,11 @@ namespace elementor::elements {
         return this->offset;
     }
 
-    Size ParagraphPlaceholder::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        return this->getChild()->getSize(ctx, boundaries);
+    Size ParagraphPlaceholder::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        return this->getChild()->getSize(ctx, window, boundaries);
     }
 
-    std::vector <RenderElement> ParagraphPlaceholder::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> ParagraphPlaceholder::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         RenderElement child;
         child.element = this->getChild();
         child.size = size;

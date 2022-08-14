@@ -21,10 +21,10 @@ namespace elementor::elements {
         return {inner.width * resizeFactor, inner.height * resizeFactor};
     }
 
-    std::vector <RenderElement> FitContain::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> FitContain::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         RenderElement child;
         child.element = this->getChild();
-        Size childSize = child.element->getSize(ctx, {{0, 0}, {INFINITY, INFINITY}});
+        Size childSize = child.element->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
         child.size = fitSizeWithin(childSize, size);
         child.position.x = (size.width - child.size.width) / 2;
         child.position.y = (size.height - child.size.height) / 2;

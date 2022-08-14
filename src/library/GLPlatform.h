@@ -10,7 +10,6 @@
 #include "GLFW/glfw3.h"
 #include "include/gpu/GrDirectContext.h"
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
-#include <optional>
 
 namespace sktextlayout = skia::textlayout;
 
@@ -28,8 +27,8 @@ namespace elementor {
 
         std::string title;
         Size size;
-        std::optional <Size> minSize;
-        std::optional <Size> maxSize;
+        std::optional<Size> minSize;
+        std::optional<Size> maxSize;
         Application *application;
 
         int run();
@@ -64,13 +63,22 @@ namespace elementor {
         void applyRnfQueue();
     };
 
-    class GLWindowContext : public WindowContext {
-    public:
-        GLWindowContext(GLFWwindow *window, Element *root);
-
-    private:
-        GLFWwindow *window;
+    class GLWindow : public Window {
+        
     };
+
+    // class GLWindowContext : public WindowContext {
+    // public:
+    //     GLWindowContext(GLFWwindow *window, Element *root);
+
+    // private:
+    //     GLFWwindow *glWindow;
+    //     Size size;
+    //     Size monitorSize;
+    //     Size monitorPhysicalSize;
+    //     float monitorPixelScale;
+    //     Element *root;
+    // };
 
     class GLApplicationContext : public ApplicationContext {
     public:

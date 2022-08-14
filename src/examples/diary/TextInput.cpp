@@ -81,11 +81,11 @@ TextInput *TextInput::onChange(std::function<std::u32string (std::u32string valu
     return this;
 }
 
-Size TextInput::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-    return this->child->getSize(ctx, boundaries);
+Size TextInput::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    return this->child->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> TextInput::getChildren(ApplicationContext *ctx, Size size) {
+std::vector <RenderElement> TextInput::getChildren(ApplicationContext *ctx, Window *window, Size size) {
     RenderElement child;
     child.element = this->child;
     child.size = size;

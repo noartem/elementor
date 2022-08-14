@@ -14,11 +14,11 @@ namespace elementor::elements {
         return this;
     }
 
-    Size ExpandedHeight::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        return fitSizeInBoundaries(this->getChild()->getSize(ctx, {{0, boundaries.max.height}, boundaries.max}), boundaries);
+    Size ExpandedHeight::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        return fitSizeInBoundaries(this->getChild()->getSize(ctx, window, {{0, boundaries.max.height}, boundaries.max}), boundaries);
     }
 
-    std::vector <RenderElement> ExpandedHeight::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> ExpandedHeight::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         RenderElement child;
         child.element = this->getChild();
         child.position = {0, 0};

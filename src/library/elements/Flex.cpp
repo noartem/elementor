@@ -54,10 +54,10 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Flex::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Flex::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         float maxCrossAxisSize = 0;
         for (Element *childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, {{0, 0}, boundaries.max});
+            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
             float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;
             maxCrossAxisSize = std::max(childCrossAxisSize, maxCrossAxisSize);
         }
@@ -72,13 +72,13 @@ namespace elementor::elements {
         return fitSizeInBoundaries(size, boundaries);
     }
 
-    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         Boundaries sizedChildBoundaries = {{0, 0}, size};
 
         int childrenCount = this->getChildrenSize();
-        float spacing = this->spacing * ctx->window->getMonitorPixelScale();
+        float spacing = this->spacing * window->getMonitorPixelScale();
         float fixedSize = this->spacing * (childrenCount - 1);
 
         std::vector <std::tuple<int, int>> flexibleChildren;
@@ -91,7 +91,7 @@ namespace elementor::elements {
             Flexible *childFlexible = dynamic_cast<Flexible *>(child.element);
 
             if (childFlexible == NULL) {
-                child.size = child.element->getSize(ctx, sizedChildBoundaries);
+                child.size = child.element->getSize(ctx, window, sizedChildBoundaries);
                 fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             } else {
                 float childGrow = childFlexible->getGrow();
@@ -121,7 +121,7 @@ namespace elementor::elements {
                 childBoundaries = {{0, axisSize}, {size.width, axisSize}};
             }
 
-            child.size = child.element->getSize(ctx, childBoundaries);
+            child.size = child.element->getSize(ctx, window, childBoundaries);
         }
 
         float axisPosition = 0;

@@ -50,11 +50,11 @@ namespace elementor::elements {
         return this;
     }
 
-    void Rounded::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
-        float topLeft = this->getRadiusTopLeft() * ctx->window->getMonitorPixelScale();
-        float topRight = this->getRadiusTopRight() * ctx->window->getMonitorPixelScale();
-        float bottomRight = this->getRadiusBottomRight() * ctx->window->getMonitorPixelScale();
-        float bottomLeft = this->getRadiusBottomLeft() * ctx->window->getMonitorPixelScale();
+    void Rounded::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+        float topLeft = this->getRadiusTopLeft() * window->getMonitorPixelScale();
+        float topRight = this->getRadiusTopRight() * window->getMonitorPixelScale();
+        float bottomRight = this->getRadiusBottomRight() * window->getMonitorPixelScale();
+        float bottomLeft = this->getRadiusBottomLeft() * window->getMonitorPixelScale();
         SkVector corners[] = {{topLeft, topLeft}, {topRight, topRight}, {bottomRight, bottomRight}, {bottomLeft, bottomLeft}};
 
         SkRRect skRRect;
@@ -64,15 +64,15 @@ namespace elementor::elements {
         canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
     }
 
-    Size Rounded::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size Rounded::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, boundaries);
+            return this->getChild()->getSize(ctx, window, boundaries);
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> Rounded::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Rounded::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

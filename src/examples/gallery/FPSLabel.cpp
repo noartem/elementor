@@ -15,11 +15,11 @@ FPSLabel::FPSLabel() {
         ->setText("FPS: 00");
 }
 
-Size FPSLabel::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-    return this->child->getSize(ctx, boundaries);
+Size FPSLabel::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    return this->child->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Size size) {
+std::vector <RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Window *window, Size size) {
     ctx->requestNextFrame([] {});
     this->child->setText("FPS: " + std::to_string((int) ctx->perfomance->getFPS()));
 

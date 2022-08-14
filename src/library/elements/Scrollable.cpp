@@ -27,7 +27,7 @@ namespace elementor::elements {
     }
 
     float Scrollable::getMonitorPixelScale() {
-        return this->ctx->window->getMonitorPixelScale();
+        return this->window->getMonitorPixelScale();
     }
 
     float Scrollable::getHeight() {
@@ -94,19 +94,19 @@ namespace elementor::elements {
             childBoundaries.max.width = boundaries.max.width;
         }
 
-        return this->getChild()->getSize(ctx, childBoundaries);
+        return this->getChild()->getSize(ctx, window, childBoundaries);
     }
 
-    Size Scrollable::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        this->ctx = ctx;
+    Size Scrollable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        this->window = window;
         this->childSize = this->getChildSize(ctx, boundaries);
         return fitSizeInBoundaries(this->childSize, boundaries);
     }
 
-    void Scrollable::paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) {
+    void Scrollable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         ElementRect oldRect = this->rect;
 
-        this->ctx = ctx;
+        this->window = window;
         this->rect = rect;
 
         if (rect.size.height != oldRect.size.height || rect.size.width != oldRect.size.width) {
@@ -124,17 +124,17 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Scrollable::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Scrollable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
-            this->ctx = ctx;
+            this->window = window;
             this->childSize = this->getChildSize(ctx, {rect.size, rect.size});
             child.size = this->childSize;
-            child.position.x = -1 * this->getScrollLeft() * ctx->window->getMonitorPixelScale();
-            child.position.y = -1 * this->getScrollTop() * ctx->window->getMonitorPixelScale();
+            child.position.x = -1 * this->getScrollLeft() * window->getMonitorPixelScale();
+            child.position.y = -1 * this->getScrollTop() * window->getMonitorPixelScale();
 
             children.push_back(child);
         }

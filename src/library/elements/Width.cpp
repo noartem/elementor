@@ -23,17 +23,17 @@ namespace elementor::elements {
         return this;
     }
 
-    Size Width::getSize(ApplicationContext *ctx, Boundaries boundaries) {
-        float width = this->width * ctx->window->getMonitorPixelScale();
+    Size Width::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        float width = this->width * window->getMonitorPixelScale();
         if (this->hasChild()) {
             Boundaries childBoundaries = {{std::max(width, boundaries.min.width), boundaries.min.height}, {std::min(width, boundaries.max.width), boundaries.max.height}};
-            return this->getChild()->getSize(ctx, childBoundaries);
+            return this->getChild()->getSize(ctx, window, childBoundaries);
         } else {
             return fitSizeInBoundaries({width, boundaries.max.height}, boundaries);
         }
     }
 
-    std::vector <RenderElement> Width::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> Width::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

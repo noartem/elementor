@@ -33,23 +33,23 @@ namespace elementor::elements {
         return this;
     }
 
-    Size AlignHeight::getSize(ApplicationContext *ctx, Boundaries boundaries) {
+    Size AlignHeight::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
             Boundaries childBoundaries = {{boundaries.min.width, 0}, boundaries.max};
-            Size childSize = this->getChild()->getSize(ctx, childBoundaries);
+            Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
             return fitSizeInBoundaries(childSize, {{boundaries.min.width, boundaries.max.height}, boundaries.max});
         } else {
             return boundaries.max;
         }
     }
 
-    std::vector <RenderElement> AlignHeight::getChildren(ApplicationContext *ctx, Size size) {
+    std::vector <RenderElement> AlignHeight::getChildren(ApplicationContext *ctx, Window *window, Size size) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
-            child.size = child.element->getSize(ctx, {{size.width, }, size});
+            child.size = child.element->getSize(ctx, window, {{size.width, }, size});
             child.position = {0, size.height * this->coef - child.size.height * this->childCoef};
 
             children.push_back(child);

@@ -96,7 +96,7 @@ Column *ExamplesGallery::makeExamplesList() {
     return examplesList;
 }
 
-std::vector <RenderElement> ExamplesGallery::getChildren(ApplicationContext *ctx, Size size) {
+std::vector <RenderElement> ExamplesGallery::getChildren(ApplicationContext *ctx, Window *window, Size size) {
     RenderElement sceneElement;
     sceneElement.element = this->scene;
     sceneElement.position = {0, 0};

@@ -143,9 +143,9 @@ namespace elementor::elements {
 
         sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
-        Size getSize(ApplicationContext *ctx, Boundaries boundaries) override;    
+        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;    
 
-        void paintBackground(ApplicationContext *ctx, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
     private:
         std::string text;
@@ -175,7 +175,7 @@ namespace elementor::elements {
 
         sk_sp<SkTypeface> makeSkTypeface();
 
-        SkFont makeSkFont(ApplicationContext *ctx);
+        SkFont makeSkFont(Window *window);
 
         SkPaint makeSkPaint();
 
