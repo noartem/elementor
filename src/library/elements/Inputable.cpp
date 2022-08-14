@@ -106,12 +106,12 @@ namespace elementor::elements {
             }
 
             if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
-                this->ctx->clipboard->set(toUTF8(this->text));
+                this->ctx->getClipboard()->set(toUTF8(this->text));
                 return EventCallbackResponse::StopPropagation;
             }
 
             if (event->key == KeyboardKey::V && event->mod == KeyMod::Control) {
-                std::string clipboardValueU8 = this->ctx->clipboard->get();
+                std::string clipboardValueU8 = this->ctx->getClipboard()->get();
                 std::u32string clipboardValueU32;
                 fromUTF8(clipboardValueU8, clipboardValueU32);
                 this->text += clipboardValueU32;

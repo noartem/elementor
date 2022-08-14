@@ -231,7 +231,7 @@ namespace elementor::elements {
     SkFont Text::makeSkFont(Window *window) {
         SkFont font;
         font.setTypeface(this->makeSkTypeface());
-        font.setSize(this->fontSize * window->getMonitorPixelScale());
+        font.setSize(this->fontSize * window->getMonitor()->getPixelScale());
         font.setScaleX(this->fontScale);
         font.setSkewX(this->fontSkew);
         font.setEdging(this->getSkFontEdging());
@@ -287,9 +287,9 @@ namespace elementor::elements {
         }
     }
 
-    sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
+    sktextlayout::TextStyle Text::makeSkTextStyle(Window *window) {
         sktextlayout::TextStyle textStyle;
-        textStyle.setFontSize(this->fontSize * window->getMonitorPixelScale());
+        textStyle.setFontSize(this->fontSize * window->getMonitor()->getPixelScale());
         textStyle.setFontFamilies({SkString(this->fontFamily)});
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
@@ -302,7 +302,7 @@ namespace elementor::elements {
     }
 
     Size Text::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->font.has_value()) this->font = this->makeSkFont(window);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
         SkRect textBounds;
@@ -311,7 +311,7 @@ namespace elementor::elements {
     }
 
     void Text::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->font.has_value()) this->font = this->makeSkFont(window);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
 
         canvas->drawString(this->text.c_str(), 0, rect.size.height, this->font.value(), this->paint.value());

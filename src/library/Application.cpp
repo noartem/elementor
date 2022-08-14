@@ -11,7 +11,7 @@ namespace elementor {
         RenderElement rootElement;
         rootElement.position = {0, 0};
         rootElement.size = window->getSize();
-        rootElement.element = this->root;
+        rootElement.element = window->getRoot();
 
         ElementRect rootRect;
         rootRect.position = {0, 0};

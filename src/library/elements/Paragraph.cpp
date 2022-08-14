@@ -135,11 +135,11 @@ namespace elementor::elements {
         for (Element *child : this->getChildrenList()) {
             Text *childText = dynamic_cast<Text *>(child);
             if (childText) {
-                builder.pushStyle(childText->makeSkTextStyle(ctx));
+                builder.pushStyle(childText->makeSkTextStyle(window));
                 builder.addText(childText->getText().c_str(), childText->getText().size());
                 builder.pop();
             } else {
-                builder.addPlaceholder(this->makeChildPlaceholderStyle(ctx, child));
+                builder.addPlaceholder(this->makeChildPlaceholderStyle(ctx, window, child));
             }
         }
 

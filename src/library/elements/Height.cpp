@@ -24,7 +24,7 @@ namespace elementor::elements {
     }
 
     Size Height::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        float height = this->height * window->getMonitorPixelScale();
+        float height = this->height * window->getMonitor()->getPixelScale();
         if (this->hasChild()) {
             Boundaries childBoundaries = {{boundaries.min.width, std::max(height, boundaries.min.height)}, {boundaries.max.width, std::min(height, boundaries.max.height)}};
             return this->getChild()->getSize(ctx, window, childBoundaries);

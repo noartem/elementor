@@ -21,7 +21,7 @@ Size FPSLabel::getSize(ApplicationContext *ctx, Window *window, Boundaries bound
 
 std::vector <RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Window *window, Size size) {
     ctx->requestNextFrame([] {});
-    this->child->setText("FPS: " + std::to_string((int) ctx->perfomance->getFPS()));
+    this->child->setText("FPS: " + std::to_string((int) ctx->getPerfomance()->getFPS()));
 
     RenderElement child;
     child.element = this->child;

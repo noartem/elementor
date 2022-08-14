@@ -69,9 +69,24 @@ namespace elementor {
         virtual double getFPS() = 0;
     };
 
-    class Window {
+    class Monitor {
     public:
         virtual Size getSize() = 0;
+        virtual Size getPhysicalSize() = 0;
+        virtual float getPixelScale() = 0;
+        virtual void setPixelScale(float scale) = 0;
+    };
+
+    class Window {
+    public:
+        virtual Element *getRoot() = 0;
+        virtual void setRoot(Element *root) = 0;
+
+        virtual void setTitle(std::string title) = 0;
+        virtual std::string getTitle() = 0;
+
+        virtual Size getSize() = 0;
+        virtual void setSize(Size size) = 0;
         virtual std::optional<Size> getMinSize() = 0;
         virtual std::optional<Size> getMaxSize() = 0;
         virtual void setMinSize(Size size) = 0;
@@ -80,29 +95,18 @@ namespace elementor {
         virtual Position getPosition() = 0;
         virtual void setPosition(Position Position) = 0;
 
-        virtual Size getMonitorSize() = 0;
-        virtual Size getMonitorPhysicalSize() = 0;
-        virtual float getMonitorPixelScale() = 0;
-        virtual void setMonitorPixelScale(float scale) = 0;
-
-        virtual Element *getRoot() = 0;
-        virtual void setRoot(Element *root) = 0;
-
-        virtual void setTitle(std::string title) = 0;
-        virtual std::string getTitle() = 0;
-
         virtual void close() = 0;
 
-        Cursor *getCursor();
+        virtual Cursor *getCursor() = 0;
+        virtual Monitor *getMonitor() = 0;
     };
 
     class ApplicationContext {
     public:
-        Element *root;
-        Clipboard *clipboard;
-        Perfomance *perfomance;
-        virtual void requestNextFrame(std::function<void ()> callback) = 0;
+        virtual Clipboard *getClipboard() = 0;
+        virtual Perfomance *getPerfomance() = 0;
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
+        virtual void requestNextFrame(std::function<void ()> callback) = 0;
     };
 
     class WithChild {

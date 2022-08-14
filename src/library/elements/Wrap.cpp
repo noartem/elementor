@@ -48,8 +48,8 @@ namespace elementor::elements {
     }
 
     Size Wrap::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        float spacing = this->spacing * window->getMonitorPixelScale();
-        float crossSpacing = this->crossSpacing * window->getMonitorPixelScale();
+        float spacing = this->spacing * window->getMonitor()->getPixelScale();
+        float crossSpacing = this->crossSpacing * window->getMonitor()->getPixelScale();
 
         bool isRow = this->direction == WrapDirection::Row;
         float maxAxisSize = isRow ? boundaries.max.width : boundaries.max.height;
@@ -95,8 +95,8 @@ namespace elementor::elements {
             children.push_back(child);
         }
 
-        float spacing = this->getSpacing() * window->getMonitorPixelScale();
-        float crossSpacing = this->getCrossSpacing() * window->getMonitorPixelScale();
+        float spacing = this->getSpacing() * window->getMonitor()->getPixelScale();
+        float crossSpacing = this->getCrossSpacing() * window->getMonitor()->getPixelScale();
 
         bool isRow = this->direction == WrapDirection::Row;
 

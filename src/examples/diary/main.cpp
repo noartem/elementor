@@ -10,10 +10,11 @@ int main() {
     DiaryService *diaryService = new DiaryService();
     DiaryApplication *diaryApplication = new DiaryApplication(diaryService);
 
-    glApplication()
-        ->setTitle("Diary")
-        ->setRoot(diaryApplication->makeElement())
-        ->setDefaultSize({920, 640})
-        ->setMinSize({630, 320})
-        ->run();
+    GLApplication *application = new GLApplication();
+    GLWindow *window = application->makeWindow();
+    window->setTitle("Diary");
+    window->setRoot(diaryApplication->makeElement());
+    window->setSize({920, 640});
+    window->setMinSize({630, 320});
+    application->run();
 }

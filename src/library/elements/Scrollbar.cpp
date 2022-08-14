@@ -61,12 +61,12 @@ namespace elementor::elements {
     }
 
     void Scrollbar::scrollToX(int x) {
-        float position = ((x / this->window->getMonitorPixelScale()) / this->child->getWidth()) * this->child->getScrollWidth();
+        float position = ((x / this->window->getMonitor()->getPixelScale()) / this->child->getWidth()) * this->child->getScrollWidth();
         this->child->setScrollLeft(position - (this->child->getWidth() / 2));
     }
 
     void Scrollbar::scrollToY(int y) {
-        float position = ((y / this->window->getMonitorPixelScale()) / this->child->getHeight()) * this->child->getScrollHeight();
+        float position = ((y / this->window->getMonitor()->getPixelScale()) / this->child->getHeight()) * this->child->getScrollHeight();
         this->child->setScrollTop(position - (this->child->getHeight() / 2));
     }
 
@@ -111,10 +111,10 @@ namespace elementor::elements {
 
             ScrollDirection scrollDirection = this->child->getDirection();
 
-            float scrollWidth = this->child->getScrollWidth() * window->getMonitorPixelScale();
-            float scrollHeight = this->child->getScrollHeight() * window->getMonitorPixelScale();
-            float scrollTop = this->child->getScrollTop() * window->getMonitorPixelScale();
-            float scrollLeft = this->child->getScrollLeft() * window->getMonitorPixelScale();
+            float scrollWidth = this->child->getScrollWidth() * window->getMonitor()->getPixelScale();
+            float scrollHeight = this->child->getScrollHeight() * window->getMonitor()->getPixelScale();
+            float scrollTop = this->child->getScrollTop() * window->getMonitor()->getPixelScale();
+            float scrollLeft = this->child->getScrollLeft() * window->getMonitor()->getPixelScale();
 
             float childHeight = childSize.height;
             if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > size.width)) {
