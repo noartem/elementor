@@ -5,9 +5,9 @@
 #ifndef GALLERY_EXAMPLES_ELEMENTOR_H
 #define GALLERY_EXAMPLES_ELEMENTOR_H
 
-#include "../../library/utility.h"
-#include "../../library/GLApplication.h"
-#include "../../library/elements/utility.h"
+#include "../../library/include.h"
+#include "../../library/gl/GLApplication.h"
+#include "../../library/elements/include.h"
 
 using namespace elementor;
 using namespace elementor::elements;
