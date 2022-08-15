@@ -17,6 +17,7 @@ namespace elementor {
         Perfomance *getPerfomance() override;
         sk_sp<SkFontMgr> getSkFontManager() override;
         void requestNextFrame(std::function<void ()> callback) override;
+        Window *makeWindow() override;
 
     private:
         GLPlatform *platform;

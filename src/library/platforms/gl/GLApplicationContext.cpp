@@ -24,5 +24,9 @@ namespace elementor {
     void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
         this->platform->requestNextFrame(callback);
     }
+
+    Window *GLApplicationContext::makeWindow() {
+        return this->platform->makeWindow();
+    }
 }
 

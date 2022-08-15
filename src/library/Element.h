@@ -107,6 +107,7 @@ namespace elementor {
         virtual Perfomance *getPerfomance() = 0;
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
+        virtual Window *makeWindow() = 0;
     };
 
     class WithChild {
