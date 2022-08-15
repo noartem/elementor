@@ -5,24 +5,24 @@
 #include "GLApplicationContext.h"
 
 namespace elementor {
-    GLApplicationContext::GLApplicationContext(GLApplication *application) {
-        this->application = application;
+    GLApplicationContext::GLApplicationContext(GLPlatform *platform) {
+        this->platform = platform;
     }
 
     Clipboard *GLApplicationContext::getClipboard() {
-        return this->application->getClipboard();
+        return this->platform->getClipboard();
     }
 
     Perfomance *GLApplicationContext::getPerfomance() {
-        return this->application->getPerfomance();
+        return this->platform->getPerfomance();
     }
 
     sk_sp<SkFontMgr> GLApplicationContext::getSkFontManager() {
-        return this->application->getSkFontManager();
+        return this->platform->getSkFontManager();
     }
 
     void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
-        this->application->requestNextFrame(callback);
+        this->platform->requestNextFrame(callback);
     }
 }
 

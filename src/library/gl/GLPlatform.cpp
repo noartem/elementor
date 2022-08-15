@@ -2,7 +2,7 @@
 // Created by noartem on 14.04.2022.
 //
 
-#include "GLApplication.h"
+#include "GLPlatform.h"
 #include "GLApplicationContext.h"
 
 #include "GLFW/glfw3.h"
@@ -20,7 +20,7 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    GLApplication::GLApplication() {
+    GLPlatform::GLPlatform() {
         this->clipboard = new GLClipboard();
         this->perfomance = new GLPerfomance();
         this->fontManager = new GLFontManager();
@@ -42,7 +42,7 @@ namespace elementor {
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
     }
 
-    void GLApplication::run() {
+    void GLPlatform::run() {
         for (GLWindow *window : this->windows) {
             window->refresh();
         }
@@ -70,28 +70,28 @@ namespace elementor {
         glfwTerminate();
     }
 
-    GLClipboard *GLApplication::getClipboard() {
+    GLClipboard *GLPlatform::getClipboard() {
         return this->clipboard;
     }
 
-    GLFontManager *GLApplication::getFontManager() {
+    GLFontManager *GLPlatform::getFontManager() {
         return this->fontManager;
     }
 
-    GLPerfomance *GLApplication::getPerfomance() {
+    GLPerfomance *GLPlatform::getPerfomance() {
         return this->perfomance;
     }
 
-    sk_sp<SkFontMgr> GLApplication::getSkFontManager() {
+    sk_sp<SkFontMgr> GLPlatform::getSkFontManager() {
         return this->fontManager->getSkFontManager();
     }
 
-    void GLApplication::requestNextFrame(std::function<void ()> callback) {
+    void GLPlatform::requestNextFrame(std::function<void ()> callback) {
         glfwPostEmptyEvent();
         this->rnfNextQueue.push_back(callback);
     }
 
-    void GLApplication::applyRnfQueue() {
+    void GLPlatform::applyRnfQueue() {
         if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty() > 0) {
             return;
         }
@@ -104,7 +104,7 @@ namespace elementor {
         this->rnfNextQueue = {};
     }
 
-    GLWindow *GLApplication::makeWindow() {
+    GLWindow *GLPlatform::makeWindow() {
         GLWindow *window = new GLWindow(this->applicationContext);
         this->windows.push_back(window);
         return window;

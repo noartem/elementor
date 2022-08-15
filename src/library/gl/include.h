@@ -5,13 +5,13 @@
 #ifndef ELEMENTOR_GL_INCLUDE_H
 #define ELEMENTOR_GL_INCLUDE_H
 
-#include "GLApplication.h"
 #include "GLApplicationContext.h"
 #include "GLClipboard.h"
 #include "GLCursor.h"
 #include "GLFontManager.h"
 #include "GLMonitor.h"
 #include "GLPerfomance.h"
+#include "GLPlatform.h"
 #include "GLWindow.h"
 #include "utility.h"
 

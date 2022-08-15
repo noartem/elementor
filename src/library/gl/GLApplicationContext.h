@@ -6,12 +6,12 @@
 #define ELEMENTOR_GL_GLAPPLICATIONCONTEXT_H
 
 #include "../Element.h"
-#include "GLApplication.h"
+#include "GLPlatform.h"
 
 namespace elementor {
     class GLApplicationContext : public ApplicationContext {
     public:
-        GLApplicationContext(GLApplication *application);
+        GLApplicationContext(GLPlatform *platform);
 
         Clipboard *getClipboard() override;
         Perfomance *getPerfomance() override;
@@ -19,7 +19,7 @@ namespace elementor {
         void requestNextFrame(std::function<void ()> callback) override;
 
     private:
-        GLApplication *application;
+        GLPlatform *platform;
     };
 };
 

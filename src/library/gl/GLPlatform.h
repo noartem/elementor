@@ -2,8 +2,8 @@
 // Created by noartem on 14.04.2022.
 //
 
-#ifndef ELEMENTOR_GL_GLAPPLICATION_H
-#define ELEMENTOR_GL_GLAPPLICATION_H
+#ifndef ELEMENTOR_GL_GLPLATFORM_H
+#define ELEMENTOR_GL_GLPLATFORM_H
 
 #include "../Element.h"
 
@@ -17,9 +17,9 @@
 #include "include/gpu/GrDirectContext.h"
 
 namespace elementor {
-    class GLApplication {
+    class GLPlatform {
     public:
-        GLApplication();
+        GLPlatform();
 
         GLWindow *makeWindow();
 
@@ -46,4 +46,4 @@ namespace elementor {
     };
 };
 
-#endif //ELEMENTOR_GL_GLAPPLICATION_H
+#endif //ELEMENTOR_GL_GLPLATFORM_H
