@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_GL_GLWINDOW_H
 #define ELEMENTOR_GL_GLWINDOW_H
 
-#include "../Application.h"
+#include "../../Application.h"
 #include "GLCursor.h"
 #include "GLMonitor.h"
 

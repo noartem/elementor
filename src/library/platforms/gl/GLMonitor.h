@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_GL_GLMONITOR_H
 #define ELEMENTOR_GL_GLMONITOR_H
 
-#include "../Element.h"
+#include "../../Element.h"
 
 #include "GLFW/glfw3.h"
 

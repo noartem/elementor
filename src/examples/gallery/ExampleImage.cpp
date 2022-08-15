@@ -5,7 +5,7 @@
 #include "ExampleImage.h"
 #include "Scroll.h"
 
-// #include <filesystem>
+#include <filesystem>
 
 std::string ExampleImage::getName() {
     return "Image";
@@ -16,8 +16,7 @@ std::string ExampleImage::getDescription() {
 }
 
 Element *ExampleImage::getScene() {
-    // std::string currentPath = std::filesystem::current_path().string() + "/../../../../";
-    std::string currentPath = "/home/noartem/Projects/elementor/";
+    std::string currentPath = std::filesystem::current_path().string() + "/../../../../";
 
     return scroll()
         ->setChild(padding()

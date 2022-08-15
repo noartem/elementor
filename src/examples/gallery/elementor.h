@@ -6,7 +6,7 @@
 #define GALLERY_EXAMPLES_ELEMENTOR_H
 
 #include "../../library/include.h"
-#include "../../library/gl/include.h"
+#include "../../library/platforms/gl/include.h"
 #include "../../library/elements/include.h"
 
 using namespace elementor;

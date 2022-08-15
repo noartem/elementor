@@ -6,7 +6,6 @@
 #include "utility.h"
 
 #include "include/gpu/GrBackendSurface.h"
-#include "include/gpu/GrDirectContext.h"
 #include "include/gpu/gl/GrGLInterface.h"
 #include "include/core/SkTypeface.h"
 #include "include/core/SkCanvas.h"

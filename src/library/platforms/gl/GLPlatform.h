@@ -5,16 +5,12 @@
 #ifndef ELEMENTOR_GL_GLPLATFORM_H
 #define ELEMENTOR_GL_GLPLATFORM_H
 
-#include "../Element.h"
+#include "../../Element.h"
 
 #include "GLClipboard.h"
 #include "GLFontManager.h"
 #include "GLPerfomance.h"
 #include "GLWindow.h"
-
-#define SK_GL
-#include "GLFW/glfw3.h"
-#include "include/gpu/GrDirectContext.h"
 
 namespace elementor {
     class GLPlatform {

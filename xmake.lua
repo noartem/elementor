@@ -23,7 +23,7 @@ target("elementor")
     set_kind("static")
     add_packages("skia-build", "glfw")
     add_files("src/library/*.cpp")
-    add_files("src/library/gl/*.cpp")
+    add_files("src/library/platforms/*/*.cpp")
     add_files("src/library/elements/*.cpp")
 
 if is_plat("windows") then

@@ -5,7 +5,7 @@
 #ifndef ELEMENTOR_GL_GLFONTMANAGER_H
 #define ELEMENTOR_GL_GLFONTMANAGER_H
 
-#include "../Element.h"
+#include "../../Element.h"
 
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
 
