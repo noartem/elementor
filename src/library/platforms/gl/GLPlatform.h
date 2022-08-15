@@ -18,6 +18,9 @@ namespace elementor {
         GLPlatform();
 
         GLWindow *makeWindow();
+        void addWindow(GLWindow *window);
+        void removeWindow(GLWindow *window);
+        void removeWindow(unsigned int index);
 
         void run();
         void requestNextFrame(std::function<void ()> callback);

@@ -14,8 +14,6 @@
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
 
-#define SK_GL
-
 #define GL_RGBA8 0x8058
 
 namespace elementor {
@@ -42,17 +40,12 @@ namespace elementor {
     }
 
     void GLPlatform::run() {
-        for (GLWindow *window : this->windows) {
-            window->refresh();
-        }
-
         for (;;) {
             this->applyRnfQueue();
 
             for (GLWindow *window : this->windows) {
                 if (window->shouldClose()) {
                     window->close();
-                    // TODO: remove window
                 } else {
                     window->draw();
                 }
@@ -60,7 +53,9 @@ namespace elementor {
 
             this->perfomance->incrementFramesCount();
 
-            // TODO: if new windows size equals 0 *break*
+            if (this->windows.size() == 0) {
+                break;
+            }
 
             glfwWaitEvents();
         }
@@ -105,8 +100,30 @@ namespace elementor {
 
     GLWindow *GLPlatform::makeWindow() {
         GLWindow *window = new GLWindow(this->applicationContext);
-        this->windows.push_back(window);
+        this->addWindow(window);
         return window;
+    }
+
+    void GLPlatform::addWindow(GLWindow *window) {
+        window->onClose([this, window] () {
+            this->removeWindow(window);
+        });
+        this->windows.push_back(window);
+    }
+
+    void GLPlatform::removeWindow(unsigned int index) {
+        if (index < this->windows.size()) {
+            this->windows.erase(this->windows.begin() + index);
+        }
+    }
+
+    void GLPlatform::removeWindow(GLWindow *window) {
+        for (unsigned int i = 0; i < this->windows.size(); ++i) {
+            if (this->windows[i] == window) {
+                this->removeWindow(i);
+                return;
+            }
+        }
     }
 }
 

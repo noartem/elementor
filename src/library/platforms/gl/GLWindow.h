@@ -19,7 +19,6 @@ namespace elementor {
         GLWindow(ApplicationContext *applicationContext);
 
         void draw();
-        void refresh();
         void updateMonitor();
 
         Element *getRoot() override;
@@ -45,6 +44,8 @@ namespace elementor {
         Cursor *getCursor() override;
         Monitor *getMonitor() override;
 
+        void onClose(std::function<void ()> callback);
+
     private:
         Application *application;
 
@@ -57,6 +58,7 @@ namespace elementor {
         GrDirectContext *skContext;
         SkSurface *skSurface;
         SkCanvas *skCanvas;
+        void refresh();
 
         GLFWmonitor *glMonitor;
         GLMonitor *monitor;
@@ -69,6 +71,8 @@ namespace elementor {
         void onChar(unsigned int codepoint);
         void onMouseMove(double x, double y);
         void onScroll(double xOffset, double yOffset);
+
+        std::function<void ()> callbackClose;
     };
 };
 

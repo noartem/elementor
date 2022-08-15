@@ -46,6 +46,11 @@ namespace elementor {
             window->updateMonitor();
         });
 
+        glfwSetWindowCloseCallback(glWindow, [] (GLFWwindow* glWindow) {
+            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+            window->close();
+        });
+
         glfwSetKeyCallback(glWindow, [] (GLFWwindow *glWindow, int key, int scancode, int action, int mods) {
             GLWindow *window = getGLFWwindowGLWindow(glWindow);
             window->onKeyboard(key, scancode, action, mods);
@@ -87,6 +92,10 @@ namespace elementor {
     }
 
     void GLWindow::draw() {
+        if (this->skSurface == nullptr) {
+            this->refresh();
+        }
+
         glfwMakeContextCurrent(this->glWindow);
         this->skCanvas->clear(SK_ColorBLACK);
         this->application->draw(this->applicationContext, this, this->skCanvas);
@@ -171,6 +180,14 @@ namespace elementor {
 
     void GLWindow::close() {
         glfwDestroyWindow(this->glWindow);
+
+        if (this->callbackClose) {
+            this->callbackClose();
+        }
+    }
+
+    void GLWindow::onClose(std::function<void ()> callback) {
+        this->callbackClose = callback;
     }
 
     Cursor *GLWindow::getCursor() {
