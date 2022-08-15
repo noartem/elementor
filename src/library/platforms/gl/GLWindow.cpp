@@ -30,7 +30,7 @@ namespace elementor {
         this->cursor = new GLCursor(this->glWindow, this->applicationContext);
 
         glfwMakeContextCurrent(this->glWindow);
-        glfwSwapInterval(1);
+        glfwSwapInterval(0); // TODO: Check if it is a problem
         glfwSetWindowUserPointer(this->glWindow, this);
 
         this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
@@ -92,11 +92,8 @@ namespace elementor {
     }
 
     void GLWindow::draw() {
-        if (this->skSurface == nullptr) {
-            this->refresh();
-        }
-
         glfwMakeContextCurrent(this->glWindow);
+        this->refresh();
         this->skCanvas->clear(SK_ColorBLACK);
         this->application->draw(this->applicationContext, this, this->skCanvas);
         this->skContext->flush();
@@ -172,10 +169,6 @@ namespace elementor {
 
     void GLWindow::setPosition(Position position) {
         glfwSetWindowPos(this->glWindow, std::ceil(position.x), std::ceil(position.y));
-    }
-
-    bool GLWindow::shouldClose() {
-        return glfwWindowShouldClose(this->glWindow);        
     }
 
     void GLWindow::close() {

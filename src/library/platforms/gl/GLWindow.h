@@ -38,7 +38,6 @@ namespace elementor {
         Position getPosition() override;
         void setPosition(Position Position) override;
 
-        bool shouldClose();
         void close() override;
 
         Cursor *getCursor() override;

@@ -41,25 +41,20 @@ namespace elementor {
 
     void GLPlatform::run() {
         for (;;) {
+            glfwWaitEvents();
+
             this->applyRnfQueue();
 
             for (GLWindow *window : this->windows) {
-                if (window->shouldClose()) {
-                    window->close();
-                } else {
-                    window->draw();
-                }
+                window->draw();
             }
-
-            this->perfomance->incrementFramesCount();
 
             if (this->windows.size() == 0) {
                 break;
             }
 
-            glfwWaitEvents();
+            this->perfomance->incrementFramesCount();
         }
-        
 
         glfwTerminate();
     }
