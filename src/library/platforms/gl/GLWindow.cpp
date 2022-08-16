@@ -78,24 +78,27 @@ namespace elementor {
     }
 
     void GLWindow::refresh() {
+        Size size = this->getSize();
+
         GrGLFramebufferInfo framebufferInfo;
         framebufferInfo.fFBOID = 0;
         framebufferInfo.fFormat = GL_RGBA8;
 
-        Size size = this->getSize();
-
+        glfwMakeContextCurrent(this->glWindow);
         GrBackendRenderTarget backendRenderTarget(size.width, size.height, 0, 0, framebufferInfo);
-        this->skSurface = SkSurface::MakeFromBackendRenderTarget(this->skContext, backendRenderTarget, kBottomLeft_GrSurfaceOrigin,
-                                                                 kRGBA_8888_SkColorType, SkColorSpace::MakeSRGB(), nullptr)
-                                                                 .release();
+        this->skSurface = SkSurface::MakeFromBackendRenderTarget(this->skContext, backendRenderTarget,
+                                                                 kBottomLeft_GrSurfaceOrigin, kRGBA_8888_SkColorType,
+                                                                 SkColorSpace::MakeSRGB(), nullptr);
         this->skCanvas = this->skSurface->getCanvas();
     }
 
     void GLWindow::draw() {
-        glfwMakeContextCurrent(this->glWindow);
         this->refresh();
+
         this->skCanvas->clear(SK_ColorBLACK);
         this->application->draw(this->applicationContext, this, this->skCanvas);
+
+        glfwMakeContextCurrent(this->glWindow);
         this->skContext->flush();
         glfwSwapBuffers(this->glWindow);
     }

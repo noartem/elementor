@@ -55,7 +55,7 @@ namespace elementor {
 
         GLFWwindow *glWindow;
         GrDirectContext *skContext;
-        SkSurface *skSurface;
+        sk_sp<SkSurface> skSurface;
         SkCanvas *skCanvas;
         void refresh();
 
