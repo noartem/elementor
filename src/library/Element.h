@@ -73,8 +73,6 @@ namespace elementor {
     public:
         virtual Size getSize() = 0;
         virtual Size getPhysicalSize() = 0;
-        virtual float getPixelScale() = 0;
-        virtual void setPixelScale(float scale) = 0;
     };
 
     class Window {
@@ -87,18 +85,23 @@ namespace elementor {
 
         virtual Size getSize() = 0;
         virtual void setSize(Size size) = 0;
+
         virtual std::optional<Size> getMinSize() = 0;
-        virtual std::optional<Size> getMaxSize() = 0;
+        virtual void setMinSize(std::optional<Size> size) = 0;
         virtual void setMinSize(Size size) = 0;
+
+        virtual std::optional<Size> getMaxSize() = 0;
+        virtual void setMaxSize(std::optional<Size> size) = 0;
         virtual void setMaxSize(Size size) = 0;
 
         virtual Position getPosition() = 0;
         virtual void setPosition(Position Position) = 0;
 
-        virtual void close() = 0;
-
         virtual Cursor *getCursor() = 0;
+
         virtual Monitor *getMonitor() = 0;
+
+        virtual void close() = 0;
     };
 
     class ApplicationContext {
@@ -108,6 +111,7 @@ namespace elementor {
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
         virtual Window *makeWindow() = 0;
+        virtual float getPixelScale() = 0;
     };
 
     class WithChild {

@@ -40,12 +40,12 @@ namespace elementor::elements {
 
     Size Padding::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         if (this->hasChild()) {
-            float paddingTop = this->getPaddings().top * window->getMonitor()->getPixelScale();
-            float paddingBottom = this->getPaddings().bottom * window->getMonitor()->getPixelScale();
+            float paddingTop = this->getPaddings().top * ctx->getPixelScale();
+            float paddingBottom = this->getPaddings().bottom * ctx->getPixelScale();
             float paddingY = paddingTop + paddingBottom;
 
-            float paddingRight = this->getPaddings().right * window->getMonitor()->getPixelScale();
-            float paddingLeft = this->getPaddings().left * window->getMonitor()->getPixelScale();
+            float paddingRight = this->getPaddings().right * ctx->getPixelScale();
+            float paddingLeft = this->getPaddings().left * ctx->getPixelScale();
             float paddingX = paddingLeft + paddingRight;
 
             Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
@@ -63,10 +63,10 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild();
 
-            float paddingTop = this->getPaddings().top * window->getMonitor()->getPixelScale();
-            float paddingRight = this->getPaddings().right * window->getMonitor()->getPixelScale();
-            float paddingBottom = this->getPaddings().bottom * window->getMonitor()->getPixelScale();
-            float paddingLeft = this->getPaddings().left * window->getMonitor()->getPixelScale();
+            float paddingTop = this->getPaddings().top * ctx->getPixelScale();
+            float paddingRight = this->getPaddings().right * ctx->getPixelScale();
+            float paddingBottom = this->getPaddings().bottom * ctx->getPixelScale();
+            float paddingLeft = this->getPaddings().left * ctx->getPixelScale();
             child.position = {paddingLeft, paddingTop};
 
             float childWidth = size.width - paddingLeft - paddingRight;

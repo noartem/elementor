@@ -50,7 +50,7 @@ namespace elementor::elements {
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
     private:
-        Window *window;
+        ApplicationContext *ctx;
         ScrollbarPosition position = ScrollbarPosition::InContent;
         ScrollbarVisible visible = ScrollbarVisible::WhenNeeded;
         Scrollable *child;

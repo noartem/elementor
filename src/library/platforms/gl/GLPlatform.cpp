@@ -4,6 +4,7 @@
 
 #include "GLPlatform.h"
 #include "GLApplicationContext.h"
+#include "utility.h"
 
 #include "GLFW/glfw3.h"
 
@@ -18,11 +19,6 @@
 
 namespace elementor {
     GLPlatform::GLPlatform() {
-        this->clipboard = new GLClipboard();
-        this->perfomance = new GLPerfomance();
-        this->fontManager = new GLFontManager();
-        this->applicationContext = new GLApplicationContext(this);
-
         glfwInit();
 
         glfwSetErrorCallback([] (int error, const char *description) {
@@ -37,6 +33,12 @@ namespace elementor {
         glfwWindowHint(GLFW_STENCIL_BITS, 0);
         glfwWindowHint(GLFW_ALPHA_BITS, 0);
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
+
+        this->clipboard = new GLClipboard();
+        this->perfomance = new GLPerfomance();
+        this->fontManager = new GLFontManager();
+        this->applicationContext = new GLApplicationContext(this);
+        this->pixelScale = this->calcPixelScale();
     }
 
     void GLPlatform::run() {
@@ -119,6 +121,15 @@ namespace elementor {
                 return;
             }
         }
+    }
+
+    float GLPlatform::calcPixelScale() {
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+        return getMonitorSize(monitor).width / getMonitorPhysicalSize(monitor).width / DefaultMonitorScale;
+    }
+
+    float GLPlatform::getPixelScale() {
+        return this->pixelScale;
     }
 }
 

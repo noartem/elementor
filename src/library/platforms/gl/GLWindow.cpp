@@ -40,10 +40,10 @@ namespace elementor {
             window->refresh();
         });
 
-        this->updateMonitor();
         glfwSetWindowPosCallback(glWindow, [] (GLFWwindow* glWindow, int xpos, int ypos) {
             GLWindow *window = getGLFWwindowGLWindow(glWindow);
-            window->updateMonitor();
+            window->glMonitor = nullptr;
+            window->monitor = nullptr;
         });
 
         glfwSetWindowCloseCallback(glWindow, [] (GLFWwindow* glWindow) {
@@ -103,14 +103,6 @@ namespace elementor {
         glfwSwapBuffers(this->glWindow);
     }
 
-    void GLWindow::updateMonitor() {
-        GLFWmonitor *newGlMonitor = getWindowMonitor(this->glWindow);
-        if (newGlMonitor != this->glMonitor) {
-            this->glMonitor = newGlMonitor;
-            this->monitor = new GLMonitor(newGlMonitor);   
-        }
-    }
-
     Element *GLWindow::getRoot() {
         return this->root;
     }
@@ -161,7 +153,17 @@ namespace elementor {
         this->updateWindowSizeLimits();
     }
 
+    void GLWindow::setMinSize(std::optional<Size> size) {
+        this->minSize = size;
+        this->updateWindowSizeLimits();
+    }
+
     void GLWindow::setMaxSize(Size size) {
+        this->maxSize = size;
+        this->updateWindowSizeLimits();
+    }
+
+    void GLWindow::setMaxSize(std::optional<Size> size) {
         this->maxSize = size;
         this->updateWindowSizeLimits();
     }
@@ -191,6 +193,12 @@ namespace elementor {
     }
 
     Monitor *GLWindow::getMonitor() {
+        if (this->monitor == nullptr) {
+            GLFWmonitor *glMonitor = getWindowMonitor(this->glWindow);
+            this->glMonitor = glMonitor;
+            this->monitor = new GLMonitor(glMonitor);
+        }
+
         return this->monitor;
     }
 

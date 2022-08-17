@@ -29,19 +29,23 @@ namespace elementor {
 
         Size getSize() override;
         void setSize(Size size) override;
+
         std::optional<Size> getMinSize() override;
-        std::optional<Size> getMaxSize() override;
+        void setMinSize(std::optional<Size> size) override;
         void setMinSize(Size size) override;
+
+        std::optional<Size> getMaxSize() override;
+        void setMaxSize(std::optional<Size> size) override;
         void setMaxSize(Size size) override;
-        void updateWindowSizeLimits();
 
         Position getPosition() override;
         void setPosition(Position Position) override;
 
-        void close() override;
-
         Cursor *getCursor() override;
+
         Monitor *getMonitor() override;
+
+        void close() override;
 
         void onClose(std::function<void ()> callback);
 
@@ -64,6 +68,8 @@ namespace elementor {
 
         ApplicationContext *applicationContext;
         GLCursor *cursor;
+
+        void updateWindowSizeLimits();
 
         void onMouseButton(int button, int action, int mods);
         void onKeyboard(int key, int scancode, int action, int mods);

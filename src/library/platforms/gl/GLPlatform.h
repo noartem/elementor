@@ -30,6 +30,8 @@ namespace elementor {
         GLFontManager *getFontManager();
         sk_sp<SkFontMgr> getSkFontManager();
 
+        float getPixelScale();
+
     private:
         GLClipboard *clipboard;
         GLFontManager *fontManager;
@@ -42,6 +44,9 @@ namespace elementor {
         std::vector<std::function<void ()>> rnfNextQueue;
         std::vector<std::function<void ()>> rnfCurrentQueue;
         void applyRnfQueue();
+
+        float pixelScale;
+        float calcPixelScale();
     };
 };
 

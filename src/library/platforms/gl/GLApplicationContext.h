@@ -18,6 +18,7 @@ namespace elementor {
         sk_sp<SkFontMgr> getSkFontManager() override;
         void requestNextFrame(std::function<void ()> callback) override;
         Window *makeWindow() override;
+        float getPixelScale() override;
 
     private:
         GLPlatform *platform;

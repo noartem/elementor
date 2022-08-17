@@ -15,13 +15,10 @@ namespace elementor {
         GLMonitor(GLFWmonitor *monitor);
         Size getSize() override;
         Size getPhysicalSize() override;
-        float getPixelScale() override;
-        void setPixelScale(float scale) override;
 
     private:
         Size size;
         Size physicalSize;
-        float pixelScale;
     };
 };
 

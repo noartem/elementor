@@ -51,10 +51,10 @@ namespace elementor::elements {
     }
 
     void Rounded::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        float topLeft = this->getRadiusTopLeft() * window->getMonitor()->getPixelScale();
-        float topRight = this->getRadiusTopRight() * window->getMonitor()->getPixelScale();
-        float bottomRight = this->getRadiusBottomRight() * window->getMonitor()->getPixelScale();
-        float bottomLeft = this->getRadiusBottomLeft() * window->getMonitor()->getPixelScale();
+        float topLeft = this->getRadiusTopLeft() * ctx->getPixelScale();
+        float topRight = this->getRadiusTopRight() * ctx->getPixelScale();
+        float bottomRight = this->getRadiusBottomRight() * ctx->getPixelScale();
+        float bottomLeft = this->getRadiusBottomLeft() * ctx->getPixelScale();
         SkVector corners[] = {{topLeft, topLeft}, {topRight, topRight}, {bottomRight, bottomRight}, {bottomLeft, bottomLeft}};
 
         SkRRect skRRect;

@@ -141,7 +141,7 @@ namespace elementor::elements {
 
         float getDecorationThicknessMultiplier();
 
-        sktextlayout::TextStyle makeSkTextStyle(Window *window);
+        sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;    
 
@@ -175,7 +175,7 @@ namespace elementor::elements {
 
         sk_sp<SkTypeface> makeSkTypeface();
 
-        SkFont makeSkFont(Window *window);
+        SkFont makeSkFont(ApplicationContext *ctx);
 
         SkPaint makeSkPaint();
 

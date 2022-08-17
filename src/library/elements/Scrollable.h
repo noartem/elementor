@@ -51,7 +51,7 @@ namespace elementor::elements {
 
         Scrollable *setChild(Element *child);
 
-        Size getChildSize(ApplicationContext *ctx, Boundaries boundaries);
+        Size getChildSize(ApplicationContext *ctx, Window *window, Boundaries boundaries);
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
@@ -66,16 +66,14 @@ namespace elementor::elements {
         EventCallbackResponse onEvent(EventScroll *event) override;
 
     private:
-        ScrollDirection direction = ScrollDirection::Both;
-        Window *window;
+        ApplicationContext *ctx;
         ElementRect rect;
+        ScrollDirection direction = ScrollDirection::Both;
         float scrollLeft;
         float scrollTop;
         float scrollAcceleration = 16.0;
         Size childSize;
         bool hovered;
-
-        float getMonitorPixelScale();
     };
 
     Scrollable *scrollable();

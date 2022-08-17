@@ -21,12 +21,22 @@ ExamplesGallery::ExamplesGallery() {
                     ->setColor("#EDF5F0")
                     ->setChild(flex()
                         ->setDirection(FlexDirection::Column)
-                        ->appendChild(padding()
-                            ->setPaddings(12, 18)
-                            ->setChild(text()
-                                ->setFontColor("#062016")
-                                ->setFontSize(18)
-                                ->setText("Examples")))
+                        ->appendChild(clickable()
+                            ->setChild(padding()
+                                ->setPaddings(12, 18)
+                                ->setChild(text()
+                                    ->setFontColor("#062016")
+                                    ->setFontSize(18)
+                                    ->setText("Examples")))
+                            ->onClick([this] () {
+                                this->ctx->requestNextFrame([this] () {
+                                    auto window = this->ctx->makeWindow();
+                                    window->setTitle("Elementor Examples");
+                                    window->setRoot(new ExamplesGallery());
+                                    window->setSize({920, 640});
+                                    window->setMinSize({630, 320});
+                                });
+                            }))
                         ->appendChild(flexible()
                             ->setChild(expandedWidth()
                                 ->setChild(scroll()
@@ -97,6 +107,7 @@ Column *ExamplesGallery::makeExamplesList() {
 }
 
 std::vector <RenderElement> ExamplesGallery::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    this->ctx = ctx;
     RenderElement sceneElement;
     sceneElement.element = this->scene;
     sceneElement.position = {0, 0};

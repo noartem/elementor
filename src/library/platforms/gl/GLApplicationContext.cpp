@@ -28,5 +28,9 @@ namespace elementor {
     Window *GLApplicationContext::makeWindow() {
         return this->platform->makeWindow();
     }
+
+    float GLApplicationContext::getPixelScale() {
+        return this->platform->getPixelScale();
+    }
 }
 

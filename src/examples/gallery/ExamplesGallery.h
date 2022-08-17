@@ -19,6 +19,7 @@ public:
     std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
 private:
+    ApplicationContext *ctx;
     Element *scene;
     Example *activeExample;
     Empty *activeExampleElement;
