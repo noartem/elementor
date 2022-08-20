@@ -34,7 +34,7 @@ Scroll::Scroll() {
 }
 
 Scroll *Scroll::setChild(Element *child) {
-    this->childScrollable->setChild(expandedWidth()->setChild(child));
+    this->childScrollable->setChild(child);
     return this;
 }
 

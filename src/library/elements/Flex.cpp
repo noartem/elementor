@@ -55,6 +55,10 @@ namespace elementor::elements {
     }
 
     Size Flex::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+        if (this->alignment == FlexAlignment::Stretch) {
+            return boundaries.max;
+        }
+
         float maxCrossAxisSize = 0;
         for (Element *childElement : this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
@@ -113,15 +117,23 @@ namespace elementor::elements {
             RenderElement &child = children[childIndex];
 
             float childGrow = std::get<1>(flexibleChild);
-            float axisSize = sizePerGrow * childGrow;
-            Boundaries childBoundaries;
-            if (this->direction == FlexDirection::Row) {
-                childBoundaries = {{axisSize, 0}, {axisSize, size.height}};
-            } else {
-                childBoundaries = {{0, axisSize}, {size.width, axisSize}};
-            }
+            float childAxisSize = sizePerGrow * childGrow;
 
-            child.size = child.element->getSize(ctx, window, childBoundaries);
+            if (this->direction == FlexDirection::Row) {
+                child.size = {childAxisSize, size.height};
+            } else {
+                child.size = {size.width, childAxisSize};
+            }
+        }
+
+        if (this->alignment == FlexAlignment::Stretch) {
+            for (RenderElement &child: children) {
+                if (this->direction == FlexDirection::Row) {
+                    child.size.height = crossAxisSize;
+                } else {
+                    child.size.width = crossAxisSize;
+                }
+            }
         }
 
         float axisPosition = 0;

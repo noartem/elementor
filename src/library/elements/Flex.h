@@ -17,6 +17,7 @@ namespace elementor::elements {
         Start,
         Center,
         End,
+        Stretch,
     };
 
     enum class FlexCrossAlignment {
