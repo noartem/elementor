@@ -151,21 +151,24 @@ namespace elementor::elements {
     }
 
     Size Paragraph::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
+        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+        this->lastPixelScale = ctx->getPixelScale();
 
         this->skParagraph->layout(boundaries.max.width);
         return fitSizeInBoundaries({this->skParagraph->getMaxWidth(), this->skParagraph->getHeight()}, boundaries);
     }
 
     void Paragraph::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
+        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+        this->lastPixelScale = ctx->getPixelScale();
 
         this->skParagraph->layout(rect.size.width);
         this->skParagraph->paint(canvas, 0, 0);
     }
 
     std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        if (this->skParagraph == NULL) this->skParagraph = this->makeSkParagraph(ctx, window);
+        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+        this->lastPixelScale = ctx->getPixelScale();
 
         std::vector <RenderElement> children;
         std::vector<sktextlayout::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();

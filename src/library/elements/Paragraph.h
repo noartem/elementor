@@ -38,6 +38,8 @@ namespace elementor::elements {
         std::vector<Text *> childrenText;
         std::vector<Element *> childrenElements;
 
+        float lastPixelScale;
+
         sk_sp<sktextlayout::FontCollection> makeFontCollection(ApplicationContext *ctx);
 
         sktextlayout::TextStyle makeDefaultTextStyle();
