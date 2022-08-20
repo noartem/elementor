@@ -302,8 +302,9 @@ namespace elementor::elements {
     }
 
     Size Text::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->font.has_value() || ctx->getPixelScale() != this->lastPixelScale) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
+        this->lastPixelScale = ctx->getPixelScale();
 
         SkRect textBounds;
         this->font.value().measureText(this->text.c_str(), this->text.size(), SkTextEncoding::kUTF8, &textBounds, &this->paint.value());
@@ -311,8 +312,9 @@ namespace elementor::elements {
     }
 
     void Text::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        if (!this->font.has_value()) this->font = this->makeSkFont(ctx);
+        if (!this->font.has_value() || ctx->getPixelScale() != this->lastPixelScale) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
+        this->lastPixelScale = ctx->getPixelScale();
 
         canvas->drawString(this->text.c_str(), 0, rect.size.height, this->font.value(), this->paint.value());
 	}

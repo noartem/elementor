@@ -164,6 +164,8 @@ namespace elementor::elements {
         SkColor decorationColor = SK_ColorTRANSPARENT; 
         float decorationThicknessMultiplier = 1;
 
+        float lastPixelScale;
+
         std::optional<SkFont> font;
         std::optional<SkPaint> paint;
 
