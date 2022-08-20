@@ -29,8 +29,6 @@ namespace elementor::elements {
     private:
         sk_sp<SkSVGDOM> skSVGDOM;
         sk_sp<SkImage> skImage;
-
-        sk_sp<SkImage> renderSVGImage(Size size);
     };
 
     SVG *svg();
