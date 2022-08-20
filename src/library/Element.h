@@ -112,6 +112,7 @@ namespace elementor {
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
         virtual Window *makeWindow() = 0;
         virtual float getPixelScale() = 0;
+        virtual void setPixelScale(float scale) = 0;
     };
 
     class WithChild {

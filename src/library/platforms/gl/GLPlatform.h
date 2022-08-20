@@ -31,6 +31,7 @@ namespace elementor {
         sk_sp<SkFontMgr> getSkFontManager();
 
         float getPixelScale();
+        void setPixelScale(float scale);
 
     private:
         GLClipboard *clipboard;

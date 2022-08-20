@@ -19,6 +19,7 @@ namespace elementor {
         void requestNextFrame(std::function<void ()> callback) override;
         Window *makeWindow() override;
         float getPixelScale() override;
+        void setPixelScale(float scale) override;
 
     private:
         GLPlatform *platform;

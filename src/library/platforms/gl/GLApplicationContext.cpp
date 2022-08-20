@@ -32,5 +32,9 @@ namespace elementor {
     float GLApplicationContext::getPixelScale() {
         return this->platform->getPixelScale();
     }
+
+    void GLApplicationContext::setPixelScale(float scale) {
+        return this->platform->setPixelScale(scale);
+    }
 }
 

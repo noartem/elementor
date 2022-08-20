@@ -131,5 +131,9 @@ namespace elementor {
     float GLPlatform::getPixelScale() {
         return this->pixelScale;
     }
+
+    void GLPlatform::setPixelScale(float scale) {
+        this->pixelScale = scale;
+    }
 }
 
