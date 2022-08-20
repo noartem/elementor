@@ -37,7 +37,7 @@ namespace elementor {
 
         glfwSetWindowRefreshCallback(glWindow, [] (GLFWwindow* glWindow) {
             GLWindow *window = getGLFWwindowGLWindow(glWindow);
-            window->refresh();
+            window->draw();
         });
 
         glfwSetWindowPosCallback(glWindow, [] (GLFWwindow* glWindow, int xpos, int ypos) {
