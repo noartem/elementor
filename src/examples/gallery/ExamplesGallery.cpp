@@ -6,6 +6,7 @@
 #include "Examples.h"
 #include "Scroll.h"
 #include "FPSLabel.h"
+#include "ScaleControl.h"
 
 ExamplesGallery::ExamplesGallery() {
     this->activeExampleElement = empty();
@@ -42,6 +43,9 @@ ExamplesGallery::ExamplesGallery() {
                                 ->setChild(padding()
                                     ->setPaddings(12, 18)
                                     ->setChild(this->makeExamplesList()))))
+                        ->appendChild(padding()
+                            ->setPaddings(12, 18)
+                            ->setChild(scaleControl()))
                         ->appendChild(padding()
                             ->setPaddings(12, 18)
                             ->setChild(fpsLabel())))))
