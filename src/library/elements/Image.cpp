@@ -46,6 +46,8 @@ namespace elementor::elements {
     }
 
     Size Image::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        return fitSizeInBoundaries({(float) this->skImage->width(), (float) this->skImage->height()}, boundaries);
+        float imageWidth = this->skImage->width();
+        float imageHeight = this->skImage->height();
+        return fitSizeInBoundaries({imageWidth * ctx->getPixelScale(), imageHeight * ctx->getPixelScale()}, boundaries);
     }
 }
