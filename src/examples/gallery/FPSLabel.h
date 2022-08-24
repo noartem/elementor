@@ -16,7 +16,8 @@ public:
     std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
 private:
-    Text *child;
+    Element *child;
+    Text *childText;
 };
 
 FPSLabel *fpsLabel();
