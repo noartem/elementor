@@ -33,6 +33,9 @@ namespace elementor {
         float getPixelScale();
         void setPixelScale(float scale);
 
+        std::string getLocale();
+        void setLocale(std::string locale);
+
     private:
         GLClipboard *clipboard;
         GLFontManager *fontManager;
@@ -48,6 +51,8 @@ namespace elementor {
 
         float pixelScale;
         float calcPixelScale();
+
+        std::string locale = "en";
     };
 };
 

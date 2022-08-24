@@ -13,13 +13,19 @@ namespace elementor {
     public:
         GLApplicationContext(GLPlatform *platform);
 
+        float getPixelScale() override;
+        void setPixelScale(float scale) override;
+
+        std::string getLocale() override;
+        void setLocale(std::string locale) override;
+
         Clipboard *getClipboard() override;
         Perfomance *getPerfomance() override;
         sk_sp<SkFontMgr> getSkFontManager() override;
+
         void requestNextFrame(std::function<void ()> callback) override;
+
         Window *makeWindow() override;
-        float getPixelScale() override;
-        void setPixelScale(float scale) override;
 
     private:
         GLPlatform *platform;

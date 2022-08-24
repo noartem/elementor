@@ -135,5 +135,13 @@ namespace elementor {
     void GLPlatform::setPixelScale(float scale) {
         this->pixelScale = scale;
     }
+
+    std::string GLPlatform::getLocale() {
+        return this->locale;
+    }
+
+    void GLPlatform::setLocale(std::string locale) {
+        this->locale = locale;
+    }
 }
 

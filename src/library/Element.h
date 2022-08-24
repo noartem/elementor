@@ -106,13 +106,19 @@ namespace elementor {
 
     class ApplicationContext {
     public:
+        virtual float getPixelScale() = 0;
+        virtual void setPixelScale(float scale) = 0;
+
+        virtual std::string getLocale() = 0;
+        virtual void setLocale(std::string locale) = 0;
+
         virtual Clipboard *getClipboard() = 0;
         virtual Perfomance *getPerfomance() = 0;
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
+
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
+
         virtual Window *makeWindow() = 0;
-        virtual float getPixelScale() = 0;
-        virtual void setPixelScale(float scale) = 0;
     };
 
     class WithChild {
