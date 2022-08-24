@@ -39,6 +39,10 @@ namespace elementor::elements {
 
         ScrollbarVisible getVisible();
 
+        Scrollbar *setMinThumbSize(float size);
+
+        float getMinThumbSize();
+
         Scrollbar *setChild(Scrollable *child);
 
         Scrollbar *setChild(Element *child);
@@ -60,6 +64,7 @@ namespace elementor::elements {
         Element *thumbY;
         std::function<Element *()> scrollTrack;
         std::function<Element *()> scrollThumb;
+        float minThumbSize = 50;
 
         void scrollToX(int x);
 
