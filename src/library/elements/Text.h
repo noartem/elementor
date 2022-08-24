@@ -141,6 +141,10 @@ namespace elementor::elements {
 
         float getDecorationThicknessMultiplier();
 
+        Text *setLocale(std::optional<std::string> locale);
+
+        std::optional<std::string> getLocale();
+
         sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;    
@@ -163,6 +167,7 @@ namespace elementor::elements {
         TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
         SkColor decorationColor = SK_ColorTRANSPARENT; 
         float decorationThicknessMultiplier = 1;
+        std::optional<std::string> locale;
 
         float lastPixelScale;
 

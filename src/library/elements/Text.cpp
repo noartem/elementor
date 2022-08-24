@@ -198,6 +198,15 @@ namespace elementor::elements {
         return this->decorationThicknessMultiplier;
     }
 
+    Text *Text::setLocale(std::optional<std::string> locale) {
+        this->locale = locale;
+        return this;
+    }
+
+    std::optional<std::string> Text::getLocale() {
+        return this->locale;
+    }
+
     SkFontStyle::Slant Text::getSkFontStyleSlant() {
         switch (this->fontSlant) {
             case FontSlant::Italic:
@@ -291,6 +300,7 @@ namespace elementor::elements {
         sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(this->fontSize * ctx->getPixelScale());
         textStyle.setFontFamilies({SkString(this->fontFamily)});
+        textStyle.setLocale(SkString(this->locale.value_or(ctx->getLocale())));
         textStyle.setForegroundColor(this->makeSkPaint());
         textStyle.setFontStyle(this->makeSkFontStyle());
         textStyle.setDecoration(this->getSkTextDecoration());
