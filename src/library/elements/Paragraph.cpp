@@ -51,6 +51,10 @@ namespace elementor::elements {
         return this;
     }
 
+    void Paragraph::forceUpdate() {
+        this->skParagraph = NULL;
+    }
+
     sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
         sk_sp<sktextlayout::FontCollection> fontCollection = sk_make_sp<sktextlayout::FontCollection>();
         fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
