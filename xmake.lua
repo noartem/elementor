@@ -6,7 +6,7 @@ includes("third_party/skia-build.lua")
 includes("third_party/portable-file-dialogs.lua")
 
 add_requires("skia-build")
-add_requires("glfw")
+add_requires("glfw 3.3.8")
 add_requires("doctest")
 add_requires("fastcppcsvparser")
 add_requires("portable-file-dialogs")
