@@ -28,6 +28,7 @@ Scroll::Scroll() {
     this->childScrollable = scrollable()
         ->setDirection(ScrollDirection::Vertical);
     this->childScrollbar = scrollbar()
+        ->setPosition(ScrollbarPosition::OnTop)
         ->setScrollTrack(scrollTrack)
         ->setScrollThumb(scrollThumb)
         ->setChild(this->childScrollable);

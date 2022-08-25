@@ -18,39 +18,39 @@ ExamplesGallery::ExamplesGallery() {
         ->setChild(flex()
             ->appendChild(width()
                 ->setWidth(200)
-                ->setChild(background()
-                    ->setColor("#EDF5F0")
-                    ->setChild(flex()
-                        ->setDirection(FlexDirection::Column)
-                        ->appendChild(clickable()
-                            ->setChild(padding()
-                                ->setPaddings(12, 18, 6, 18)
-                                ->setChild(text()
-                                    ->setFontColor("#191C1A")
-                                    ->setFontSize(18)
-                                    ->setFontWeight(500)
-                                    ->setFontFamily("Fira Code")
-                                    ->setText("Examples")))
-                            ->onClick([this] () {
-                                this->ctx->requestNextFrame([this] () {
-                                    auto window = this->ctx->makeWindow();
-                                    window->setTitle("Elementor Examples");
-                                    window->setRoot(new ExamplesGallery());
-                                    window->setSize({920, 640});
-                                    window->setMinSize({630, 320});
-                                });
-                            }))
-                        ->appendChild(flexible()
-                            ->setChild(scroll()
-                                ->setChild(padding()
-                                    ->setPaddings(12, 18)
-                                    ->setChild(this->makeExamplesList()))))
-                        ->appendChild(padding()
-                            ->setPaddings(6, 18)
-                            ->setChild(scaleControl()))
-                        ->appendChild(padding()
-                            ->setPaddings(6, 18, 12, 18)
-                            ->setChild(fpsLabel())))))
+                    ->setChild(background()
+                        ->setColor("#EDF5F0")
+                        ->setChild(padding()
+                            ->setPaddings(12, 18)
+                            ->setChild(flex()
+                                ->setSpacing(6)
+                                ->setDirection(FlexDirection::Column)
+                                ->appendChild(clickable()
+                                    ->setChild(text()
+                                        ->setFontColor("#191C1A")
+                                        ->setFontSize(18)
+                                        ->setFontWeight(500)
+                                        ->setFontFamily("Fira Code")
+                                        ->setText("Examples"))
+                                    ->onClick([this] () {
+                                        this->ctx->requestNextFrame([this] () {
+                                            auto window = this->ctx->makeWindow();
+                                            window->setTitle("Elementor Examples");
+                                            window->setRoot(new ExamplesGallery());
+                                            window->setSize({920, 640});
+                                            window->setMinSize({630, 320});
+                                        });
+                                    }))
+                                ->appendChild(empty())
+                                ->appendChild(flexible()
+                                    ->setChild(rounded()
+                                        ->setRadius(8)
+                                        ->setChild(scrollable()
+                                            ->setChild(background()
+                                                ->setColor("#DEEDE6")
+                                                ->setChild(this->makeExamplesList())))))
+                                ->appendChild(scaleControl())
+                                ->appendChild(fpsLabel())))))
             ->appendChild(flexible()
                 ->setGrow(3)
                 ->setChild(flex()
@@ -86,25 +86,25 @@ void ExamplesGallery::setActiveExample(Example *example) {
             ->setText(example->getDescription()));
 }
 
-Column *ExamplesGallery::makeExamplesList() {
+Element *ExamplesGallery::makeExamplesList() {
     Column *examplesList = column()->setSpacing(4);
     for (Example *example : examples()) {
         Background *buttonBackground = background();
         examplesList
             ->appendChild(clickable()
                 ->setChild(hoverable()
-                    ->setChild(rounded()
-                        ->setRadius(24)
-                        ->setChild(buttonBackground
-                            ->setColor("#EDF5F0")
-                            ->setChild(padding()
-                                ->setPaddings(12, 18)
-                                ->setChild(text()
-                                    ->setFontColor("#006C4C")
-                                    ->setFontSize(16)
-                                    ->setText(example->getName())))))
-                    ->onEnter([buttonBackground] () { buttonBackground->setColor("#CDE8D9"); })
-                    ->onLeave([buttonBackground] () { buttonBackground->setColor("#EDF5F0"); }))
+                    ->setChild(buttonBackground
+                        ->setColor("#DEEDE6")
+                        ->setChild(padding()
+                            ->setPaddings(12, 18)
+                            ->setChild(text()
+                                ->setFontColor("#006C4C")
+                                ->setFontSize(16)
+                                ->setFontWeight(450)
+                                ->setFontFamily("Fira Code")
+                                ->setText(example->getName()))))
+                    ->onEnter([buttonBackground] () { buttonBackground->setColor("#C2DDD3"); })
+                    ->onLeave([buttonBackground] () { buttonBackground->setColor("#DEEDE6"); }))
                 ->onClick([this, example] () { this->setActiveExample(example); }));
     }
 

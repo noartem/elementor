@@ -26,7 +26,7 @@ private:
     Empty *activeExampleLabelName;
     Empty *activeExampleLabelDescription;
 
-    Column *makeExamplesList();
+    Element *makeExamplesList();
 };
 
 #endif //GALLERY_EXAMPLES_GALLERY_H
