@@ -205,7 +205,7 @@ namespace elementor::elements {
                 child.size = childSize;
             }
 
-            children.push_back(child);
+            children.insert(children.begin(), child);
         }
 
         return children;
