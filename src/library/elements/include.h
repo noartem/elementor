@@ -12,6 +12,7 @@
 #include "Center.h"
 #include "Clickable.h"
 #include "Column.h"
+#include "Draggable.h"
 #include "Empty.h"
 #include "ExpandedHeight.h"
 #include "ExpandedWidth.h"
