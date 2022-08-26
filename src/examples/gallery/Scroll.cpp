@@ -17,7 +17,7 @@ Element *scrollThumb() {
         ->setChild(rounded()
             ->setRadius(4)
             ->setChild(background()
-                ->setColor("#BBB9AE")));
+                ->setColor("#7FB6A4")));
 }
 
 Scroll *scroll() {
