@@ -66,8 +66,9 @@ namespace elementor::elements {
         std::function<Element *()> scrollThumb;
         float minThumbSize = 50;
 
+        float dragginLastPositionY;
+        float dragginLastPositionX;
         void scrollToX(int x);
-
         void scrollToY(int y);
 
         void initChild();

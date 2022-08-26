@@ -4,6 +4,7 @@
 
 #include "Scrollbar.h"
 #include "Clickable.h"
+#include "Draggable.h"
 
 namespace elementor::elements {
     Scrollbar *scrollbar() {
@@ -81,18 +82,28 @@ namespace elementor::elements {
 
     void Scrollbar::initChild() {
         if (this->scrollTrack && (this->trackX == NULL || this->trackY == NULL)) {
-            this->trackX = clickable()
+            this->trackX = draggable()
                 ->setChild(this->scrollTrack())
-                ->onClick([this] (EventMouseButton *event, Position position) {
-                    this->scrollToX(position.x);
-                    return EventCallbackResponse::StopPropagation;
+                ->onStart([this] (Position position, Position absolutePosition) {
+                    this->dragginLastPositionX = position.x;
+                    this->scrollToX(this->dragginLastPositionX);
+                    return true;
+                })
+                ->onMove([this] (Position position, Position absolutePosition, Position diff) {
+                    this->dragginLastPositionX += diff.x;
+                    this->scrollToX(this->dragginLastPositionX);
                 });
 
-            this->trackY = clickable()
+            this->trackY = draggable()
                 ->setChild(this->scrollTrack())
-                ->onClick([this] (EventMouseButton *event, Position position) {
-                    this->scrollToY(position.y);
-                    return EventCallbackResponse::StopPropagation;
+                ->onStart([this] (Position position, Position absolutePosition) {
+                    this->dragginLastPositionY = position.y;
+                    this->scrollToY(this->dragginLastPositionY);
+                    return true;
+                })
+                ->onMove([this] (Position position, Position absolutePosition, Position diff) {
+                    this->dragginLastPositionY += diff.y;
+                    this->scrollToY(this->dragginLastPositionY);
                 });
         }
 
