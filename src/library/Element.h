@@ -152,8 +152,6 @@ namespace elementor {
     private:
         std::vector<Element *> children;
     };
-
-    Size fitSizeInBoundaries(Size size, Boundaries boundaries);
 }
 
 #endif //ELEMENTOR_ELEMENT_H

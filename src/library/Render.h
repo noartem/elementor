@@ -45,6 +45,8 @@ namespace elementor {
 
         Position absolutePositionToContained(Position absolutePosition);
     };
+
+    Size fitSizeInBoundaries(Size size, Boundaries boundaries);
 }
 
 #endif //ELEMENTOR_RENDER_H

@@ -62,19 +62,4 @@ namespace elementor {
     Element *WithChildren::getChild(int i) {
         return this->children[i];
     }
-
-    Size fitSizeInBoundaries(Size size, Boundaries boundaries) {
-        float width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
-        float height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
-        return {width, height};
-    }
-
-    Rect clipRectInParent(Rect childRect, Rect parentRect) {
-        Rect rect;
-        rect.position.x = childRect.position.x;
-        rect.position.y = childRect.position.y;
-        rect.size.width = std::min(parentRect.size.width - childRect.position.x, childRect.size.width);
-        rect.size.height = std::min(parentRect.size.height - childRect.position.y, childRect.size.height);
-        return rect;
-    }
 }

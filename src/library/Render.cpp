@@ -4,6 +4,8 @@
 
 #include "Render.h"
 
+#include <algorithm>
+
 namespace elementor {
     bool ElementRect::contains(float x, float y) {
         return (
@@ -36,5 +38,11 @@ namespace elementor {
             absoulutePosition.x - this->position.x,
             absoulutePosition.y - this->position.y,
         };
+    }
+
+    Size fitSizeInBoundaries(Size size, Boundaries boundaries) {
+        float width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width);
+        float height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height);
+        return {width, height};
     }
 }
