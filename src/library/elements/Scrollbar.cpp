@@ -11,22 +11,44 @@ namespace elementor::elements {
         return new Scrollbar();
     }
 
-    Scrollbar *Scrollbar::setScrollTrack(std::function<Element *()> scrollTrack) {
-        this->scrollTrack = scrollTrack;
+    Scrollbar *Scrollbar::setTrackX(Element *trackX) {
+        this->trackX = clickable()
+            ->setChild(trackX)
+            ->onClick([this] (elementor::EventMouseButton *event, elementor::Position position) {
+                float positionX = (position.x / this->child->getWidth()) * this->child->getScrollWidth();
+                this->child->setScrollLeft(positionX - (this->child->getWidth() / 2));
+                return EventCallbackResponse::StopPropagation;
+            });
         return this;
     }
 
-    std::function<Element *()>Scrollbar::getScrollTrack() {
-        return this->scrollTrack;
-    }
-
-    Scrollbar *Scrollbar::setScrollThumb(std::function<Element *()> scrollThumb) {
-        this->scrollThumb = scrollThumb;
+    Scrollbar *Scrollbar::setTrackY(Element *trackY) {
+        this->trackY = clickable()
+            ->setChild(trackY)
+            ->onClick([this] (elementor::EventMouseButton *event, elementor::Position position) {
+                float positionY = (position.y / this->child->getHeight()) * this->child->getScrollHeight();
+                this->child->setScrollTop(positionY - (this->child->getHeight() / 2));
+                return EventCallbackResponse::StopPropagation;
+            });
         return this;
     }
 
-    std::function<Element *()>Scrollbar::getScrollThumb() {
-        return this->scrollThumb;
+    Scrollbar *Scrollbar::setThumbX(Element *thumbX) {
+        this->thumbX = draggable()
+            ->setChild(thumbX)
+            ->onMove([this] (Position position, Position absolutePosition, Position diff) {
+                this->child->setScrollLeft(this->child->getScrollLeft() + diff.x * (this->child->getScrollWidth() / this->child->getWidth()));
+            });
+        return this;
+    }
+
+    Scrollbar *Scrollbar::setThumbY(Element *thumbY) {
+        this->thumbY = draggable()
+            ->setChild(thumbY)
+            ->onMove([this] (Position position, Position absolutePosition, Position diff) {
+                this->child->setScrollTop(this->child->getScrollTop() + diff.y * (this->child->getScrollHeight() / this->child->getHeight()));
+            });
+        return this;
     }
 
     Scrollbar *Scrollbar::setPosition(ScrollbarPosition position) {
@@ -47,27 +69,13 @@ namespace elementor::elements {
         return this->visible;
     }
 
-    Scrollbar *Scrollbar::setMinThumbSize(float size) {
-        this->minThumbSize = size;
-        return this;
-    }
-
-    float Scrollbar::getMinThumbSize() {
-        return this->minThumbSize;
-    }
-
     Scrollbar *Scrollbar::setChild(Scrollable *child) {
         this->child = child;
         return this;
     }
 
-    Scrollbar *Scrollbar::setChild(Element *child) {
-        Scrollable *childScrollable = dynamic_cast<Scrollable *>(child);
-        if (childScrollable != NULL) {
-            this->child = childScrollable;    
-        }
-
-        return this;
+    Scrollable *Scrollbar::getChild() {
+        return this->child;
     }
 
     void Scrollbar::scrollToX(int x) {
@@ -80,47 +88,11 @@ namespace elementor::elements {
         this->child->setScrollTop(position - (this->child->getHeight() / 2));
     }
 
-    void Scrollbar::initChild() {
-        if (this->scrollTrack && (this->trackX == NULL || this->trackY == NULL)) {
-            this->trackX = draggable()
-                ->setChild(this->scrollTrack())
-                ->onStart([this] (Position position, Position absolutePosition) {
-                    this->dragginLastPositionX = position.x;
-                    this->scrollToX(this->dragginLastPositionX);
-                    return true;
-                })
-                ->onMove([this] (Position position, Position absolutePosition, Position diff) {
-                    this->dragginLastPositionX += diff.x;
-                    this->scrollToX(this->dragginLastPositionX);
-                });
-
-            this->trackY = draggable()
-                ->setChild(this->scrollTrack())
-                ->onStart([this] (Position position, Position absolutePosition) {
-                    this->dragginLastPositionY = position.y;
-                    this->scrollToY(this->dragginLastPositionY);
-                    return true;
-                })
-                ->onMove([this] (Position position, Position absolutePosition, Position diff) {
-                    this->dragginLastPositionY += diff.y;
-                    this->scrollToY(this->dragginLastPositionY);
-                });
-        }
-
-        if (this->scrollThumb && (this->thumbX == NULL || this->thumbY == NULL)) {
-            this->thumbX = this->scrollThumb();
-            this->thumbY = this->scrollThumb();
-        }
-    }
-
     Size Scrollbar::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         return this->child->getSize(ctx, window, boundaries);
     }
 
     std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        this->ctx = ctx;
-        this->initChild();
-
         std::vector <RenderElement> children;
 
         if (this->child) {
@@ -137,6 +109,8 @@ namespace elementor::elements {
             float scrollLeft = this->child->getScrollLeft();
 
             float childHeight = childSize.height;
+            float childWidth = childSize.width;
+
             if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > size.width)) {
                 float trackWidth = 0;
                 float trackHeight = 0;
@@ -158,7 +132,7 @@ namespace elementor::elements {
                     RenderElement thumb;
                     thumb.element = this->thumbX;
 
-                    float thumbWidth = std::min(size.width * (size.width / scrollWidth), this->minThumbSize);
+                    float thumbWidth = size.width * (size.width / scrollWidth);
                     if (trackHeight == 0) {
                         thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, size.height}});
                         trackHeight = thumb.size.height;
@@ -167,13 +141,12 @@ namespace elementor::elements {
                         thumb.size = {thumbWidth, trackHeight};
                     }
 
-                    thumb.position = {std::min(scrollLeft * (size.width / scrollWidth), trackWidth - thumb.size.width), childHeight};
+                    thumb.position = {std::min(scrollLeft * (size.width / scrollWidth), childWidth - thumb.size.width), childHeight};
 
                     children.push_back(thumb);
                 }
             }
 
-            float childWidth = childSize.width;
             if (this->child->isVerticalScroll() && (this->visible == ScrollbarVisible::Always || scrollHeight > size.height)) {
                 float trackWidth = 0;
                 float trackHeight = 0;
@@ -195,7 +168,7 @@ namespace elementor::elements {
                     RenderElement thumb;
                     thumb.element = this->thumbY;
 
-                    float thumbHeight = std::max(size.height * (size.height / scrollHeight), this->minThumbSize);
+                    float thumbHeight = size.height * (size.height / scrollHeight);
                     if (trackWidth == 0) {
                         thumb.size = thumb.element->getSize(ctx, window, {{0, thumbHeight}, {size.width, thumbHeight}});
                         trackWidth = thumb.size.width;
@@ -204,7 +177,7 @@ namespace elementor::elements {
                         thumb.size = {trackWidth, thumbHeight};
                     }
 
-                    thumb.position = {childWidth, std::min(scrollTop * (size.height / scrollHeight), trackHeight - thumb.size.height)};
+                    thumb.position = {childWidth, std::min(scrollTop * (size.height / scrollHeight), childHeight - thumb.size.height)};
 
                     children.push_back(thumb);
                 }

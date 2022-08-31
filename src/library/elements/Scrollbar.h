@@ -23,48 +23,36 @@ namespace elementor::elements {
 
     class Scrollbar : public Element {
     public:
-        Scrollbar *setScrollTrack(std::function<Element *()> scrollTrack);
-
-        std::function<Element *()> getScrollTrack();
-
-        Scrollbar *setScrollThumb(std::function<Element *()> scrollThumb);
-
-        std::function<Element *()> getScrollThumb();
+        Scrollbar *setTrackX(Element *trackX);
+        Scrollbar *setTrackY(Element *trackY);
+        Scrollbar *setThumbX(Element *thumbX);
+        Scrollbar *setThumbY(Element *thumbY);
 
         Scrollbar *setPosition(ScrollbarPosition position);
-
         ScrollbarPosition getPosition();
 
         Scrollbar *setVisible(ScrollbarVisible visible);
-
         ScrollbarVisible getVisible();
 
         Scrollbar *setMinThumbSize(float size);
-
         float getMinThumbSize();
 
         Scrollbar *setChild(Scrollable *child);
-
-        Scrollbar *setChild(Element *child);
-
         Scrollable *getChild();
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
-
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
     private:
-        ApplicationContext *ctx;
         ScrollbarPosition position = ScrollbarPosition::InContent;
         ScrollbarVisible visible = ScrollbarVisible::WhenNeeded;
+
         Scrollable *child;
+
         Element *trackX;
-        Element *thumbX;
         Element *trackY;
+        Element *thumbX;
         Element *thumbY;
-        std::function<Element *()> scrollTrack;
-        std::function<Element *()> scrollThumb;
-        float minThumbSize = 50;
 
         float dragginLastPositionY;
         float dragginLastPositionX;
