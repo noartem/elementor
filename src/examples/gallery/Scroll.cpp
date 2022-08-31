@@ -4,22 +4,6 @@
 
 #include "Scroll.h"
 
-Element *scrollTrack() {
-    return width()
-        ->setWidth(16)
-        ->setChild(height()
-            ->setHeight(16));
-}
-
-Element *scrollThumb() {
-    return padding()
-        ->setPaddings(4)
-        ->setChild(rounded()
-            ->setRadius(4)
-            ->setChild(background()
-                ->setColor("#7FB6A4")));
-}
-
 Scroll *scroll() {
     return new Scroll();
 }
@@ -29,8 +13,16 @@ Scroll::Scroll() {
         ->setDirection(ScrollDirection::Vertical);
     this->childScrollbar = scrollbar()
         ->setPosition(ScrollbarPosition::OnTop)
-        ->setScrollTrack(scrollTrack)
-        ->setScrollThumb(scrollThumb)
+        ->setTrackY(width()
+            ->setWidth(16))
+        ->setThumbY(width()
+            ->setWidth(16)
+            ->setChild(padding()
+                ->setPaddings(4)
+                ->setChild(rounded()
+                    ->setRadius(4)
+                    ->setChild(background()
+                        ->setColor("#7FB6A4")))))
         ->setChild(this->childScrollable);
 }
 
