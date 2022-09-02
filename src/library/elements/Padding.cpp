@@ -48,7 +48,7 @@ namespace elementor::elements {
             float paddingLeft = this->getPaddings().left * ctx->getPixelScale();
             float paddingX = paddingLeft + paddingRight;
 
-            Boundaries childBoundaries = {{boundaries.min.width - paddingX, boundaries.min.height - paddingY}, {boundaries.max.width - paddingX, boundaries.max.height - paddingY}};
+            Boundaries childBoundaries = {{std::max(boundaries.min.width - paddingX, ZERO), std::max(boundaries.min.height - paddingY, ZERO)}, {std::max(boundaries.max.width - paddingX, ZERO), std::max(boundaries.max.height - paddingY, ZERO)}};
             Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
             return {childSize.width + paddingX, childSize.height + paddingY};
         } else {
