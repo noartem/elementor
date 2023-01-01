@@ -15,6 +15,7 @@
 #include "ExampleAlign.h"
 #include "ExampleFlex.h"
 #include "ExampleWrap.h"
+#include "ExampleAnimation.h"
 
 std::vector<Example *> examples() {
     return {
@@ -26,6 +27,7 @@ std::vector<Example *> examples() {
         new ExampleAlign(),
         new ExampleFlex(),
         new ExampleWrap(),
+        new ExampleAnimation(),
     };
 }
 
