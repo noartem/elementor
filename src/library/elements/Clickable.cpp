@@ -82,16 +82,7 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Clickable::onEvent(EventMouseMove *event) {
-        Position cursorPosition = {event->x, event->y};
-        bool newHovered = this->rect.visibleContains(cursorPosition);
-        if (newHovered && !this->hovered) {
-            this->window->getCursor()->set(CursorShape::Hand);
-        }
-        if (!newHovered && this->hovered) {
-            this->window->getCursor()->set(CursorShape::Arrow);
-        }
-        this->hovered = newHovered;
-
+        this->hovered = this->rect.visibleContains({event->x, event->y});
         this->cursorPosition = this->rect.absolutePositionToContained(cursorPosition);
         return EventCallbackResponse::None;
     }
