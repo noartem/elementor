@@ -87,7 +87,7 @@ void ExamplesGallery::setActiveExample(Example *example) {
 }
 
 Element *ExamplesGallery::makeExamplesList() {
-    Column *examplesList = column()->setSpacing(4);
+    Column *examplesList = column();
     for (Example *example : examples()) {
         Background *buttonBackground = background();
         examplesList
@@ -96,7 +96,7 @@ Element *ExamplesGallery::makeExamplesList() {
                     ->setChild(buttonBackground
                         ->setColor("#DEEDE6")
                         ->setChild(padding()
-                            ->setPaddings(12, 18)
+                            ->setPaddings(16, 20)
                             ->setChild(text()
                                 ->setFontColor("#006C4C")
                                 ->setFontSize(16)
