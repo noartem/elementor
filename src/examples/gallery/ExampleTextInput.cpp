@@ -14,7 +14,7 @@ std::string ExampleTextInput::getDescription() {
     return "Simple text input field";
 }
 
-Element *ExampleTextInput::getScene() {
+Element *ExampleTextInput::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

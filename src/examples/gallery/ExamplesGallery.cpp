@@ -71,7 +71,7 @@ ExamplesGallery::ExamplesGallery() {
 
 void ExamplesGallery::setActiveExample(Example *example) {
     this->activeExampleElement
-        ->setChild(example->getScene());
+        ->setChild(example->getScene(this->ctx));
 
     this->activeExampleLabelName
         ->setChild(text()

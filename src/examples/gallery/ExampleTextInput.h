@@ -13,7 +13,7 @@ class ExampleTextInput: public Example {
 
     std::string getDescription() override;
 
-    Element *getScene() override;
+    Element *getScene(ApplicationContext *ctx) override;
 };
 
 

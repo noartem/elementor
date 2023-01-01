@@ -152,7 +152,7 @@ Element *exampleCrossAlignment() {
                 ->setChild(exampleCrossAlignmentItem(FlexCrossAlignment::SpaceEvenly))));
 }
 
-Element *ExampleFlex::getScene() {
+Element *ExampleFlex::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

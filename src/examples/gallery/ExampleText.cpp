@@ -283,7 +283,7 @@ Element *exampleParagraph() {
                             ->setText("与"))))));
 }
 
-Element *ExampleText::getScene() {
+Element *ExampleText::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

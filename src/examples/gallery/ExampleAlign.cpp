@@ -109,7 +109,7 @@ Element *exampleCenter() {
                                 ->setColor("#006C4C")))))));
 }
 
-Element *ExampleAlign::getScene() {
+Element *ExampleAlign::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

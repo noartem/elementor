@@ -38,7 +38,7 @@ Element *exampleWrapColumn() {
     return wrapElement;
 }
 
-Element *ExampleWrap::getScene() {
+Element *ExampleWrap::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

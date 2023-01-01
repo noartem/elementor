@@ -73,7 +73,7 @@ Element *exampleHeightAndWidth() {
                 ->setChild(box("#CDE8D9"))));
 }
 
-Element *ExampleSized::getScene() {
+Element *ExampleSized::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

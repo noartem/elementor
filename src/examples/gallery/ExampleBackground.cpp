@@ -13,7 +13,7 @@ std::string ExampleBackground::getDescription() {
     return "Background fills element with color";
 }
 
-Element *ExampleBackground::getScene() {
+Element *ExampleBackground::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
