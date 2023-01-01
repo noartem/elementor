@@ -7,6 +7,7 @@
 
 namespace elementor {
     #define ZERO (float) 0
+    #define ONE (float) 1
 
     struct Position {
         float x;
