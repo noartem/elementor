@@ -7,6 +7,7 @@
 
 #include "Application.h"
 #include "Color.h"
+#include "Component.h"
 #include "Element.h"
 #include "Event.h"
 #include "Render.h"
