@@ -16,24 +16,41 @@ class ExampleAnimation: public Example {
     Element *getScene(ApplicationContext *ctx) override;
 };
 
-class AnimatedButton: public Element {
+class AnimatedTextExample: public Component {
 public:
-    AnimatedButton(std::string label, int duration);
-
-    Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
-
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+    AnimatedTextExample(std::string label, int duration) {
+        this->label = label;
+        this->duration = duration;
+        render();
+    }
 
 private:
-    ApplicationContext *ctx;
     std::string label;
     int duration;
-    Element *button;
     Background *buttonBackground;
     Text *buttonText;
     Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
 
-    Element *makeElement();
+    void render();
+};
+
+class AnimatedPositionExample: public Component {
+public:
+    AnimatedPositionExample(std::string label, int duration) {
+        this->label = label;
+        this->duration = duration;
+        render();
+    }
+
+private:
+    std::string label;
+    int duration;
+    Background *buttonBackground;
+    Text *buttonText;
+    Padding *buttonPadding;
+    Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
+
+    void render();
 };
 
 #endif //GALLERY_EXAMPLE_ANIMATION_H
