@@ -4,6 +4,8 @@
 
 #include "Border.h"
 
+#include <include/core/SkPath.h>
+#include <include/core/SkPathEffect.h>
 #include <include/core/SkRRect.h>
 #include <include/effects/SkDashPathEffect.h>
 #include <include/effects/Sk1DPathEffect.h>
