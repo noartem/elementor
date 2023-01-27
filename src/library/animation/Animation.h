@@ -13,33 +13,47 @@
 namespace elementor {
     enum class AnimationState {
         Pending,
-        Executing,
-        Stoped,
+        Playing,
+        Paused,
+        Finished,
     };
 
     template<typename Duration = std::chrono::milliseconds>
     class Animation {
     public:
-        Animation(ApplicationContext *ctx, int duration, std::function<void (float value)> callback) {
+        Animation(ApplicationContext *ctx, int duration, std::function<float (float value)> timing, std::function<void (float value)> callback) {
             this->ctx = ctx;
+            this->timing = timing;
             this->duration = duration;
             this->callback = callback;
         }
 
-        void start() {
+        void play() {
             if (this->state != AnimationState::Pending) {
                 return;
             }
 
-            this->state = AnimationState::Executing;
+            this->state = AnimationState::Playing;
             this->startedAt = this->now();
 
             ctx->requestNextFrame([this] { this->iter(); });
         }
 
+        void pause() {
+            this->state = AnimationState::Paused;
+        }
 
-        void stop() {
-            this->state = AnimationState::Stoped;
+        void finish() {
+            this->state = AnimationState::Finished;
+
+            if (this->lastValue < ONE) {
+                this->callback(ONE);
+            }
+        }
+
+        void reverse() {
+            this->lastValue = ONE - this->lastValue;
+            this->reversed = !this->reversed;
         }
 
     private:
@@ -48,30 +62,34 @@ namespace elementor {
         int duration;
         int startedAt = -1;
         float lastValue = -1;
+        bool reversed = false;
         std::function<void (float value)> callback;
+        std::function<float (float value)> timing;
 
         int now() {
             return std::chrono::duration_cast<Duration>(std::chrono::system_clock::now().time_since_epoch()).count();
         }
 
         void iter() {
-            if (this->state != AnimationState::Executing) {
+            if (this->state != AnimationState::Playing) {
                 return;
             }
 
             int now = this->now();
 
             float value = ((float) (now - this->startedAt)) / ((float) this->duration);
-            float valueNormalized = std::min(std::max(value, ZERO), ONE);
+            value = std::min(std::max(value, ZERO), ONE);
+            if (this->reversed) value = ONE - value;
+            if (this->timing) value = this->timing(value);
 
-            if (this->lastValue != valueNormalized) {
-                callback(valueNormalized);
+            if (this->lastValue != value) {
+                this->callback(value);
             } else {
-                this->lastValue = valueNormalized;
+                this->lastValue = value;
             }
 
             if (value < ONE) {
-                ctx->requestNextFrame([this] {
+                this->ctx->requestNextFrame([this] {
                     this->iter();
                 });
             }
@@ -80,7 +98,12 @@ namespace elementor {
 
     template<typename Duration = std::chrono::milliseconds>
     Animation<Duration> *animation(ApplicationContext *ctx, int duration, std::function<void (float value)> callback) {
-        return new Animation<Duration>(ctx, duration, callback);
+        return new Animation<Duration>(ctx, duration, nullptr, callback);
+    }
+
+    template<typename Duration = std::chrono::milliseconds>
+    Animation<Duration> *animation(ApplicationContext *ctx, int duration, std::function<float (float value)> timing, std::function<void (float value)> callback) {
+        return new Animation<Duration>(ctx, duration, timing, callback);
     }
 }
 

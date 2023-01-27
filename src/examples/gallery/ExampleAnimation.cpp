@@ -42,7 +42,7 @@ void AnimatedTextExample::render() {
             ->onLeave([this] () { this->buttonBackground->setColor("#DEEDE6"); }))
         ->onClick([this] () {
             if (this->buttonAnimation != NULL) {
-                this->buttonAnimation->stop();
+                this->buttonAnimation->pause();
             }
 
             this->buttonAnimation = animation(this->ctx, this->duration, [this] (float state) {
@@ -53,7 +53,7 @@ void AnimatedTextExample::render() {
                 }
             });
 
-            this->buttonAnimation->start();
+            this->buttonAnimation->play();
         });
 }
 
@@ -89,8 +89,10 @@ void AnimatedPositionExample::render() {
                 ->onEnter([this] () { this->buttonBackground->setColor("#C2DDD3"); })
                 ->onLeave([this] () { this->buttonBackground->setColor("#DEEDE6"); })))
         ->onClick([this] () {
-            if (this->buttonAnimation != NULL) {
-                this->buttonAnimation->stop();
+            if (this->buttonAnimation != nullptr) {
+                this->buttonAnimation->pause();
+                this->buttonAnimation = nullptr;
+                return;
             }
 
             this->buttonAnimation = animation(this->ctx, this->duration, [this] (float value) {
@@ -99,7 +101,7 @@ void AnimatedPositionExample::render() {
                 this->buttonPadding->setPaddings(0, 0, 0, paddingLeft);
             });
 
-            this->buttonAnimation->start();
+            this->buttonAnimation->play();
         });
 }
 
