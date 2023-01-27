@@ -1,0 +1,29 @@
+{
+    "main": "lib/binding.js",
+    "dependencies": {
+        "node-addon-api": "^5.1.0"
+    },
+    "scripts": {
+        "pretest": "tsc",
+        "test": "node --napi-modules ./test/test_binding.js",
+        "clear": "rm -rf node_modules build dist"
+    },
+    "gypfile": true,
+    "name": "elementor",
+    "version": "0.0.1",
+    "description": "Elementor node.js bindings",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/noartem/elementor.git"
+    },
+    "author": "Noskov Artem <nowasmawesome@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/noartem/elementor/issues"
+    },
+    "homepage": "https://github.com/noartem/elementor#readme",
+    "devDependencies": {
+        "@types/node": "^18.11.18",
+        "typescript": "^4.9.4"
+    }
+}
