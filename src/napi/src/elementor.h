@@ -2,14 +2,32 @@
 
 #include <napi.h>
 
-class Elementor : public Napi::ObjectWrap<Elementor>
+#include "../../library/include.h"
+#include "../../library/animation/include.h"
+#include "../../library/platforms/gl/include.h"
+#include "../../library/elements/include.h"
+
+using namespace elementor;
+using namespace elementor::elements;
+
+class NGLPlatform : public Napi::ObjectWrap<NGLPlatform>
 {
 public:
-    Elementor(const Napi::CallbackInfo&);
-    Napi::Value Greet(const Napi::CallbackInfo&);
-
+    NGLPlatform(const Napi::CallbackInfo&);
     static Napi::Function GetClass(Napi::Env);
-
+    Napi::Value getClipboard(const Napi::CallbackInfo&);
 private:
-    std::string _greeterName;
+    GLPlatform *platform;
+};
+
+class NGLClipboard : public Napi::ObjectWrap<NGLClipboard>
+{
+public:
+    NGLClipboard(const Napi::CallbackInfo&, GLClipboard *clipboard);
+    NGLClipboard(const Napi::CallbackInfo&);
+    static Napi::Function GetClass(Napi::Env);
+    Napi::Value get(const Napi::CallbackInfo&);
+    Napi::Value set(const Napi::CallbackInfo&);
+private:
+    GLClipboard *clipboard;
 };

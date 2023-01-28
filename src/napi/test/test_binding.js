@@ -1,23 +1,14 @@
-const Elementor = require("../dist/binding.js");
+const { Platform } = require("../dist/binding.js");
 const assert = require("assert");
 
-assert(Elementor, "The expected module is undefined");
+function testPlatform() {
+  const platform = new Platform();
 
-function testBasic() {
-  const instance = new Elementor("mr-yeoman");
-  assert(instance.greet, "The expected method is not defined");
-  assert.strictEqual(
-    instance.greet("kermit"),
-    "mr-yeoman",
-    "Unexpected value returned"
-  );
+  console.log("cliboard from platform", platform.clipboard.get());
+  platform.clipboard.set("SOMETHING");
+  console.log("clipboard.get()", platform.clipboard.get());
 }
 
-function testInvalidParams() {
-  const instance = new Elementor();
-}
+assert.doesNotThrow(testPlatform, undefined, "testPlatform threw an expection");
 
-assert.doesNotThrow(testBasic, undefined, "testBasic threw an expection");
-assert.throws(testInvalidParams, undefined, "testInvalidParams didn't throw");
-
-console.log("Tests passed- everything looks OK!");
+console.log("Tests passed -- everything looks OK!");

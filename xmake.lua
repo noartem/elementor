@@ -25,6 +25,7 @@ target("elementor")
     add_files("src/library/*.cpp")
     add_files("src/library/platforms/*/*.cpp")
     add_files("src/library/elements/*.cpp")
+    add_cxxflags('-fPIC')
 
 if is_plat("windows") then
     add_packages("glew")

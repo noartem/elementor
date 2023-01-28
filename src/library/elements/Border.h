@@ -46,7 +46,7 @@ namespace elementor::elements {
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect);
+        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
