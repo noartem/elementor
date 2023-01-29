@@ -12,11 +12,16 @@
     ```bash
     xmake
     ```
-4. Build project for your system
+4. *Optional* Set build mode (release/debug/check)
+    ```bash
+    xmake f -m release -y
+    ```
+5. Build project for your system
     ```bash
     xmake build
     ```
-5. Check out examples
+6. Check out examples
     ```bash
-    xmake run examples
+    xmake run example-gallery
     ```
+7. Check out [node.js bindings](src/napi/)
