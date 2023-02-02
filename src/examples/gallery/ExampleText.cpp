@@ -4,6 +4,7 @@
 
 #include "ExampleText.h"
 #include "Scroll.h"
+#include "Link.h"
 
 std::string ExampleText::getName() {
     return "Text";
@@ -109,6 +110,21 @@ Element *exampleFontFamily() {
     }
 
     return examples;
+}
+
+Element *exampleLink() {
+    return column()
+        ->setSpacing(12)
+        ->appendChild(link()
+            ->setLabel("Simple link")
+            ->setURL("https://github.com/noartem/elementor"))
+        ->appendChild(link()
+            ->setLabel("Link with extra styles")
+            ->setTextElement(text()
+                ->setFontColor("#FB4C7F")
+                ->setFontSize(16)
+                ->setFontWeight(600))
+            ->setURL("https://github.com/noartem/elementor"));
 }
 
 Element *exampleParagraph() {
@@ -331,6 +347,13 @@ Element *ExampleText::getScene(ApplicationContext *ctx) {
                 ->appendChild(padding()
                     ->setPaddings(0, 16)
                     ->setChild(exampleFontFamily()))
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Link"))
+                ->appendChild(padding()
+                    ->setPaddings(0, 16)
+                    ->setChild(exampleLink()))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)
