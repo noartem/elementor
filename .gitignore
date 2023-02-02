@@ -7,3 +7,8 @@ build/
 
 Makefile
 src/examples/diary/diary.csv
+
+CMakeLists.txt
+cmake-build-debug/
+.vscode/
+.idea/
