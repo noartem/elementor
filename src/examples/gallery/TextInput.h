@@ -5,9 +5,9 @@
 #ifndef GALLERY_TEXT_INPUT_H
 #define GALLERY_TEXT_INPUT_H
 
-#include "elementor.h"
+#include "utility.h"
 
-class TextInput : public Element {
+class TextInput : public Component {
 public:
     TextInput();
 
@@ -17,12 +17,7 @@ public:
 
     TextInput *onChange(std::function<std::u32string (std::u32string text)> callback);
 
-    Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
-
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
-
 private:
-    Element *child;
     Inputable *inputableChild;
     std::u32string value;
     bool focused;
