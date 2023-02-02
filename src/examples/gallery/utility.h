@@ -15,4 +15,6 @@ int randInRange(int min, int max);
 
 std::string floatToString(float value, int precision = 1);
 
+void openURL(std::string url);
+
 #endif //GALLERY_EXAMPLES_UTILITY_H

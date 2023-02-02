@@ -19,6 +19,14 @@ if is_mode("debug") then
     add_defines("DEBUG")
 end
 
+if is_plat("windows") then
+    add_defines("OS_HOST_WINDOWS")
+elseif is_plat("linux") then
+    add_defines("OS_HOST_LINUX")
+elseif is_plat("macosx") then
+    add_defines("OS_HOST_MACOS")
+end
+
 target("elementor")
     set_kind("static")
     add_packages("skia-build", "glfw")
