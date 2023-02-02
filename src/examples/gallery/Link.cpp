@@ -23,7 +23,8 @@ void Link::render() {
     this->element = clickable()
         ->setChild(withCursor()
             ->setChild(paragraph()
-                ->appendChild(this->textElement))
+                ->appendChild(this->textElement
+                    ->setText(this->label)))
             ->setCursorShape(CursorShape::Hand))
         ->onClick([this] () {
             openURL(this->url);
