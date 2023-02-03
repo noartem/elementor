@@ -3,6 +3,8 @@
 //
 
 #include "Background.h"
+
+#include <utility>
 #include "../Color.h"
 
 namespace elementor::elements {
@@ -10,8 +12,8 @@ namespace elementor::elements {
         return new Background();
     }
 
-    Background *Background::setColor(SkColor color) {
-        this->color = color;
+    Background *Background::setColor(SkColor skColor) {
+        this->color = skColor;
         return this;
     }
 
@@ -26,11 +28,11 @@ namespace elementor::elements {
     }
 
     Background *Background::setColor(std::string hex) {
-        this->color = makeSkColorFromHex(hex);
+        this->color = makeSkColorFromHex(std::move(hex));
         return this;
     }
 
-    SkColor Background::getColor() {
+    SkColor Background::getColor() const {
         return this->color;
     }
 
@@ -55,11 +57,11 @@ namespace elementor::elements {
         canvas->drawRect(skRect, paint);
     }
 
-    std::vector <RenderElement> Background::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement> Background::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
+            RenderElement child{};
             child.element = this->getChild();
             child.position = {0, 0};
             child.size = size;

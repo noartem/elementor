@@ -10,7 +10,9 @@
 namespace elementor::elements {
     class Background : public Element, public WithChild {
     public:
-        Background *setColor(SkColor color);
+        Background() : Element(), WithChild() {}
+
+        Background *setColor(SkColor skColor);
 
         Background *setColor(uint8_t r, uint8_t g, uint8_t b);
 
@@ -18,7 +20,7 @@ namespace elementor::elements {
 
         Background *setColor(std::string hex);
 
-        SkColor getColor();
+        SkColor getColor() const;
 
         Background *setChild(Element *child);
 
@@ -26,10 +28,10 @@ namespace elementor::elements {
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
 
     private:
-        SkColor color;
+        SkColor color{};
     };
 
     Background *background();
