@@ -8,6 +8,7 @@
 #include "Example.h"
 
 #include "ExampleBackground.h"
+#include "ExampleButton.h"
 #include "ExampleText.h"
 #include "ExampleTextInput.h"
 #include "ExampleSized.h"
@@ -19,15 +20,16 @@
 
 std::vector<Example *> examples() {
     return {
-        new ExampleBackground(),
-        new ExampleText(),
-        new ExampleTextInput(),
-        new ExampleSized(),
-        new ExampleImage(),
-        new ExampleAlign(),
-        new ExampleFlex(),
-        new ExampleWrap(),
-        new ExampleAnimation(),
+            new ExampleBackground(),
+            new ExampleButton(),
+            new ExampleText(),
+            new ExampleTextInput(),
+            new ExampleSized(),
+            new ExampleImage(),
+            new ExampleAlign(),
+            new ExampleFlex(),
+            new ExampleWrap(),
+            new ExampleAnimation(),
     };
 }
 
