@@ -11,10 +11,7 @@ Link *link() {
 
 Link::Link() {
     this->textElement = text()
-        ->setFontColor("#0078D4")
-        ->setDecoration(TextDecoration::Underline)
-        ->setDecorationMode(TextDecorationMode::Through)
-        ->setDecorationColor("#0078D4");
+        ->setFontColor("#0078D4");
 
     this->render();
 }
@@ -22,9 +19,8 @@ Link::Link() {
 void Link::render() {
     this->element = clickable()
         ->setChild(withCursor()
-            ->setChild(paragraph()
-                ->appendChild(this->textElement
-                    ->setText(this->label)))
+            ->setChild(this->textElement
+                ->setText(this->label))
             ->setCursorShape(CursorShape::Hand))
         ->onClick([this] () {
             openURL(this->url);
