@@ -4,7 +4,6 @@
 
 #include "ExamplesGallery.h"
 #include "Examples.h"
-#include "components/Scroll.h"
 #include "components/FPSLabel.h"
 #include "components/ScaleControl.h"
 
@@ -13,7 +12,7 @@ ExamplesGallery::ExamplesGallery() {
     this->activeExampleLabelName = empty();
     this->activeExampleLabelDescription = empty();
 
-    this->scene = background()
+    this->element = background()
         ->setColor("#FFFFFF")
         ->setChild(flex()
             ->appendChild(width()
@@ -109,13 +108,4 @@ Element *ExamplesGallery::makeExamplesList() {
     }
 
     return examplesList;
-}
-
-std::vector <RenderElement> ExamplesGallery::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-    this->ctx = ctx;
-    RenderElement sceneElement;
-    sceneElement.element = this->scene;
-    sceneElement.position = {0, 0};
-    sceneElement.size = size;
-    return {sceneElement};
 }

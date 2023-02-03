@@ -8,20 +8,13 @@
 #include "utility.h"
 #include "Example.h"
 
-class ExamplesGallery: public Element {
+class ExamplesGallery : public Component {
 public:
     ExamplesGallery();
 
-    std::vector<Example *> getExamples();
-
     void setActiveExample(Example *activeExample);
 
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
-
 private:
-    ApplicationContext *ctx;
-    Element *scene;
-    Example *activeExample;
     Empty *activeExampleElement;
     Empty *activeExampleLabelName;
     Empty *activeExampleLabelDescription;
