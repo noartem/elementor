@@ -15,6 +15,7 @@
 #include "ExampleImage.h"
 #include "ExampleAlign.h"
 #include "ExampleFlex.h"
+#include "ExampleStack.h"
 #include "ExampleWrap.h"
 #include "ExampleAnimation.h"
 
@@ -28,6 +29,7 @@ std::vector<Example *> examples() {
             new ExampleImage(),
             new ExampleAlign(),
             new ExampleFlex(),
+            new ExampleStack(),
             new ExampleWrap(),
             new ExampleAnimation(),
     };
