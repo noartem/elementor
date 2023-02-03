@@ -5,7 +5,7 @@
 #ifndef GALLERY_WITH_CURSOR_H
 #define GALLERY_WITH_CURSOR_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class WithCursor : public Component, public WithChild {
 public:

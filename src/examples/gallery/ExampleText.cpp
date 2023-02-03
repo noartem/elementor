@@ -3,8 +3,8 @@
 //
 
 #include "ExampleText.h"
-#include "Scroll.h"
-#include "Link.h"
+#include "components/Scroll.h"
+#include "components/Link.h"
 
 std::string ExampleText::getName() {
     return "Text";

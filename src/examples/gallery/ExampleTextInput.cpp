@@ -3,8 +3,8 @@
 //
 
 #include "ExampleTextInput.h"
-#include "Scroll.h"
-#include "TextInput.h"
+#include "components/Scroll.h"
+#include "components/TextInput.h"
 
 std::string ExampleTextInput::getName() {
     return "Text Input";

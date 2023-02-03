@@ -5,7 +5,7 @@
 #ifndef GALLERY_SCROLL_H
 #define GALLERY_SCROLL_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class Scroll : public Element {
 public:

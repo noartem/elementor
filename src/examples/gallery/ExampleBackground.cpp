@@ -3,7 +3,7 @@
 //
 
 #include "ExampleBackground.h"
-#include "Scroll.h"
+#include "components/Scroll.h"
 
 std::string ExampleBackground::getName() {
     return "Background";

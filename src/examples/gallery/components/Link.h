@@ -5,7 +5,7 @@
 #ifndef GALLERY_LINK_H
 #define GALLERY_LINK_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class Link : public Component  {
 public:

@@ -5,7 +5,7 @@
 #ifndef GALLERY_SCALE_CONTROL_H
 #define GALLERY_SCALE_CONTROL_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class ScaleControl : public Element {
 public:

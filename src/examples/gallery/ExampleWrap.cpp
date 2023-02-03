@@ -3,7 +3,7 @@
 //
 
 #include "ExampleWrap.h"
-#include "Scroll.h"
+#include "components/Scroll.h"
 
 std::string ExampleWrap::getName() {
     return "Wrap";

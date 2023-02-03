@@ -3,7 +3,7 @@
 //
 
 #include "ExampleAlign.h"
-#include "Scroll.h"
+#include "components/Scroll.h"
 
 std::string ExampleAlign::getName() {
     return "Align";

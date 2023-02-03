@@ -5,7 +5,7 @@
 #ifndef GALLERY_TEXT_INPUT_H
 #define GALLERY_TEXT_INPUT_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class TextInput : public Component {
 public:

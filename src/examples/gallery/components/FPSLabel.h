@@ -5,7 +5,7 @@
 #ifndef GALLERY_FPS_LABEL_H
 #define GALLERY_FPS_LABEL_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class FPSLabel : public Element {
 public:

@@ -3,7 +3,7 @@
 //
 
 #include "ExampleAnimation.h"
-#include "Scroll.h"
+#include "components/Scroll.h"
 
 std::string ExampleAnimation::getName() {
     return "Animation";

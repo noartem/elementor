@@ -3,7 +3,7 @@
 //
 
 #include "ExampleSized.h"
-#include "Scroll.h"
+#include "components/Scroll.h"
 
 std::string ExampleSized::getName() {
     return "Sized";
