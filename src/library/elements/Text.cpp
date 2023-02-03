@@ -171,7 +171,6 @@ namespace elementor::elements {
 
     Text *Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->decorationColor = makeSkColorFromRGBA(r, g, b, a);
-        this->decoration = decoration;
         return this;
     }
 
