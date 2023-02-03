@@ -3,7 +3,6 @@
 //
 
 #include "Paragraph.h"
-#include "../String.h"
 #include "ParagraphPlaceholder.h"
 
 #include <include/core/SkFontMgr.h>
@@ -23,7 +22,7 @@ namespace elementor::elements {
 
     Paragraph *Paragraph::setTextAlign(TextAlign textAlign) {
         this->textAlign = textAlign;
-        this->skParagraph = NULL;
+        this->skParagraph = nullptr;
         return this;
     }
 
@@ -33,7 +32,7 @@ namespace elementor::elements {
 
     Paragraph *Paragraph::setTextDirection(TextDirection textDirection) {
         this->textDirection = textDirection;
-        this->skParagraph = NULL;
+        this->skParagraph = nullptr;
         return this;
     }
 
@@ -47,12 +46,12 @@ namespace elementor::elements {
             this->childrenElements.push_back(child);
         }
 
-        this->skParagraph = NULL;
+        this->skParagraph = nullptr;
         return this;
     }
 
     void Paragraph::forceUpdate() {
-        this->skParagraph = NULL;
+        this->skParagraph = nullptr;
     }
 
     sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
@@ -66,28 +65,28 @@ namespace elementor::elements {
         sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(16);
         textStyle.setColor(SK_ColorBLACK);
-        textStyle.setFontStyle(SkFontStyle{SkFontStyle::Weight::kNormal_Weight, 
+        textStyle.setFontStyle(SkFontStyle{SkFontStyle::Weight::kNormal_Weight,
                                            SkFontStyle::Width::kNormal_Width,
                                            SkFontStyle::Slant::kUpright_Slant});
         return textStyle;
     }
 
     sktextlayout::ParagraphStyle Paragraph::makeParagraphStyle() {
-        sktextlayout::ParagraphStyle paragrphStyle{};
-        paragrphStyle.setTextStyle(this->makeDefaultTextStyle());
-        paragrphStyle.setTextDirection(this->getSkTextDirection());
-        return paragrphStyle;
+        sktextlayout::ParagraphStyle paragraphStyle{};
+        paragraphStyle.setTextStyle(this->makeDefaultTextStyle());
+        paragraphStyle.setTextDirection(this->getSkTextDirection());
+        return paragraphStyle;
     }
 
     sktextlayout::ParagraphBuilderImpl Paragraph::makeBuilder(ApplicationContext *ctx) {
-        sktextlayout::ParagraphStyle paragrphStyle = this->makeParagraphStyle();
+        sktextlayout::ParagraphStyle paragraphStyle = this->makeParagraphStyle();
         sk_sp<sktextlayout::FontCollection> fontCollection = this->makeFontCollection(ctx);
-        sktextlayout::ParagraphBuilderImpl builder {paragrphStyle, fontCollection};
+        sktextlayout::ParagraphBuilderImpl builder{paragraphStyle, fontCollection};
         return builder;
     }
 
     sktextlayout::TextAlign Paragraph::getSkTextAlign() {
-        switch(this->textAlign) {
+        switch (this->textAlign) {
             case TextAlign::Left:
                 return sktextlayout::TextAlign::kLeft;
             case TextAlign::Right:
@@ -99,14 +98,14 @@ namespace elementor::elements {
             case TextAlign::Start:
                 return sktextlayout::TextAlign::kStart;
             case TextAlign::End:
-                return sktextlayout::TextAlign::kEnd; 
+                return sktextlayout::TextAlign::kEnd;
             default:
                 return sktextlayout::TextAlign::kLeft;
         }
     }
 
     sktextlayout::TextDirection Paragraph::getSkTextDirection() {
-        switch(this->textDirection) {
+        switch (this->textDirection) {
             case TextDirection::LTR:
                 return sktextlayout::TextDirection::kLtr;
             case TextDirection::RTL:
@@ -116,27 +115,29 @@ namespace elementor::elements {
         }
     }
 
-    sktextlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child) {
-        Size childSize = child->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
+    sktextlayout::PlaceholderStyle
+    Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child) {
+        Size childSize = child->getSize(ctx, window, {{0, 0},
+                                                      {INFINITY, INFINITY}});
 
-        ParagraphPlaceholder *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
+        auto *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
         if (childPlaceholder) {
-            return sktextlayout::PlaceholderStyle(childSize.width, childSize.height,
-                                            childPlaceholder->getSkPlaceholderAlignment(),
-                                            childPlaceholder->getSkBaseline(),
-                                            childPlaceholder->getOffset());
+            return {childSize.width, childSize.height,
+                    childPlaceholder->getSkPlaceholderAlignment(),
+                    childPlaceholder->getSkBaseline(),
+                    childPlaceholder->getOffset()};
         } else {
-            return sktextlayout::PlaceholderStyle(childSize.width, childSize.height,
-                                            sktextlayout::PlaceholderAlignment::kMiddle,
-                                            sktextlayout::TextBaseline::kAlphabetic,
-                                            ZERO);
+            return {childSize.width, childSize.height,
+                    sktextlayout::PlaceholderAlignment::kMiddle,
+                    sktextlayout::TextBaseline::kAlphabetic,
+                    ZERO};
         }
     }
 
     std::unique_ptr<sktextlayout::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx, Window *window) {
         sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
-        for (Element *child : this->getChildrenList()) {
+        for (Element *child: this->getChildrenList()) {
             Text *childText = dynamic_cast<Text *>(child);
             if (childText) {
                 builder.pushStyle(childText->makeSkTextStyle(ctx));
@@ -155,7 +156,8 @@ namespace elementor::elements {
     }
 
     Size Paragraph::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
-        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
+            this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();
 
         this->skParagraph->layout(boundaries.max.width);
@@ -163,26 +165,28 @@ namespace elementor::elements {
     }
 
     void Paragraph::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
+            this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();
 
         this->skParagraph->layout(rect.size.width);
         this->skParagraph->paint(canvas, 0, 0);
     }
 
-    std::vector <RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        if (this->skParagraph == NULL || ctx->getPixelScale() != this->lastPixelScale) this->skParagraph = this->makeSkParagraph(ctx, window);
+    std::vector<RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
+            this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();
 
-        std::vector <RenderElement> children;
+        std::vector<RenderElement> children;
         std::vector<sktextlayout::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
         int childrenSize = std::min((int) childsRects.size(), (int) this->getChildrenSize());
         for (unsigned int i = 0; i < childrenSize; i++) {
-            RenderElement child;
+            RenderElement child{};
             child.element = this->childrenElements[i];
             SkRect childRect = childsRects[i].rect;
             child.position = {childRect.x(), childRect.y()};
-            child.size = {childRect.width(), childRect.height()};        
+            child.size = {childRect.width(), childRect.height()};
             children.push_back(child);
         }
 
