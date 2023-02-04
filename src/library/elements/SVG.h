@@ -16,15 +16,15 @@ namespace elementor::elements {
     public:
         sk_sp<SkSVGDOM> getSkSVGDOM();
 
-        SVG *fromSkSVGDOM(sk_sp<SkSVGDOM> skSVGDOM);
+        SVG *fromSkSVGDOM(sk_sp<SkSVGDOM> newSkSVGDOM);
 
         SVG *fromSkStream(SkStream& stream);
 
         SVG *fromSkData(sk_sp<SkData> data);
 
-        SVG *fromPath(std::string path);
+        SVG *fromPath(const std::string& path);
 
-        SVG *fromString(std::string value);
+        SVG *fromString(const char value[]);
 
         void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 

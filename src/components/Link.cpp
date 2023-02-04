@@ -19,12 +19,10 @@ namespace elementor::components {
 
     void Link::render() {
         this->element = clickable()
-            ->setChild(this->textElement
-                ->setText(this->label))
-            //            ->setChild(withCursor()
-//                ->setChild(this->textElement
-//                    ->setText(this->label))
-//                ->setCursorShape(CursorShape::Hand))
+            ->setChild(withCursor()
+                ->setChild(this->textElement
+                    ->setText(this->label))
+                ->setCursorShape(CursorShape::Hand))
             ->onClick([this] () {
                 openURL(this->url);
             });

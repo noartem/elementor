@@ -5,12 +5,16 @@
 #include "ScaleControl.h"
 #include "icons.h"
 
+#include <filesystem>
+
 namespace elementor::components {
     ScaleControl *scaleControl() {
         return new ScaleControl();
     }
 
     ScaleControl::ScaleControl() {
+        std::string currentPath = std::filesystem::current_path().string() + "/../../../../";
+
         this->scalePercentageText = text();
 
         Background *decrementBackground = background();
@@ -35,7 +39,7 @@ namespace elementor::components {
                                         ->setChild(padding()
                                             ->setPaddings(8)
                                             ->setChild(svg()
-                                                ->fromString(ICON_REMOVE)))))))
+                                                ->fromPath(currentPath + "src/components/remove.svg")))))))
                         ->appendChild(flexible()
                             ->setChild(padding()
                                 ->setPaddings(8)
@@ -58,7 +62,7 @@ namespace elementor::components {
                                         ->setChild(padding()
                                             ->setPaddings(8)
                                             ->setChild(svg()
-                                                ->fromString(ICON_ADD))))))))));
+                                                ->fromPath(currentPath + "src/components/add.svg"))))))))));
     }
 
     void ScaleControl::applyScale() {

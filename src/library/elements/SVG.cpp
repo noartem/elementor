@@ -12,6 +12,7 @@
 #include <modules/svg/include/SkSVGRenderContext.h>
 
 #include <iostream>
+#include <utility>
 
 namespace elementor::elements {
     SVG *svg() {
@@ -22,36 +23,38 @@ namespace elementor::elements {
         return this->skSVGDOM;
     }
 
-    SVG *SVG::fromSkSVGDOM(sk_sp<SkSVGDOM> skSVGDOM) {
-        this->skSVGDOM = skSVGDOM;
+    SVG *SVG::fromSkSVGDOM(sk_sp<SkSVGDOM> newSkSVGDOM) {
+        this->skSVGDOM = std::move(newSkSVGDOM);
         return this;
     }
 
-    SVG *SVG::fromSkStream(SkStream& stream) {
-        return this->fromSkSVGDOM(SkSVGDOM::MakeFromStream(stream));
+    SVG *SVG::fromSkStream(SkStream &stream) {
+        this->skSVGDOM = SkSVGDOM::MakeFromStream(stream);
+        return this;
     }
 
     SVG *SVG::fromSkData(sk_sp<SkData> data) {
-        SkMemoryStream dataStream(data);
+        SkMemoryStream dataStream(std::move(data));
         return this->fromSkStream(dataStream);
     }
 
-    SVG *SVG::fromPath(std::string path) {
+    SVG *SVG::fromPath(const std::string &path) {
         return this->fromSkData(SkData::MakeFromFileName(path.c_str()));
     }
 
-    SVG *SVG::fromString(std::string value) {
-        return this->fromSkData(SkData::MakeWithCString(value.c_str()));
+    SVG *SVG::fromString(const char value[]) {
+        return this->fromSkData(SkData::MakeWithCString(value));
     }
 
     void SVG::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
-        if (this->skImage == NULL || (abs(this->skImage->width() - rect.size.width) > 5) || (abs(this->skImage->height() - rect.size.height) > 5)) {
-            SkSVGSVG* root = this->skSVGDOM->getRoot();
+        if (this->skImage == nullptr || (abs(this->skImage->width() - rect.size.width) > 5) ||
+            (abs(this->skImage->height() - rect.size.height) > 5)) {
+            SkSVGSVG *root = this->skSVGDOM->getRoot();
             root->setWidth(SkSVGLength(rect.size.width, SkSVGLength::Unit::kNumber));
             root->setHeight(SkSVGLength(rect.size.height, SkSVGLength::Unit::kNumber));
 
             sk_sp<SkSurface> svgSurface = SkSurface::MakeRasterN32Premul(rect.size.width, rect.size.height);
-            if (svgSurface == NULL) {
+            if (svgSurface == nullptr) {
                 this->skSVGDOM->render(canvas);
                 return;
             }

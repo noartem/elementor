@@ -6,7 +6,6 @@
 #define GALLERY_EXAMPLES_UTILITY_H
 
 #include "elementor.h"
-#include "components.h"
 
 Element *box(std::string color);
 
