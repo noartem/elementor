@@ -3,8 +3,6 @@
 //
 
 #include "ExampleButton.h"
-#include "components/Scroll.h"
-#include "components/Button.h"
 
 std::string ExampleButton::getName() {
     return "Button";

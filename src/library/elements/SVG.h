@@ -24,6 +24,8 @@ namespace elementor::elements {
 
         SVG *fromPath(std::string path);
 
+        SVG *fromString(std::string value);
+
         void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
     private:

@@ -6,6 +6,7 @@
 #define GALLERY_EXAMPLE_ALIGN_H
 
 #include "utility.h"
+#include "elementor.h"
 #include "Example.h"
 
 class ExampleAlign: public Example {

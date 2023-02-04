@@ -203,13 +203,13 @@ namespace elementor {
 
     class EventMouseMove : public Event {
     public:
-        EventMouseMove(double x, double y) {
+        EventMouseMove(float x, float y) {
             this->x = x;
             this->y = y;
         }
 
-        double x;
-        double y;
+        float x;
+        float y;
 
         std::string getName() override {
             return EVENT_MOUSE_MOVE;
@@ -223,13 +223,13 @@ namespace elementor {
 
     class EventScroll : public Event {
     public:
-        EventScroll(double xOffset, double yOffset) {
+        EventScroll(float xOffset, float yOffset) {
             this->xOffset = xOffset;
             this->yOffset = yOffset;
         }
 
-        double xOffset;
-        double yOffset;
+        float xOffset;
+        float yOffset;
 
         std::string getName() override {
             return EVENT_SCROLL;

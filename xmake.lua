@@ -44,7 +44,7 @@ target("example-gallery")
     add_deps("elementor")
     add_packages("skia-build", "glfw")
     add_files("src/examples/gallery/*.cpp")
-    add_files("src/examples/gallery/components/*.cpp")
+    add_files("src/components/*.cpp")
 
 target("example-diary")
     set_kind("binary")

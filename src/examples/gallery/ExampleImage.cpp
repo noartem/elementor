@@ -3,7 +3,6 @@
 //
 
 #include "ExampleImage.h"
-#include "components/Scroll.h"
 
 #include <filesystem>
 

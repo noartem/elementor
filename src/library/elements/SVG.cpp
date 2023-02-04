@@ -40,6 +40,10 @@ namespace elementor::elements {
         return this->fromSkData(SkData::MakeFromFileName(path.c_str()));
     }
 
+    SVG *SVG::fromString(std::string value) {
+        return this->fromSkData(SkData::MakeWithCString(value.c_str()));
+    }
+
     void SVG::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
         if (this->skImage == NULL || (abs(this->skImage->width() - rect.size.width) > 5) || (abs(this->skImage->height() - rect.size.height) > 5)) {
             SkSVGSVG* root = this->skSVGDOM->getRoot();

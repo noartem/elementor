@@ -4,8 +4,6 @@
 
 #include "ExamplesGallery.h"
 #include "Examples.h"
-#include "components/FPSLabel.h"
-#include "components/ScaleControl.h"
 
 ExamplesGallery::ExamplesGallery() {
     this->activeExampleElement = empty();

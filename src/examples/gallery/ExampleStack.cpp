@@ -3,7 +3,6 @@
 //
 
 #include "ExampleStack.h"
-#include "components/Scroll.h"
 
 std::string ExampleStack::getName() {
     return "Stack";
