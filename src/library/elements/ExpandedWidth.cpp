@@ -18,11 +18,8 @@ namespace elementor::elements {
         return fitSizeInBoundaries(this->getChild()->getSize(ctx, window, {{boundaries.max.width, 0}, boundaries.max}), boundaries);
     }
 
-    std::vector <RenderElement> ExpandedWidth::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        RenderElement child;
-        child.element = this->getChild();
-        child.position = {0, 0};
-        child.size = size;
-        return {child};
+    std::vector <RenderElement> ExpandedWidth::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+        RenderElement childElement{this->getChild(), {0, 0}, rect.size};
+        return {childElement};
     }
 }

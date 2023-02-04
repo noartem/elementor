@@ -80,11 +80,11 @@ namespace elementor::components {
         this->applyScale();
     }
 
-    std::vector<RenderElement> ScaleControl::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector<RenderElement> ScaleControl::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         if (this->initialPixelScale == 0) {
             this->initialPixelScale = ctx->getPixelScale();
         }
 
-        return Component::getChildren(ctx, window, size);
+        return Component::getChildren(ctx, window, rect);
     }
 }

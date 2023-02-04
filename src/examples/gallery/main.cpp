@@ -9,7 +9,10 @@ int main() {
     auto *platform = new GLPlatform();
     auto *window = platform->makeWindow();
     window->setTitle("Elementor Examples");
-    window->setRoot(new ExamplesGallery());
+    auto rootElement = new ExamplesGallery();
+    auto componentsContext = new ComponentsContext(rootElement);
+    window->setUserPointer(componentsContext);
+    window->setRoot(componentsContext);
     window->setSize({920, 640});
     window->setMinSize({630, 320});
     platform->run();

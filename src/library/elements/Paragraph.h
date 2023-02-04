@@ -31,7 +31,7 @@ namespace elementor::elements {
 
         void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
 
     private:
         TextAlign textAlign = TextAlign::Left;

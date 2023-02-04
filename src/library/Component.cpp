@@ -18,14 +18,11 @@ namespace elementor::elements {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Component::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Component::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         this->ctx = ctx;
         this->window = window;
 
-        RenderElement renderElement;
-        renderElement.element = this->element;
-        renderElement.position = {0, 0};
-        renderElement.size = size;
+        RenderElement renderElement{this->element, {0, 0}, rect.size};
         return {renderElement};
     }
 }

@@ -105,30 +105,32 @@ namespace elementor::elements {
         if (rect.size.height != oldRect.size.height || rect.size.width != oldRect.size.width) {
             if (this->isHorizontalScroll()) {
                 if (rect.size.width + this->getScrollLeft() > this->childSize.width) {
-                    this->scrollLeft = std::min(std::max(this->childSize.width - rect.size.width, ZERO), this->getMaxScrollLeft());
+                    this->scrollLeft = std::min(std::max(this->childSize.width - rect.size.width, ZERO),
+                                                this->getMaxScrollLeft());
                 }
             }
 
             if (this->isVerticalScroll()) {
                 if (rect.size.height + this->getScrollTop() > this->childSize.height) {
-                    this->scrollTop = std::min(std::max(this->childSize.height - rect.size.height, ZERO), this->getMaxScrollTop());
+                    this->scrollTop = std::min(std::max(this->childSize.height - rect.size.height, ZERO),
+                                               this->getMaxScrollTop());
                 }
             }
         }
     }
 
-    std::vector <RenderElement> Scrollable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement> Scrollable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
+            RenderElement childElement{};
+            childElement.element = this->getChild();
             this->childSize = this->getChildSize(ctx, window, {rect.size, rect.size});
-            child.size = this->childSize;
-            child.position.x = -1 * this->getScrollLeft();
-            child.position.y = -1 * this->getScrollTop();
+            childElement.size = this->childSize;
+            childElement.position.x = -1 * this->getScrollLeft();
+            childElement.position.y = -1 * this->getScrollTop();
 
-            children.push_back(child);
+            children.push_back(childElement);
         }
 
         return children;
@@ -151,7 +153,8 @@ namespace elementor::elements {
                 if (event->xOffset < 0 && scrollLeft == maxScrollLeft || event->xOffset > 0 && scrollLeft == 0) {
                     return EventCallbackResponse::None;
                 } else {
-                    this->scrollLeft = std::min(std::max(scrollLeft - event->xOffset * this->scrollAcceleration, ZERO), maxScrollLeft);
+                    this->scrollLeft = std::min(std::max(scrollLeft - event->xOffset * this->scrollAcceleration, ZERO),
+                                                maxScrollLeft);
                 }
             }
 
@@ -161,7 +164,8 @@ namespace elementor::elements {
                 if (event->yOffset < 0 && scrollTop == maxScrollTop || event->yOffset > 0 && scrollTop == 0) {
                     return EventCallbackResponse::None;
                 } else {
-                    this->scrollTop = std::min(std::max(scrollTop - event->yOffset * this->scrollAcceleration, ZERO), maxScrollTop);
+                    this->scrollTop = std::min(std::max(scrollTop - event->yOffset * this->scrollAcceleration, ZERO),
+                                               maxScrollTop);
                 }
             }
 

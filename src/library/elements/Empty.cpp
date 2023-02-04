@@ -22,16 +22,12 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Empty::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Empty::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
-            child.size = size;
-            child.position = {0, 0};
-
-            children.push_back(child);
+            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
+            children.push_back(childElement);
         }
 
         return children;

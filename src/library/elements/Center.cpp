@@ -14,14 +14,14 @@ namespace elementor::elements {
         return this;
     }
 
-    std::vector <RenderElement> Center::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Center::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
+            RenderElement child{};
             child.element = this->getChild();
-            child.size = child.element->getSize(ctx, window, {{0, 0}, size});
-            child.position = {size.width / 2 - child.size.width / 2, size.height / 2 - child.size.height / 2};
+            child.size = child.element->getSize(ctx, window, {{0, 0}, rect.size});
+            child.position = {rect.size.width / 2 - child.size.width / 2, rect.size.height / 2 - child.size.height / 2};
 
             children.push_back(child);
         }

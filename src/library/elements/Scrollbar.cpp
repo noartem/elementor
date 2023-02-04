@@ -92,16 +92,14 @@ namespace elementor::elements {
         return this->child->getSize(ctx, window, boundaries);
     }
 
-    std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->child) {
-            RenderElement child;
-            child.element = this->child;
-            child.position = {0, 0};
-            Size childSize = this->child->getSize(ctx, window, {size, size});
-
-            ScrollDirection scrollDirection = this->child->getDirection();
+            RenderElement childElement{};
+            childElement.element = this->child;
+            childElement.position = {0, 0};
+            Size childSize = this->child->getSize(ctx, window, {rect.size, rect.size});
 
             float scrollWidth = this->child->getScrollWidth();
             float scrollHeight = this->child->getScrollHeight();
@@ -111,16 +109,14 @@ namespace elementor::elements {
             float childHeight = childSize.height;
             float childWidth = childSize.width;
 
-            if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > size.width)) {
-                float trackWidth = 0;
+            if (this->child->isHorizontalScroll() && (this->visible == ScrollbarVisible::Always || scrollWidth > rect.size.width)) {
                 float trackHeight = 0;
 
                 if (this->trackX) {
                     RenderElement track;
                     track.element = this->trackX;
-                    track.size = track.element->getSize(ctx, window, {{size.width, 0}, size});
+                    track.size = track.element->getSize(ctx, window, {{rect.size.width, 0}, rect.size});
 
-                    trackWidth = track.size.width;
                     trackHeight = track.size.height;
                     childHeight -= trackHeight;
                     track.position = {0, childHeight};
@@ -128,68 +124,66 @@ namespace elementor::elements {
                     children.push_back(track);
                 }
 
-                if (this->thumbX && scrollWidth > size.width) {
+                if (this->thumbX && scrollWidth > rect.size.width) {
                     RenderElement thumb;
                     thumb.element = this->thumbX;
 
-                    float thumbWidth = size.width * (size.width / scrollWidth);
+                    float thumbWidth = rect.size.width * (rect.size.width / scrollWidth);
                     if (trackHeight == 0) {
-                        thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, size.height}});
+                        thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, rect.size.height}});
                         trackHeight = thumb.size.height;
                         childHeight -= trackHeight;
                     } else {
                         thumb.size = {thumbWidth, trackHeight};
                     }
 
-                    thumb.position = {std::min(scrollLeft * (size.width / scrollWidth), childWidth - thumb.size.width), childHeight};
+                    thumb.position = {std::min(scrollLeft * (rect.size.width / scrollWidth), childWidth - thumb.size.width), childHeight};
 
                     children.push_back(thumb);
                 }
             }
 
-            if (this->child->isVerticalScroll() && (this->visible == ScrollbarVisible::Always || scrollHeight > size.height)) {
+            if (this->child->isVerticalScroll() && (this->visible == ScrollbarVisible::Always || scrollHeight > rect.size.height)) {
                 float trackWidth = 0;
-                float trackHeight = 0;
 
                 if (this->trackY) {
-                    RenderElement track;
-                    track.element = this->trackY;
-                    track.size = track.element->getSize(ctx, window, {{0, size.height}, size});
+                    RenderElement trackElement{};
+                    trackElement.element = this->trackY;
+                    trackElement.size = trackElement.element->getSize(ctx, window, {{0, rect.size.height}, rect.size});
 
-                    trackWidth = track.size.width;
-                    trackHeight = track.size.height;
+                    trackWidth = trackElement.size.width;
                     childWidth -= trackWidth;
-                    track.position = {childWidth, 0};
+                    trackElement.position = {childWidth, 0};
 
-                    children.push_back(track);
+                    children.push_back(trackElement);
                 }
 
-                if (this->thumbY && scrollHeight > size.height) {
-                    RenderElement thumb;
-                    thumb.element = this->thumbY;
+                if (this->thumbY && scrollHeight > rect.size.height) {
+                    RenderElement thumbElement{};
+                    thumbElement.element = this->thumbY;
 
-                    float thumbHeight = size.height * (size.height / scrollHeight);
+                    float thumbHeight = rect.size.height * (rect.size.height / scrollHeight);
                     if (trackWidth == 0) {
-                        thumb.size = thumb.element->getSize(ctx, window, {{0, thumbHeight}, {size.width, thumbHeight}});
-                        trackWidth = thumb.size.width;
+                        thumbElement.size = thumbElement.element->getSize(ctx, window, {{0, thumbHeight}, {rect.size.width, thumbHeight}});
+                        trackWidth = thumbElement.size.width;
                         childWidth -= trackWidth;
                     } else {
-                        thumb.size = {trackWidth, thumbHeight};
+                        thumbElement.size = {trackWidth, thumbHeight};
                     }
 
-                    thumb.position = {childWidth, std::min(scrollTop * (size.height / scrollHeight), childHeight - thumb.size.height)};
+                    thumbElement.position = {childWidth, std::min(scrollTop * (rect.size.height / scrollHeight), childHeight - thumbElement.size.height)};
 
-                    children.push_back(thumb);
+                    children.push_back(thumbElement);
                 }
             }
 
             if (this->position == ScrollbarPosition::InContent) {
-                child.size = {childWidth, childHeight};
+                childElement.size = {childWidth, childHeight};
             } else {
-                child.size = childSize;
+                childElement.size = childSize;
             }
 
-            children.insert(children.begin(), child);
+            children.insert(children.begin(), childElement);
         }
 
         return children;

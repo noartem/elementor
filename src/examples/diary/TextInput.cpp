@@ -85,10 +85,7 @@ Size TextInput::getSize(ApplicationContext *ctx, Window *window, Boundaries boun
     return this->child->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> TextInput::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-    RenderElement child;
-    child.element = this->child;
-    child.size = size;
-    child.position = {0, 0};
-    return {child};
+std::vector <RenderElement> TextInput::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    RenderElement childElement{this->child, {0, 0}, rect.size};
+    return {childElement};
 }

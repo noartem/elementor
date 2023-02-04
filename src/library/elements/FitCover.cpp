@@ -18,23 +18,23 @@ namespace elementor::elements {
         return ClipBehavior::AntiAlias;
     }
 
-    std::vector <RenderElement> FitCover::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        RenderElement child;
-        child.element = this->getChild();
+    std::vector <RenderElement> FitCover::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+        RenderElement childElement;
+        childElement.element = this->getChild();
 
-        Size childSize = child.element->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
+        Size childSize = childElement.element->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
         float ratio = childSize.width / childSize.height;
-        if (size.width > size.height) {
-            child.size.width = size.width;
-            child.size.height = size.width / ratio;
+        if (rect.size.width > rect.size.height) {
+            childElement.size.width = rect.size.width;
+            childElement.size.height = rect.size.width / ratio;
         } else {
-            child.size.height = size.height;
-            child.size.width = size.height / ratio;
+            childElement.size.height = rect.size.height;
+            childElement.size.width = rect.size.height / ratio;
         }
 
-        child.position.x = (size.width - child.size.width) / 2;
-        child.position.y = (size.height - child.size.height) / 2;
+        childElement.position.x = (rect.size.width - childElement.size.width) / 2;
+        childElement.position.y = (rect.size.height - childElement.size.height) / 2;
 
-        return {child};
+        return {childElement};
     }
 }

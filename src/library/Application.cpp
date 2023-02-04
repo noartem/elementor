@@ -8,18 +8,18 @@ namespace elementor {
     void Application::draw(ApplicationContext *ctx, Window *window, SkCanvas *canvas) {
         this->eventListeners.clear();
 
-        RenderElement rootElement;
+        RenderElement rootElement{};
         rootElement.position = {0, 0};
         rootElement.size = window->getSize();
         rootElement.element = window->getRoot();
 
-        ElementRect rootRect;
+        ElementRect rootRect{};
         rootRect.position = {0, 0};
         rootRect.inParentPosition = {0, 0};
         rootRect.size = window->getSize();
         rootRect.visibleSize = window->getSize();
 
-        Rect rootBoundary;
+        Rect rootBoundary{};
         rootBoundary.position = {0, 0};
         rootBoundary.size = window->getSize();
 
@@ -51,8 +51,8 @@ namespace elementor {
         canvas->drawRect(debugRect, debugPaint);
 #endif
 
-        for (RenderElement child: element->element->getChildren(ctx, window, element->size)) {
-            ElementRect childRect;
+        for (RenderElement child: element->element->getChildren(ctx, window, rect)) {
+            ElementRect childRect{};
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;
             childRect.visibleSize.width = std::min(std::max(boundary.size.width - std::max(childRect.position.x - boundary.position.x, ZERO), ZERO), child.size.width);
@@ -67,7 +67,7 @@ namespace elementor {
     }
 
     void Application::saveElementEventListeners(Element *element) {
-        for (std::string event : getElementEvents(element)) {
+        for (const std::string& event : getElementEvents(element)) {
             this->eventListeners[event].push_back(element);
         }
     }

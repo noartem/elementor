@@ -35,10 +35,7 @@ Size Scroll::getSize(ApplicationContext *ctx, Window *window, Boundaries boundar
     return this->childScrollbar->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> Scroll::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-    RenderElement child;
-    child.element = this->childScrollbar;
-    child.size = size;
-    child.position = {0, 0};
-    return {child};
+std::vector <RenderElement> Scroll::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    RenderElement childElement{this->childScrollbar, {0, 0}, rect.size};
+    return {childElement};
 }

@@ -62,13 +62,10 @@ namespace elementor::elements {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         this->ctx = ctx;
-        RenderElement child;
-        child.element = this->getChild();
-        child.position = {0, 0};
-        child.size = size;
-        return {child};
+        RenderElement childElement{this->getChild(), {0, 0}, rect.size};
+        return {childElement};
     }
 
     EventCallbackResponse Inputable::onEvent(EventMouseMove *event) {

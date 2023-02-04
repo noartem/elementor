@@ -14,7 +14,7 @@ namespace elementor::elements {
 
         ClipBehavior getClipBehaviour() override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
     };
 
     FitCover *fitCover();

@@ -51,12 +51,52 @@ Element *stackBasicExample() {
                                     ->setText("Positioned by padding"))))))));
 }
 
+Element *tooltipExample() {
+    auto tooltipElement = tooltip();
+    return tooltipElement
+        ->setChild(hoverable()
+            ->setChild(button()
+                ->setLabel("Hover me!"))
+            ->onEnter([tooltipElement]() { tooltipElement->setActive(true); })
+            ->onLeave([tooltipElement]() { tooltipElement->setActive(false); }))
+        ->setTip(rounded()
+            ->setRadius(8)
+            ->setChild(background()
+                ->setColor("#366ACE")
+                ->setChild(padding()
+                    ->setPaddings(6, 12, 10, 12)
+                    ->setChild(column()
+                        ->setSpacing(4)
+                        ->appendChild(text()
+                            ->setFontColor("#FFFFFF")
+                            ->setFontSize(12)
+                            ->setText("Tooltip"))
+                        ->appendChild(text()
+                            ->setFontColor("#FFFFFF")
+                            ->setFontSize(12)
+                            ->setText("Blue Tooltip"))
+                        ->appendChild(text()
+                            ->setFontColor("#FFFFFF")
+                            ->setFontSize(12)
+                            ->setText("Soooooooooooooooooooooo bbbbbbiiiiiiiiiiiiiiiiiiiig"))
+                        ->appendChild(text()
+                            ->setFontColor("#FFFFFF")
+                            ->setFontSize(12)
+                            ->setText("It's Awesome!!!!!"))))));
+}
+
 Element *ExampleStack::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
             ->setChild(column()
                 ->setSpacing(24)
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Tooltip"))
+                ->appendChild(alignWidth()
+                    ->setChild(tooltipExample()))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)

@@ -129,21 +129,21 @@ namespace elementor::elements {
         canvas->drawRRect(skRRect, paint);
     }
 
-    std::vector <RenderElement> Border::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Border::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
+            RenderElement childElement{};
+            childElement.element = this->getChild();
 
             float borderWidth = this->getWidth() * ctx->getPixelScale();
-            child.position = {borderWidth, borderWidth};
+            childElement.position = {borderWidth, borderWidth};
 
-            float childWidth = size.width - 2 * borderWidth;
-            float childHeight = size.height - 2 * borderWidth;
-            child.size = {childWidth, childHeight};
+            float childWidth = rect.size.width - 2 * borderWidth;
+            float childHeight = rect.size.height - 2 * borderWidth;
+            childElement.size = {childWidth, childHeight};
 
-            children.push_back(child);
+            children.push_back(childElement);
         }
 
         return children;

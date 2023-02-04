@@ -13,7 +13,7 @@ namespace elementor::components {
     public:
         FPSLabel();
 
-        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
 
     private:
         Text *textElement;

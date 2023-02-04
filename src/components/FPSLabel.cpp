@@ -26,10 +26,10 @@ namespace elementor::components {
                             ->setText("FPS: 000")))));
     }
 
-    std::vector<RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector<RenderElement> FPSLabel::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         ctx->requestNextFrame([] {});
         this->textElement->setText("FPS: " + std::to_string((int) ctx->getPerfomance()->getFPS()));
 
-        return Component::getChildren(ctx, window, size);
+        return Component::getChildren(ctx, window, rect);
     }
 }

@@ -85,14 +85,14 @@ namespace elementor::elements {
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
-        for (Element *childElement: this->getChildrenList()) {
-            RenderElement child;
-            child.element = childElement;
-            child.size = childElement->getSize(ctx, window, {{0, 0}, size});
-            children.push_back(child);
+        for (Element *child: this->getChildrenList()) {
+            RenderElement childElement;
+            childElement.element = child;
+            childElement.size = child->getSize(ctx, window, {{0, 0}, rect.size});
+            children.push_back(childElement);
         }
 
         float spacing = this->getSpacing() * ctx->getPixelScale();
@@ -100,8 +100,7 @@ namespace elementor::elements {
 
         bool isRow = this->direction == WrapDirection::Row;
 
-        float axisSize = isRow ? size.width : size.height;
-        float crossAxisSize = isRow ? size.height : size.width;
+        float axisSize = isRow ? rect.size.width : rect.size.height;
 
         float axisPosition = 0;
         float crossAxisPosition = 0;

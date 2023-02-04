@@ -11,8 +11,8 @@ namespace elementor::components {
     }
 
     Link::Link() {
-    this->textElement = text()
-        ->setFontColor("#0078D4");
+        this->textElement = text()
+            ->setFontColor("#0078D4");
 
         this->render();
     }

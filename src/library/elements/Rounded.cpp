@@ -11,7 +11,8 @@ namespace elementor::elements {
         return new Rounded();
     }
 
-    Rounded *Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
+    Rounded *
+    Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
         this->radiusTopLeft = radiusTopLeft;
         this->radiusTopRight = radiusTopRight;
         this->radiusBottomLeft = radiusBottomLeft;
@@ -55,7 +56,10 @@ namespace elementor::elements {
         float topRight = this->getRadiusTopRight() * ctx->getPixelScale();
         float bottomRight = this->getRadiusBottomRight() * ctx->getPixelScale();
         float bottomLeft = this->getRadiusBottomLeft() * ctx->getPixelScale();
-        SkVector corners[] = {{topLeft, topLeft}, {topRight, topRight}, {bottomRight, bottomRight}, {bottomLeft, bottomLeft}};
+        SkVector corners[] = {{topLeft,     topLeft},
+                              {topRight,    topRight},
+                              {bottomRight, bottomRight},
+                              {bottomLeft,  bottomLeft}};
 
         SkRRect skRRect;
         SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
@@ -72,16 +76,12 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Rounded::getChildren(ApplicationContext *ctx, Window *window, Size size) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement> Rounded::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
-            child.size = size;
-            child.position = {0, 0};
-
-            children.push_back(child);
+            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
+            children.push_back(childElement);
         }
 
         return children;

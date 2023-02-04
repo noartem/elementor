@@ -19,7 +19,7 @@ public:
 
     Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
 
 private:
     Element *child;

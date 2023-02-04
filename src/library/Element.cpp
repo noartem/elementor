@@ -14,7 +14,7 @@ namespace elementor {
     void Element::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
     }
 
-    std::vector <RenderElement> Element::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Element::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
         return children;
     }
@@ -61,5 +61,14 @@ namespace elementor {
 
     Element *WithChildren::getChild(int i) {
         return this->children[i];
+    }
+
+    int WithChildren::childIndex(Element *child) {
+        for (int i = 0; i < this->children.size(); i++) {
+            if (this->children[i] == child) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

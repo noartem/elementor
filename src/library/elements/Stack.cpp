@@ -24,15 +24,15 @@ namespace elementor::elements {
         return fitSizeInBoundaries(size, boundaries);
     }
 
-    std::vector<RenderElement> Stack::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector<RenderElement> Stack::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector<RenderElement> children;
 
-        for (auto childElement: this->getChildrenList()) {
-            RenderElement child{};
-            child.element = childElement;
-            child.position = {0, 0};
-            child.size = child.element->getSize(ctx, window, {{0, 0}, size});
-            children.push_back(child);
+        for (auto child: this->getChildrenList()) {
+            RenderElement childElement{};
+            childElement.element = child;
+            childElement.position = {0, 0};
+            childElement.size = childElement.element->getSize(ctx, window, {{0, 0}, rect.size});
+            children.push_back(childElement);
         }
 
         return children;

@@ -76,10 +76,10 @@ namespace elementor::elements {
         return fitSizeInBoundaries(size, boundaries);
     }
 
-    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
-        Boundaries sizedChildBoundaries = {{0, 0}, size};
+        Boundaries sizedChildBoundaries = {{0, 0}, rect.size};
 
         int childrenCount = this->getChildrenSize();
         float spacing = this->spacing * ctx->getPixelScale();
@@ -107,8 +107,8 @@ namespace elementor::elements {
             children.push_back(child);
         }
 
-        float axisSize = this->direction == FlexDirection::Row ? size.width : size.height;
-        float crossAxisSize = this->direction == FlexDirection::Row ? size.height : size.width;
+        float axisSize = this->direction == FlexDirection::Row ? rect.size.width : rect.size.height;
+        float crossAxisSize = this->direction == FlexDirection::Row ? rect.size.height : rect.size.width;
         float freeSize = axisSize - fixedSize;
         float sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
 
@@ -120,9 +120,9 @@ namespace elementor::elements {
             float childAxisSize = sizePerGrow * childGrow;
 
             if (this->direction == FlexDirection::Row) {
-                child.size = {childAxisSize, size.height};
+                child.size = {childAxisSize, rect.size.height};
             } else {
-                child.size = {size.width, childAxisSize};
+                child.size = {rect.size.width, childAxisSize};
             }
         }
 

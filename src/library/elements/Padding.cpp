@@ -56,24 +56,24 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
+            RenderElement childElement{};
+            childElement.element = this->getChild();
 
             float paddingTop = this->getPaddings().top * ctx->getPixelScale();
             float paddingRight = this->getPaddings().right * ctx->getPixelScale();
             float paddingBottom = this->getPaddings().bottom * ctx->getPixelScale();
             float paddingLeft = this->getPaddings().left * ctx->getPixelScale();
-            child.position = {paddingLeft, paddingTop};
+            childElement.position = {paddingLeft, paddingTop};
 
-            float childWidth = size.width - paddingLeft - paddingRight;
-            float childHeight = size.height - paddingTop - paddingBottom;
-            child.size = {childWidth, childHeight};
+            float childWidth = rect.size.width - paddingLeft - paddingRight;
+            float childHeight = rect.size.height - paddingTop - paddingBottom;
+            childElement.size = {childWidth, childHeight};
 
-            children.push_back(child);
+            children.push_back(childElement);
         }
 
         return children;

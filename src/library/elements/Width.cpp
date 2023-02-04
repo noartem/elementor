@@ -33,16 +33,12 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Width::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Width::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
-            RenderElement child;
-            child.element = this->getChild();
-            child.position = {0, 0};
-            child.size = size;
-
-            children.push_back(child);
+            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
+            children.push_back(childElement);
         }
 
         return children;

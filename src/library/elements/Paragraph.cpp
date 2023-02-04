@@ -173,7 +173,7 @@ namespace elementor::elements {
         this->skParagraph->paint(canvas, 0, 0);
     }
 
-    std::vector<RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector<RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
             this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();

@@ -39,12 +39,17 @@ if is_plat("windows") then
     add_packages("glew")
 end
 
-target("example-gallery")
-    set_kind("binary")
+target("elementor-components")
+    set_kind("static")
     add_deps("elementor")
     add_packages("skia-build", "glfw")
-    add_files("src/examples/gallery/*.cpp")
     add_files("src/components/*.cpp")
+
+target("example-gallery")
+    set_kind("binary")
+    add_deps("elementor", "elementor-components")
+    add_packages("skia-build", "glfw")
+    add_files("src/examples/gallery/*.cpp")
 
 target("example-diary")
     set_kind("binary")

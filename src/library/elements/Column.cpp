@@ -37,21 +37,21 @@ namespace elementor::elements {
         return fitSizeInBoundaries({maxWidth, totalHeight}, boundaries);
     }
 
-    std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         float spacing = this->getSpacing() * ctx->getPixelScale();
 
         float yPosition = 0;
-        for (Element *childElement : this->getChildrenList()) {
-            RenderElement child;
-            child.element = childElement;
-            child.size = child.element->getSize(ctx, window, {{size.width, 0}, size});
+        for (Element *child : this->getChildrenList()) {
+            RenderElement childElement{};
+            childElement.element = child;
+            childElement.size = child->getSize(ctx, window, {{rect.size.width, 0}, rect.size});
 
-            child.position = {0, yPosition};
-            yPosition += child.size.height + spacing;
+            childElement.position = {0, yPosition};
+            yPosition += childElement.size.height + spacing;
 
-            children.push_back(child);
+            children.push_back(childElement);
         }
 
         return children;

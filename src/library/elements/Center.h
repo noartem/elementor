@@ -12,7 +12,7 @@ namespace elementor::elements {
     public:
         Center *setChild(Element *child);
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, Size size) override;
+        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
     };
 
     Center *center();

@@ -43,14 +43,14 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> AlignWidth::getChildren(ApplicationContext *ctx, Window *window, Size size) {
+    std::vector <RenderElement> AlignWidth::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;
             child.element = this->getChild();
-            child.size = child.element->getSize(ctx, window, {{0, size.height}, size});
-            child.position = {size.width * this->coef - child.size.width * this->childCoef, 0};
+            child.size = child.element->getSize(ctx, window, {{0, rect.size.height}, rect.size});
+            child.position = {rect.size.width * this->coef - child.size.width * this->childCoef, 0};
 
             children.push_back(child);
         }
