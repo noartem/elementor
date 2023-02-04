@@ -9,6 +9,21 @@
 #include "elementor.h"
 
 namespace elementor::components {
+    enum class TooltipPlacement {
+        TopStart,
+        Top,
+        TopEnd,
+        RightStart,
+        Right,
+        RightEnd,
+        BottomEnd,
+        Bottom,
+        BottomStart,
+        LeftEnd,
+        Left,
+        LeftStart,
+    };
+
     class Tooltip : public Element {
     public:
         ~Tooltip();
@@ -18,6 +33,10 @@ namespace elementor::components {
         Tooltip *toggleActive();
 
         [[nodiscard]] bool getActive() const;
+
+        Tooltip *setPlacement(TooltipPlacement placement);
+
+        [[nodiscard]] TooltipPlacement getPlacement() const;
 
         Tooltip *setChild(Element *child);
 
@@ -32,13 +51,15 @@ namespace elementor::components {
         std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
 
     private:
-        ApplicationContext *ctx;
         Window *window;
 
         bool active = false;
+        TooltipPlacement placement = TooltipPlacement::Bottom;
         Element *child = nullptr;
         Element *tip = nullptr;
         Padding *tipPadding = padding();
+
+        Stack *getStackElement();
     };
 
     Tooltip *tooltip();

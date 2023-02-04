@@ -51,38 +51,91 @@ Element *stackBasicExample() {
                                     ->setText("Positioned by padding"))))))));
 }
 
+std::string tooltipPlacementToString(TooltipPlacement placement) {
+    switch (placement) {
+        case TooltipPlacement::TopStart:
+            return "TopStart";
+        case TooltipPlacement::Top:
+            return "Top";
+        case TooltipPlacement::TopEnd:
+            return "TopEnd";
+        case TooltipPlacement::RightStart:
+            return "RightStart";
+        case TooltipPlacement::Right:
+            return "Right";
+        case TooltipPlacement::RightEnd:
+            return "RightEnd";
+        case TooltipPlacement::BottomStart:
+            return "BottomStart";
+        case TooltipPlacement::Bottom:
+            return "Bottom";
+        case TooltipPlacement::BottomEnd:
+            return "BottomEnd";
+        case TooltipPlacement::LeftStart:
+            return "LeftStart";
+        case TooltipPlacement::Left:
+            return "Left";
+        case TooltipPlacement::LeftEnd:
+            return "LeftEnd";
+    }
+}
+
+Element *tooltipPlacementExample(TooltipPlacement placement) {
+    return padding()
+        ->setPaddings(64)
+        ->setChild(tooltip()
+            ->setActive(true)
+            ->setPlacement(placement)
+            ->setChild(rounded()
+                ->setRadius(8)
+                ->setChild(width()
+                    ->setWidth(192)
+                    ->setChild(height()
+                        ->setHeight(128)
+                        ->setChild(background()
+                            ->setColor("#DEEDE6")
+                            ->setChild(padding()
+                                ->setPaddings(6, 12, 10, 12)
+                                ->setChild(center()
+                                    ->setChild(text()
+                                        ->setFontColor("#006C4C")
+                                        ->setFontSize(12)
+                                        ->setText(tooltipPlacementToString(placement)))))))))
+            ->setTip(rounded()
+                ->setRadius(8)
+                ->setChild(background()
+                    ->setColor("#366ACE")
+                    ->setChild(padding()
+                        ->setPaddings(6, 12, 10, 12)
+                        ->setChild(column()
+                            ->setSpacing(4)
+                            ->appendChild(text()
+                                ->setFontColor("#FFFFFF")
+                                ->setFontSize(12)
+                                ->setText("Tooltip")))))));
+}
+
 Element *tooltipExample() {
-    auto tooltipElement = tooltip();
-    return tooltipElement
-        ->setChild(hoverable()
-            ->setChild(button()
-                ->setLabel("Hover me!"))
-            ->onEnter([tooltipElement]() { tooltipElement->setActive(true); })
-            ->onLeave([tooltipElement]() { tooltipElement->setActive(false); }))
-        ->setTip(rounded()
-            ->setRadius(8)
-            ->setChild(background()
-                ->setColor("#366ACE")
-                ->setChild(padding()
-                    ->setPaddings(6, 12, 10, 12)
-                    ->setChild(column()
-                        ->setSpacing(4)
-                        ->appendChild(text()
-                            ->setFontColor("#FFFFFF")
-                            ->setFontSize(12)
-                            ->setText("Tooltip"))
-                        ->appendChild(text()
-                            ->setFontColor("#FFFFFF")
-                            ->setFontSize(12)
-                            ->setText("Blue Tooltip"))
-                        ->appendChild(text()
-                            ->setFontColor("#FFFFFF")
-                            ->setFontSize(12)
-                            ->setText("Soooooooooooooooooooooo bbbbbbiiiiiiiiiiiiiiiiiiiig"))
-                        ->appendChild(text()
-                            ->setFontColor("#FFFFFF")
-                            ->setFontSize(12)
-                            ->setText("It's Awesome!!!!!"))))));
+    auto examples = column()
+        ->setSpacing(8);
+
+    std::vector<std::vector<TooltipPlacement>> placementGroups = {{TooltipPlacement::TopStart, TooltipPlacement::Top, TooltipPlacement::TopEnd},
+                                                                  {TooltipPlacement::RightStart, TooltipPlacement::Right, TooltipPlacement::RightEnd},
+                                                                  {TooltipPlacement::BottomStart, TooltipPlacement::Bottom, TooltipPlacement::BottomEnd},
+                                                                  {TooltipPlacement::LeftStart, TooltipPlacement::Left, TooltipPlacement::LeftEnd}};
+
+    for (auto placementGroup : placementGroups) {
+        auto groupExamples = row()
+            ->setSpacing(8);
+
+        for (auto placement : placementGroup) {
+            groupExamples->appendChild(tooltipPlacementExample(placement));
+        }
+
+        examples->appendChild(groupExamples);
+    }
+
+    return examples;
 }
 
 Element *ExampleStack::getScene(ApplicationContext *ctx) {
