@@ -179,13 +179,21 @@ namespace elementor {
         Menu,
     };
 
-    class EventMouseButton: public Event {
+    class EventMouseButton : public Event {
     public:
+        EventMouseButton(MouseButton button, KeyAction action, KeyMod mod) {
+            this->button = button;
+            this->action = action;
+            this->mod = mod;
+        }
+
         MouseButton button;
         KeyAction action;
         KeyMod mod;
 
-        std::string getName() { return EVENT_MOUSE_BUTTON; };
+        std::string getName() override {
+            return EVENT_MOUSE_BUTTON;
+        };
     };
 
     class WithOnMouseButton {
@@ -193,12 +201,19 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(EventMouseButton *event) = 0;
     };
 
-    class EventMouseMove: public Event {
+    class EventMouseMove : public Event {
     public:
-        float x;
-        float y;
+        EventMouseMove(double x, double y) {
+            this->x = x;
+            this->y = y;
+        }
 
-        std::string getName() { return EVENT_MOUSE_MOVE; };
+        double x;
+        double y;
+
+        std::string getName() override {
+            return EVENT_MOUSE_MOVE;
+        };
     };
 
     class WithOnMouseMove {
@@ -206,12 +221,19 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(EventMouseMove *event) = 0;
     };
 
-    class EventScroll: public Event {
+    class EventScroll : public Event {
     public:
-        float xOffset;
-        float yOffset;
+        EventScroll(double xOffset, double yOffset) {
+            this->xOffset = xOffset;
+            this->yOffset = yOffset;
+        }
 
-        std::string getName() { return EVENT_SCROLL; };
+        double xOffset;
+        double yOffset;
+
+        std::string getName() override {
+            return EVENT_SCROLL;
+        };
     };
 
     class WithOnScroll {
@@ -219,14 +241,23 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(EventScroll *event) = 0;
     };
 
-    class EventKeyboard: public Event {
+    class EventKeyboard : public Event {
     public:
+        EventKeyboard(KeyboardKey key, int scancode, KeyAction action, KeyMod mod) {
+            this->key = key;
+            this->scancode = scancode;
+            this->action = action;
+            this->mod = mod;
+        }
+
         KeyboardKey key;
         int scancode;
         KeyAction action;
         KeyMod mod;
 
-        std::string getName() { return EVENT_KEYBOARD; };
+        std::string getName() override {
+            return EVENT_KEYBOARD;
+        };
     };
 
     class WithOnKeyboard {
@@ -234,11 +265,17 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(EventKeyboard *event) = 0;
     };
 
-    class EventChar: public Event {
+    class EventChar : public Event {
     public:
+        EventChar(char32_t value) {
+            this->value = value;
+        }
+
         char32_t value;
 
-        std::string getName() { return EVENT_CHAR; };
+        std::string getName() override {
+            return EVENT_CHAR;
+        };
     };
 
     class WithOnChar {

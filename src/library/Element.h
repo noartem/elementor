@@ -102,6 +102,9 @@ namespace elementor {
         virtual Monitor *getMonitor() = 0;
 
         virtual void close() = 0;
+
+        virtual void setUserPointer(void *pointer) = 0;
+        virtual void *getUserPointer() = 0;
     };
 
     class ApplicationContext {

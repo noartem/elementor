@@ -16,10 +16,9 @@
 namespace elementor {
     class GLWindow : public Window {
     public:
-        GLWindow(ApplicationContext *applicationContext);
+        GLWindow(ApplicationContext *glfwWindow);
 
         void draw();
-        void updateMonitor();
 
         Element *getRoot() override;
         void setRoot(Element *root) override;
@@ -49,6 +48,9 @@ namespace elementor {
 
         void onClose(std::function<void ()> callback);
 
+        void setUserPointer(void *pointer) override;
+        void *getUserPointer() override;
+
     private:
         Application *application;
 
@@ -63,11 +65,12 @@ namespace elementor {
         SkCanvas *skCanvas;
         void refresh();
 
-        GLFWmonitor *glMonitor;
         GLMonitor *monitor;
 
         ApplicationContext *applicationContext;
         GLCursor *cursor;
+
+        void *userPointer;
 
         void updateWindowSizeLimits();
 

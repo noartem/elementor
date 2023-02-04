@@ -8,18 +8,16 @@
 #include "include/gpu/GrBackendSurface.h"
 #include "include/gpu/gl/GrGLInterface.h"
 #include "include/core/SkTypeface.h"
-#include "include/core/SkCanvas.h"
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <cmath>
+#include <utility>
 
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    GLWindow *getGLFWwindowGLWindow(GLFWwindow *window) {
+    GLWindow *getGLFWWindowGLWindow(GLFWwindow *window) {
         return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }
 
@@ -30,49 +28,48 @@ namespace elementor {
         this->cursor = new GLCursor(this->glWindow, this->applicationContext);
 
         glfwMakeContextCurrent(this->glWindow);
-        glfwSwapInterval(0); // TODO: Check if it is a problem
+        glfwSwapInterval(0);
         glfwSetWindowUserPointer(this->glWindow, this);
 
         this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
 
-        glfwSetWindowRefreshCallback(glWindow, [] (GLFWwindow* glWindow) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetWindowRefreshCallback(glWindow, [](GLFWwindow *glfwWindow) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->draw();
         });
 
-        glfwSetWindowPosCallback(glWindow, [] (GLFWwindow* glWindow, int xpos, int ypos) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
-            window->glMonitor = nullptr;
+        glfwSetWindowPosCallback(glWindow, [](GLFWwindow *glfwWindow, int xPosition, int yPosition) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->monitor = nullptr;
         });
 
-        glfwSetWindowCloseCallback(glWindow, [] (GLFWwindow* glWindow) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetWindowCloseCallback(glWindow, [](GLFWwindow *glfwWindow) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->close();
         });
 
-        glfwSetKeyCallback(glWindow, [] (GLFWwindow *glWindow, int key, int scancode, int action, int mods) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetKeyCallback(glWindow, [](GLFWwindow *glfwWindow, int key, int scancode, int action, int mods) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onKeyboard(key, scancode, action, mods);
         });
 
-        glfwSetCharCallback(glWindow, [] (GLFWwindow *glWindow, unsigned int codepoint) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetCharCallback(glWindow, [](GLFWwindow *glfwWindow, unsigned int codepoint) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onChar(codepoint);
         });
 
-        glfwSetMouseButtonCallback(glWindow, [] (GLFWwindow* glWindow, int button, int action, int mods) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetMouseButtonCallback(glWindow, [](GLFWwindow *glfwWindow, int button, int action, int mods) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseButton(button, action, mods);
         });
 
-        glfwSetCursorPosCallback(glWindow, [] (GLFWwindow* glWindow, double x, double y) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetCursorPosCallback(glWindow, [](GLFWwindow *glfwWindow, double x, double y) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseMove(x, y);
         });
 
-        glfwSetScrollCallback(glWindow, [] (GLFWwindow* glWindow, double xOffset, double yOffset) {
-            GLWindow *window = getGLFWwindowGLWindow(glWindow);
+        glfwSetScrollCallback(glWindow, [](GLFWwindow *glfwWindow, double xOffset, double yOffset) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onScroll(xOffset, yOffset);
         });
     }
@@ -129,7 +126,7 @@ namespace elementor {
     }
 
     std::optional<Size> GLWindow::getMinSize() {
-        return this->minSize;    
+        return this->minSize;
     }
 
     std::optional<Size> GLWindow::getMaxSize() {
@@ -138,11 +135,14 @@ namespace elementor {
 
     void GLWindow::updateWindowSizeLimits() {
         if (this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(this->glWindow, this->minSize->width, this->minSize->height, this->maxSize->width, this->maxSize->height);
+            glfwSetWindowSizeLimits(this->glWindow, this->minSize->width, this->minSize->height, this->maxSize->width,
+                                    this->maxSize->height);
         } else if (this->minSize && !this->maxSize) {
-            glfwSetWindowSizeLimits(this->glWindow, this->minSize->width, this->minSize->height, GLFW_DONT_CARE, GLFW_DONT_CARE);
+            glfwSetWindowSizeLimits(this->glWindow, this->minSize->width, this->minSize->height, GLFW_DONT_CARE,
+                                    GLFW_DONT_CARE);
         } else if (!this->minSize && this->maxSize) {
-            glfwSetWindowSizeLimits(this->glWindow, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width, this->maxSize->height);
+            glfwSetWindowSizeLimits(this->glWindow, GLFW_DONT_CARE, GLFW_DONT_CARE, this->maxSize->width,
+                                    this->maxSize->height);
         } else {
             glfwSetWindowSizeLimits(this->glWindow, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE, GLFW_DONT_CARE);
         }
@@ -184,8 +184,16 @@ namespace elementor {
         }
     }
 
-    void GLWindow::onClose(std::function<void ()> callback) {
-        this->callbackClose = callback;
+    void GLWindow::onClose(std::function<void()> callback) {
+        this->callbackClose = std::move(callback);
+    }
+
+    void GLWindow::setUserPointer(void *pointer) {
+        this->userPointer = pointer;
+    }
+
+    void *GLWindow::getUserPointer() {
+        return this->userPointer;
     }
 
     Cursor *GLWindow::getCursor() {
@@ -194,9 +202,7 @@ namespace elementor {
 
     Monitor *GLWindow::getMonitor() {
         if (this->monitor == nullptr) {
-            GLFWmonitor *glMonitor = getWindowMonitor(this->glWindow);
-            this->glMonitor = glMonitor;
-            this->monitor = new GLMonitor(glMonitor);
+            this->monitor = new GLMonitor(getWindowMonitor(this->glWindow));
         }
 
         return this->monitor;
@@ -252,11 +258,8 @@ namespace elementor {
     }
 
     void GLWindow::onMouseButton(int button, int action, int mods) {
-        EventMouseButton *event = new EventMouseButton();
-        event->button = mapIntToMouseButton(button);
-        event->action = mapIntToKeyAction(action);
-        event->mod = mapIntToKeyMod(mods);
-
+        auto *event = new EventMouseButton(mapIntToMouseButton(button), mapIntToKeyAction(action),
+                                           mapIntToKeyMod(mods));
         this->application->dispatchEvent(event);
     }
 
@@ -508,35 +511,23 @@ namespace elementor {
     }
 
     void GLWindow::onKeyboard(int key, int scancode, int action, int mods) {
-        EventKeyboard *event = new EventKeyboard();
-        event->key = mapIntToKeyboardKey(key);
-        event->scancode = scancode;
-        event->action = mapIntToKeyAction(action);
-        event->mod = mapIntToKeyMod(mods);
-
+        auto *event = new EventKeyboard(mapIntToKeyboardKey(key), scancode, mapIntToKeyAction(action),
+                                        mapIntToKeyMod(mods));
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onChar(unsigned int codepoint) {
-        EventChar *event = new EventChar();
-        event->value = codepoint;
-
+        auto *event = new EventChar(codepoint);
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onMouseMove(double x, double y) {
-        EventMouseMove *event = new EventMouseMove();
-        event->x = x;
-        event->y = y;
-
+        auto *event = new EventMouseMove(x, y);
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onScroll(double xOffset, double yOffset) {
-        EventScroll *event = new EventScroll();
-        event->xOffset = xOffset;
-        event->yOffset = yOffset;
-
+        auto *event = new EventScroll(xOffset, yOffset);
         this->application->dispatchEvent(event);
     }
 }
