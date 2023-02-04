@@ -7,11 +7,11 @@
 #include "DiaryApplication.h"
 
 int main() {
-    DiaryService *diaryService = new DiaryService();
-    DiaryApplication *diaryApplication = new DiaryApplication(diaryService);
+    auto *diaryService = new DiaryService();
+    auto *diaryApplication = new DiaryApplication(diaryService);
 
-    GLPlatform *platform = new GLPlatform();
-    GLWindow *window = platform->makeWindow();
+    auto *platform = new GLPlatform();
+    auto *window = platform->makeWindow();
     window->setTitle("Diary");
     window->setRoot(diaryApplication->makeElement());
     window->setSize({920, 640});
