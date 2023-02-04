@@ -11,7 +11,7 @@ class TextInput : public Component {
 public:
     TextInput();
 
-    TextInput *setValue(std::u32string value);
+    TextInput *setValue(const std::u32string& newValue);
 
     std::u32string getValue();
 

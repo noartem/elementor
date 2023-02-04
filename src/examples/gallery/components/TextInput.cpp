@@ -6,6 +6,7 @@
 #include "WithCursor.h"
 
 #include <iostream>
+#include <utility>
 
 TextInput *textInput() {
     return new TextInput();
@@ -14,16 +15,16 @@ TextInput *textInput() {
 TextInput::TextInput() {
     this->inputableChild = inputable();
 
-    Paragraph *paragraphRef = paragraph();
-    Text *textRef = text();
-    Border *borderRef = border();
+    Paragraph *paragraphElement = paragraph();
+    Text *textElement = text();
+    Border *borderElement = border();
 
     this->element = background()
         ->setColor("#FFFFFF")
         ->setChild(hoverable()
             ->setChild(withCursor()
                 ->setChild(this->inputableChild
-                    ->setChild(borderRef
+                    ->setChild(borderElement
                         ->setWidth(4)
                         ->setColor("#DEEDE6")
                         ->setRadius(4)
@@ -33,37 +34,37 @@ TextInput::TextInput() {
                             ->setPaddings(8)
                             ->setChild(height()
                                 ->setHeight(15)
-                                ->setChild(paragraphRef
-                                    ->appendChild(textRef
+                                ->setChild(paragraphElement
+                                    ->appendChild(textElement
                                         ->setFontColor("#3F4944")
                                         ->setFontSize(16)
                                         ->setFontWeight(500)
                                         ->setFontFamily("Fira Code")))))))
                     ->setText(this->value)
-                    ->onChange([this, textRef, paragraphRef] (std::u32string value) {
-                        if (this->callbackChange) value = this->callbackChange(value);
-                        textRef->setText(value);
-                        paragraphRef->forceUpdate();
-                        this->value = value;
-                        return value;
+                    ->onChange([this, textElement, paragraphElement] (std::u32string newValue) {
+                        if (this->callbackChange) newValue = this->callbackChange(newValue);
+                        textElement->setText(newValue);
+                        paragraphElement->forceUpdate();
+                        this->value = newValue;
+                        return newValue;
                     })
-                    ->onFocus([this, borderRef] () {
+                    ->onFocus([this, borderElement] () {
                         this->focused = true;
-                        borderRef->setColor("#7FB6A4");
+                        borderElement->setColor("#7FB6A4");
                     })
-                    ->onBlur([this, borderRef] () {
+                    ->onBlur([this, borderElement] () {
                         this->focused = false;
-                        borderRef->setColor("#DEEDE6");
+                        borderElement->setColor("#DEEDE6");
                     }))
                 ->setCursorShape(CursorShape::IBeam))
-            ->onEnter([this, borderRef] () { if (!this->focused) borderRef->setColor("#B9D3C9"); })
-            ->onLeave([this, borderRef] () { if (!this->focused) borderRef->setColor("#DEEDE6"); }));
+            ->onEnter([this, borderElement] () { if (!this->focused) borderElement->setColor("#B9D3C9"); })
+            ->onLeave([this, borderElement] () { if (!this->focused) borderElement->setColor("#DEEDE6"); }));
 }
 
-TextInput *TextInput::setValue(std::u32string value) {
-    this->value = value;
+TextInput *TextInput::setValue(const std::u32string& newValue) {
+    this->value = newValue;
     if (this->inputableChild) {
-        this->inputableChild->setText(value);
+        this->inputableChild->setText(newValue);
     } 
     return this;
 }
@@ -72,7 +73,7 @@ std::u32string TextInput::getValue() {
     return this->value;
 }
 
-TextInput *TextInput::onChange(std::function<std::u32string (std::u32string value)> callback) {
-    this->callbackChange = callback;
+TextInput *TextInput::onChange(std::function<std::u32string (std::u32string newValue)> callback) {
+    this->callbackChange = std::move(callback);
     return this;
 }
