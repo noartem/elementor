@@ -11,6 +11,8 @@
 namespace elementor::components {
     class Tooltip : public Element {
     public:
+        ~Tooltip();
+
         Tooltip *setActive(bool active);
 
         Tooltip *toggleActive();

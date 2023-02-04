@@ -33,6 +33,8 @@ namespace elementor {
 
     class Element {
     public:
+        virtual ~Element() = default;
+
         virtual Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries);
         virtual void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect);
         virtual std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect);
@@ -126,11 +128,13 @@ namespace elementor {
 
     class WithChild {
     public:
+        virtual ~WithChild();
+
         void updateChild(Element *child);
 
-        Element *getChild();
+        Element *getChild() const;
 
-        bool hasChild();
+        bool hasChild() const;
 
         void removeChild();
 
@@ -140,19 +144,23 @@ namespace elementor {
 
     class WithChildren {
     public:
-        void setChildren(std::vector<Element *> children);
+        virtual ~WithChildren();
+
+        void setChildren(std::vector<Element *> newChildren);
 
         void addChild(Element *child);
 
         void removeChild(int i);
 
-        std::vector<Element *> getChildrenList();
+        void removeChild(Element *child);
 
-        int getChildrenSize();
+        std::vector<Element *> getChildrenList() const;
 
-        Element *getChild(int i);
+        size_t getChildrenSize() const;
 
-        int childIndex(Element *child);
+        Element *getChild(int i) const;
+
+        int childIndex(Element *child) const;
 
     private:
         std::vector<Element *> children;

@@ -10,6 +10,17 @@ namespace elementor::components {
         return new Tooltip();
     }
 
+    Tooltip::~Tooltip() {
+        if (this->window) {
+            auto stackElement = this->getStackElement();
+            stackElement->removeChild(this->tipPadding);
+        } else {
+            delete this->tipPadding;
+        }
+
+        delete this->child;
+    }
+
     Tooltip *Tooltip::setActive(bool newActive) {
         this->active = newActive;
         return this;

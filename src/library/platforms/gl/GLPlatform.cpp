@@ -83,11 +83,11 @@ namespace elementor {
     }
 
     void GLPlatform::applyRnfQueue() {
-        if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty() > 0) {
+        if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty()) {
             return;
         }
 
-        for (std::function<void ()> callback : this->rnfCurrentQueue) {
+        for (const std::function<void ()>& callback : this->rnfCurrentQueue) {
             callback();
         }
 

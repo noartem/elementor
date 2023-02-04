@@ -10,6 +10,8 @@
 namespace elementor::elements {
     class Component : public Element {
     public:
+        ~Component();
+
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
         void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;

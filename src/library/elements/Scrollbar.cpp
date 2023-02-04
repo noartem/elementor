@@ -11,6 +11,14 @@ namespace elementor::elements {
         return new Scrollbar();
     }
 
+    Scrollbar::~Scrollbar() {
+        delete child;
+        delete trackX;
+        delete trackY;
+        delete thumbX;
+        delete thumbY;
+    }
+
     Scrollbar *Scrollbar::setTrackX(Element *trackX) {
         this->trackX = clickable()
             ->setChild(trackX)

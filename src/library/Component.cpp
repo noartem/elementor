@@ -5,6 +5,10 @@
 #include "Component.h"
 
 namespace elementor::elements {
+    Component::~Component() {
+        delete this->element;
+    }
+
     Size Component::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
         this->ctx = ctx;
         this->window = window;

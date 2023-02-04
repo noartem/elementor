@@ -23,6 +23,8 @@ namespace elementor::elements {
 
     class Scrollbar : public Element {
     public:
+        ~Scrollbar();
+
         Scrollbar *setTrackX(Element *trackX);
         Scrollbar *setTrackY(Element *trackY);
         Scrollbar *setThumbX(Element *thumbX);

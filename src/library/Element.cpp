@@ -24,11 +24,12 @@ namespace elementor {
     }
 
     void WithChild::updateChild(Element *element) {
+        delete this->child;
         this->child = element;
     }
 
     void WithChild::removeChild() {
-        this->updateChild(NULL);
+        this->updateChild(nullptr);
     }
 
     Element *WithChild::getChild() {
