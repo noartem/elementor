@@ -6,8 +6,8 @@
 #include "ExamplesGallery.h"
 
 int main() {
-    GLPlatform *platform = new GLPlatform();
-    GLWindow *window = platform->makeWindow();
+    auto *platform = new GLPlatform();
+    auto *window = platform->makeWindow();
     window->setTitle("Elementor Examples");
     window->setRoot(new ExamplesGallery());
     window->setSize({920, 640});
