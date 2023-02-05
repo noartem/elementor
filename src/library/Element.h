@@ -111,6 +111,8 @@ namespace elementor {
 
     class ApplicationContext {
     public:
+        virtual ~ApplicationContext() = default;
+
         virtual float getPixelScale() = 0;
         virtual void setPixelScale(float scale) = 0;
 
@@ -123,7 +125,7 @@ namespace elementor {
 
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
 
-        virtual Window *makeWindow() = 0;
+        virtual Window *makeWindow(Size size) = 0;
     };
 
     class WithChild {

@@ -21,14 +21,14 @@ namespace elementor {
         return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }
 
-    GLWindow::GLWindow(ApplicationContext *applicationContext) {
+    GLWindow::GLWindow(ApplicationContext *applicationContext, Size size) {
         this->application = new Application();
         this->applicationContext = applicationContext;
-        this->glWindow = glfwCreateWindow(1, 1, "Elementor", nullptr, nullptr);
+        this->glWindow = glfwCreateWindow(size.width, size.height, "Elementor", nullptr, nullptr);
         this->cursor = new GLCursor(this->glWindow, this->applicationContext);
 
         glfwMakeContextCurrent(this->glWindow);
-        glfwSwapInterval(0);
+        glfwSwapInterval(GLFW_TRUE);
         glfwSetWindowUserPointer(this->glWindow, this);
 
         this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
@@ -72,6 +72,16 @@ namespace elementor {
             GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onScroll(xOffset, yOffset);
         });
+    }
+
+    GLWindow::~GLWindow() {
+        delete this->application;
+        delete this->root;
+        glfwDestroyWindow(this->glWindow);
+        delete this->skContext;
+        delete this->skCanvas;
+        delete this->monitor;
+        delete this->cursor;
     }
 
     void GLWindow::refresh() {

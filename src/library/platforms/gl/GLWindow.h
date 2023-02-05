@@ -16,7 +16,9 @@
 namespace elementor {
     class GLWindow : public Window {
     public:
-        GLWindow(ApplicationContext *glfwWindow);
+        GLWindow(ApplicationContext *applicationContext, Size size);
+
+        ~GLWindow();
 
         void draw();
 

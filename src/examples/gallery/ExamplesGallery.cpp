@@ -31,10 +31,12 @@ ExamplesGallery::ExamplesGallery() {
                                         ->setText("Examples"))
                                     ->onClick([this] () {
                                         this->ctx->requestNextFrame([this] () {
-                                            auto window = this->ctx->makeWindow();
+                                            auto window = this->ctx->makeWindow({920, 640});
                                             window->setTitle("Elementor Examples");
-                                            window->setRoot(new ExamplesGallery());
-                                            window->setSize({920, 640});
+                                            auto rootElement = new ExamplesGallery();
+                                            auto componentsContext = new ComponentsContext(rootElement);
+                                            window->setUserPointer(componentsContext);
+                                            window->setRoot(componentsContext);
                                             window->setMinSize({630, 320});
                                         });
                                     }))

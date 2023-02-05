@@ -41,8 +41,8 @@ namespace elementor {
         this->platform->requestNextFrame(callback);
     }
 
-    Window *GLApplicationContext::makeWindow() {
-        return this->platform->makeWindow();
+    Window *GLApplicationContext::makeWindow(Size size) {
+        return this->platform->makeWindow(size);
     }
 }
 

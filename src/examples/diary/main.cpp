@@ -11,10 +11,9 @@ int main() {
     auto *diaryApplication = new DiaryApplication(diaryService);
 
     auto *platform = new GLPlatform();
-    auto *window = platform->makeWindow();
+    auto *window = platform->makeWindow({920, 640});
     window->setTitle("Diary");
     window->setRoot(diaryApplication->makeElement());
-    window->setSize({920, 640});
     window->setMinSize({630, 320});
     platform->run();
 }

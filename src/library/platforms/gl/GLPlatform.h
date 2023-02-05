@@ -17,13 +17,15 @@ namespace elementor {
     public:
         GLPlatform();
 
-        GLWindow *makeWindow();
+        ~GLPlatform();
+
+        GLWindow *makeWindow(Size size);
         void addWindow(GLWindow *window);
         void removeWindow(GLWindow *window);
         void removeWindow(unsigned int index);
 
         void run();
-        void requestNextFrame(std::function<void ()> callback);
+        void requestNextFrame(const std::function<void ()>& callback);
 
         GLClipboard *getClipboard();
         GLPerfomance *getPerfomance();

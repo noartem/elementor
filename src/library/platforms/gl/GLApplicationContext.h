@@ -25,7 +25,7 @@ namespace elementor {
 
         void requestNextFrame(std::function<void ()> callback) override;
 
-        Window *makeWindow() override;
+        Window *makeWindow(Size size) override;
 
     private:
         GLPlatform *platform;

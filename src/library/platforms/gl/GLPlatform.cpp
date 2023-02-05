@@ -8,10 +8,7 @@
 
 #include "GLFW/glfw3.h"
 
-#include "include/gpu/GrBackendSurface.h"
 #include "include/gpu/gl/GrGLInterface.h"
-#include "include/core/SkTypeface.h"
-#include "include/core/SkCanvas.h"
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
 
@@ -21,7 +18,7 @@ namespace elementor {
     GLPlatform::GLPlatform() {
         glfwInit();
 
-        glfwSetErrorCallback([] (int error, const char *description) {
+        glfwSetErrorCallback([](int error, const char *description) {
             fputs(description, stderr);
         });
 
@@ -41,13 +38,20 @@ namespace elementor {
         this->pixelScale = this->calcPixelScale();
     }
 
+    GLPlatform::~GLPlatform() {
+        delete this->clipboard;
+        delete this->perfomance;
+        delete this->fontManager;
+        delete this->applicationContext;
+    }
+
     void GLPlatform::run() {
         for (;;) {
             glfwWaitEvents();
 
             this->applyRnfQueue();
 
-            for (GLWindow *window : this->windows) {
+            for (GLWindow *window: this->windows) {
                 window->draw();
             }
 
@@ -77,7 +81,7 @@ namespace elementor {
         return this->fontManager->getSkFontManager();
     }
 
-    void GLPlatform::requestNextFrame(std::function<void ()> callback) {
+    void GLPlatform::requestNextFrame(const std::function<void()>& callback) {
         glfwPostEmptyEvent();
         this->rnfNextQueue.push_back(callback);
     }
@@ -87,7 +91,7 @@ namespace elementor {
             return;
         }
 
-        for (const std::function<void ()>& callback : this->rnfCurrentQueue) {
+        for (const std::function<void()> &callback: this->rnfCurrentQueue) {
             callback();
         }
 
@@ -95,14 +99,14 @@ namespace elementor {
         this->rnfNextQueue = {};
     }
 
-    GLWindow *GLPlatform::makeWindow() {
-        GLWindow *window = new GLWindow(this->applicationContext);
+    GLWindow *GLPlatform::makeWindow(Size size) {
+        auto *window = new GLWindow(this->applicationContext, size);
         this->addWindow(window);
         return window;
     }
 
     void GLPlatform::addWindow(GLWindow *window) {
-        window->onClose([this, window] () {
+        window->onClose([this, window]() {
             this->removeWindow(window);
         });
         this->windows.push_back(window);
