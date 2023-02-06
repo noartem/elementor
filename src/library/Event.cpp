@@ -8,24 +8,24 @@ namespace elementor {
     std::vector<std::string> getElementEvents(Element *element) {
         std::vector<std::string> events;
 
-        if (dynamic_cast<WithOnMouseButton *>(element) != NULL) {
-            events.push_back(EVENT_MOUSE_BUTTON);
+        if (dynamic_cast<WithOnMouseButton *>(element) != nullptr) {
+            events.emplace_back(EVENT_MOUSE_BUTTON);
         }
 
-        if (dynamic_cast<WithOnMouseMove *>(element) != NULL) {
-            events.push_back(EVENT_MOUSE_MOVE);
+        if (dynamic_cast<WithOnMouseMove *>(element) != nullptr) {
+            events.emplace_back(EVENT_MOUSE_MOVE);
         }
 
-        if (dynamic_cast<WithOnScroll *>(element) != NULL) {
-            events.push_back(EVENT_SCROLL);
+        if (dynamic_cast<WithOnScroll *>(element) != nullptr) {
+            events.emplace_back(EVENT_SCROLL);
         }
 
-        if (dynamic_cast<WithOnKeyboard *>(element) != NULL) {
-            events.push_back(EVENT_KEYBOARD);
+        if (dynamic_cast<WithOnKeyboard *>(element) != nullptr) {
+            events.emplace_back(EVENT_KEYBOARD);
         }
 
-        if (dynamic_cast<WithOnChar *>(element) != NULL) {
-            events.push_back(EVENT_CHAR);
+        if (dynamic_cast<WithOnChar *>(element) != nullptr) {
+            events.emplace_back(EVENT_CHAR);
         }
 
         return events;
