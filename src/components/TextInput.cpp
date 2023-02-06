@@ -29,15 +29,15 @@ namespace elementor::components {
                             ->setChild(rounded()
                                 ->setRadius(4)
                                 ->setChild(padding()
-                                ->setPaddings(8)
-                                ->setChild(height()
-                                    ->setHeight(15)
-                                    ->setChild(paragraphElement
-                                        ->appendChild(textElement
-                                            ->setFontColor("#3F4944")
-                                            ->setFontSize(16)
-                                            ->setFontWeight(500)
-                                            ->setFontFamily("Fira Code")))))))
+                                    ->setPaddings(8)
+                                    ->setChild(height()
+                                        ->setHeight(15)
+                                        ->setChild(paragraphElement
+                                            ->appendChild(textElement
+                                                ->setFontColor("#3F4944")
+                                                ->setFontSize(16)
+                                                ->setFontWeight(500)
+                                                ->setFontFamily("Fira Code")))))))
                         ->setText(this->value)
                         ->onChange([this, textElement, paragraphElement] (std::u32string newValue) {
                             if (this->callbackChange) newValue = this->callbackChange(newValue);
