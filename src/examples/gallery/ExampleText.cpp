@@ -12,8 +12,8 @@ std::string ExampleText::getDescription() {
     return "Display text with various styles";
 }
 
-Element *exampleColor() {
-    Column *examples = column()
+std::shared_ptr<Element> exampleColor() {
+    std::shared_ptr<Column> examples = column()
         ->setSpacing(12);
 
     for (std::string color : {"#006C4C", "#4B6358", "#3A6373", "#C01D24"}) {
@@ -27,8 +27,8 @@ Element *exampleColor() {
     return examples;
 }
 
-Element *exampleSize() {
-    Column *examples = column()
+std::shared_ptr<Element> exampleSize() {
+    std::shared_ptr<Column> examples = column()
         ->setSpacing(12);
 
     for (int size : {12, 14, 16, 18, 24}) {
@@ -42,7 +42,7 @@ Element *exampleSize() {
     return examples;
 }
 
-Element *exampleSlant() {
+std::shared_ptr<Element> exampleSlant() {
     return column()
         ->setSpacing(12)
         ->appendChild(text()
@@ -59,8 +59,8 @@ Element *exampleSlant() {
             ->setText("Font slant Oblique"));
 }
 
-Element *exampleWeight() {
-    Column *examples = column()
+std::shared_ptr<Element> exampleWeight() {
+    std::shared_ptr<Column> examples = column()
         ->setSpacing(12);
 
     for (int weight : {300, 400, 500, 550, 600, 700, 900}) {
@@ -74,7 +74,7 @@ Element *exampleWeight() {
     return examples;
 }
 
-Element *exampleEdging() {
+std::shared_ptr<Element> exampleEdging() {
     return column()
         ->setSpacing(12)
         ->appendChild(text()
@@ -94,8 +94,8 @@ Element *exampleEdging() {
             ->setText("Font edging SubpixelAntiAlias"));
 }
 
-Element *exampleFontFamily() {
-    Column *examples = column()
+std::shared_ptr<Element> exampleFontFamily() {
+    std::shared_ptr<Column> examples = column()
         ->setSpacing(12);
 
     for (std::string fontFamily : {"Times New Roman", "Fira Code", "Roboto", "DejaVu Sans", "Comic Sans MS"}) {
@@ -110,7 +110,7 @@ Element *exampleFontFamily() {
     return examples;
 }
 
-Element *exampleLink() {
+std::shared_ptr<Element> exampleLink() {
     return column()
         ->setSpacing(12)
         ->appendChild(alignWidth()
@@ -155,7 +155,7 @@ Element *exampleLink() {
                 ->setText(" fringilla consequat. Curabitur ullamcorper arcu luctus lorem feugiat, at suscipit augue consectetur. Etiam sit amet augue facilisis, porta turpis nec, feugiat lorem. Sed mattis, leo nec semper interdum, elit libero sollicitudin est, ac tincidunt diam urna sit amet nibh. Aliquam erat volutpat. Quisque euismod ipsum id lorem vulputate dictum. Curabitur leo quam, blandit non malesuada ut, vehicula id eros. Maecenas fringilla faucibus sem. Morbi quis odio tempus enim vestibulum auctor nec at nibh. Vestibulum lacinia nulla ut eros iaculis rutrum. Morbi fringilla cursus metus, sed finibus arcu pretium ut.")));
 }
 
-Element *exampleParagraph() {
+std::shared_ptr<Element> exampleParagraph() {
     return column()
         ->setSpacing(12)
         ->appendChild(text()
@@ -327,7 +327,7 @@ Element *exampleParagraph() {
                             ->setText("与"))))));
 }
 
-Element *ExampleText::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleText::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

@@ -17,15 +17,15 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    GLWindow *getGLFWWindowGLWindow(GLFWwindow *window) {
-        return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
+    std::shared_ptr<GLWindow> getGLFWWindowGLWindow(GLFWwindow *window) {
+        return static_cast<std::shared_ptr<GLWindow>>(glfwGetWindowUserPointer(window));
     }
 
-    GLWindow::GLWindow(ApplicationContext *applicationContext, Size size) {
-        this->application = new Application();
-        this->applicationContext = applicationContext;
+    GLWindow::GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
+        this->application = std::make_shared<Application>();
+        this->applicationContext = std::move(applicationContext);
         this->glWindow = glfwCreateWindow(size.width, size.height, "Elementor", nullptr, nullptr);
-        this->cursor = new GLCursor(this->glWindow, this->applicationContext);
+        this->cursor = std::make_shared<GLCursor>(this->glWindow, this->applicationContext);
 
         glfwMakeContextCurrent(this->glWindow);
         glfwSwapInterval(GLFW_TRUE);
@@ -34,54 +34,50 @@ namespace elementor {
         this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
 
         glfwSetWindowRefreshCallback(glWindow, [](GLFWwindow *glfwWindow) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->draw();
         });
 
         glfwSetWindowPosCallback(glWindow, [](GLFWwindow *glfwWindow, int xPosition, int yPosition) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->monitor = nullptr;
         });
 
         glfwSetWindowCloseCallback(glWindow, [](GLFWwindow *glfwWindow) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->close();
         });
 
         glfwSetKeyCallback(glWindow, [](GLFWwindow *glfwWindow, int key, int scancode, int action, int mods) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->onKeyboard(key, scancode, action, mods);
         });
 
         glfwSetCharCallback(glWindow, [](GLFWwindow *glfwWindow, unsigned int codepoint) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->onChar(codepoint);
         });
 
         glfwSetMouseButtonCallback(glWindow, [](GLFWwindow *glfwWindow, int button, int action, int mods) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseButton(button, action, mods);
         });
 
         glfwSetCursorPosCallback(glWindow, [](GLFWwindow *glfwWindow, double x, double y) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseMove(x, y);
         });
 
         glfwSetScrollCallback(glWindow, [](GLFWwindow *glfwWindow, double xOffset, double yOffset) {
-            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
             window->onScroll(xOffset, yOffset);
         });
     }
 
     GLWindow::~GLWindow() {
-        delete this->application;
-        delete this->root;
         glfwDestroyWindow(this->glWindow);
         delete this->skContext;
         delete this->skCanvas;
-        delete this->monitor;
-        delete this->cursor;
     }
 
     void GLWindow::refresh() {
@@ -103,24 +99,24 @@ namespace elementor {
         this->refresh();
 
         this->skCanvas->clear(SK_ColorBLACK);
-        this->application->draw(this->applicationContext, this, this->skCanvas);
+        this->application->draw(this->applicationContext, shared_from_this(), this->skCanvas);
 
         glfwMakeContextCurrent(this->glWindow);
         this->skContext->flush();
         glfwSwapBuffers(this->glWindow);
     }
 
-    Element *GLWindow::getRoot() {
+    std::shared_ptr<Element> GLWindow::getRoot() {
         return this->root;
     }
 
-    void GLWindow::setRoot(Element *root) {
-        this->root = root;
+    void GLWindow::setRoot(std::shared_ptr<Element> newRoot) {
+        this->root = newRoot;
     }
 
-    void GLWindow::setTitle(std::string title) {
-        this->title = title;
-        glfwSetWindowTitle(this->glWindow, title.c_str());
+    void GLWindow::setTitle(std::string newTitle) {
+        this->title = newTitle;
+        glfwSetWindowTitle(this->glWindow, newTitle.c_str());
     }
 
     std::string GLWindow::getTitle() {
@@ -198,21 +194,21 @@ namespace elementor {
         this->callbackClose = std::move(callback);
     }
 
-    void GLWindow::setUserPointer(void *pointer) {
+    void GLWindow::setUserPointer(std::shared_ptr<void> pointer) {
         this->userPointer = pointer;
     }
 
-    void *GLWindow::getUserPointer() {
+    std::shared_ptr<void> GLWindow::getUserPointer() {
         return this->userPointer;
     }
 
-    Cursor *GLWindow::getCursor() {
+    std::shared_ptr<Cursor> GLWindow::getCursor() {
         return this->cursor;
     }
 
-    Monitor *GLWindow::getMonitor() {
+    std::shared_ptr<Monitor> GLWindow::getMonitor() {
         if (this->monitor == nullptr) {
-            this->monitor = new GLMonitor(getWindowMonitor(this->glWindow));
+            this->monitor = std::make_shared<GLMonitor>(getWindowMonitor(this->glWindow));
         }
 
         return this->monitor;
@@ -268,8 +264,8 @@ namespace elementor {
     }
 
     void GLWindow::onMouseButton(int button, int action, int mods) {
-        auto *event = new EventMouseButton(mapIntToMouseButton(button), mapIntToKeyAction(action),
-                                           mapIntToKeyMod(mods));
+        auto event = std::make_shared<EventMouseButton>(mapIntToMouseButton(button), mapIntToKeyAction(action),
+                                                        mapIntToKeyMod(mods));
         this->application->dispatchEvent(event);
     }
 
@@ -521,23 +517,23 @@ namespace elementor {
     }
 
     void GLWindow::onKeyboard(int key, int scancode, int action, int mods) {
-        auto *event = new EventKeyboard(mapIntToKeyboardKey(key), scancode, mapIntToKeyAction(action),
-                                        mapIntToKeyMod(mods));
+        auto event = std::make_shared<EventKeyboard>(mapIntToKeyboardKey(key), scancode, mapIntToKeyAction(action),
+                                                     mapIntToKeyMod(mods));
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onChar(unsigned int codepoint) {
-        auto *event = new EventChar(codepoint);
+        auto event = std::make_shared<EventChar>(codepoint);
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onMouseMove(double x, double y) {
-        auto *event = new EventMouseMove(x, y);
+        auto event = std::make_shared<EventMouseMove>(x, y);
         this->application->dispatchEvent(event);
     }
 
     void GLWindow::onScroll(double xOffset, double yOffset) {
-        auto *event = new EventScroll(xOffset, yOffset);
+        auto event = std::make_shared<EventScroll>(xOffset, yOffset);
         this->application->dispatchEvent(event);
     }
 }

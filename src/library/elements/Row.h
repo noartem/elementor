@@ -8,23 +8,23 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Row : public Element, public WithChildren {
+    class Row : public Element, public WithChildren, public std::enable_shared_from_this<Row> {
     public:
-        Row *setSpacing(float spacing);
+        std::shared_ptr<Row> setSpacing(float newSpacing);
 
-        float getSpacing();
+        float getSpacing() const;
 
-        Row *appendChild(Element *child);
+        std::shared_ptr<Row> appendChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;  
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float spacing = 0;
     };
 
-    Row *row();
+    std::shared_ptr<Row> row();
 }
 
 

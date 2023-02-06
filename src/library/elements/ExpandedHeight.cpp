@@ -4,21 +4,23 @@
 
 #include "ExpandedHeight.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    ExpandedHeight *expandedHeight() {
-        return new ExpandedHeight();
+    std::shared_ptr<ExpandedHeight> expandedHeight() {
+        return std::make_shared<ExpandedHeight>();
     }
 
-    ExpandedHeight *ExpandedHeight::setChild(Element *child) {
+    std::shared_ptr<ExpandedHeight> ExpandedHeight::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size ExpandedHeight::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size ExpandedHeight::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return fitSizeInBoundaries(this->getChild()->getSize(ctx, window, {{0, boundaries.max.height}, boundaries.max}), boundaries);
     }
 
-    std::vector <RenderElement> ExpandedHeight::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> ExpandedHeight::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         RenderElement childElement{this->getChild(), {0, 0}, rect.size};
         return {childElement};
     }

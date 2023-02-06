@@ -8,33 +8,36 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Background : public Element, public WithChild {
+    class Background : public Element, public WithChild, public std::enable_shared_from_this<Background> {
     public:
         Background() : Element(), WithChild() {}
 
-        Background *setColor(SkColor skColor);
+        std::shared_ptr<Background> setColor(SkColor skColor);
 
-        Background *setColor(uint8_t r, uint8_t g, uint8_t b);
+        std::shared_ptr<Background> setColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Background *setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        std::shared_ptr<Background> setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        Background *setColor(std::string hex);
+        std::shared_ptr<Background> setColor(std::string hex);
 
         SkColor getColor() const;
 
-        Background *setChild(Element *child);
+        std::shared_ptr<Background> setChild(const std::shared_ptr<Element>& child);
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         SkColor color{};
     };
 
-    Background *background();
+    std::shared_ptr<Background> background();
 }
 
 

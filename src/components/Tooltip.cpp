@@ -17,7 +17,7 @@ namespace elementor::components {
             this->removeTipFromStack();
         }
 
-        return this;
+        return shared_from_this();
     }
 
     Tooltip *Tooltip::toggleActive() {
@@ -30,38 +30,38 @@ namespace elementor::components {
 
     Tooltip *Tooltip::setPlacement(TooltipPlacement newPlacement) {
         this->placement = newPlacement;
-        return this;
+        return shared_from_this();
     }
 
     TooltipPlacement Tooltip::getPlacement() const {
         return this->placement;
     }
 
-    Tooltip *Tooltip::setChild(Element *newChild) {
+    Tooltip *Tooltip::setChild(std::shared_ptr<Element> newChild) {
         this->child = newChild;
-        return this;
+        return shared_from_this();
     }
 
-    Element *Tooltip::getChild() const {
+    std::shared_ptr<Element> Tooltip::getChild() const {
         return this->child;
     }
 
-    Tooltip *Tooltip::setTip(Element *newTip) {
+    Tooltip *Tooltip::setTip(std::shared_ptr<Element> newTip) {
         this->tip = newTip;
         this->tipWrapper->updateChild(this->tip);
-        return this;
+        return shared_from_this();
     }
 
-    Element *Tooltip::getTip() {
+    std::shared_ptr<Element> Tooltip::getTip() {
         return this->tip;
     }
 
-    Size Tooltip::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Tooltip::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return this->child->getSize(ctx, window, boundaries);
     }
 
-    Stack *Tooltip::getStackElement() {
-        auto componentsContext = static_cast<ComponentsContext *>(window->getUserPointer());
+    std::shared_ptr<Stack> Tooltip::getStackElement() {
+        auto componentsContext = static_cast<ComponentsConstd::shared_ptr<Text>>(window->getUserPointer());
         return componentsContext->getStackElement();
     }
 
@@ -88,7 +88,7 @@ namespace elementor::components {
         this->tipWrapper->updateChild(this->tip);
     }
 
-    std::vector<RenderElement> Tooltip::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> Tooltip::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         this->window = window;
 
         std::vector<RenderElement> children;
@@ -139,7 +139,7 @@ namespace elementor::components {
         return children;
     }
 
-    std::vector<RenderElement> TipWrapper::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> TipWrapper::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
         if (this->hasChild()) {
@@ -157,7 +157,7 @@ namespace elementor::components {
         return children;
     }
 
-    EventCallbackResponse TipWrapper::onEvent(EventMouseMove *event) {
+    EventCallbackResponse TipWrapper::onEvent(std::shared_ptr<EventMouseMove> event) {
         if (event->x > this->childPosition.x && event->x < this->childPosition.x + this->childSize.width &&
             event->y > this->childPosition.y && event->y < this->childPosition.y + this->childSize.height) {
             return EventCallbackResponse::StopPropagation;

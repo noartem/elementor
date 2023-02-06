@@ -31,13 +31,13 @@ namespace elementor::components {
     Link *Link::setLabel(std::u32string label) {
         this->label = toUTF8(label);
         this->textElement->setText(this->label);
-        return this;
+        return shared_from_this();
     }
 
     Link *Link::setLabel(std::string label) {
         this->label = label;
         this->textElement->setText(this->label);
-        return this;
+        return shared_from_this();
     }
 
     std::string Link::getLabel() {
@@ -46,25 +46,25 @@ namespace elementor::components {
 
     Link *Link::setURL(std::u32string url) {
         this->url = toUTF8(url);
-        return this;
+        return shared_from_this();
     }
 
     Link *Link::setURL(std::string url) {
         this->url = url;
-        return this;
+        return shared_from_this();
     }
 
     std::string Link::getURL() {
         return this->url;
     }
 
-    Link *Link::setTextElement(Text *textElement) {
+    Link *Link::setTextElement(std::shared_ptr<Text> textElement) {
         this->textElement = textElement;
         this->render();
-        return this;
+        return shared_from_this();
     }
 
-    Text *Link::getTextElement() {
+    std::shared_ptr<Text> Link::getTextElement() {
         return this->textElement;
     }
 }

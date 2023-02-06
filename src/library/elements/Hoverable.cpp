@@ -7,55 +7,59 @@
 #include <utility>
 
 namespace elementor::elements {
-    Hoverable *hoverable() {
-        return new Hoverable();
+    std::shared_ptr<Hoverable> hoverable() {
+        return std::make_shared<Hoverable>();
     }
 
-    Hoverable *Hoverable::onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
+    std::shared_ptr<Hoverable>
+    Hoverable::onEnter(std::function<EventCallbackResponse(std::shared_ptr<EventMouseMove> event)> callback) {
         this->callbackEnter = std::move(callback);
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::onEnter(const std::function<void ()>& callback) {
-        this->callbackEnter = [callback](EventMouseMove *event) {
+    std::shared_ptr<Hoverable> Hoverable::onEnter(const std::function<void()> &callback) {
+        this->callbackEnter = [callback](const std::shared_ptr<EventMouseMove> &event) {
             callback();
             return EventCallbackResponse::None;
         };
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
+    std::shared_ptr<Hoverable>
+    Hoverable::onMove(std::function<EventCallbackResponse(std::shared_ptr<EventMouseMove> event)> callback) {
         this->callbackMove = std::move(callback);
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::onMove(const std::function<void ()>& callback) {
-        this->callbackMove = [callback](EventMouseMove *event) {
+    std::shared_ptr<Hoverable> Hoverable::onMove(const std::function<void()> &callback) {
+        this->callbackMove = [callback](const std::shared_ptr<EventMouseMove> &event) {
             callback();
             return EventCallbackResponse::None;
         };
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
+    std::shared_ptr<Hoverable>
+    Hoverable::onLeave(std::function<EventCallbackResponse(std::shared_ptr<EventMouseMove> event)> callback) {
         this->callbackLeave = std::move(callback);
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::onLeave(const std::function<void ()>& callback) {
-        this->callbackLeave = [callback](EventMouseMove *event) {
+    std::shared_ptr<Hoverable> Hoverable::onLeave(const std::function<void()> &callback) {
+        this->callbackLeave = [callback](const std::shared_ptr<EventMouseMove> &event) {
             callback();
             return EventCallbackResponse::None;
         };
-        return this;
+        return shared_from_this();
     }
 
-    Hoverable *Hoverable::setChild(Element *child) {
+    std::shared_ptr<Hoverable> Hoverable::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Hoverable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Hoverable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -63,12 +67,14 @@ namespace elementor::elements {
         }
     }
 
-    void Hoverable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Hoverable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                    SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Hoverable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Hoverable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement childElement{this->getChild(), {0, 0}, rect.size};
@@ -78,7 +84,7 @@ namespace elementor::elements {
         return children;
     }
 
-    EventCallbackResponse Hoverable::onEvent(EventMouseMove *event) {
+    EventCallbackResponse Hoverable::onEvent(std::shared_ptr<EventMouseMove> event) {
         if (this->rect.visibleContains(event->x, event->y)) {
             if (this->hovered) {
                 if (this->callbackMove) {

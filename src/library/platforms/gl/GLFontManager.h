@@ -15,9 +15,12 @@ namespace elementor {
     class GLFontManager {
     public:
         GLFontManager();
+
         sk_sp<SkFontMgr> getSkFontManager();
+
         void registerFontFromSkData(sk_sp<SkData> data);
-        void registerFontFromPath(std::string path);
+
+        void registerFontFromPath(const std::string& path);
 
     private:
         sk_sp<sktextlayout::TypefaceFontProvider> skFontManager;

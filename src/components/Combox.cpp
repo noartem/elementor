@@ -74,7 +74,7 @@ namespace elementor::components {
         this->optionsColumnElement->clearChildren();
 
         for (auto option : this->options) {
-            Background *backgroundElement = background();
+            std::shared_ptr<Background> backgroundElement = background();
             this->optionsColumnElement
                 ->appendChild(backgroundElement
                     ->setColor("#FFFFFF")
@@ -114,7 +114,7 @@ namespace elementor::components {
             this->callbackChange(this->value);
         }
 
-        return this;
+        return shared_from_this();
     }
 
     Combox *Combox::setValue(const std::string &optionValue) {
@@ -124,7 +124,7 @@ namespace elementor::components {
                 break;
             }
         }
-        return this;
+        return shared_from_this();
     }
 
     std::string Combox::getValue() const {
@@ -134,19 +134,19 @@ namespace elementor::components {
     Combox *Combox::setOptions(std::vector<std::tuple<std::string, std::string>> newOptions) {
         this->options = std::move(newOptions);
         this->updateOptionsElement();
-        return this;
+        return shared_from_this();
     }
 
     Combox *Combox::addOption(std::tuple<std::string, std::string> option) {
         this->options.push_back(option);
         this->updateOptionsElement();
-        return this;
+        return shared_from_this();
     }
 
     Combox *Combox::addOption(const std::string &optionValue, const std::string &optionLabel) {
         this->options.emplace_back(optionValue, optionLabel);
         this->updateOptionsElement();
-        return this;
+        return shared_from_this();
     }
 
     void Combox::removeOption(size_t i) {
@@ -204,14 +204,14 @@ namespace elementor::components {
 
     Combox *Combox::onChange(std::function<void(std::string value)> callback) {
         this->callbackChange = std::move(callback);
-        return this;
+        return shared_from_this();
     }
 
     Combox *Combox::setPlaceholder(const std::string &newPlaceholder) {
         this->placeholder = newPlaceholder;
         this->textElement->setText(this->placeholder);
         this->paragraphElement->forceUpdate();
-        return this;
+        return shared_from_this();
     }
 
     std::string Combox::getPlaceholder() const {

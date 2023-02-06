@@ -4,9 +4,11 @@
 
 #include "GLApplicationContext.h"
 
+#include <utility>
+
 namespace elementor {
-    GLApplicationContext::GLApplicationContext(GLPlatform *platform) {
-        this->platform = platform;
+    GLApplicationContext::GLApplicationContext(std::shared_ptr<GLPlatform> platform) {
+        this->platform = std::move(platform);
     }
 
     float GLApplicationContext::getPixelScale() {
@@ -25,11 +27,11 @@ namespace elementor {
         return this->platform->setLocale(locale);
     }
 
-    Clipboard *GLApplicationContext::getClipboard() {
+    std::shared_ptr<Clipboard> GLApplicationContext::getClipboard() {
         return this->platform->getClipboard();
     }
 
-    Perfomance *GLApplicationContext::getPerfomance() {
+    std::shared_ptr<Perfomance> GLApplicationContext::getPerfomance() {
         return this->platform->getPerfomance();
     }
 
@@ -37,11 +39,11 @@ namespace elementor {
         return this->platform->getSkFontManager();
     }
 
-    void GLApplicationContext::requestNextFrame(std::function<void ()> callback) {
+    void GLApplicationContext::requestNextFrame(std::function<void()> callback) {
         this->platform->requestNextFrame(callback);
     }
 
-    Window *GLApplicationContext::makeWindow(Size size) {
+    std::shared_ptr<Window> GLApplicationContext::makeWindow(Size size) {
         return this->platform->makeWindow(size);
     }
 }

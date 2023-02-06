@@ -4,21 +4,23 @@
 
 #include "FitCover.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    FitCover *fitCover() {
-        return new FitCover();
+    std::shared_ptr<FitCover> fitCover() {
+        return std::make_shared<FitCover>();
     }
 
-    FitCover *FitCover::setChild(Element *child) {
+    std::shared_ptr<FitCover> FitCover::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
     ClipBehavior FitCover::getClipBehaviour() {
         return ClipBehavior::AntiAlias;
     }
 
-    std::vector <RenderElement> FitCover::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> FitCover::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         RenderElement childElement;
         childElement.element = this->getChild();
 

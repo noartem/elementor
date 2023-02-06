@@ -4,14 +4,14 @@
 
 #include "utility.h"
 
-Element *box(std::string color) {
+std::shared_ptr<Element> box(std::string color) {
     return rounded()
         ->setRadius(8)
         ->setChild(background()
             ->setColor(color));
 }
 
-Element *boxSized(std::string color, int boxWidth, int boxHeight) {
+std::shared_ptr<Element> boxSized(std::string color, int boxWidth, int boxHeight) {
     return width()
         ->setWidth(boxWidth)
         ->setChild(height()

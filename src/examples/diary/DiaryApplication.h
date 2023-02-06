@@ -13,12 +13,12 @@ class DiaryApplication {
 public:
     DiaryApplication(DiaryService *diaryService);
 
-    Element *makeElement();
+    std::shared_ptr<Element> makeElement();
 
 private:
     DiaryService *diaryService;
-    Element *child;
-    Empty *activePageElement;
+    std::shared_ptr<Element> child;
+    std::shared_ptr<Empty> activePageElement;
     PAGE_CHANGER pageChanger = [this] (Page *page) { this->changePage(page); };
 
     void changePage(Page *page);
@@ -27,21 +27,21 @@ private:
 
     void saveToFile();
 
-    Element *makeAboutSection();
+    std::shared_ptr<Element> makeAboutSection();
 
-    Element *makeLogo();
+    std::shared_ptr<Element> makeLogo();
 
     std::vector<Page *> makePages();
 
-    Element *makePagesList();
+    std::shared_ptr<Element> makePagesList();
 
-    Element *makeNewControl();
+    std::shared_ptr<Element> makeNewControl();
 
-    Element *makeLoadControl();
+    std::shared_ptr<Element> makeLoadControl();
 
-    Element *makeSaveControl();
+    std::shared_ptr<Element> makeSaveControl();
 
-    Element *makeControls();
+    std::shared_ptr<Element> makeControls();
 };
 
 #endif //DIARY_APPLICATION_H

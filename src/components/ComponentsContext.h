@@ -10,19 +10,19 @@
 namespace elementor::components {
     class ComponentsContext : public Component, public WithChild {
     public:
-        explicit ComponentsContext(Element *rootElement) : Component(), WithChild() {
+        explicit ComponentsContext(std::shared_ptr<Element> rootElement) : Component(), WithChild() {
             this->stackElement = stack();
             this->element = rounded()
                 ->setChild(this->stackElement
                     ->appendChild(rootElement));
         };
 
-        Stack *getStackElement() {
+        std::shared_ptr<Stack> getStackElement() {
             return this->stackElement;
         }
 
     private:
-        Stack *stackElement;
+        std::shared_ptr<Stack> stackElement;
     };
 }
 

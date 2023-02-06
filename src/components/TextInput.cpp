@@ -13,9 +13,9 @@ namespace elementor::components {
     TextInput::TextInput() {
         this->inputableChild = inputable();
 
-        Paragraph *paragraphElement = paragraph();
-        Text *textElement = text();
-        Border *borderElement = border();
+        std::shared_ptr<Paragraph> paragraphElement = paragraph();
+        std::shared_ptr<Text> textElement = text();
+        std::shared_ptr<Border> borderElement = border();
 
         this->element = background()
             ->setColor("#FFFFFF")
@@ -64,7 +64,7 @@ namespace elementor::components {
         if (this->inputableChild) {
             this->inputableChild->setText(newValue);
         }
-        return this;
+        return shared_from_this();
     }
 
     std::u32string TextInput::getValue() {
@@ -73,6 +73,6 @@ namespace elementor::components {
 
     TextInput *TextInput::onChange(std::function<std::u32string(std::u32string newValue)> callback) {
         this->callbackChange = std::move(callback);
-        return this;
+        return shared_from_this();
     }
 }

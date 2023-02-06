@@ -11,24 +11,31 @@
 namespace elementor {
     class GLApplicationContext : public ApplicationContext {
     public:
-        GLApplicationContext(GLPlatform *platform);
+        explicit GLApplicationContext(std::shared_ptr<GLPlatform> platform);
+
+        explicit GLApplicationContext(GLPlatform *platform) : GLApplicationContext(
+                std::shared_ptr<GLPlatform>(platform)) {};
 
         float getPixelScale() override;
+
         void setPixelScale(float scale) override;
 
         std::string getLocale() override;
+
         void setLocale(std::string locale) override;
 
-        Clipboard *getClipboard() override;
-        Perfomance *getPerfomance() override;
+        std::shared_ptr<Clipboard> getClipboard() override;
+
+        std::shared_ptr<Perfomance> getPerfomance() override;
+
         sk_sp<SkFontMgr> getSkFontManager() override;
 
-        void requestNextFrame(std::function<void ()> callback) override;
+        void requestNextFrame(std::function<void()> callback) override;
 
-        Window *makeWindow(Size size) override;
+        std::shared_ptr<Window> makeWindow(Size size) override;
 
     private:
-        GLPlatform *platform;
+        std::shared_ptr<GLPlatform> platform;
     };
 };
 

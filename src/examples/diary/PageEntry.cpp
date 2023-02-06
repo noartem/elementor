@@ -40,7 +40,7 @@ void PageEntry::deleteEntry() {
     this->pageChanger(this->backPage);
 }
 
-Element *PageEntry::makeDatetimeField() {
+std::shared_ptr<Element> PageEntry::makeDatetimeField() {
     return column()
         ->setSpacing(8)
         ->appendChild(row()
@@ -57,7 +57,7 @@ Element *PageEntry::makeDatetimeField() {
             ->setChild(this->inputDatetime));
 }
 
-Element *PageEntry::makeDurationField() {
+std::shared_ptr<Element> PageEntry::makeDurationField() {
     return column()
         ->setSpacing(8)
         ->appendChild(text()
@@ -68,7 +68,7 @@ Element *PageEntry::makeDurationField() {
             ->setChild(this->inputDuration));
 }
 
-Element *PageEntry::makePlaceField() {
+std::shared_ptr<Element> PageEntry::makePlaceField() {
     return column()
         ->setSpacing(8)
         ->appendChild(text()
@@ -79,7 +79,7 @@ Element *PageEntry::makePlaceField() {
             ->setChild(this->inputPlace));
 }
 
-Element *PageEntry::makeForm() {
+std::shared_ptr<Element> PageEntry::makeForm() {
     return column()
         ->setSpacing(12)
         ->appendChild(this->makeDatetimeField())
@@ -87,7 +87,7 @@ Element *PageEntry::makeForm() {
         ->appendChild(this->makePlaceField());
 }
 
-Element *PageEntry::makeSaveControl() {
+std::shared_ptr<Element> PageEntry::makeSaveControl() {
     return clickable()
         ->onClick([this] () { this->saveEntry(); })
         ->setChild(rounded()
@@ -102,7 +102,7 @@ Element *PageEntry::makeSaveControl() {
                         ->setText("Save")))));
 }
 
-Element *PageEntry::makeDeleteControl() {
+std::shared_ptr<Element> PageEntry::makeDeleteControl() {
     return clickable()
         ->onClick([this] () { this->deleteEntry(); })
         ->setChild(rounded()
@@ -117,8 +117,8 @@ Element *PageEntry::makeDeleteControl() {
                         ->setText("Delete")))));
 }
 
-Element *PageEntry::makeControls() {
-    Row *controls = row()
+std::shared_ptr<Element> PageEntry::makeControls() {
+    std::shared_ptr<Row> controls = row()
         ->setSpacing(8);
 
     controls->appendChild(this->makeSaveControl());
@@ -130,7 +130,7 @@ Element *PageEntry::makeControls() {
     return controls;
 }
 
-Element *PageEntry::makeElement() {
+std::shared_ptr<Element> PageEntry::makeElement() {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

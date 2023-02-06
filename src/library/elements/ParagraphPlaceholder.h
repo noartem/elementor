@@ -18,29 +18,29 @@ namespace elementor::elements {
         Middle,
     };
 
-    class ParagraphPlaceholder : public Element, public WithChild {
+    class ParagraphPlaceholder : public Element, public WithChild, public std::enable_shared_from_this<ParagraphPlaceholder> {
     public:
-        ParagraphPlaceholder *setChild(Element *child);
+        std::shared_ptr<ParagraphPlaceholder> setChild(const std::shared_ptr<Element>& child);
 
-        ParagraphPlaceholder *setAlignment(PlaceholderAlignment alignment);
+        std::shared_ptr<ParagraphPlaceholder> setAlignment(PlaceholderAlignment newAlignment);
 
         PlaceholderAlignment getAlignment();
 
         sktextlayout::PlaceholderAlignment getSkPlaceholderAlignment();
 
-        ParagraphPlaceholder *setBaseline(TextBaseline baseline);
+        std::shared_ptr<ParagraphPlaceholder> setBaseline(TextBaseline baseline);
 
         TextBaseline getBaseline();
 
         sktextlayout::TextBaseline getSkBaseline();
 
-        ParagraphPlaceholder *setOffset(float offset);
+        std::shared_ptr<ParagraphPlaceholder> setOffset(float offset);
 
         float getOffset();
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
     
     private:
         PlaceholderAlignment alignment = PlaceholderAlignment::Middle;
@@ -48,8 +48,8 @@ namespace elementor::elements {
         float offset;
     };
 
-    ParagraphPlaceholder *paragraphPlaceholder();
-    ParagraphPlaceholder *placeholder();
+    std::shared_ptr<ParagraphPlaceholder> paragraphPlaceholder();
+    std::shared_ptr<ParagraphPlaceholder> placeholder();
 }
 
 

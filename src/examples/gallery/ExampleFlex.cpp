@@ -12,7 +12,7 @@ std::string ExampleFlex::getDescription() {
     return "Flex allows you to easily build complex and yet flexible layout";
 }
 
-Element *exampleChildren() {
+std::shared_ptr<Element> exampleChildren() {
     return padding()
         ->setPaddings(12, 18)
         ->setChild(flex()
@@ -77,7 +77,7 @@ Element *exampleChildren() {
                         ->setChild(box("#BEE8FA"))))));
 }
 
-Element *exampleAlignmentItem(FlexAlignment alignment) {
+std::shared_ptr<Element> exampleAlignmentItem(FlexAlignment alignment) {
     return flex()
         ->setSpacing(8)
         ->setAlignment(alignment)
@@ -98,7 +98,7 @@ Element *exampleAlignmentItem(FlexAlignment alignment) {
                 ->setChild(box("#CDE8D9"))));
 }
 
-Element *exampleAlignment() {
+std::shared_ptr<Element> exampleAlignment() {
     return padding()
         ->setPaddings(12, 18)
         ->setChild(flex()
@@ -112,7 +112,7 @@ Element *exampleAlignment() {
                 ->setChild(exampleAlignmentItem(FlexAlignment::End))));
 }
 
-Element *exampleCrossAlignmentItem(FlexCrossAlignment crossAlignment) {
+std::shared_ptr<Element> exampleCrossAlignmentItem(FlexCrossAlignment crossAlignment) {
     return flex()
         ->setSpacing(8)
         ->setCrossAlignment(crossAlignment)
@@ -133,7 +133,7 @@ Element *exampleCrossAlignmentItem(FlexCrossAlignment crossAlignment) {
                 ->setChild(box("#CDE8D9"))));
 }
 
-Element *exampleCrossAlignment() {
+std::shared_ptr<Element> exampleCrossAlignment() {
     return padding()
         ->setPaddings(12, 18)
         ->setChild(flex()
@@ -151,7 +151,7 @@ Element *exampleCrossAlignment() {
                 ->setChild(exampleCrossAlignmentItem(FlexCrossAlignment::SpaceEvenly))));
 }
 
-Element *ExampleFlex::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleFlex::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

@@ -8,23 +8,25 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Height : public Element, public WithChild {
+    class Height : public Element, public WithChild, public std::enable_shared_from_this<Height> {
     public:
-        Height *setHeight(float height);
+        std::shared_ptr<Height> setHeight(float height);
 
         float getHeight();
 
-        Height *setChild(Element *child);
+        std::shared_ptr<Height> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float height = 0;
     };
 
-    Height *height();
+    std::shared_ptr<Height> height();
 }
 
 

@@ -13,7 +13,7 @@ class Page {
 public:
     virtual std::string getName() = 0;
 
-    virtual Element *makeElement() = 0;
+    virtual std::shared_ptr<Element> makeElement() = 0;
 };
 
 #endif //DIARY_PAGE_H

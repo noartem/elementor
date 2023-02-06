@@ -87,10 +87,10 @@ void ExamplesGallery::setActiveExample(Example *example) {
             ->setText(example->getDescription()));
 }
 
-Element *ExamplesGallery::makeExamplesList() {
-    Column *examplesList = column();
+std::shared_ptr<Element> ExamplesGallery::makeExamplesList() {
+    std::shared_ptr<Column> examplesList = column();
     for (Example *example : examples()) {
-        Background *buttonBackground = background();
+        std::shared_ptr<Background> buttonBackground = background();
         examplesList
             ->appendChild(clickable()
                 ->setChild(hoverable()

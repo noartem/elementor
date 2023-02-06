@@ -5,18 +5,18 @@
 #include "Stack.h"
 
 namespace elementor::elements {
-    Stack *stack() {
-        return new Stack();
+    std::shared_ptr<Stack> stack() {
+        return std::make_shared<Stack>();
     }
 
-    Stack *Stack::appendChild(Element *child) {
+    std::shared_ptr<Stack> Stack::appendChild(const std::shared_ptr<Element>& child) {
         this->addChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Stack::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Stack::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         Size size{0, 0};
-        for (auto child: this->getChildrenList()) {
+        for (const auto& child: this->getChildrenList()) {
             Size childSize = child->getSize(ctx, window, boundaries);
             size.width = std::max(size.height, childSize.width);
             size.height = std::max(size.height, childSize.height);
@@ -24,10 +24,10 @@ namespace elementor::elements {
         return fitSizeInBoundaries(size, boundaries);
     }
 
-    std::vector<RenderElement> Stack::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> Stack::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
-        for (auto child: this->getChildrenList()) {
+        for (const auto& child: this->getChildrenList()) {
             RenderElement childElement{};
             childElement.element = child;
             childElement.position = {0, 0};

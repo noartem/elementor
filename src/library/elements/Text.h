@@ -65,91 +65,93 @@ namespace elementor::elements {
         Wavy,
     };
 
-    class Text : public Element {
+    class Text : public Element, public std::enable_shared_from_this<Text> {
     public:
-        Text *setText(std::u32string text);
+        std::shared_ptr<Text> setText(std::u32string newText);
 
-        Text *setText(std::string text);
+        std::shared_ptr<Text> setText(std::string newText);
 
         std::string getText();
 
-        Text *setFontColor(SkColor color);
+        std::shared_ptr<Text> setFontColor(SkColor color);
 
-        Text *setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        std::shared_ptr<Text> setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        Text *setFontColor(uint8_t r, uint8_t g, uint8_t b);
+        std::shared_ptr<Text> setFontColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Text *setFontColor(std::string color);
+        std::shared_ptr<Text> setFontColor(std::string color);
 
-        SkColor getFontColor();
+        SkColor getFontColor() const;
 
-        Text *setFontSize(float size);
+        std::shared_ptr<Text> setFontSize(float size);
 
-        float getFontSize();
+        float getFontSize() const;
 
-        Text *setFontSkew(float skew);
+        std::shared_ptr<Text> setFontSkew(float skew);
 
-        float getFontSkew();
+        float getFontSkew() const;
 
-        Text *setFontScale(float scale);
+        std::shared_ptr<Text> setFontScale(float scale);
 
-        float getFontScale();
+        float getFontScale() const;
 
-        Text *setFontWeight(float weight);
+        std::shared_ptr<Text> setFontWeight(float weight);
 
-        float getFontWeight();
+        float getFontWeight() const;
 
-        Text *setFontWidth(float width);
+        std::shared_ptr<Text> setFontWidth(float width);
 
-        float getFontWidth();
+        float getFontWidth() const;
 
-        Text *setFontSlant(FontSlant slant);
+        std::shared_ptr<Text> setFontSlant(FontSlant slant);
 
         FontSlant getFontSlant();
 
-        Text *setFontFamily(std::string fontFamily);
+        std::shared_ptr<Text> setFontFamily(std::string fontFamily);
 
         std::string getFontFamily();
 
-        Text *setFontEdging(FontEdging edging);
+        std::shared_ptr<Text> setFontEdging(FontEdging edging);
 
         FontEdging getFontEdging();
 
-        Text *setDecoration(TextDecoration decoration);
+        std::shared_ptr<Text> setDecoration(TextDecoration decoration);
 
         TextDecoration getDecoration();
 
-        Text *setDecorationMode(TextDecorationMode decorationMode);
+        std::shared_ptr<Text> setDecorationMode(TextDecorationMode decorationMode);
 
         TextDecorationMode getDecorationMode();
 
-        Text *setDecorationStyle(TextDecorationStyle decorationStyle);
+        std::shared_ptr<Text> setDecorationStyle(TextDecorationStyle decorationStyle);
 
         TextDecorationStyle getDecorationStyle();
 
-        Text *setDecorationColor(SkColor color);
+        std::shared_ptr<Text> setDecorationColor(SkColor color);
 
-        Text *setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        std::shared_ptr<Text> setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        Text *setDecorationColor(uint8_t r, uint8_t g, uint8_t b);
+        std::shared_ptr<Text> setDecorationColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Text *setDecorationColor(std::string color);
+        std::shared_ptr<Text> setDecorationColor(std::string color);
 
         SkColor getDecorationColor();
 
-        Text *setDecorationThicknessMultiplier(float multiplier);
+        std::shared_ptr<Text> setDecorationThicknessMultiplier(float multiplier);
 
         float getDecorationThicknessMultiplier();
 
-        Text *setLocale(std::optional<std::string> locale);
+        std::shared_ptr<Text> setLocale(std::optional<std::string> locale);
 
         std::optional<std::string> getLocale();
 
-        sktextlayout::TextStyle makeSkTextStyle(ApplicationContext *ctx);
+        sktextlayout::TextStyle makeSkTextStyle(std::shared_ptr<ApplicationContext> ctx);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;    
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
 
     private:
         std::string text;
@@ -165,7 +167,7 @@ namespace elementor::elements {
         TextDecoration decoration = TextDecoration::NoDecoration;
         TextDecorationMode decorationMode = TextDecorationMode::Through;
         TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
-        SkColor decorationColor = SK_ColorTRANSPARENT; 
+        SkColor decorationColor = SK_ColorTRANSPARENT;
         float decorationThicknessMultiplier = 1;
         std::optional<std::string> locale;
 
@@ -182,7 +184,7 @@ namespace elementor::elements {
 
         sk_sp<SkTypeface> makeSkTypeface();
 
-        SkFont makeSkFont(ApplicationContext *ctx);
+        SkFont makeSkFont(std::shared_ptr<ApplicationContext> ctx);
 
         SkPaint makeSkPaint();
 
@@ -193,7 +195,7 @@ namespace elementor::elements {
         sktextlayout::TextDecorationStyle getSkTextDecorationStyle();
     };
 
-    Text *text();
+    std::shared_ptr<Text> text();
 }
 
 

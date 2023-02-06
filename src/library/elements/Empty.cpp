@@ -4,17 +4,19 @@
 
 #include "Empty.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Empty *empty() {
-        return new Empty();
+    std::shared_ptr<Empty> empty() {
+        return std::make_shared<Empty>();
     }
 
-    Empty *Empty::setChild(Element *child) {
+    std::shared_ptr<Empty> Empty::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Empty::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Empty::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -22,7 +24,7 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Empty::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Empty::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

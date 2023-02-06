@@ -11,28 +11,40 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Draggable : public Element, public WithOnMouseButton, public WithOnMouseMove, public WithChild {
+    class Draggable
+            : public Element,
+              public WithOnMouseButton,
+              public WithOnMouseMove,
+              public WithChild,
+              public std::enable_shared_from_this<Draggable> {
     public:
-        Draggable *onStart(std::function<bool (Position position, Position absolutePosition)> callback);
-        Draggable *onStart(std::function<void ()> callback);
+        std::shared_ptr<Draggable> onStart(std::function<bool(Position position, Position absolutePosition)> callback);
 
-        Draggable *onEnd(std::function<void (Position position, Position absolutePosition)> callback);
-        Draggable *onEnd(std::function<void ()> callback);
+        std::shared_ptr<Draggable> onStart(const std::function<void()>& callback);
 
-        Draggable *onMove(std::function<void (Position position, Position absolutePosition, Position diff)> callback);
-        Draggable *onMove(std::function<void ()> callback);
+        std::shared_ptr<Draggable> onEnd(std::function<void(Position position, Position absolutePosition)> callback);
 
-        Draggable *setChild(Element *child);
+        std::shared_ptr<Draggable> onEnd(const std::function<void()>& callback);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        std::shared_ptr<Draggable>
+        onMove(std::function<void(Position position, Position absolutePosition, Position diff)> callback);
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        std::shared_ptr<Draggable> onMove(const std::function<void()>& callback);
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::shared_ptr<Draggable> setChild(const std::shared_ptr<Element>& child);
 
-        EventCallbackResponse onEvent(EventMouseMove *event) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        EventCallbackResponse onEvent(EventMouseButton *event) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
+
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
 
     private:
         ElementRect rect;
@@ -42,12 +54,12 @@ namespace elementor::elements {
         bool hovered;
         bool dragging;
 
-        std::function<bool (Position position, Position absolutePosition)> callbackStart;
-        std::function<void (Position position, Position absolutePosition)> callbackEnd;
-        std::function<void (Position position, Position absolutePosition, Position diff)> callbackMove;
+        std::function<bool(Position position, Position absolutePosition)> callbackStart;
+        std::function<void(Position position, Position absolutePosition)> callbackEnd;
+        std::function<void(Position position, Position absolutePosition, Position diff)> callbackMove;
     };
 
-    Draggable *draggable();
+    std::shared_ptr<Draggable> draggable();
 }
 
 

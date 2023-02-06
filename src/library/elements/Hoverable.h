@@ -11,40 +11,40 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Hoverable : public Element, public WithOnMouseMove, public WithChild {
+    class Hoverable : public Element, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<Hoverable> {
     public:
-        Hoverable *onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
+        std::shared_ptr<Hoverable> onEnter(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
 
-        Hoverable *onEnter(const std::function<void ()>& callback);
+        std::shared_ptr<Hoverable> onEnter(const std::function<void ()>& callback);
 
-        Hoverable *onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
+        std::shared_ptr<Hoverable> onMove(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
 
-        Hoverable *onMove(const std::function<void ()>& callback);
+        std::shared_ptr<Hoverable> onMove(const std::function<void ()>& callback);
 
-        Hoverable *onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
+        std::shared_ptr<Hoverable>onLeave(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
 
-        Hoverable *onLeave(const std::function<void ()>& callback);
+        std::shared_ptr<Hoverable>onLeave(const std::function<void ()>& callback);
 
-        Hoverable *setChild(Element *child);
+        std::shared_ptr<Hoverable>setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
-        EventCallbackResponse onEvent(EventMouseMove *event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
 
     private:
         ElementRect rect;
         bool hovered;
 
-        std::function<EventCallbackResponse (EventMouseMove *event)> callbackEnter;
-        std::function<EventCallbackResponse (EventMouseMove *event)> callbackMove;
-        std::function<EventCallbackResponse (EventMouseMove *event)> callbackLeave;
+        std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackEnter;
+        std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackMove;
+        std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackLeave;
     };
 
-    Hoverable *hoverable();
+    std::shared_ptr<Hoverable>hoverable();
 }
 
 

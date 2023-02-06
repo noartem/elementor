@@ -11,15 +11,15 @@ class Scroll : public Element {
 public:
     Scroll();
 
-    Scroll *setChild(Element *child);
+    Scroll *setChild(const std::shared_ptr<Element>& child);
 
-    Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+    Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-    std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+    std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
 private:
-    Scrollbar *childScrollbar;
-    Scrollable *childScrollable;
+    std::shared_ptr<Scrollbar> childScrollbar;
+    std::shared_ptr<Scrollable> childScrollable;
 };
 
 Scroll *scroll();

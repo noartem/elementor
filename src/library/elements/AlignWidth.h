@@ -8,28 +8,30 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class AlignWidth : public Element, public WithChild {
+    class AlignWidth : public Element, public WithChild, public std::enable_shared_from_this<AlignWidth> {
     public:
-        AlignWidth *setCoef(float coef, float childCoef);
+        std::shared_ptr<AlignWidth> setCoef(float newCoef, float newChildCoef);
 
-        AlignWidth *setCoef(float coef);
+        std::shared_ptr<AlignWidth> setCoef(float newCoef);
 
-        float getCoef();
+        float getCoef() const;
 
-        float getChildCoef();
+        float getChildCoef() const;
 
-        AlignWidth *setChild(Element *child);
+        std::shared_ptr<AlignWidth> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float coef = 0;
         float childCoef = 0;
     };
 
-    AlignWidth *alignWidth();
+    std::shared_ptr<AlignWidth> alignWidth();
 }
 
 

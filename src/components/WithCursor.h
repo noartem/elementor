@@ -17,11 +17,11 @@ namespace elementor::components {
 
         CursorShape getCursorShape();
 
-        WithCursor *setChild(Element *child);
+        WithCursor *setChild(const std::shared_ptr<Element>& child);
 
     private:
         CursorShape cursorShape;
-        Hoverable *hoverableElement;
+        std::shared_ptr<Hoverable>hoverableElement;
     };
 
     WithCursor *withCursor();

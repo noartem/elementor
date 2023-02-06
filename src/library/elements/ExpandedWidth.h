@@ -8,16 +8,18 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class ExpandedWidth : public Element, public WithChild {
+    class ExpandedWidth : public Element, public WithChild, public std::enable_shared_from_this<ExpandedWidth> {
     public:
-        ExpandedWidth *setChild(Element *child);
+        std::shared_ptr<ExpandedWidth> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;  
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
     };
 
-    ExpandedWidth *expandedWidth();
+    std::shared_ptr<ExpandedWidth> expandedWidth();
 }
 
 

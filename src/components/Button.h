@@ -27,9 +27,9 @@ namespace elementor::components {
 
     private:
         std::string label;
-        Clickable *clickableElement;
-        Text *textElement;
-        Background *backgroundElement;
+        std::shared_ptr<Clickable> clickableElement;
+        std::shared_ptr<Text> textElement;
+        std::shared_ptr<Background> backgroundElement;
     };
 
     Button *button();

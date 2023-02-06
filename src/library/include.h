@@ -2,8 +2,8 @@
 // Created by noartem on 29.05.2022.
 //
 
-#ifndef ELEMENTOR_ELEMENTOR_INCLUDE_H
-#define ELEMENTOR_ELEMENTOR_INCLUDE_H
+#ifndef ELEMENTOR_INCLUDE_H
+#define ELEMENTOR_INCLUDE_H
 
 #include "Application.h"
 #include "Color.h"
@@ -13,4 +13,4 @@
 #include "Render.h"
 #include "String.h"
 
-#endif //ELEMENTOR_ELEMENTOR_INCLUDE_H
+#endif //ELEMENTOR_INCLUDE_H

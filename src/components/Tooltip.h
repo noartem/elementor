@@ -30,9 +30,9 @@ namespace elementor::components {
 
         float top;
 
-        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
-        EventCallbackResponse onEvent(EventMouseMove *event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
 
     private:
         Position childPosition;
@@ -53,28 +53,28 @@ namespace elementor::components {
 
         [[nodiscard]] TooltipPlacement getPlacement() const;
 
-        Tooltip *setChild(Element *child);
+        Tooltip *setChild(const std::shared_ptr<Element>& child);
 
-        [[nodiscard]] Element *getChild() const;
+        [[nodiscard]] std::shared_ptr<Element> getChild() const;
 
-        Tooltip *setTip(Element *tip);
+        Tooltip *setTip(std::shared_ptr<Element> tip);
 
-        Element *getTip();
+        std::shared_ptr<Element> getTip();
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         Window *window;
 
         bool active = false;
         TooltipPlacement placement = TooltipPlacement::Bottom;
-        Element *child = nullptr;
-        Element *tip = nullptr;
+        std::shared_ptr<Element> child = nullptr;
+        std::shared_ptr<Element> tip = nullptr;
         TipWrapper *tipWrapper = new TipWrapper();
 
-        Stack *getStackElement();
+        std::shared_ptr<Stack> getStackElement();
         void addTipToStack();
         void removeTipFromStack();
     };

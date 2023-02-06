@@ -3,6 +3,8 @@
 //
 
 #include "GLPlatform.h"
+
+#include <utility>
 #include "GLApplicationContext.h"
 #include "utility.h"
 
@@ -31,18 +33,11 @@ namespace elementor {
         glfwWindowHint(GLFW_ALPHA_BITS, 0);
         glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
-        this->clipboard = new GLClipboard();
-        this->perfomance = new GLPerfomance();
-        this->fontManager = new GLFontManager();
-        this->applicationContext = new GLApplicationContext(this);
-        this->pixelScale = this->calcPixelScale();
-    }
-
-    GLPlatform::~GLPlatform() {
-        delete this->clipboard;
-        delete this->perfomance;
-        delete this->fontManager;
-        delete this->applicationContext;
+        this->clipboard = std::make_shared<GLClipboard>();
+        this->perfomance = std::make_shared<GLPerfomance>();
+        this->fontManager = std::make_shared<GLFontManager>();
+        this->applicationContext = std::make_shared<GLApplicationContext>(this);
+        this->pixelScale = calcPixelScale();
     }
 
     void GLPlatform::run() {
@@ -51,11 +46,11 @@ namespace elementor {
 
             this->applyRnfQueue();
 
-            for (GLWindow *window: this->windows) {
+            for (const std::shared_ptr<GLWindow> &window: this->windows) {
                 window->draw();
             }
 
-            if (this->windows.size() == 0) {
+            if (this->windows.empty()) {
                 break;
             }
 
@@ -65,15 +60,15 @@ namespace elementor {
         glfwTerminate();
     }
 
-    GLClipboard *GLPlatform::getClipboard() {
+    std::shared_ptr<GLClipboard> GLPlatform::getClipboard() {
         return this->clipboard;
     }
 
-    GLFontManager *GLPlatform::getFontManager() {
+    std::shared_ptr<GLFontManager> GLPlatform::getFontManager() {
         return this->fontManager;
     }
 
-    GLPerfomance *GLPlatform::getPerfomance() {
+    std::shared_ptr<GLPerfomance> GLPlatform::getPerfomance() {
         return this->perfomance;
     }
 
@@ -81,7 +76,7 @@ namespace elementor {
         return this->fontManager->getSkFontManager();
     }
 
-    void GLPlatform::requestNextFrame(const std::function<void()>& callback) {
+    void GLPlatform::requestNextFrame(const std::function<void()> &callback) {
         glfwPostEmptyEvent();
         this->rnfNextQueue.push_back(callback);
     }
@@ -99,13 +94,13 @@ namespace elementor {
         this->rnfNextQueue = {};
     }
 
-    GLWindow *GLPlatform::makeWindow(Size size) {
-        auto *window = new GLWindow(this->applicationContext, size);
+    std::shared_ptr<GLWindow> GLPlatform::makeWindow(Size size) {
+        auto window = std::make_shared<GLWindow>(this->applicationContext, size);
         this->addWindow(window);
         return window;
     }
 
-    void GLPlatform::addWindow(GLWindow *window) {
+    void GLPlatform::addWindow(const std::shared_ptr<GLWindow> &window) {
         window->onClose([this, window]() {
             this->removeWindow(window);
         });
@@ -118,7 +113,7 @@ namespace elementor {
         }
     }
 
-    void GLPlatform::removeWindow(GLWindow *window) {
+    void GLPlatform::removeWindow(const std::shared_ptr<GLWindow> &window) {
         for (unsigned int i = 0; i < this->windows.size(); ++i) {
             if (this->windows[i] == window) {
                 this->removeWindow(i);
@@ -132,7 +127,7 @@ namespace elementor {
         return getMonitorSize(monitor).width / getMonitorPhysicalSize(monitor).width / DefaultMonitorScale;
     }
 
-    float GLPlatform::getPixelScale() {
+    float GLPlatform::getPixelScale() const {
         return this->pixelScale;
     }
 
@@ -144,8 +139,8 @@ namespace elementor {
         return this->locale;
     }
 
-    void GLPlatform::setLocale(std::string locale) {
-        this->locale = locale;
+    void GLPlatform::setLocale(std::string newLocale) {
+        this->locale = std::move(newLocale);
     }
 }
 

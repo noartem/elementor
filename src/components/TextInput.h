@@ -20,7 +20,7 @@ namespace elementor::components {
         TextInput *onChange(std::function<std::u32string(std::u32string text)> callback);
 
     private:
-        Inputable *inputableChild;
+        std::shared_ptr<Inputable>inputableChild;
         std::u32string value;
         bool focused;
         std::function<std::u32string(std::u32string text)> callbackChange;

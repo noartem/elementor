@@ -15,7 +15,7 @@ public:
 
     std::string getName() override;
 
-    Element *makeElement() override;
+    std::shared_ptr<Element> makeElement() override;
 
 private:
     DiaryService *service;

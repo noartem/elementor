@@ -15,11 +15,11 @@ public:
     void setActiveExample(Example *activeExample);
 
 private:
-    Empty *activeExampleElement;
-    Empty *activeExampleLabelName;
-    Empty *activeExampleLabelDescription;
+    std::shared_ptr<Empty> activeExampleElement;
+    std::shared_ptr<Empty> activeExampleLabelName;
+    std::shared_ptr<Empty> activeExampleLabelDescription;
 
-    Element *makeExamplesList();
+    std::shared_ptr<Element> makeExamplesList();
 };
 
 #endif //GALLERY_EXAMPLES_GALLERY_H

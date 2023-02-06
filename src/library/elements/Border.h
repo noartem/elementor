@@ -14,41 +14,44 @@ namespace elementor::elements {
         Dashed,
     };
 
-    class Border : public Element, public WithChild {
+    class Border : public Element, public WithChild, public std::enable_shared_from_this<Border> {
     public:
-        Border *setColor(SkColor color);
+        std::shared_ptr<Border> setColor(SkColor color);
 
-        Border *setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+        std::shared_ptr<Border> setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        Border *setColor(uint8_t r, uint8_t g, uint8_t b);
+        std::shared_ptr<Border> setColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Border *setColor(std::string hex);
+        std::shared_ptr<Border> setColor(std::string hex);
 
         SkColor getColor();
 
-        Border *setWidth(float width);
+        std::shared_ptr<Border> setWidth(float width);
 
         float getWidth();
 
-        Border *setRadius(float radiusX, float radiusY);
+        std::shared_ptr<Border> setRadius(float radiusX, float radiusY);
 
-        Border *setRadius(float radiusXY);
+        std::shared_ptr<Border> setRadius(float radiusXY);
 
         float getRadiusX();
 
         float getRadiusY();
 
-        Border *setStyle(BorderStyle style);
+        std::shared_ptr<Border> setStyle(BorderStyle style);
 
         BorderStyle getStyle();
 
-        Border *setChild(Element *child);
+        std::shared_ptr<Border> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float width = 0.0;
@@ -58,7 +61,7 @@ namespace elementor::elements {
         BorderStyle style = BorderStyle::Solid;
     };
 
-    Border *border();
+    std::shared_ptr<Border> border();
 }
 
 

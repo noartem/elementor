@@ -13,14 +13,14 @@
 namespace elementor {
     class Application {
     public:
-        void draw(ApplicationContext *ctx, Window *window, SkCanvas *canvas);
-        void dispatchEvent(Event *event);
-    
-    private:
-        std::map<std::string, std::vector<Element*>> eventListeners;
-        void saveElementEventListeners(Element *element);
+        void draw(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window, SkCanvas *canvas);
+        void dispatchEvent(const std::shared_ptr<Event>& event);
 
-        void drawElement(ApplicationContext *ctx, Window *window, SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary);
+    private:
+        std::map<std::string, std::vector<std::shared_ptr<Element>>> eventListeners;
+        void saveElementEventListeners(const std::shared_ptr<Element>& element);
+
+        void drawElement(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window, SkCanvas *canvas, const RenderElement& element, ElementRect rect, Rect boundary);
     };
 };
 

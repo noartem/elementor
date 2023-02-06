@@ -8,16 +8,18 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Empty : public Element, public WithChild {
+    class Empty : public Element, public WithChild, public std::enable_shared_from_this<Empty> {
     public:
-        Empty *setChild(Element *child);
+        std::shared_ptr<Empty> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
     };
 
-    Empty *empty();
+    std::shared_ptr<Empty> empty();
 }
 
 

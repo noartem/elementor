@@ -10,36 +10,37 @@
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
 
 #include <memory>
+#include <utility>
 
 namespace elementor::elements {
-    Paragraph *paragraph() {
-        return new Paragraph();
+    std::shared_ptr<Paragraph> paragraph() {
+        return std::make_shared<Paragraph>();
     }
 
     TextAlign Paragraph::getTextAlign() {
         return this->textAlign;
     }
 
-    Paragraph *Paragraph::setTextAlign(TextAlign textAlign) {
-        this->textAlign = textAlign;
+    std::shared_ptr<Paragraph> Paragraph::setTextAlign(TextAlign newTextAlign) {
+        this->textAlign = newTextAlign;
         this->skParagraph = nullptr;
-        return this;
+        return shared_from_this();
     }
 
     TextDirection Paragraph::getTextDirection() {
         return this->textDirection;
     }
 
-    Paragraph *Paragraph::setTextDirection(TextDirection textDirection) {
-        this->textDirection = textDirection;
+    std::shared_ptr<Paragraph> Paragraph::setTextDirection(TextDirection newTextDirection) {
+        this->textDirection = newTextDirection;
         this->skParagraph = nullptr;
-        return this;
+        return shared_from_this();
     }
 
-    Paragraph *Paragraph::appendChild(Element *child) {
+    std::shared_ptr<Paragraph> Paragraph::appendChild(const std::shared_ptr<Element> &child) {
         this->addChild(child);
 
-        Text *childText = dynamic_cast<Text *>(child);
+        std::shared_ptr<Text> childText = dynamic_cast<std::shared_ptr<Text>>(child);
         if (childText) {
             this->childrenText.push_back(childText);
         } else {
@@ -47,14 +48,14 @@ namespace elementor::elements {
         }
 
         this->skParagraph = nullptr;
-        return this;
+        return shared_from_this();
     }
 
     void Paragraph::forceUpdate() {
         this->skParagraph = nullptr;
     }
 
-    sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(ApplicationContext *ctx) {
+    sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) {
         sk_sp<sktextlayout::FontCollection> fontCollection = sk_make_sp<sktextlayout::FontCollection>();
         fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
         fontCollection->setDynamicFontManager(ctx->getSkFontManager());
@@ -78,7 +79,7 @@ namespace elementor::elements {
         return paragraphStyle;
     }
 
-    sktextlayout::ParagraphBuilderImpl Paragraph::makeBuilder(ApplicationContext *ctx) {
+    sktextlayout::ParagraphBuilderImpl Paragraph::makeBuilder(const std::shared_ptr<ApplicationContext>& ctx) {
         sktextlayout::ParagraphStyle paragraphStyle = this->makeParagraphStyle();
         sk_sp<sktextlayout::FontCollection> fontCollection = this->makeFontCollection(ctx);
         sktextlayout::ParagraphBuilderImpl builder{paragraphStyle, fontCollection};
@@ -116,11 +117,12 @@ namespace elementor::elements {
     }
 
     sktextlayout::PlaceholderStyle
-    Paragraph::makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child) {
+    Paragraph::makeChildPlaceholderStyle(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                         const std::shared_ptr<Element>& child) {
         Size childSize = child->getSize(ctx, window, {{0, 0},
                                                       {INFINITY, INFINITY}});
 
-        auto *childPlaceholder = dynamic_cast<ParagraphPlaceholder *>(child);
+        auto *childPlaceholder = dynamic_cast<std::shared_ptr<ParagraphPlaceholder> >(child);
         if (childPlaceholder) {
             return {childSize.width, childSize.height,
                     childPlaceholder->getSkPlaceholderAlignment(),
@@ -134,11 +136,12 @@ namespace elementor::elements {
         }
     }
 
-    std::unique_ptr<sktextlayout::Paragraph> Paragraph::makeSkParagraph(ApplicationContext *ctx, Window *window) {
+    std::unique_ptr<sktextlayout::Paragraph>
+    Paragraph::makeSkParagraph(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window) {
         sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
-        for (Element *child: this->getChildrenList()) {
-            Text *childText = dynamic_cast<Text *>(child);
+        for (const std::shared_ptr<Element> &child: this->getChildrenList()) {
+            std::shared_ptr<Text> childText = dynamic_cast<std::shared_ptr<Text>>(child);
             if (childText) {
                 builder.pushStyle(childText->makeSkTextStyle(ctx));
                 builder.addText(childText->getText().c_str(), childText->getText().size());
@@ -155,7 +158,8 @@ namespace elementor::elements {
         return paragraph;
     }
 
-    Size Paragraph::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Paragraph::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
             this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();
@@ -164,7 +168,8 @@ namespace elementor::elements {
         return fitSizeInBoundaries({this->skParagraph->getMaxWidth(), this->skParagraph->getHeight()}, boundaries);
     }
 
-    void Paragraph::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Paragraph::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                    SkCanvas *canvas, ElementRect rect) {
         if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
             this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();
@@ -173,7 +178,8 @@ namespace elementor::elements {
         this->skParagraph->paint(canvas, 0, 0);
     }
 
-    std::vector<RenderElement> Paragraph::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement>
+    Paragraph::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
             this->skParagraph = this->makeSkParagraph(ctx, window);
         this->lastPixelScale = ctx->getPixelScale();

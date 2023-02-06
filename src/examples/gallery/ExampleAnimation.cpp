@@ -104,7 +104,7 @@ void AnimatedPositionExample::render() {
         });
 }
 
-Element *ExampleAnimation::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleAnimation::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

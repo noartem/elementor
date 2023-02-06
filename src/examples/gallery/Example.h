@@ -13,7 +13,7 @@ public:
 
     virtual std::string getDescription() = 0;
 
-    virtual Element *getScene(ApplicationContext *ctx) = 0;
+    virtual std::shared_ptr<Element> getScene(std::shared_ptr<ApplicationContext> ctx) = 0;
 };
 
 #endif //GALLERY_EXAMPLE_H

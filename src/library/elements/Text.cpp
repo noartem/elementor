@@ -9,197 +9,198 @@
 #include <include/core/SkTypeface.h>
 
 #include <algorithm>
+#include <utility>
 
 namespace elementor::elements {
-    Text *text() {
-        return new Text();
+    std::shared_ptr<Text> text() {
+        return std::make_shared<Text>();
     }
 
-    Text *Text::setText(std::u32string text) {
-        this->text = toUTF8(text);
-        return this;
+    std::shared_ptr<Text> Text::setText(std::u32string newText) {
+        this->text = toUTF8(newText);
+        return shared_from_this();
     }
 
-    Text *Text::setText(std::string text) {
-        this->text = text;
-        return this;
+    std::shared_ptr<Text> Text::setText(std::string newText) {
+        this->text = std::move(newText);
+        return shared_from_this();
     }
 
     std::string Text::getText() {
         return this->text;
     }
 
-    Text *Text::setFontColor(SkColor color) {
+    std::shared_ptr<Text> Text::setFontColor(SkColor color) {
         this->fontColor = color;
         this->paint = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    std::shared_ptr<Text> Text::setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->fontColor = makeSkColorFromRGBA(r, g, b, a);
         this->paint = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setFontColor(uint8_t r, uint8_t g, uint8_t b) {
+    std::shared_ptr<Text> Text::setFontColor(uint8_t r, uint8_t g, uint8_t b) {
         this->fontColor = makeSkColorFromRGB(r, g, b);
         this->paint = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setFontColor(std::string hex) {
-        this->fontColor = makeSkColorFromHex(hex);
+    std::shared_ptr<Text> Text::setFontColor(std::string hex) {
+        this->fontColor = makeSkColorFromHex(std::move(hex));
         this->paint = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    SkColor Text::getFontColor() {
+    SkColor Text::getFontColor() const {
         return this->fontColor;
     }
 
-    Text *Text::setFontSize(float size) {
+    std::shared_ptr<Text> Text::setFontSize(float size) {
         this->fontSize = size;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    float Text::getFontSize() {
+    float Text::getFontSize() const {
         return this->fontSize;
     }
 
-    Text *Text::setFontSkew(float skew) {
+    std::shared_ptr<Text> Text::setFontSkew(float skew) {
         this->fontSkew = skew;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    float Text::getFontSkew() {
+    float Text::getFontSkew() const {
         return this->fontSkew;
     }
 
-    Text *Text::setFontScale(float scale) {
+    std::shared_ptr<Text> Text::setFontScale(float scale) {
         this->fontScale = scale;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    float Text::getFontScale() {
+    float Text::getFontScale() const {
         return this->fontScale;
     }
 
-    Text *Text::setFontWeight(float weight) {
+    std::shared_ptr<Text> Text::setFontWeight(float weight) {
         this->fontWeight = weight;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    float Text::getFontWeight() {
+    float Text::getFontWeight() const {
         return this->fontWeight;
     }
 
-    Text *Text::setFontWidth(float width) {
+    std::shared_ptr<Text> Text::setFontWidth(float width) {
         this->fontWidth = width;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
-    float Text::getFontWidth() {
+    float Text::getFontWidth() const {
         return this->fontWidth;
     }
 
-    Text *Text::setFontSlant(FontSlant slant) {
+    std::shared_ptr<Text> Text::setFontSlant(FontSlant slant) {
         this->fontSlant = slant;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
     FontSlant Text::getFontSlant() {
         return this->fontSlant;
     }
 
-    Text *Text::setFontFamily(std::string fontFamily) {
+    std::shared_ptr<Text> Text::setFontFamily(std::string fontFamily) {
         this->fontFamily = fontFamily;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
     std::string Text::getFontFamily() {
         return this->fontFamily;
     }
 
-    Text *Text::setFontEdging(FontEdging edging) {
+    std::shared_ptr<Text> Text::setFontEdging(FontEdging edging) {
         this->fontEdging = edging;
         this->font = std::nullopt;
-        return this;
+        return shared_from_this();
     }
 
     FontEdging Text::getFontEdging() {
         return this->fontEdging;
     }
 
-    Text *Text::setDecoration(TextDecoration decoration) {
+    std::shared_ptr<Text> Text::setDecoration(TextDecoration decoration) {
         this->decoration = decoration;
-        return this;
+        return shared_from_this();
     }
 
     TextDecoration Text::getDecoration() {
         return this->decoration;
     }
 
-    Text *Text::setDecorationMode(TextDecorationMode decorationMode) {
+    std::shared_ptr<Text> Text::setDecorationMode(TextDecorationMode decorationMode) {
         this->decorationMode = decorationMode;
-        return this;
+        return shared_from_this();
     }
 
     TextDecorationMode Text::getDecorationMode() {
         return this->decorationMode;
     }
 
-    Text *Text::setDecorationStyle(TextDecorationStyle decorationStyle) {
+    std::shared_ptr<Text> Text::setDecorationStyle(TextDecorationStyle decorationStyle) {
         this->decorationStyle = decorationStyle;
-        return this;
+        return shared_from_this();
     }
 
     TextDecorationStyle Text::getDecorationStyle() {
         return this->decorationStyle;
     }
 
-    Text *Text::setDecorationColor(SkColor decorationColor) {
+    std::shared_ptr<Text> Text::setDecorationColor(SkColor decorationColor) {
         this->decorationColor = decorationColor;
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    std::shared_ptr<Text> Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->decorationColor = makeSkColorFromRGBA(r, g, b, a);
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b) {
+    std::shared_ptr<Text> Text::setDecorationColor(uint8_t r, uint8_t g, uint8_t b) {
         this->decorationColor = makeSkColorFromRGB(r, g, b);
-        return this;
+        return shared_from_this();
     }
 
-    Text *Text::setDecorationColor(std::string hex) {
+    std::shared_ptr<Text> Text::setDecorationColor(std::string hex) {
         this->decorationColor = makeSkColorFromHex(hex);
-        return this;
+        return shared_from_this();
     }
 
     SkColor Text::getDecorationColor() {
         return this->decorationColor;
     }
 
-    Text *Text::setDecorationThicknessMultiplier(float multiplier) {
+    std::shared_ptr<Text> Text::setDecorationThicknessMultiplier(float multiplier) {
         this->decorationThicknessMultiplier = multiplier;
-        return this;
+        return shared_from_this();
     }
 
     float Text::getDecorationThicknessMultiplier() {
         return this->decorationThicknessMultiplier;
     }
 
-    Text *Text::setLocale(std::optional<std::string> locale) {
+    std::shared_ptr<Text> Text::setLocale(std::optional<std::string> locale) {
         this->locale = locale;
-        return this;
+        return shared_from_this();
     }
 
     std::optional<std::string> Text::getLocale() {
@@ -236,7 +237,7 @@ namespace elementor::elements {
         return SkTypeface::MakeFromName(this->fontFamily.c_str(), this->makeSkFontStyle());
     }
 
-    SkFont Text::makeSkFont(ApplicationContext *ctx) {
+    SkFont Text::makeSkFont(std::shared_ptr<ApplicationContext> ctx) {
         SkFont font;
         font.setTypeface(this->makeSkTypeface());
         font.setSize(this->fontSize * ctx->getPixelScale());
@@ -295,7 +296,7 @@ namespace elementor::elements {
         }
     }
 
-    sktextlayout::TextStyle Text::makeSkTextStyle(ApplicationContext *ctx) {
+    sktextlayout::TextStyle Text::makeSkTextStyle(std::shared_ptr<ApplicationContext> ctx) {
         sktextlayout::TextStyle textStyle;
         textStyle.setFontSize(this->fontSize * ctx->getPixelScale());
         textStyle.setFontFamilies({SkString(this->fontFamily)});
@@ -310,7 +311,7 @@ namespace elementor::elements {
         return textStyle;
     }
 
-    Size Text::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Text::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (!this->font.has_value() || ctx->getPixelScale() != this->lastPixelScale) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
         this->lastPixelScale = ctx->getPixelScale();
@@ -320,7 +321,7 @@ namespace elementor::elements {
         return fitSizeInBoundaries({textBounds.width(), textBounds.height()}, boundaries);
     }
 
-    void Text::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Text::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         if (!this->font.has_value() || ctx->getPixelScale() != this->lastPixelScale) this->font = this->makeSkFont(ctx);
         if (!this->paint.has_value()) this->paint = this->makeSkPaint();
         this->lastPixelScale = ctx->getPixelScale();

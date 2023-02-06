@@ -4,23 +4,25 @@
 
 #include "ParagraphPlaceholder.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    ParagraphPlaceholder *paragraphPlaceholder() {
-        return new ParagraphPlaceholder();
+    std::shared_ptr<ParagraphPlaceholder> paragraphPlaceholder() {
+        return std::make_shared<ParagraphPlaceholder>();
     }
 
-    ParagraphPlaceholder *placeholder() {
+    std::shared_ptr<ParagraphPlaceholder> placeholder() {
         return paragraphPlaceholder();
     }
 
-    ParagraphPlaceholder *ParagraphPlaceholder::setChild(Element *child) {
+    std::shared_ptr<ParagraphPlaceholder> ParagraphPlaceholder::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    ParagraphPlaceholder *ParagraphPlaceholder::setAlignment(PlaceholderAlignment alignment) {
-        this->alignment = alignment;
-        return this;
+    std::shared_ptr<ParagraphPlaceholder> ParagraphPlaceholder::setAlignment(PlaceholderAlignment newAlignment) {
+        this->alignment = newAlignment;
+        return shared_from_this();
     }
 
     PlaceholderAlignment ParagraphPlaceholder::getAlignment() {
@@ -46,9 +48,9 @@ namespace elementor::elements {
         }
     }
 
-    ParagraphPlaceholder *ParagraphPlaceholder::setBaseline(TextBaseline baseline) {
+    std::shared_ptr<ParagraphPlaceholder> ParagraphPlaceholder::setBaseline(TextBaseline baseline) {
         this->baseline = baseline;
-        return this;
+        return shared_from_this();
     }
 
     TextBaseline ParagraphPlaceholder::getBaseline() {
@@ -66,20 +68,20 @@ namespace elementor::elements {
         }
     }
 
-    ParagraphPlaceholder *ParagraphPlaceholder::setOffset(float offset) {
+    std::shared_ptr<ParagraphPlaceholder> ParagraphPlaceholder::setOffset(float offset) {
         this->offset = offset;
-        return this;
+        return shared_from_this();
     }
 
     float ParagraphPlaceholder::getOffset() {
         return this->offset;
     }
 
-    Size ParagraphPlaceholder::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size ParagraphPlaceholder::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return this->getChild()->getSize(ctx, window, boundaries);
     }
 
-    std::vector <RenderElement> ParagraphPlaceholder::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> ParagraphPlaceholder::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         RenderElement childElement{this->getChild(), {0, 0}, rect.size};
         return {childElement};
     }

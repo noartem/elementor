@@ -27,7 +27,7 @@ void DiaryApplication::saveToFile() {
     }
 }
 
-Element *DiaryApplication::makeAboutSection() {
+std::shared_ptr<Element> DiaryApplication::makeAboutSection() {
     return padding()
         ->setPaddings(24, 36)
         ->setChild(column()
@@ -52,7 +52,7 @@ Element *DiaryApplication::makeAboutSection() {
                 ->setText("Source code: github.com/noartem/elementor")));
 }
 
-Element *DiaryApplication::makeLogo() {
+std::shared_ptr<Element> DiaryApplication::makeLogo() {
     return text()
         ->setFontColor("#2B1615")
         ->setFontFamily("Times New Roman")
@@ -62,7 +62,7 @@ Element *DiaryApplication::makeLogo() {
 }
 
 void DiaryApplication::changePage(Page *page) {
-    Element *pageElement = page == NULL ? this->makeAboutSection() : page->makeElement();
+    std::shared_ptr<Element> pageElement = page == NULL ? this->makeAboutSection() : page->makeElement();
     this->activePageElement->setChild(pageElement);
 }
 
@@ -74,10 +74,10 @@ std::vector<Page *> DiaryApplication::makePages() {
     };
 }
 
-Element *DiaryApplication::makePagesList() {
-    Column *pagesList = column();
+std::shared_ptr<Element> DiaryApplication::makePagesList() {
+    std::shared_ptr<Column> pagesList = column();
     for (Page *page : this->makePages()) {
-        Background *buttonBackground = background();
+        std::shared_ptr<Background> buttonBackground = background();
         pagesList
             ->appendChild(clickable()
                 ->setChild(hoverable()
@@ -99,7 +99,7 @@ Element *DiaryApplication::makePagesList() {
     return pagesList;
 }
 
-Element *DiaryApplication::makeNewControl() {
+std::shared_ptr<Element> DiaryApplication::makeNewControl() {
     return clickable()
         ->onClick([this] () { this->changePage(new PageEntry(this->diaryService, NULL, NULL, this->pageChanger)); })
         ->setChild(rounded()
@@ -116,7 +116,7 @@ Element *DiaryApplication::makeNewControl() {
                             ->setText("New"))))));
 }
 
-Element *DiaryApplication::makeLoadControl() {
+std::shared_ptr<Element> DiaryApplication::makeLoadControl() {
     return clickable()
         ->onClick([this] () { this->loadFromFile(); })
         ->setChild(rounded()
@@ -133,7 +133,7 @@ Element *DiaryApplication::makeLoadControl() {
                             ->setText("Load"))))));
 }
 
-Element *DiaryApplication::makeSaveControl() {
+std::shared_ptr<Element> DiaryApplication::makeSaveControl() {
     return clickable()
         ->onClick([this] () { this->saveToFile(); })
         ->setChild(rounded()
@@ -150,7 +150,7 @@ Element *DiaryApplication::makeSaveControl() {
                             ->setText("Save"))))));
 }
 
-Element *DiaryApplication::makeControls() {
+std::shared_ptr<Element> DiaryApplication::makeControls() {
     return column()
         ->setSpacing(8)
         ->appendChild(this->makeNewControl())
@@ -167,7 +167,7 @@ DiaryApplication::DiaryApplication(DiaryService *diaryService) {
     this->activePageElement = empty()->setChild(this->makeAboutSection());
 }
 
-Element *DiaryApplication::makeElement() {
+std::shared_ptr<Element> DiaryApplication::makeElement() {
     return background()
         ->setColor("#FFFBFF")
         ->setChild(flex()

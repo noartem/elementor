@@ -14,13 +14,13 @@ Napi::Value NGLPlatform::getClipboard(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     auto clipboardConstructor = NGLClipboard::GetClass(env);
     auto clipboard = this->platform->getClipboard();
-    auto wrapped = Napi::External<GLClipboard *>::New(env, &clipboard);
+    auto wrapped = Napi::External<std::shared_ptr<GLClipboard>>::New(env, &clipboard);
     return clipboardConstructor.New({wrapped});
 }
 
 NGLClipboard::NGLClipboard(const Napi::CallbackInfo& info) : ObjectWrap(info) {
     if (info.Length() == 1 && info[0].IsExternal()) {
-        this->clipboard = *info[0].As<Napi::External<GLClipboard *>>().Data();
+        this->clipboard = *info[0].As<Napi::External<std::shared_ptr<GLClipboard>>>().Data();
         return;
     }
 

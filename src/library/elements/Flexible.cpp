@@ -4,30 +4,32 @@
 
 #include "Flexible.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Flexible *flexible() {
-        return new Flexible();
+    std::shared_ptr<Flexible> flexible() {
+        return std::make_shared<Flexible>();
     }
 
-    Flexible *Flexible::setGrow(float grow) {
-        this->grow = grow;
-        return this;
+    std::shared_ptr<Flexible> Flexible::setGrow(float newGrow) {
+        this->grow = newGrow;
+        return shared_from_this();
     }
 
-    float Flexible::getGrow() {
+    float Flexible::getGrow() const {
         return this->grow;
     }
 
-    Flexible *Flexible::setChild(Element *child) {
+    std::shared_ptr<Flexible> Flexible::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Flexible::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Flexible::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return fitSizeInBoundaries(this->getChild()->getSize(ctx, window, boundaries), boundaries);
     }
 
-    std::vector <RenderElement> Flexible::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Flexible::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

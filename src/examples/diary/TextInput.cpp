@@ -11,12 +11,12 @@ TextInput *textInput() {
 }
 
 TextInput::TextInput() {
-    Text *inputableText = text()
+    std::shared_ptr<Text> inputableText = text()
         ->setFontColor("#2B1615")
         ->setFontSize(18)
         ->setText("");
 
-    Border *inputableContent = border()
+    std::shared_ptr<Border> inputableContent = border()
         ->setWidth(4)
         ->setColor("#FFDAD8")
         ->setRadius(4)
@@ -69,7 +69,7 @@ TextInput *TextInput::setValue(std::u32string value) {
     if (this->inputableChild) {
         this->inputableChild->setText(value);
     } 
-    return this;
+    return shared_from_this();
 }
 
 std::u32string TextInput::getValue() {
@@ -78,14 +78,14 @@ std::u32string TextInput::getValue() {
 
 TextInput *TextInput::onChange(std::function<std::u32string (std::u32string value)> callback) {
     this->callbackChange = callback;
-    return this;
+    return shared_from_this();
 }
 
-Size TextInput::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+Size TextInput::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
     return this->child->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> TextInput::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+std::vector <RenderElement> TextInput::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
     RenderElement childElement{this->child, {0, 0}, rect.size};
     return {childElement};
 }

@@ -8,14 +8,15 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class FitContain : public Element, public WithChild {
+    class FitContain : public Element, public WithChild, public std::enable_shared_from_this<FitContain> {
     public:
-        FitContain *setChild(Element *child);
+        std::shared_ptr<FitContain> setChild(const std::shared_ptr<Element>& child);
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
     };
 
-    FitContain *fitContain();
+    std::shared_ptr<FitContain> fitContain();
 }
 
 

@@ -11,43 +11,56 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Clickable : public Element, public WithOnMouseButton, public WithOnMouseMove, public WithChild {
+    class Clickable
+            : public Element,
+              public WithOnMouseButton,
+              public WithOnMouseMove,
+              public WithChild,
+              public std::enable_shared_from_this<Clickable> {
     public:
-        Clickable *onButton(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
+        std::shared_ptr<Clickable> onButton(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event,
+                                                                                Position position)> callback);
 
-        Clickable *onButton(std::function<void ()> callback);
+        std::shared_ptr<Clickable> onButton(const std::function<void()>& callback);
 
-        Clickable *onClick(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
+        std::shared_ptr<Clickable> onClick(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event,
+                                                                               Position position)> callback);
 
-        Clickable *onClick(std::function<void ()> callback);
+        std::shared_ptr<Clickable> onClick(const std::function<void()>& callback);
 
-        Clickable *onRightClick(std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callback);
+        std::shared_ptr<Clickable> onRightClick(
+                std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event,
+                                                    Position position)> callback);
 
-        Clickable *onRightClick(std::function<void ()> callback);
+        std::shared_ptr<Clickable> onRightClick(const std::function<void()>& callback);
 
-        Clickable *setChild(Element *child);
+        std::shared_ptr<Clickable> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
-        EventCallbackResponse onEvent(EventMouseMove *event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
 
-        EventCallbackResponse onEvent(EventMouseButton *event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
 
     private:
-        Window *window;
+        std::shared_ptr<Window> window;
         ElementRect rect;
         Position cursorPosition;
         bool hovered;
-        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackButton;
-        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackClick;
-        std::function<EventCallbackResponse (EventMouseButton *event, Position position)> callbackRightClick;
+        std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callbackButton;
+        std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callbackClick;
+        std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event,
+                                            Position position)> callbackRightClick;
     };
 
-    Clickable *clickable();
+    std::shared_ptr<Clickable> clickable();
 }
 
 

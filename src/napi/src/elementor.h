@@ -23,11 +23,11 @@ private:
 class NGLClipboard : public Napi::ObjectWrap<NGLClipboard>
 {
 public:
-    NGLClipboard(const Napi::CallbackInfo&, GLClipboard *clipboard);
+    NGLClipboard(const Napi::CallbackInfo&, std::shared_ptr<GLClipboard> clipboard);
     NGLClipboard(const Napi::CallbackInfo&);
     static Napi::Function GetClass(Napi::Env);
     Napi::Value get(const Napi::CallbackInfo&);
     Napi::Value set(const Napi::CallbackInfo&);
 private:
-    GLClipboard *clipboard;
+    std::shared_ptr<GLClipboard> clipboard;
 };

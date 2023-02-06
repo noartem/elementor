@@ -19,40 +19,51 @@ namespace elementor {
 
         ~GLPlatform();
 
-        GLWindow *makeWindow(Size size);
-        void addWindow(GLWindow *window);
-        void removeWindow(GLWindow *window);
+        std::shared_ptr<GLWindow> makeWindow(Size size);
+
+        void addWindow(const std::shared_ptr<GLWindow>& window);
+
+        void removeWindow(const std::shared_ptr<GLWindow>& window);
+
         void removeWindow(unsigned int index);
 
         void run();
-        void requestNextFrame(const std::function<void ()>& callback);
 
-        GLClipboard *getClipboard();
-        GLPerfomance *getPerfomance();
-        GLFontManager *getFontManager();
+        void requestNextFrame(const std::function<void()> &callback);
+
+        std::shared_ptr<GLClipboard> getClipboard();
+
+        std::shared_ptr<GLPerfomance> getPerfomance();
+
+        std::shared_ptr<GLFontManager> getFontManager();
+
         sk_sp<SkFontMgr> getSkFontManager();
 
-        float getPixelScale();
+        float getPixelScale() const;
+
         void setPixelScale(float scale);
 
         std::string getLocale();
-        void setLocale(std::string locale);
+
+        void setLocale(std::string newLocale);
 
     private:
-        GLClipboard *clipboard;
-        GLFontManager *fontManager;
-        GLPerfomance *perfomance;
+        std::shared_ptr<GLClipboard> clipboard;
+        std::shared_ptr<GLFontManager> fontManager;
+        std::shared_ptr<GLPerfomance> perfomance;
 
-        ApplicationContext *applicationContext;
+        std::shared_ptr<ApplicationContext> applicationContext;
 
-        std::vector<GLWindow *> windows;
+        std::vector<std::shared_ptr<GLWindow>> windows;
 
-        std::vector<std::function<void ()>> rnfNextQueue;
-        std::vector<std::function<void ()>> rnfCurrentQueue;
+        std::vector<std::function<void()>> rnfNextQueue;
+        std::vector<std::function<void()>> rnfCurrentQueue;
+
         void applyRnfQueue();
 
         float pixelScale;
-        float calcPixelScale();
+
+        static float calcPixelScale();
 
         std::string locale = "en";
     };

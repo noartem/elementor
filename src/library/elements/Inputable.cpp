@@ -3,54 +3,57 @@
 //
 
 #include "Inputable.h"
+
+#include <utility>
 #include "../String.h"
 
 namespace elementor::elements {
-    Inputable *inputable() {
-        return new Inputable();
+    std::shared_ptr<Inputable> inputable() {
+        return std::make_shared<Inputable>();
     }
 
-    Inputable *Inputable::onChange(std::function<std::u32string (std::u32string value)> callback) {
-        this->callbackChange = callback;
-        return this;
+    std::shared_ptr<Inputable> Inputable::onChange(std::function<std::u32string(std::u32string value)> callback) {
+        this->callbackChange = std::move(callback);
+        return shared_from_this();
     }
 
-    Inputable *Inputable::onFocus(std::function<void ()> callback) {
-        this->callbackFocus = callback;
-        return this;
+    std::shared_ptr<Inputable> Inputable::onFocus(std::function<void()> callback) {
+        this->callbackFocus = std::move(callback);
+        return shared_from_this();
     }
 
-    Inputable *Inputable::onBlur(std::function<void ()> callback) {
-        this->callbackBlur = callback;
-        return this;
+    std::shared_ptr<Inputable> Inputable::onBlur(std::function<void()> callback) {
+        this->callbackBlur = std::move(callback);
+        return shared_from_this();
     }
 
-    Inputable *Inputable::setText(std::u32string text) {
-        this->text = text;
+    std::shared_ptr<Inputable> Inputable::setText(std::u32string newText) {
+        this->text = newText;
 
         if (this->callbackChange) {
             this->callbackChange(this->text);
         }
 
-        return this;
+        return shared_from_this();
     }
 
-    Inputable *Inputable::setText(std::string text) {
-        std::u32string textU32;
-        fromUTF8(text, textU32);
-        return this->setText(textU32);
+    std::shared_ptr<Inputable> Inputable::setText(std::string newText) {
+        std::u32string newTextU32;
+        fromUTF8(newText, newTextU32);
+        return this->setText(newTextU32);
     }
 
     std::u32string Inputable::getText() {
         return this->text;
     }
 
-    Inputable *Inputable::setChild(Element *child) {
+    std::shared_ptr<Inputable> Inputable::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Inputable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Inputable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -58,23 +61,25 @@ namespace elementor::elements {
         }
     }
 
-    void Inputable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Inputable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                    SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Inputable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement>
+    Inputable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         this->ctx = ctx;
         RenderElement childElement{this->getChild(), {0, 0}, rect.size};
         return {childElement};
     }
 
-    EventCallbackResponse Inputable::onEvent(EventMouseMove *event) {
+    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventMouseMove> event) {
         Position cursorPosition = {event->x, event->y};
         this->hovered = this->rect.visibleContains(cursorPosition);
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Inputable::onEvent(EventMouseButton *event) {
+    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventMouseButton> event) {
         if (this->hovered) {
             if (event->action == KeyAction::Press && event->button == MouseButton::Left) {
                 this->focused = true;
@@ -92,7 +97,7 @@ namespace elementor::elements {
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Inputable::onEvent(EventKeyboard *event) {
+    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventKeyboard> event) {
         if (this->focused && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
             if (event->key == KeyboardKey::Escape) {
                 this->focused = false;
@@ -130,7 +135,7 @@ namespace elementor::elements {
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Inputable::onEvent(EventChar *event) {
+    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventChar> event) {
         if (this->focused) {
             this->text += event->value;
             if (this->callbackChange) {

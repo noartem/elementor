@@ -21,7 +21,8 @@ namespace elementor {
     template<typename Duration = std::chrono::milliseconds>
     class Animation {
     public:
-        Animation(ApplicationContext *ctx, int duration, std::function<float (float value)> timing, std::function<void (float value)> callback) {
+        Animation(const std::shared_ptr<ApplicationContext> &ctx, int duration,
+                  const std::function<float(float value)> &timing, const std::function<void(float value)> &callback) {
             this->ctx = ctx;
             this->timing = timing;
             this->duration = duration;
@@ -58,13 +59,13 @@ namespace elementor {
 
     private:
         AnimationState state = AnimationState::Pending;
-        ApplicationContext *ctx;
-        int duration;
+        std::shared_ptr<ApplicationContext> ctx;
+        int duration{};
         int startedAt = -1;
         float lastValue = -1;
         bool reversed = false;
-        std::function<void (float value)> callback;
-        std::function<float (float value)> timing;
+        std::function<void(float value)> callback;
+        std::function<float(float value)> timing;
 
         int now() {
             return std::chrono::duration_cast<Duration>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -97,12 +98,15 @@ namespace elementor {
     };
 
     template<typename Duration = std::chrono::milliseconds>
-    Animation<Duration> *animation(ApplicationContext *ctx, int duration, std::function<void (float value)> callback) {
+    std::shared_ptr<Animation<Duration>>
+    animation(std::shared_ptr<ApplicationContext> ctx, int duration, std::function<void(float value)> callback) {
         return new Animation<Duration>(ctx, duration, nullptr, callback);
     }
 
     template<typename Duration = std::chrono::milliseconds>
-    Animation<Duration> *animation(ApplicationContext *ctx, int duration, std::function<float (float value)> timing, std::function<void (float value)> callback) {
+    std::shared_ptr<Animation<Duration>>
+    animation(std::shared_ptr<ApplicationContext> ctx, int duration, std::function<float(float value)> timing,
+              std::function<void(float value)> callback) {
         return new Animation<Duration>(ctx, duration, timing, callback);
     }
 }

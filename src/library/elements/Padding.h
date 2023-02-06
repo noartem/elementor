@@ -15,29 +15,29 @@ namespace elementor::elements {
         float left;
     };
 
-    class Padding : public Element, public WithChild {
+    class Padding : public Element, public WithChild, public std::enable_shared_from_this<Padding> {
     public:
-        Padding *setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
+        std::shared_ptr<Padding> setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft);
 
-        Padding *setPaddings(float paddingTop, float paddingX, float paddingBottom);
+        std::shared_ptr<Padding> setPaddings(float paddingTop, float paddingX, float paddingBottom);
 
-        Padding *setPaddings(float paddingY, float paddingX);
+        std::shared_ptr<Padding> setPaddings(float paddingY, float paddingX);
 
-        Padding *setPaddings(float paddings);
+        std::shared_ptr<Padding> setPaddings(float paddings);
 
         PaddingsValue getPaddings();
 
-        Padding *setChild(Element *child);
+        std::shared_ptr<Padding> setChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         PaddingsValue paddings;
     };
 
-    Padding *padding();
+    std::shared_ptr<Padding> padding();
 }
 
 

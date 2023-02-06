@@ -15,7 +15,7 @@ public:
 
     std::string getName() override;
 
-    Element *makeElement() override;
+    std::shared_ptr<Element> makeElement() override;
 
 private:
     DiaryService *service;
@@ -30,19 +30,19 @@ private:
 
     void deleteEntry();
 
-    Element *makeDatetimeField();
+    std::shared_ptr<Element> makeDatetimeField();
 
-    Element *makeDurationField();
+    std::shared_ptr<Element> makeDurationField();
 
-    Element *makePlaceField();
+    std::shared_ptr<Element> makePlaceField();
 
-    Element *makeForm();
+    std::shared_ptr<Element> makeForm();
 
-    Element *makeSaveControl();
+    std::shared_ptr<Element> makeSaveControl();
 
-    Element *makeDeleteControl();
+    std::shared_ptr<Element> makeDeleteControl();
 
-    Element *makeControls();
+    std::shared_ptr<Element> makeControls();
 };
 
 

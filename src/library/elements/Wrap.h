@@ -13,27 +13,27 @@ namespace elementor::elements {
         Column,
     };
 
-    class Wrap : public Element, public WithChildren {
+    class Wrap : public Element, public WithChildren, public std::enable_shared_from_this<Wrap> {
     public:
-        Wrap *setSpacing(float spacing);
+        std::shared_ptr<Wrap> setSpacing(float spacing);
 
-        float getSpacing();
+        float getSpacing() const;
 
-        Wrap *setCrossSpacing(float spacing);
+        std::shared_ptr<Wrap> setCrossSpacing(float spacing);
 
-        float getCrossSpacing();
+        float getCrossSpacing() const;
 
-        Wrap *setSpacing(float spacing, float crossSpacing);
+        std::shared_ptr<Wrap> setSpacing(float spacing, float crossSpacing);
 
-        Wrap *setDirection(WrapDirection direction);
+        std::shared_ptr<Wrap> setDirection(WrapDirection direction);
 
         WrapDirection getDirection();
 
-        Wrap *appendChild(Element *child);
+        std::shared_ptr<Wrap> appendChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float spacing = 0;
@@ -41,7 +41,7 @@ namespace elementor::elements {
         WrapDirection direction = WrapDirection::Row;
     };
 
-    Wrap *wrap();
+    std::shared_ptr<Wrap> wrap();
 }
 
 

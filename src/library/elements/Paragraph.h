@@ -13,53 +13,59 @@
 namespace sktextlayout = skia::textlayout;
 
 namespace elementor::elements {
-    class Paragraph : public Element, public WithChildren {
+    class Paragraph : public Element, public WithChildren, public std::enable_shared_from_this<Paragraph> {
     public:
-        Paragraph *setTextAlign(TextAlign textAlign);
+        std::shared_ptr<Paragraph> setTextAlign(TextAlign newTextAlign);
 
         TextAlign getTextAlign();
 
-        Paragraph *setTextDirection(TextDirection textDirection);
+        std::shared_ptr<Paragraph> setTextDirection(TextDirection newTextDirection);
 
         TextDirection getTextDirection();
 
-        Paragraph *appendChild(Element *child);
+        std::shared_ptr<Paragraph> appendChild(const std::shared_ptr<Element>& child);
 
         void forceUpdate();
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                             ElementRect rect) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         TextAlign textAlign = TextAlign::Left;
         TextDirection textDirection = TextDirection::LTR;
         std::unique_ptr<sktextlayout::Paragraph> skParagraph;
-        std::vector<Text *> childrenText;
-        std::vector<Element *> childrenElements;
+        std::vector<std::shared_ptr<Text>> childrenText;
+        std::vector<std::shared_ptr<Element>> childrenElements;
 
         float lastPixelScale;
 
-        sk_sp<sktextlayout::FontCollection> makeFontCollection(ApplicationContext *ctx);
+        static sk_sp<sktextlayout::FontCollection> makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx);
 
-        sktextlayout::TextStyle makeDefaultTextStyle();
+        static sktextlayout::TextStyle makeDefaultTextStyle();
 
         sktextlayout::ParagraphStyle makeParagraphStyle();
 
-        sktextlayout::ParagraphBuilderImpl makeBuilder(ApplicationContext *ctx);
+        sktextlayout::ParagraphBuilderImpl makeBuilder(const std::shared_ptr<ApplicationContext>& ctx);
 
         sktextlayout::TextAlign getSkTextAlign();
 
         sktextlayout::TextDirection getSkTextDirection();
 
-        sktextlayout::PlaceholderStyle makeChildPlaceholderStyle(ApplicationContext *ctx, Window *window, Element *child);
+        static sktextlayout::PlaceholderStyle
+        makeChildPlaceholderStyle(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                  const std::shared_ptr<Element>& child);
 
-        std::unique_ptr<sktextlayout::Paragraph> makeSkParagraph(ApplicationContext *ctx, Window *window);
+        std::unique_ptr<sktextlayout::Paragraph>
+        makeSkParagraph(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window);
     };
 
-    Paragraph *paragraph();
+    std::shared_ptr<Paragraph> paragraph();
 }
 
 

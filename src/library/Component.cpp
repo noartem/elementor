@@ -5,24 +5,20 @@
 #include "Component.h"
 
 namespace elementor::elements {
-    Component::~Component() {
-        delete this->element;
-    }
-
-    Size Component::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Component::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         this->ctx = ctx;
         this->window = window;
 
         return this->element->getSize(ctx, window, boundaries);
     }
 
-    void Component::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Component::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         this->ctx = ctx;
         this->window = window;
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Component::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Component::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         this->ctx = ctx;
         this->window = window;
 

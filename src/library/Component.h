@@ -10,19 +10,17 @@
 namespace elementor::elements {
     class Component : public Element {
     public:
-        ~Component();
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
-
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     protected:
-        ApplicationContext *ctx;
-        Window *window;
+        std::shared_ptr<ApplicationContext> ctx;
+        std::shared_ptr<Window> window;
         ElementRect rect;
-        Element *element;
+        std::shared_ptr<Element> element;
     };
 }
 

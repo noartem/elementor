@@ -15,8 +15,8 @@ std::string PageAllEntries::getName() {
     return "All Entries";
 }
 
-Element *PageAllEntries::makeElement() {
-    Column *entriesColumn = column()
+std::shared_ptr<Element> PageAllEntries::makeElement() {
+    std::shared_ptr<Column> entriesColumn = column()
         ->setSpacing(12);
 
     for (DiaryEntry *entry : this->service->findAll()) {

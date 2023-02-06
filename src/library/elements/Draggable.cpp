@@ -4,54 +4,60 @@
 
 #include "Draggable.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Draggable *draggable() {
-        return new Draggable();
+    std::shared_ptr<Draggable> draggable() {
+        return std::make_shared<Draggable>();
     }
 
-    Draggable *Draggable::onStart(std::function<bool (Position position, Position absolutePosition)> callback) {
-        this->callbackStart = callback;
-        return this;
+    std::shared_ptr<Draggable>
+    Draggable::onStart(std::function<bool(Position position, Position absolutePosition)> callback) {
+        this->callbackStart = std::move(callback);
+        return shared_from_this();
     }
 
-    Draggable *Draggable::onStart(std::function<void ()> callback) {
-        this->callbackStart = [callback] (Position position, Position absolutePosition) {
+    std::shared_ptr<Draggable> Draggable::onStart(const std::function<void()> &callback) {
+        this->callbackStart = [callback](Position position, Position absolutePosition) {
             callback();
             return true;
         };
-        return this;
+        return shared_from_this();
     }
 
-    Draggable *Draggable::onEnd(std::function<void (Position position, Position absolutePosition)> callback) {
-        this->callbackEnd = callback;
-        return this;
+    std::shared_ptr<Draggable>
+    Draggable::onEnd(std::function<void(Position position, Position absolutePosition)> callback) {
+        this->callbackEnd = std::move(callback);
+        return shared_from_this();
     }
 
-    Draggable *Draggable::onEnd(std::function<void ()> callback) {
-        this->callbackEnd = [callback] (Position position, Position absolutePosition) {
+    std::shared_ptr<Draggable> Draggable::onEnd(const std::function<void()> &callback) {
+        this->callbackEnd = [callback](Position position, Position absolutePosition) {
             callback();
         };
-        return this;
+        return shared_from_this();
     }
 
-    Draggable *Draggable::onMove(std::function<void (Position position, Position absolutePosition, Position diff)> callback) {
-        this->callbackMove = callback;
-        return this;
+    std::shared_ptr<Draggable>
+    Draggable::onMove(std::function<void(Position position, Position absolutePosition, Position diff)> callback) {
+        this->callbackMove = std::move(callback);
+        return shared_from_this();
     }
 
-    Draggable *Draggable::onMove(std::function<void ()> callback) {
-        this->callbackMove = [callback] (Position position, Position absolutePosition, Position diff) {
+    std::shared_ptr<Draggable> Draggable::onMove(const std::function<void()> &callback) {
+        this->callbackMove = [callback](Position position, Position absolutePosition, Position diff) {
             callback();
         };
-        return this;
+        return shared_from_this();
     }
 
-    Draggable *Draggable::setChild(Element *child) {
+    std::shared_ptr<Draggable> Draggable::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Draggable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Draggable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -59,12 +65,14 @@ namespace elementor::elements {
         }
     }
 
-    void Draggable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Draggable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                    SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector <RenderElement> Draggable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Draggable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement childElement{this->getChild(), {0, 0}, rect.size};
@@ -74,7 +82,7 @@ namespace elementor::elements {
         return children;
     }
 
-    EventCallbackResponse Draggable::onEvent(EventMouseMove *event) {
+    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventMouseMove> event) {
         this->previousCursorAbsolutePosition = this->cursorAbsolutePosition;
         this->cursorAbsolutePosition = {event->x, event->y};
         this->hovered = this->rect.visibleContains(this->cursorAbsolutePosition);
@@ -82,8 +90,8 @@ namespace elementor::elements {
 
         if (this->dragging && this->callbackMove) {
             Position cursorPositionDiff = {
-                this->cursorAbsolutePosition.x - this->previousCursorAbsolutePosition.x,
-                this->cursorAbsolutePosition.y - this->previousCursorAbsolutePosition.y,
+                    this->cursorAbsolutePosition.x - this->previousCursorAbsolutePosition.x,
+                    this->cursorAbsolutePosition.y - this->previousCursorAbsolutePosition.y,
             };
             this->callbackMove(this->cursorPosition, this->cursorAbsolutePosition, cursorPositionDiff);
         }
@@ -91,8 +99,9 @@ namespace elementor::elements {
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Draggable::onEvent(EventMouseButton *event) {
-        if (this->hovered && !this->dragging && event->action == KeyAction::Press && event->button == MouseButton::Left) {
+    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventMouseButton> event) {
+        if (this->hovered && !this->dragging && event->action == KeyAction::Press &&
+            event->button == MouseButton::Left) {
             if (this->callbackStart) {
                 bool startAllowed = this->callbackStart(this->cursorPosition, this->cursorAbsolutePosition);
                 if (!startAllowed) {

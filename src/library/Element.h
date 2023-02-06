@@ -20,7 +20,7 @@ namespace elementor {
     class ApplicationContext;
 
     struct RenderElement {
-        Element *element;
+        std::shared_ptr<Element> element;
         Position position;
         Size size;
     };
@@ -35,9 +35,9 @@ namespace elementor {
     public:
         virtual ~Element() = default;
 
-        virtual Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries);
-        virtual void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect);
-        virtual std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect);
+        virtual Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries);
+        virtual void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect);
+        virtual std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect);
         virtual ClipBehavior getClipBehaviour();
     };
 
@@ -79,8 +79,8 @@ namespace elementor {
 
     class Window {
     public:
-        virtual Element *getRoot() = 0;
-        virtual void setRoot(Element *root) = 0;
+        virtual std::shared_ptr<Element> getRoot() = 0;
+        virtual void setRoot(std::shared_ptr<Element> root) = 0;
 
         virtual void setTitle(std::string title) = 0;
         virtual std::string getTitle() = 0;
@@ -99,14 +99,14 @@ namespace elementor {
         virtual Position getPosition() = 0;
         virtual void setPosition(Position Position) = 0;
 
-        virtual Cursor *getCursor() = 0;
+        virtual std::shared_ptr<Cursor> getCursor() = 0;
 
-        virtual Monitor *getMonitor() = 0;
+        virtual std::shared_ptr<Monitor> getMonitor() = 0;
 
         virtual void close() = 0;
 
-        virtual void setUserPointer(void *pointer) = 0;
-        virtual void *getUserPointer() = 0;
+        virtual void setUserPointer(std::shared_ptr<void> pointer) = 0;
+        virtual std::shared_ptr<void> getUserPointer() = 0;
     };
 
     class ApplicationContext {
@@ -119,55 +119,51 @@ namespace elementor {
         virtual std::string getLocale() = 0;
         virtual void setLocale(std::string locale) = 0;
 
-        virtual Clipboard *getClipboard() = 0;
-        virtual Perfomance *getPerfomance() = 0;
+        virtual std::shared_ptr<Clipboard> getClipboard() = 0;
+        virtual std::shared_ptr<Perfomance> getPerfomance() = 0;
         virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
 
         virtual void requestNextFrame(std::function<void ()> callback) = 0;
 
-        virtual Window *makeWindow(Size size) = 0;
+        virtual std::shared_ptr<Window> makeWindow(Size size) = 0;
     };
 
     class WithChild {
     public:
-        virtual ~WithChild();
+        virtual void updateChild(const std::shared_ptr<Element>& child);
 
-        virtual void updateChild(Element *child);
-
-        Element *getChild() const;
+        std::shared_ptr<Element> getChild() const;
 
         bool hasChild() const;
 
         void removeChild();
 
     private:
-        Element *child;
+        std::shared_ptr<Element> child;
     };
 
     class WithChildren {
     public:
-        virtual ~WithChildren();
-
-        void setChildren(std::vector<Element *> newChildren);
+        void setChildren(std::vector<std::shared_ptr<Element>> newChildren);
 
         void clearChildren();
 
-        void addChild(Element *child);
+        void addChild(const std::shared_ptr<Element>& child);
 
         void removeChild(int i);
 
-        void removeChild(Element *child);
+        void removeChild(const std::shared_ptr<Element>& child);
 
-        std::vector<Element *> getChildrenList() const;
+        std::vector<std::shared_ptr<Element>> getChildrenList() const;
 
         size_t getChildrenSize() const;
 
-        Element *getChild(int i) const;
+        std::shared_ptr<Element> getChild(int i) const;
 
-        int childIndex(Element *child) const;
+        int childIndex(const std::shared_ptr<Element>& child) const;
 
     private:
-        std::vector<Element *> children;
+        std::vector<std::shared_ptr<Element>> children;
     };
 }
 

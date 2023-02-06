@@ -12,7 +12,7 @@ std::string ExampleStack::getDescription() {
     return "Stack elements one on top of another";
 }
 
-Element *stackBasicExample() {
+std::shared_ptr<Element> stackBasicExample() {
     return width()
         ->setWidth(512)
         ->setChild(height()
@@ -80,9 +80,9 @@ std::string tooltipPlacementToString(TooltipPlacement placement) {
     }
 }
 
-Element *tooltipPlacementExample(TooltipPlacement placement) {
+std::shared_ptr<Element> tooltipPlacementExample(TooltipPlacement placement) {
     Tooltip *tooltipElement = tooltip();
-    Background *backgroundElement = background();
+    std::shared_ptr<Background> backgroundElement = background();
     return padding()
         ->setPaddings(64)
         ->setChild(tooltipElement
@@ -125,7 +125,7 @@ Element *tooltipPlacementExample(TooltipPlacement placement) {
                                 ->setText("Tooltip")))))));
 }
 
-Element *tooltipExample() {
+std::shared_ptr<Element> tooltipExample() {
     auto examples = column()
         ->setSpacing(8);
 
@@ -148,7 +148,7 @@ Element *tooltipExample() {
     return examples;
 }
 
-Element *comboxExample() {
+std::shared_ptr<Element> comboxExample() {
     return combox()
         ->setPlaceholder("Select an option")
         ->addOption("1", "Option 1")
@@ -173,7 +173,7 @@ Element *comboxExample() {
         ->addOption("20", "Option 20");
 }
 
-Element *ExampleStack::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleStack::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

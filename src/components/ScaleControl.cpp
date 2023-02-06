@@ -17,8 +17,8 @@ namespace elementor::components {
 
         this->scalePercentageText = text();
 
-        Background *decrementBackground = background();
-        Background *incrementBackground = background();
+        std::shared_ptr<Background> decrementBackground = background();
+        std::shared_ptr<Background> incrementBackground = background();
 
         this->element = height()
             ->setHeight(36)
@@ -80,7 +80,7 @@ namespace elementor::components {
         this->applyScale();
     }
 
-    std::vector<RenderElement> ScaleControl::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> ScaleControl::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         if (this->initialPixelScale == 0) {
             this->initialPixelScale = ctx->getPixelScale();
         }

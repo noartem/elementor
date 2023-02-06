@@ -21,50 +21,47 @@ namespace elementor::elements {
         Always,
     };
 
-    class Scrollbar : public Element {
+    class Scrollbar : public Element, public std::enable_shared_from_this<Scrollbar> {
     public:
-        ~Scrollbar();
+        std::shared_ptr<Scrollbar> setTrackX(std::shared_ptr<Element> trackX);
 
-        Scrollbar *setTrackX(Element *trackX);
-        Scrollbar *setTrackY(Element *trackY);
-        Scrollbar *setThumbX(Element *thumbX);
-        Scrollbar *setThumbY(Element *thumbY);
+        std::shared_ptr<Scrollbar> setTrackY(std::shared_ptr<Element> trackY);
 
-        Scrollbar *setPosition(ScrollbarPosition position);
+        std::shared_ptr<Scrollbar> setThumbX(std::shared_ptr<Element> thumbX);
+
+        std::shared_ptr<Scrollbar> setThumbY(std::shared_ptr<Element> thumbY);
+
+        std::shared_ptr<Scrollbar> setPosition(ScrollbarPosition position);
+
         ScrollbarPosition getPosition();
 
-        Scrollbar *setVisible(ScrollbarVisible visible);
+        std::shared_ptr<Scrollbar> setVisible(ScrollbarVisible visible);
+
         ScrollbarVisible getVisible();
 
-        Scrollbar *setMinThumbSize(float size);
-        float getMinThumbSize();
+        std::shared_ptr<Scrollbar> setChild(std::shared_ptr<Scrollable> child);
 
-        Scrollbar *setChild(Scrollable *child);
-        Scrollable *getChild();
+        std::shared_ptr<Scrollable> getChild();
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
+
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         ScrollbarPosition position = ScrollbarPosition::InContent;
         ScrollbarVisible visible = ScrollbarVisible::WhenNeeded;
 
-        Scrollable *child;
+        std::shared_ptr<Scrollable> child;
 
-        Element *trackX;
-        Element *trackY;
-        Element *thumbX;
-        Element *thumbY;
-
-        float dragginLastPositionY;
-        float dragginLastPositionX;
-        void scrollToX(int x);
-        void scrollToY(int y);
-
-        void initChild();
+        std::shared_ptr<Element> trackX;
+        std::shared_ptr<Element> trackY;
+        std::shared_ptr<Element> thumbX;
+        std::shared_ptr<Element> thumbY;
     };
 
-    Scrollbar *scrollbar();
+    std::shared_ptr<Scrollbar> scrollbar();
 }
 
 

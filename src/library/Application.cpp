@@ -5,7 +5,7 @@
 #include "Application.h"
 
 namespace elementor {
-    void Application::draw(ApplicationContext *ctx, Window *window, SkCanvas *canvas) {
+    void Application::draw(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window, SkCanvas *canvas) {
         this->eventListeners.clear();
 
         RenderElement rootElement{};
@@ -23,22 +23,22 @@ namespace elementor {
         rootBoundary.position = {0, 0};
         rootBoundary.size = window->getSize();
 
-        this->drawElement(ctx, window, canvas, &rootElement, rootRect, rootBoundary);
+        this->drawElement(ctx, window, canvas, rootElement, rootRect, rootBoundary);
     }
 
-    void Application::drawElement(ApplicationContext *ctx, Window *window, SkCanvas *canvas, RenderElement *element, ElementRect rect, Rect boundary) {
-        this->saveElementEventListeners(element->element);
+    void Application::drawElement(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window, SkCanvas *canvas, const RenderElement& element, ElementRect rect, Rect boundary) {
+        this->saveElementEventListeners(element.element);
 
         canvas->save();
-        canvas->translate(element->position.x, element->position.y);
+        canvas->translate(element.position.x, element.position.y);
 
-        ClipBehavior clipBehavior = element->element->getClipBehaviour();
+        ClipBehavior clipBehavior = element.element->getClipBehaviour();
         if (clipBehavior != ClipBehavior::None) {
             boundary = {rect.size, rect.position};
             canvas->clipRect(SkRect::MakeWH(boundary.size.width, boundary.size.height), SkClipOp::kIntersect, clipBehavior == ClipBehavior::Hard);
         }
 
-        element->element->paintBackground(ctx, window, canvas, rect);
+        element.element->paintBackground(ctx, window, canvas, rect);
 
 #ifdef DEBUG
         SkPaint debugPaint;
@@ -51,7 +51,7 @@ namespace elementor {
         canvas->drawRect(debugRect, debugPaint);
 #endif
 
-        for (RenderElement child: element->element->getChildren(ctx, window, rect)) {
+        for (const RenderElement& child: element.element->getChildren(ctx, window, rect)) {
             ElementRect childRect{};
             childRect.position.x = rect.position.x + child.position.x;
             childRect.position.y = rect.position.y + child.position.y;
@@ -60,21 +60,21 @@ namespace elementor {
             childRect.size = child.size;
             childRect.inParentPosition = child.position;
 
-            this->drawElement(ctx, window, canvas, &child, childRect, boundary);
+            this->drawElement(ctx, window, canvas, child, childRect, boundary);
         }
 
         canvas->restore();
     }
 
-    void Application::saveElementEventListeners(Element *element) {
+    void Application::saveElementEventListeners(const std::shared_ptr<Element>& element) {
         for (const std::string& event : getElementEvents(element)) {
             this->eventListeners[event].push_back(element);
         }
     }
 
-    void Application::dispatchEvent(Event *event) {
+    void Application::dispatchEvent(const std::shared_ptr<Event>& event) {
         if (this->eventListeners.count(event->getName())) {
-            std::vector<Element *> listeners = this->eventListeners[event->getName()];
+            std::vector<std::shared_ptr<Element>> listeners = this->eventListeners[event->getName()];
             for (int i = listeners.size() - 1; i >= 0; i--) {
                 EventCallbackResponse callbackResponse = callElementEventHandler(listeners[i], event);
                 if (callbackResponse == EventCallbackResponse::StopPropagation) {

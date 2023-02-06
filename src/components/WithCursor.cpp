@@ -22,15 +22,15 @@ namespace elementor::components {
 
     WithCursor *WithCursor::setCursorShape(CursorShape newCursorShape) {
         this->cursorShape = newCursorShape;
-        return this;
+        return shared_from_this();
     }
 
     CursorShape WithCursor::getCursorShape() {
         return this->cursorShape;
     }
 
-    WithCursor *WithCursor::setChild(Element *child) {
+    WithCursor *WithCursor::setChild(const std::shared_ptr<Element>& child) {
         this->hoverableElement->setChild(child);
-        return this;
+        return shared_from_this();
     }
 }

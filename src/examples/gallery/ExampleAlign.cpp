@@ -12,7 +12,7 @@ std::string ExampleAlign::getDescription() {
     return "Align child in bigger element";
 }
 
-Element *exampleAlignWidthItem(float coef, float childCoef) {
+std::shared_ptr<Element> exampleAlignWidthItem(float coef, float childCoef) {
     return height()
         ->setHeight(36)
         ->setChild(background()
@@ -39,7 +39,7 @@ Element *exampleAlignWidthItem(float coef, float childCoef) {
                                     ->setText(floatToString(childCoef)))))))));
 }
 
-Element *exampleAlignWidth() {
+std::shared_ptr<Element> exampleAlignWidth() {
     return column()
         ->setSpacing(8)
         ->appendChild(exampleAlignWidthItem(0, 1))
@@ -51,7 +51,7 @@ Element *exampleAlignWidth() {
         ->appendChild(exampleAlignWidthItem(1, 0));
 }
 
-Element *exampleAlignHeightItem(float coef, float childCoef) {
+std::shared_ptr<Element> exampleAlignHeightItem(float coef, float childCoef) {
     return flexible()
         ->setChild(background()
             ->setColor("#BEE8FA")
@@ -78,7 +78,7 @@ Element *exampleAlignHeightItem(float coef, float childCoef) {
                                     ->setText(floatToString(childCoef)))))))));
 }
 
-Element *exampleAlignHeight() {
+std::shared_ptr<Element> exampleAlignHeight() {
     return height()
         ->setHeight(512)
         ->setChild(flex()
@@ -92,7 +92,7 @@ Element *exampleAlignHeight() {
             ->appendChild(exampleAlignHeightItem(1, 0)));
 }
 
-Element *exampleCenter() {
+std::shared_ptr<Element> exampleCenter() {
     return height()
         ->setHeight(256)
         ->setChild(background()
@@ -108,7 +108,7 @@ Element *exampleCenter() {
                                 ->setColor("#006C4C")))))));
 }
 
-Element *ExampleAlign::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleAlign::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

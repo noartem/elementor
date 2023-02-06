@@ -22,14 +22,14 @@ namespace elementor {
         virtual std::string getName() = 0;
     };
 
-    std::vector<std::string> getElementEvents(Element *element);
+    std::vector<std::string> getElementEvents(const std::shared_ptr<Element>& element);
 
     enum class EventCallbackResponse {
         None,
         StopPropagation,
     };
 
-    EventCallbackResponse callElementEventHandler(Element *element, Event *event);
+    EventCallbackResponse callElementEventHandler(const std::shared_ptr<Element>& element, const std::shared_ptr<Event>& event);
 
     enum class MouseButton {
         Left,
@@ -198,7 +198,7 @@ namespace elementor {
 
     class WithOnMouseButton {
     public:
-        virtual EventCallbackResponse onEvent(EventMouseButton *event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) = 0;
     };
 
     class EventMouseMove : public Event {
@@ -218,7 +218,7 @@ namespace elementor {
 
     class WithOnMouseMove {
     public:
-        virtual EventCallbackResponse onEvent(EventMouseMove *event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) = 0;
     };
 
     class EventScroll : public Event {
@@ -238,7 +238,7 @@ namespace elementor {
 
     class WithOnScroll {
     public:
-        virtual EventCallbackResponse onEvent(EventScroll *event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventScroll> event) = 0;
     };
 
     class EventKeyboard : public Event {
@@ -262,7 +262,7 @@ namespace elementor {
 
     class WithOnKeyboard {
     public:
-        virtual EventCallbackResponse onEvent(EventKeyboard *event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) = 0;
     };
 
     class EventChar : public Event {
@@ -280,7 +280,7 @@ namespace elementor {
 
     class WithOnChar {
     public:
-        virtual EventCallbackResponse onEvent(EventChar *event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventChar >event) = 0;
     };
 }
 

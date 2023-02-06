@@ -8,29 +8,29 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class Rounded : public Element, public WithChild {
+    class Rounded : public Element, public WithChild, public std::enable_shared_from_this<Rounded> {
     public:
-        Rounded *setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomLeft, float radiusBottomRight);
+        std::shared_ptr<Rounded> setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomLeft, float radiusBottomRight);
 
-        Rounded *setRadius(float radiusLeft, float radiusRight);
+        std::shared_ptr<Rounded> setRadius(float radiusLeft, float radiusRight);
 
-        Rounded *setRadius(float radius);
+        std::shared_ptr<Rounded> setRadius(float radius);
 
-        float getRadiusTopLeft();
+        float getRadiusTopLeft() const;
 
-        float getRadiusTopRight();
+        float getRadiusTopRight() const;
 
-        float getRadiusBottomLeft();
+        float getRadiusBottomLeft() const;
 
-        float getRadiusBottomRight();
+        float getRadiusBottomRight() const;
 
-        Rounded *setChild(Element *child);
+        std::shared_ptr<Rounded> setChild(const std::shared_ptr<Element>& child);
 
-        void paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) override;
+        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
         ClipBehavior getClipBehaviour() override;
 
@@ -41,8 +41,8 @@ namespace elementor::elements {
         float radiusBottomRight;
     };
 
-    Rounded *rounded();
+    std::shared_ptr<Rounded> rounded();
 }
 
 
-#endif //ELEMENTOR_CLIP_H
+#endif //ELEMENTOR_ROUNDED_H

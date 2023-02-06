@@ -4,29 +4,32 @@
 
 #include "Column.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Column *column() {
-        return new Column();
+    std::shared_ptr<Column> column() {
+        return std::make_shared<Column>();
     }
 
-    Column *Column::setSpacing(float spacing) {
-        this->spacing = spacing;
-        return this;
+    std::shared_ptr<Column> Column::setSpacing(float newSpacing) {
+        this->spacing = newSpacing;
+        return shared_from_this();
     }
 
-    float Column::getSpacing() {
+    float Column::getSpacing() const {
         return this->spacing;
     }
 
-    Column *Column::appendChild(Element *child) {
-        this->addChild(child);
-        return this;
+    std::shared_ptr<Column> Column::appendChild(const std::shared_ptr<Element>& child) {
+        this->addChild(std::move(child));
+        return shared_from_this();
     }
 
-    Size Column::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Column::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         float maxWidth = 0;
         float totalHeight = 0;
-        for (Element *childElement : this->getChildrenList()) {
+        for (const std::shared_ptr<Element> &childElement: this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
             maxWidth = std::max(childSize.width, maxWidth);
             totalHeight += childSize.height;
@@ -37,13 +40,14 @@ namespace elementor::elements {
         return fitSizeInBoundaries({maxWidth, totalHeight}, boundaries);
     }
 
-    std::vector <RenderElement> Column::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Column::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         float spacing = this->getSpacing() * ctx->getPixelScale();
 
         float yPosition = 0;
-        for (Element *child : this->getChildrenList()) {
+        for (const std::shared_ptr<Element> &child: this->getChildrenList()) {
             RenderElement childElement{};
             childElement.element = child;
             childElement.size = child->getSize(ctx, window, {{rect.size.width, 0}, rect.size});

@@ -4,14 +4,16 @@
 
 #include "Scrollable.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Scrollable *scrollable() {
-        return new Scrollable();
+    std::shared_ptr<Scrollable> scrollable() {
+        return std::make_shared<Scrollable>();
     }
 
-    Scrollable *Scrollable::setDirection(ScrollDirection direction) {
-        this->direction = direction;
-        return this;
+    std::shared_ptr<Scrollable> Scrollable::setDirection(ScrollDirection newDirection) {
+        this->direction = newDirection;
+        return shared_from_this();
     }
 
     ScrollDirection Scrollable::getDirection() {
@@ -26,63 +28,63 @@ namespace elementor::elements {
         return this->getDirection() == ScrollDirection::Vertical || this->getDirection() == ScrollDirection::Both;
     }
 
-    float Scrollable::getHeight() {
+    float Scrollable::getHeight() const {
         return this->rect.size.height;
     }
 
-    float Scrollable::getWidth() {
+    float Scrollable::getWidth() const {
         return this->rect.size.width;
     }
 
-    float Scrollable::getMaxScrollLeft() {
+    float Scrollable::getMaxScrollLeft() const {
         return std::max(this->childSize.width - this->rect.size.width, ZERO);
     }
 
-    float Scrollable::getMaxScrollTop() {
+    float Scrollable::getMaxScrollTop() const {
         return std::max(this->childSize.height - this->rect.size.height, ZERO);
     }
 
-    Scrollable *Scrollable::setScrollLeft(float scrollLeft) {
-        this->scrollLeft = std::min(std::max(scrollLeft, ZERO), this->getMaxScrollLeft());
-        return this;
+    std::shared_ptr<Scrollable> Scrollable::setScrollLeft(float newScrollLeft) {
+        this->scrollLeft = std::min(std::max(newScrollLeft, ZERO), this->getMaxScrollLeft());
+        return shared_from_this();
     }
 
-    Scrollable *Scrollable::setScrollTop(float scrollTop) {
-        this->scrollTop = std::min(std::max(scrollTop, ZERO), this->getMaxScrollTop());
-        return this;
+    std::shared_ptr<Scrollable> Scrollable::setScrollTop(float newScrollTop) {
+        this->scrollTop = std::min(std::max(newScrollTop, ZERO), this->getMaxScrollTop());
+        return shared_from_this();
     }
 
-    float Scrollable::getScrollTop() {
+    float Scrollable::getScrollTop() const {
         return this->scrollTop;
     }
 
-    float Scrollable::getScrollLeft() {
+    float Scrollable::getScrollLeft() const {
         return this->scrollLeft;
     }
 
-    float Scrollable::getScrollHeight() {
+    float Scrollable::getScrollHeight() const {
         return this->childSize.height;
     }
 
-    float Scrollable::getScrollWidth() {
+    float Scrollable::getScrollWidth() const {
         return this->childSize.width;
     }
 
-    Scrollable *Scrollable::setScrollAcceleration(float scrollAcceleration) {
-        this->scrollAcceleration = scrollAcceleration;
-        return this;
+    std::shared_ptr<Scrollable> Scrollable::setScrollAcceleration(float newScrollAcceleration) {
+        this->scrollAcceleration = newScrollAcceleration;
+        return shared_from_this();
     }
 
-    float Scrollable::getScrollAcceleration() {
+    float Scrollable::getScrollAcceleration() const {
         return this->scrollAcceleration;
     }
 
-    Scrollable *Scrollable::setChild(Element *child) {
+    std::shared_ptr<Scrollable> Scrollable::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Scrollable::getChildSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Scrollable::getChildSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         Boundaries childBoundaries = {boundaries.min, {INFINITY, INFINITY}};
         if (this->direction == ScrollDirection::Horizontal) {
             childBoundaries.max.height = boundaries.max.height;
@@ -90,15 +92,15 @@ namespace elementor::elements {
             childBoundaries.max.width = boundaries.max.width;
         }
 
-        return this->getChild()->getSize(ctx, window, childBoundaries);
+        return this->getChild()->getSize(std::move(ctx), std::move(window), childBoundaries);
     }
 
-    Size Scrollable::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Scrollable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         this->childSize = this->getChildSize(ctx, window, boundaries);
         return fitSizeInBoundaries(this->childSize, boundaries);
     }
 
-    void Scrollable::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Scrollable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         ElementRect oldRect = this->rect;
         this->rect = rect;
 
@@ -119,7 +121,7 @@ namespace elementor::elements {
         }
     }
 
-    std::vector<RenderElement> Scrollable::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> Scrollable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
         if (this->hasChild()) {
@@ -140,12 +142,12 @@ namespace elementor::elements {
         return ClipBehavior::AntiAlias;
     }
 
-    EventCallbackResponse Scrollable::onEvent(EventMouseMove *event) {
+    EventCallbackResponse Scrollable::onEvent(std::shared_ptr<EventMouseMove> event) {
         this->hovered = this->rect.visibleContains(event->x, event->y);
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Scrollable::onEvent(EventScroll *event) {
+    EventCallbackResponse Scrollable::onEvent(std::shared_ptr<EventScroll> event) {
         if (this->hovered) {
             if (event->xOffset != 0 && this->isHorizontalScroll()) {
                 float scrollLeft = this->getScrollLeft();

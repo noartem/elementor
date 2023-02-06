@@ -14,7 +14,7 @@ std::string ExampleImage::getDescription() {
     return "Image in one of these formats: BMP, GIF, HEIF, ICO, JPEG, PNG, WBMP, WebP";
 }
 
-Element *ExampleImage::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleImage::getScene(std::shared_ptr<ApplicationContext> ctx) {
     std::string currentPath = std::filesystem::current_path().string() + "/../../../../";
 
     return scroll()

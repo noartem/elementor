@@ -13,10 +13,10 @@ namespace elementor::components {
     public:
         Scroll();
 
-        Scroll *setChild(Element *child);
+        Scroll *setChild(const std::shared_ptr<Element>& child);
 
     private:
-        Scrollable *scrollableElement;
+        std::shared_ptr<Scrollable> scrollableElement;
     };
 
     Scroll *scroll();

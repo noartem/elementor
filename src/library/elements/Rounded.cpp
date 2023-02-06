@@ -7,51 +7,50 @@
 #include <include/core/SkRRect.h>
 
 namespace elementor::elements {
-    Rounded *rounded() {
-        return new Rounded();
+    std::shared_ptr<Rounded> rounded() {
+        return std::make_shared<Rounded>();
     }
 
-    Rounded *
-    Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
+    std::shared_ptr<Rounded> Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
         this->radiusTopLeft = radiusTopLeft;
         this->radiusTopRight = radiusTopRight;
         this->radiusBottomLeft = radiusBottomLeft;
         this->radiusBottomRight = radiusBottomRight;
-        return this;
+        return shared_from_this();
     }
 
-    Rounded *Rounded::setRadius(float radiusLeft, float radiusRight) {
+    std::shared_ptr<Rounded> Rounded::setRadius(float radiusLeft, float radiusRight) {
         this->setRadius(radiusLeft, radiusRight, radiusRight, radiusLeft);
-        return this;
+        return shared_from_this();
     }
 
-    Rounded *Rounded::setRadius(float radius) {
+    std::shared_ptr<Rounded> Rounded::setRadius(float radius) {
         this->setRadius(radius, radius);
-        return this;
+        return shared_from_this();
     }
 
-    float Rounded::getRadiusTopLeft() {
+    float Rounded::getRadiusTopLeft() const {
         return this->radiusTopLeft;
     }
 
-    float Rounded::getRadiusTopRight() {
+    float Rounded::getRadiusTopRight() const {
         return this->radiusTopRight;
     }
 
-    float Rounded::getRadiusBottomLeft() {
+    float Rounded::getRadiusBottomLeft() const {
         return this->radiusBottomLeft;
     }
 
-    float Rounded::getRadiusBottomRight() {
+    float Rounded::getRadiusBottomRight() const {
         return this->radiusBottomRight;
     }
 
-    Rounded *Rounded::setChild(Element *child) {
+    std::shared_ptr<Rounded> Rounded::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    void Rounded::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Rounded::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         float topLeft = this->getRadiusTopLeft() * ctx->getPixelScale();
         float topRight = this->getRadiusTopRight() * ctx->getPixelScale();
         float bottomRight = this->getRadiusBottomRight() * ctx->getPixelScale();
@@ -68,7 +67,7 @@ namespace elementor::elements {
         canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
     }
 
-    Size Rounded::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Rounded::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -76,7 +75,7 @@ namespace elementor::elements {
         }
     }
 
-    std::vector<RenderElement> Rounded::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement> Rounded::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
         if (this->hasChild()) {

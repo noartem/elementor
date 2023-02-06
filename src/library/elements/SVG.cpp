@@ -15,38 +15,38 @@
 #include <utility>
 
 namespace elementor::elements {
-    SVG *svg() {
-        return new SVG();
+    std::shared_ptr<SVG> svg() {
+        return std::make_shared<SVG>();
     }
 
     sk_sp<SkSVGDOM> SVG::getSkSVGDOM() {
         return this->skSVGDOM;
     }
 
-    SVG *SVG::fromSkSVGDOM(sk_sp<SkSVGDOM> newSkSVGDOM) {
+    std::shared_ptr<SVG> SVG::fromSkSVGDOM(sk_sp<SkSVGDOM> newSkSVGDOM) {
         this->skSVGDOM = std::move(newSkSVGDOM);
-        return this;
+        return shared_from_this();
     }
 
-    SVG *SVG::fromSkStream(SkStream &stream) {
+    std::shared_ptr<SVG> SVG::fromSkStream(SkStream &stream) {
         this->skSVGDOM = SkSVGDOM::MakeFromStream(stream);
-        return this;
+        return shared_from_this();
     }
 
-    SVG *SVG::fromSkData(sk_sp<SkData> data) {
+    std::shared_ptr<SVG> SVG::fromSkData(sk_sp<SkData> data) {
         SkMemoryStream dataStream(std::move(data));
         return this->fromSkStream(dataStream);
     }
 
-    SVG *SVG::fromPath(const std::string &path) {
+    std::shared_ptr<SVG> SVG::fromPath(const std::string &path) {
         return this->fromSkData(SkData::MakeFromFileName(path.c_str()));
     }
 
-    SVG *SVG::fromString(const char value[]) {
+    std::shared_ptr<SVG> SVG::fromString(const char value[]) {
         return this->fromSkData(SkData::MakeWithCString(value));
     }
 
-    void SVG::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void SVG::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         if (this->skImage == nullptr || (abs(this->skImage->width() - rect.size.width) > 5) ||
             (abs(this->skImage->height() - rect.size.height) > 5)) {
             SkSVGSVG *root = this->skSVGDOM->getRoot();

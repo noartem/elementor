@@ -14,18 +14,18 @@
 #include "include/gpu/GrDirectContext.h"
 
 namespace elementor {
-    class GLWindow : public Window {
+    class GLWindow : public Window, std::enable_shared_from_this<GLWindow> {
     public:
-        GLWindow(ApplicationContext *applicationContext, Size size);
+        GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size);
 
         ~GLWindow();
 
         void draw();
 
-        Element *getRoot() override;
-        void setRoot(Element *root) override;
+        std::shared_ptr<Element> getRoot() override;
+        void setRoot(std::shared_ptr<Element> newRoot) override;
 
-        void setTitle(std::string title) override;
+        void setTitle(std::string newTitle) override;
         std::string getTitle() override;
 
         Size getSize() override;
@@ -42,37 +42,37 @@ namespace elementor {
         Position getPosition() override;
         void setPosition(Position Position) override;
 
-        Cursor *getCursor() override;
+        std::shared_ptr<Cursor> getCursor() override;
 
-        Monitor *getMonitor() override;
+        std::shared_ptr<Monitor> getMonitor() override;
 
         void close() override;
 
         void onClose(std::function<void ()> callback);
 
-        void setUserPointer(void *pointer) override;
-        void *getUserPointer() override;
+        void setUserPointer(std::shared_ptr<void> pointer) override;
+        std::shared_ptr<void> getUserPointer() override;
 
     private:
-        Application *application;
+        std::shared_ptr<Application> application;
 
-        Element *root;
+        std::shared_ptr<Element> root;
         std::string title;
         std::optional<Size> minSize;
         std::optional<Size> maxSize;
 
         GLFWwindow *glWindow;
-        GrDirectContext *skContext;
+        GrDirectConstd::shared_ptr<Text> skContext;
         sk_sp<SkSurface> skSurface;
-        SkCanvas *skCanvas;
+        SkCanvas *skCanvas{};
         void refresh();
 
-        GLMonitor *monitor;
+        std::shared_ptr<GLMonitor> monitor;
 
-        ApplicationContext *applicationContext;
-        GLCursor *cursor;
+        std::shared_ptr<ApplicationContext> applicationContext;
+        std::shared_ptr<GLCursor> cursor;
 
-        void *userPointer;
+        std::shared_ptr<void> userPointer;
 
         void updateWindowSizeLimits();
 

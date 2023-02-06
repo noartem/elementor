@@ -41,7 +41,7 @@ namespace elementor::components {
     Button *Button::setLabel(std::string newLabel) {
         this->label = std::move(newLabel);
         this->textElement->setText(this->label);
-        return this;
+        return shared_from_this();
     }
 
     std::string Button::getLabel() {
@@ -50,16 +50,16 @@ namespace elementor::components {
 
     Button *Button::onClick(std::function<void()> callback) {
         this->clickableElement->onClick(std::move(callback));
-        return this;
+        return shared_from_this();
     }
 
     Button *Button::setBackgroundColor(std::string hex) {
         this->backgroundElement->setColor(std::move(hex));
-        return this;
+        return shared_from_this();
     }
 
     Button *Button::setTextColor(std::string hex) {
         this->textElement->setFontColor(std::move(hex));
-        return this;
+        return shared_from_this();
     }
 }

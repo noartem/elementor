@@ -11,26 +11,26 @@
 #include <include/effects/Sk1DPathEffect.h>
 
 namespace elementor::elements {
-    Border *border() {
-        return new Border();
+    std::shared_ptr<Border> border() {
+        return std::make_shared<Border>();
     }
 
-    Border *Border::setColor(SkColor color) {
+    std::shared_ptr<Border> Border::setColor(SkColor color) {
         this->color = color;
-        return this;
+        return shared_from_this();
     }
 
-    Border *Border::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    std::shared_ptr<Border> Border::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->setColor(SkColorSetARGB(a, r, g, b));
-        return this;
+        return shared_from_this();
     }
 
-    Border *Border::setColor(uint8_t r, uint8_t g, uint8_t b) {
+    std::shared_ptr<Border> Border::setColor(uint8_t r, uint8_t g, uint8_t b) {
         this->setColor(r, g, b, 255);
-        return this;
+        return shared_from_this();
     }
 
-    Border *Border::setColor(std::string hex) {
+    std::shared_ptr<Border> Border::setColor(std::string hex) {
         if (hex.size() == 7) {
             hex = hex.substr(1);
         }
@@ -42,31 +42,31 @@ namespace elementor::elements {
             this->setColor(r, g, b);
         }
 
-        return this;
+        return shared_from_this();
     }
 
     SkColor Border::getColor() {
         return this->color;
     }
 
-    Border *Border::setWidth(float width) {
+    std::shared_ptr<Border> Border::setWidth(float width) {
         this->width = width;
-        return this;
+        return shared_from_this();
     }
 
     float Border::getWidth() {
         return this->width;
     }
 
-    Border *Border::setRadius(float radiusX, float radiusY) {
+    std::shared_ptr<Border> Border::setRadius(float radiusX, float radiusY) {
         this->radiusX = radiusX;
         this->radiusY = radiusY;
-        return this;
+        return shared_from_this();
     }
 
-    Border *Border::setRadius(float radiusXY) {
+    std::shared_ptr<Border> Border::setRadius(float radiusXY) {
         this->setRadius(radiusXY, radiusXY);
-        return this;
+        return shared_from_this();
     }
 
     float Border::getRadiusX() {
@@ -77,24 +77,29 @@ namespace elementor::elements {
         return this->radiusY;
     }
 
-    Border *Border::setStyle(BorderStyle style) {
+    std::shared_ptr<Border> Border::setStyle(BorderStyle style) {
         this->style = style;
-        return this;
+        return shared_from_this();
     }
 
     BorderStyle Border::getStyle() {
         return this->style;
     }
 
-    Border *Border::setChild(Element *child) {
+    std::shared_ptr<Border> Border::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Border::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size
+    Border::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             float borderWidth = this->getWidth() * ctx->getPixelScale();
-            Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2, boundaries.min.height - borderWidth * 2}, {boundaries.max.width - borderWidth * 2, boundaries.max.height - borderWidth * 2}};
+            Boundaries childBoundaries = {{boundaries.min.width - borderWidth * 2,
+                                                                                   boundaries.min.height -
+borderWidth * 2},
+                                          {boundaries.max.width - borderWidth * 2, boundaries.max.height -
+                                                                                   borderWidth * 2}};
             Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
             return {childSize.width + borderWidth * 2, childSize.height + borderWidth * 2};
         } else {
@@ -102,7 +107,9 @@ namespace elementor::elements {
         }
     }
 
-    void Border::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void
+    Border::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
+                            ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->getColor());
         paint.setStrokeWidth(this->getWidth());
@@ -113,7 +120,8 @@ namespace elementor::elements {
             SkPath path;
             path.addOval(SkRect::MakeWH(this->getWidth() / 2, this->getWidth() / 2));
 
-            paint.setPathEffect(SkPath1DPathEffect::Make(path, this->getWidth(), 0.0f, SkPath1DPathEffect::kRotate_Style));
+            paint.setPathEffect(
+                    SkPath1DPathEffect::Make(path, this->getWidth(), 0.0f, SkPath1DPathEffect::kRotate_Style));
         }
 
         if (this->style == BorderStyle::Dashed) {
@@ -129,8 +137,9 @@ namespace elementor::elements {
         canvas->drawRRect(skRRect, paint);
     }
 
-    std::vector <RenderElement> Border::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Border::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement childElement{};

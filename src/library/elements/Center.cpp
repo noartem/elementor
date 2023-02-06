@@ -4,18 +4,21 @@
 
 #include "Center.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Center *center() {
-        return new Center();
+    std::shared_ptr<Center> center() {
+        return std::make_shared<Center>();
     }
 
-    Center *Center::setChild(Element *child) {
+    std::shared_ptr<Center> Center::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    std::vector <RenderElement> Center::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Center::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child{};

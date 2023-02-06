@@ -12,14 +12,16 @@
 namespace elementor {
     class GLCursor : public Cursor {
     public:
-        GLCursor(GLFWwindow *window, ApplicationContext *ctx);
+        GLCursor(GLFWwindow *window, std::shared_ptr<ApplicationContext> ctx);
+
         void set(CursorShape shape) override;
+
         CursorShape get() override;
 
     private:
-        ApplicationContext *ctx;
+        std::shared_ptr<ApplicationContext> ctx;
         GLFWwindow *window;
-        GLFWcursor *cursor;
+        GLFWcursor *cursor{};
         CursorShape currentShape = CursorShape::Default;
         CursorShape appliedShape = CursorShape::Default;
 

@@ -5,28 +5,28 @@
 #include "Row.h"
 
 namespace elementor::elements {
-    Row *row() {
-        return new Row();
+    std::shared_ptr<Row> row() {
+        return std::make_shared<Row>();
     }
 
-    Row *Row::setSpacing(float spacing) {
-        this->spacing = spacing;
-        return this;
+    std::shared_ptr<Row> Row::setSpacing(float newSpacing) {
+        this->spacing = newSpacing;
+        return shared_from_this();
     }
 
-    float Row::getSpacing() {
+    float Row::getSpacing() const {
         return this->spacing;
     }
 
-    Row *Row::appendChild(Element *child) {
+    std::shared_ptr<Row> Row::appendChild(const std::shared_ptr<Element>& child) {
         this->addChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Row::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Row::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         float totalWidth = 0;
         float maxHeight = 0;
-        for (Element *childElement : this->getChildrenList()) {
+        for (const std::shared_ptr<Element>& childElement : this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
             totalWidth += childSize.width;
             maxHeight = std::max(childSize.height, maxHeight);
@@ -37,13 +37,13 @@ namespace elementor::elements {
         return fitSizeInBoundaries({totalWidth, maxHeight}, boundaries);
     }
 
-    std::vector <RenderElement> Row::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Row::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         float spacing = this->getSpacing() * ctx->getPixelScale();
 
         float xPosition = 0;
-        for (Element *child : this->getChildrenList()) {
+        for (const std::shared_ptr<Element>& child : this->getChildrenList()) {
             RenderElement childElement{};
             childElement.element = child;
             childElement.size = childElement.element->getSize(ctx, window, {{0, rect.size.height}, rect.size});

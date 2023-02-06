@@ -12,8 +12,8 @@ std::string ExampleWrap::getDescription() {
     return "Row/Column wich wrap children to new line if overflow";
 }
 
-Element *exampleWrapRow() {
-    Wrap *wrapElement = wrap()
+std::shared_ptr<Element> exampleWrapRow() {
+    std::shared_ptr<Wrap> wrapElement = wrap()
         ->setSpacing(8)
         ->setCrossSpacing(12);
 
@@ -24,8 +24,8 @@ Element *exampleWrapRow() {
     return wrapElement;
 }
 
-Element *exampleWrapColumn() {
-    Wrap *wrapElement = wrap()
+std::shared_ptr<Element> exampleWrapColumn() {
+    std::shared_ptr<Wrap> wrapElement = wrap()
         ->setSpacing(8)
         ->setCrossSpacing(12)
         ->setDirection(WrapDirection::Column);
@@ -37,7 +37,7 @@ Element *exampleWrapColumn() {
     return wrapElement;
 }
 
-Element *ExampleWrap::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleWrap::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

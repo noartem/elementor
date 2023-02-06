@@ -12,7 +12,7 @@ std::string ExampleSized::getDescription() {
     return "Apply elemnts to strict height, width";
 }
 
-Element *exampleHeight() {
+std::shared_ptr<Element> exampleHeight() {
     return flex()
         ->setSpacing(12)
         ->appendChild(flexible()
@@ -29,7 +29,7 @@ Element *exampleHeight() {
                 ->setChild(box("#CDE8D9"))));
 }
 
-Element *exampleWidth() {
+std::shared_ptr<Element> exampleWidth() {
     return height()
         ->setHeight(256)
         ->setChild(flex()
@@ -52,7 +52,7 @@ Element *exampleWidth() {
                         ->setChild(box("#CDE8D9"))))));
 }
 
-Element *exampleHeightAndWidth() {
+std::shared_ptr<Element> exampleHeightAndWidth() {
     return column()
         ->setSpacing(12)
         ->appendChild(height()
@@ -72,7 +72,7 @@ Element *exampleHeightAndWidth() {
                 ->setChild(box("#CDE8D9"))));
 }
 
-Element *ExampleSized::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleSized::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

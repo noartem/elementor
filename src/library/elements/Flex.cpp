@@ -7,60 +7,61 @@
 
 #include <tuple>
 #include <algorithm>
+#include <utility>
 
 namespace elementor::elements {
-    Flex *flex() {
-        return new Flex();
+    std::shared_ptr<Flex> flex() {
+        return std::make_shared<Flex>();
     }
 
-    Flex *Flex::setSpacing(float spacing) {
-        this->spacing = spacing;
-        return this;
+    std::shared_ptr<Flex> Flex::setSpacing(float newSpacing) {
+        this->spacing = newSpacing;
+        return shared_from_this();
     }
 
-    float Flex::getSpacing() {
+    float Flex::getSpacing() const {
         return this->spacing;
     }
 
-    Flex *Flex::setDirection(FlexDirection direction) {
-        this->direction = direction;
-        return this;
+    std::shared_ptr<Flex> Flex::setDirection(FlexDirection newDirection) {
+        this->direction = newDirection;
+        return shared_from_this();
     }
 
     FlexDirection Flex::getDirection() {
         return this->direction;
     }
 
-    Flex *Flex::setAlignment(FlexAlignment alignment) {
-        this->alignment = alignment;
-        return this;
+    std::shared_ptr<Flex> Flex::setAlignment(FlexAlignment newAlignment) {
+        this->alignment = newAlignment;
+        return shared_from_this();
     }
 
     FlexAlignment Flex::getAlignment() {
         return this->alignment;
     }
 
-    Flex *Flex::setCrossAlignment(FlexCrossAlignment alignment) {
-        this->crossAlignment = alignment;
-        return this;
+    std::shared_ptr<Flex> Flex::setCrossAlignment(FlexCrossAlignment newAlignment) {
+        this->crossAlignment = newAlignment;
+        return shared_from_this();
     }
 
     FlexCrossAlignment Flex::getCrossAlignment() {
         return this->crossAlignment;
     }
 
-    Flex *Flex::appendChild(Element *child) {
-        this->addChild(child);
-        return this;
+    std::shared_ptr<Flex> Flex::appendChild(const std::shared_ptr<Element>& child) {
+        this->addChild(std::move(child));
+        return shared_from_this();
     }
 
-    Size Flex::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Flex::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->alignment == FlexAlignment::Stretch) {
             return boundaries.max;
         }
 
         float maxCrossAxisSize = 0;
-        for (Element *childElement : this->getChildrenList()) {
+        for (const std::shared_ptr<Element>& childElement : this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
             float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;
             maxCrossAxisSize = std::max(childCrossAxisSize, maxCrossAxisSize);
@@ -76,7 +77,7 @@ namespace elementor::elements {
         return fitSizeInBoundaries(size, boundaries);
     }
 
-    std::vector <RenderElement> Flex::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Flex::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         Boundaries sizedChildBoundaries = {{0, 0}, rect.size};
@@ -92,7 +93,7 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild(i);
 
-            Flexible *childFlexible = dynamic_cast<Flexible *>(child.element);
+            std::shared_ptr<Flexible> childFlexible = dynamic_cast<std::shared_ptr<Flexible>>(child.element);
 
             if (childFlexible == NULL) {
                 child.size = child.element->getSize(ctx, window, sizedChildBoundaries);

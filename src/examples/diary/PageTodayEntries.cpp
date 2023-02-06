@@ -20,8 +20,8 @@ std::tm *now() {
     return std::localtime(&t);
 }
 
-Element *PageTodayEntries::makeElement() {
-    Column *entriesColumn = column()
+std::shared_ptr<Element> PageTodayEntries::makeElement() {
+    std::shared_ptr<Column> entriesColumn = column()
         ->setSpacing(12);
 
     std::time_t tNow = std::time(0) + 6*1000;

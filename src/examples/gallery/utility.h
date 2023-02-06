@@ -7,9 +7,9 @@
 
 #include "elementor.h"
 
-Element *box(std::string color);
+std::shared_ptr<Element> box(std::string color);
 
-Element *boxSized(std::string color, int width, int height);
+std::shared_ptr<Element> boxSized(std::string color, int width, int height);
 
 int randInRange(int min, int max);
 

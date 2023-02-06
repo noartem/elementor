@@ -28,29 +28,31 @@ namespace elementor::elements {
         SpaceEvenly,
     };
 
-    class Flex : public Element, public WithChildren {
+    class Flex : public Element, public WithChildren, public std::enable_shared_from_this<Flex> {
     public:
-        Flex *setSpacing(float spacing);
+        std::shared_ptr<Flex> setSpacing(float newSpacing);
 
-        float getSpacing();
+        float getSpacing() const;
 
-        Flex *setDirection(FlexDirection direction);
+        std::shared_ptr<Flex> setDirection(FlexDirection newDirection);
 
         FlexDirection getDirection();
 
-        Flex *setAlignment(FlexAlignment alignment);
+        std::shared_ptr<Flex> setAlignment(FlexAlignment newAlignment);
 
         FlexAlignment getAlignment();
 
-        Flex *setCrossAlignment(FlexCrossAlignment alignment);
+        std::shared_ptr<Flex> setCrossAlignment(FlexCrossAlignment newAlignment);
 
         FlexCrossAlignment getCrossAlignment();
 
-        Flex *appendChild(Element *child);
+        std::shared_ptr<Flex> appendChild(const std::shared_ptr<Element>& child);
 
-        Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
+        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                     Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
         float spacing = 0;
@@ -59,7 +61,7 @@ namespace elementor::elements {
         FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
     };
 
-    Flex *flex();
+    std::shared_ptr<Flex> flex();
 }
 
 

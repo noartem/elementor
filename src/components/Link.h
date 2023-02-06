@@ -25,14 +25,14 @@ namespace elementor::components {
 
         std::string getURL();
 
-        Link *setTextElement(Text *textElement);
+        Link *setTextElement(std::shared_ptr<Text> textElement);
 
-        Text *getTextElement();
+        std::shared_ptr<Text> getTextElement();
 
     private:
         std::string label;
         std::string url;
-        Text *textElement;
+        std::shared_ptr<Text> textElement;
 
         void render();
     };

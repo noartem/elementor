@@ -27,8 +27,8 @@ namespace elementor::components {
                 ->setDirection(ScrollDirection::Vertical));
     }
 
-    Scroll *Scroll::setChild(Element *child) {
+    Scroll *Scroll::setChild(const std::shared_ptr<Element>& child) {
         this->scrollableElement->setChild(child);
-        return this;
+        return shared_from_this();
     }
 }

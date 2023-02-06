@@ -4,21 +4,23 @@
 
 #include "ExpandedWidth.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    ExpandedWidth *expandedWidth() {
-        return new ExpandedWidth();
+    std::shared_ptr<ExpandedWidth>  expandedWidth() {
+        return std::make_shared<ExpandedWidth>();
     }
 
-    ExpandedWidth *ExpandedWidth::setChild(Element *child) {
+    std::shared_ptr<ExpandedWidth>  ExpandedWidth::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size ExpandedWidth::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size ExpandedWidth::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return fitSizeInBoundaries(this->getChild()->getSize(ctx, window, {{boundaries.max.width, 0}, boundaries.max}), boundaries);
     }
 
-    std::vector <RenderElement> ExpandedWidth::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> ExpandedWidth::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         RenderElement childElement{this->getChild(), {0, 0}, rect.size};
         return {childElement};
     }

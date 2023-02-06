@@ -4,6 +4,8 @@
 
 #include "GLCursor.h"
 
+#include <utility>
+
 namespace elementor {
     unsigned int mapCursorShapeToInt(CursorShape shape) {
         switch (shape) {
@@ -25,22 +27,22 @@ namespace elementor {
         }
     }
 
-    GLCursor::GLCursor(GLFWwindow *window, ApplicationContext *ctx) {
+    GLCursor::GLCursor(GLFWwindow *window, std::shared_ptr<ApplicationContext> ctx) {
         this->window = window;
-        this->ctx = ctx;
+        this->ctx = std::move(ctx);
     }
 
     void GLCursor::updateCursor() {
         if (this->appliedShape != this->currentShape) {
             this->cursor = glfwCreateStandardCursor(mapCursorShapeToInt(this->currentShape));
-            glfwSetCursor(this->window, this->cursor);    
+            glfwSetCursor(this->window, this->cursor);
             this->appliedShape = this->currentShape;
         }
     }
 
     void GLCursor::set(CursorShape shape) {
         this->currentShape = shape;
-        this->ctx->requestNextFrame([this] () {
+        this->ctx->requestNextFrame([this]() {
             this->updateCursor();
         });
     }

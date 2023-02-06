@@ -5,25 +5,25 @@
 #include "Width.h"
 
 namespace elementor::elements {
-    Width *width() {
-        return new Width();
+    std::shared_ptr<Width> width() {
+        return std::make_shared<Width();
     }
 
-    Width *Width::setWidth(float width) {
+    std::shared_ptr<Width> Width::setWidth(float width) {
         this->width = width;
-        return this;
+        return shared_from_this();
     }
 
     float Width::getWidth() {
         return this->width;
     }
 
-    Width *Width::setChild(Element *child) {
+    std::shared_ptr<Width> Width::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Width::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Width::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         float width = this->width * ctx->getPixelScale();
         if (this->hasChild()) {
             Boundaries childBoundaries = {{std::max(width, boundaries.min.width), boundaries.min.height}, {std::min(width, boundaries.max.width), boundaries.max.height}};
@@ -33,7 +33,7 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Width::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Width::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

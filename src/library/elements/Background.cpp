@@ -8,40 +8,41 @@
 #include "../Color.h"
 
 namespace elementor::elements {
-    Background *background() {
-        return new Background();
+    std::shared_ptr<Background> background() {
+        return std::make_shared<Background>();
     }
 
-    Background *Background::setColor(SkColor skColor) {
+    std::shared_ptr<Background> Background::setColor(SkColor skColor) {
         this->color = skColor;
-        return this;
+        return shared_from_this();
     }
 
-    Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    std::shared_ptr<Background> Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
         this->color = makeSkColorFromRGBA(r, g, b, a);
-        return this;
+        return shared_from_this();
     }
 
-    Background *Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
+    std::shared_ptr<Background> Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
         this->color = makeSkColorFromRGB(r, g, b);
-        return this;
+        return shared_from_this();
     }
 
-    Background *Background::setColor(std::string hex) {
+    std::shared_ptr<Background> Background::setColor(std::string hex) {
         this->color = makeSkColorFromHex(std::move(hex));
-        return this;
+        return shared_from_this();
     }
 
     SkColor Background::getColor() const {
         return this->color;
     }
 
-    Background *Background::setChild(Element *child) {
+    std::shared_ptr<Background> Background::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Background::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Background::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                             Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -49,7 +50,8 @@ namespace elementor::elements {
         }
     }
 
-    void Background::paintBackground(ApplicationContext *ctx, Window *window, SkCanvas *canvas, ElementRect rect) {
+    void Background::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                     SkCanvas *canvas, ElementRect rect) {
         SkPaint paint;
         paint.setColor(this->color);
 
@@ -57,7 +59,8 @@ namespace elementor::elements {
         canvas->drawRect(skRect, paint);
     }
 
-    std::vector<RenderElement> Background::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector<RenderElement>
+    Background::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
         if (this->hasChild()) {

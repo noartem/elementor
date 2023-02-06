@@ -12,7 +12,7 @@ std::string ExampleButton::getDescription() {
     return "Just click on it!";
 }
 
-Element *buttonBasicExample() {
+std::shared_ptr<Element> buttonBasicExample() {
     auto buttonElement = new Button();
     const std::string unClickedText = "Click on me...";
     const std::string clickedText = "Clicked!";
@@ -24,7 +24,7 @@ Element *buttonBasicExample() {
         });
 }
 
-Element *buttonColorsExample() {
+std::shared_ptr<Element> buttonColorsExample() {
     auto buttonElement = new Button();
 
     return hoverable()
@@ -43,7 +43,7 @@ Element *buttonColorsExample() {
         });
 }
 
-Element *ExampleButton::getScene(ApplicationContext *ctx) {
+std::shared_ptr<Element> ExampleButton::getScene(std::shared_ptr<ApplicationContext> ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

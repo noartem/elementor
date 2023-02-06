@@ -5,49 +5,49 @@
 #include "Wrap.h"
 
 namespace elementor::elements {
-    Wrap *wrap() {
-        return new Wrap();
+    std::shared_ptr<Wrap> wrap() {
+        return std::make_shared<Wrap>();
     }
 
-    Wrap *Wrap::setSpacing(float spacing) {
+    std::shared_ptr<Wrap> Wrap::setSpacing(float spacing) {
         this->spacing = spacing;
-        return this;
+        return shared_from_this();
     }
 
-    float Wrap::getSpacing() {
+    float Wrap::getSpacing() const {
         return this->spacing;
     }
 
-    Wrap *Wrap::setCrossSpacing(float spacing) {
+    std::shared_ptr<Wrap> Wrap::setCrossSpacing(float spacing) {
         this->crossSpacing = spacing;
-        return this;
+        return shared_from_this();
     }
 
-    float Wrap::getCrossSpacing() {
+    float Wrap::getCrossSpacing() const {
         return this->crossSpacing;
     }
 
-    Wrap *Wrap::setSpacing(float spacing, float crossSpacing) {
+    std::shared_ptr<Wrap> Wrap::setSpacing(float spacing, float crossSpacing) {
         this->setSpacing(spacing);
         this->setCrossSpacing(crossSpacing);
-        return this;
+        return shared_from_this();
     }
 
-    Wrap *Wrap::setDirection(WrapDirection direction) {
+    std::shared_ptr<Wrap> Wrap::setDirection(WrapDirection direction) {
         this->direction = direction;
-        return this;
+        return shared_from_this();
     }
 
     WrapDirection Wrap::getDirection() {
         return this->direction;
     }
 
-    Wrap *Wrap::appendChild(Element *child) {
+    std::shared_ptr<Wrap> Wrap::appendChild(const std::shared_ptr<Element> &child) {
         this->addChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Wrap::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Wrap::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         float spacing = this->spacing * ctx->getPixelScale();
         float crossSpacing = this->crossSpacing * ctx->getPixelScale();
 
@@ -60,12 +60,12 @@ namespace elementor::elements {
 
         float rowCrossAxisSize = 0;
 
-        for (Element *childElement : this->getChildrenList()) {
+        for (const auto &childElement: this->getChildrenList()) {
             Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
 
             float axisChildSize = isRow ? childSize.width : childSize.height;
             float crossAxisChildSize = isRow ? childSize.height : childSize.width;
-            
+
             if (axisPosition + axisChildSize > maxAxisSize) {
                 axisPosition = 0;
                 crossAxisPosition += rowCrossAxisSize + crossSpacing;
@@ -85,10 +85,11 @@ namespace elementor::elements {
         return fitSizeInBoundaries({width, height}, boundaries);
     }
 
-    std::vector <RenderElement> Wrap::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    Wrap::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
-        for (Element *child: this->getChildrenList()) {
+        for (const auto &child: this->getChildrenList()) {
             RenderElement childElement;
             childElement.element = child;
             childElement.size = child->getSize(ctx, window, {{0, 0}, rect.size});
@@ -107,7 +108,7 @@ namespace elementor::elements {
 
         float rowCrossAxisSize = 0;
 
-        for (RenderElement &child : children) {
+        for (RenderElement &child: children) {
             float axisChildSize = isRow ? child.size.width : child.size.height;
             float crossAxisChildSize = isRow ? child.size.height : child.size.width;
 

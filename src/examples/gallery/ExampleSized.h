@@ -13,7 +13,7 @@ class ExampleSized: public Example {
 
     std::string getDescription() override;
 
-    Element *getScene(ApplicationContext *ctx) override;
+    std::shared_ptr<Element> getScene(std::shared_ptr<ApplicationContext> ctx) override;
 };
 
 

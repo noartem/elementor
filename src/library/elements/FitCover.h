@@ -8,16 +8,17 @@
 #include "../Element.h"
 
 namespace elementor::elements {
-    class FitCover : public Element, public WithChild {
+    class FitCover : public Element, public WithChild, public std::enable_shared_from_this<FitCover> {
     public:
-        FitCover *setChild(Element *child);
+        std::shared_ptr<FitCover> setChild(const std::shared_ptr<Element>& child);
 
         ClipBehavior getClipBehaviour() override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement>
+        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
     };
 
-    FitCover *fitCover();
+    std::shared_ptr<FitCover> fitCover();
 }
 
 

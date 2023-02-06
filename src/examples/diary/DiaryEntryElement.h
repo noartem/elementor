@@ -8,6 +8,6 @@
 #include "DiaryEntry.h"
 #include "utility.h"
 
-Element *diaryEntryElement(DiaryEntry *entry);
+std::shared_ptr<Element> diaryEntryElement(DiaryEntry *entry);
 
 #endif //DIARY_ENTRY_ELEMENT_H

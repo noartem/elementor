@@ -13,7 +13,7 @@ class ExampleAnimation: public Example {
 
     std::string getDescription() override;
 
-    Element *getScene(ApplicationContext *ctx) override;
+    std::shared_ptr<Element> getScene(std::shared_ptr<ApplicationContext> ctx) override;
 };
 
 class AnimatedTextExample: public Component {
@@ -27,8 +27,8 @@ public:
 private:
     std::string label;
     int duration;
-    Background *buttonBackground;
-    Text *buttonText;
+    std::shared_ptr<Background> buttonBackground;
+    std::shared_ptr<Text> buttonText;
     Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
 
     void render();
@@ -45,9 +45,9 @@ public:
 private:
     std::string label;
     int duration;
-    Background *buttonBackground;
-    Text *buttonText;
-    Padding *buttonPadding;
+    std::shared_ptr<Background> buttonBackground;
+    std::shared_ptr<Text> buttonText;
+    std::shared_ptr<Padding> buttonPadding;
     Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
 
     void render();

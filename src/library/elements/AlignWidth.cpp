@@ -4,36 +4,39 @@
 
 #include "AlignWidth.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    AlignWidth *alignWidth() {
-        return new AlignWidth();
+    std::shared_ptr<AlignWidth> alignWidth() {
+        return std::make_shared<AlignWidth>();
     }
 
-    AlignWidth *AlignWidth::setCoef(float coef, float childCoef) {
-        this->coef = coef;
-        this->childCoef = childCoef;
-        return this;
+    std::shared_ptr<AlignWidth> AlignWidth::setCoef(float newCoef, float newChildCoef) {
+        this->coef = newCoef;
+        this->childCoef = newChildCoef;
+        return shared_from_this();
     }
 
-    AlignWidth *AlignWidth::setCoef(float coef) {
-        this->setCoef(coef, coef);
-        return this;
+    std::shared_ptr<AlignWidth> AlignWidth::setCoef(float newCoef) {
+        this->setCoef(newCoef, newCoef);
+        return shared_from_this();
     }
 
-    float AlignWidth::getCoef() {
+    float AlignWidth::getCoef() const {
         return this->coef;
     }
 
-    float AlignWidth::getChildCoef() {
+    float AlignWidth::getChildCoef() const {
         return this->childCoef;
     }
 
-    AlignWidth *AlignWidth::setChild(Element *child) {
+    std::shared_ptr<AlignWidth> AlignWidth::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size AlignWidth::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size AlignWidth::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                             Boundaries boundaries) {
         if (this->hasChild()) {
             Boundaries childBoundaries = {{0, boundaries.min.height}, boundaries.max};
             Size childSize = this->getChild()->getSize(ctx, window, childBoundaries);
@@ -43,8 +46,9 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> AlignWidth::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
-        std::vector <RenderElement> children;
+    std::vector<RenderElement>
+    AlignWidth::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+        std::vector<RenderElement> children;
 
         if (this->hasChild()) {
             RenderElement child;

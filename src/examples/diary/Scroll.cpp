@@ -26,16 +26,16 @@ Scroll::Scroll() {
         ->setChild(this->childScrollable);
 }
 
-Scroll *Scroll::setChild(Element *child) {
+Scroll *Scroll::setChild(const std::shared_ptr<Element>& child) {
     this->childScrollable->setChild(child);
-    return this;
+    return shared_from_this();
 }
 
-Size Scroll::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+Size Scroll::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
     return this->childScrollbar->getSize(ctx, window, boundaries);
 }
 
-std::vector <RenderElement> Scroll::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+std::vector <RenderElement> Scroll::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
     RenderElement childElement{this->childScrollbar, {0, 0}, rect.size};
     return {childElement};
 }

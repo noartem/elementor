@@ -49,12 +49,12 @@ namespace elementor::components {
         [[nodiscard]] std::string getPlaceholder() const;
 
     private:
-        Paragraph *paragraphElement;
-        Text *textElement;
-        Border *borderElement;
+        std::shared_ptr<Paragraph> paragraphElement;
+        std::shared_ptr<Text> textElement;
+        std::shared_ptr<Border> borderElement;
         Tooltip *tooltipElement;
-        Column *optionsColumnElement = nullptr;
-        Width *tipWidthElement = nullptr;
+        std::shared_ptr<Column> optionsColumnElement = nullptr;
+        std::shared_ptr<Width> tipWidthElement = nullptr;
         std::vector<std::tuple<std::string, std::string>> options;
         std::string value;
         std::function<void(std::string text)> callbackChange;

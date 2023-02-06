@@ -4,41 +4,43 @@
 
 #include "Padding.h"
 
+#include <utility>
+
 namespace elementor::elements {
-    Padding *padding() {
-        return new Padding();
+    std::shared_ptr<Padding> padding() {
+        return std::make_shared<Padding>();
     }
 
-    Padding *Padding::setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
+    std::shared_ptr<Padding> Padding::setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
         this->paddings = {paddingTop, paddingRight, paddingBottom, paddingLeft};
-        return this;
+        return shared_from_this();
     }
 
-    Padding *Padding::setPaddings(float paddingTop, float paddingX, float paddingBottom) {
+    std::shared_ptr<Padding> Padding::setPaddings(float paddingTop, float paddingX, float paddingBottom) {
         this->setPaddings(paddingTop, paddingX, paddingBottom, paddingX);
-        return this;
+        return shared_from_this();
     }
 
-    Padding *Padding::setPaddings(float paddingY, float paddingX) {
+    std::shared_ptr<Padding> Padding::setPaddings(float paddingY, float paddingX) {
         this->setPaddings(paddingY, paddingX, paddingY, paddingX);
-        return this;
+        return shared_from_this();
     }
 
-    Padding *Padding::setPaddings(float paddingYX) {
+    std::shared_ptr<Padding> Padding::setPaddings(float paddingYX) {
         this->setPaddings(paddingYX, paddingYX, paddingYX, paddingYX);
-        return this;
+        return shared_from_this();
     }
 
     PaddingsValue Padding::getPaddings() {
         return this->paddings;
     }
 
-    Padding *Padding::setChild(Element *child) {
+    std::shared_ptr<Padding> Padding::setChild(const std::shared_ptr<Element>& child) {
         this->updateChild(child);
-        return this;
+        return shared_from_this();
     }
 
-    Size Padding::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Padding::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             float paddingTop = this->getPaddings().top * ctx->getPixelScale();
             float paddingBottom = this->getPaddings().bottom * ctx->getPixelScale();
@@ -56,7 +58,7 @@ namespace elementor::elements {
         }
     }
 
-    std::vector <RenderElement> Padding::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Padding::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->hasChild()) {

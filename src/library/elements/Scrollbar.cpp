@@ -7,100 +7,82 @@
 #include "Draggable.h"
 
 namespace elementor::elements {
-    Scrollbar *scrollbar() {
-        return new Scrollbar();
+    std::shared_ptr<Scrollbar> scrollbar() {
+        return std::make_shared<Scrollbar>();
     }
 
-    Scrollbar::~Scrollbar() {
-        delete child;
-        delete trackX;
-        delete trackY;
-        delete thumbX;
-        delete thumbY;
-    }
-
-    Scrollbar *Scrollbar::setTrackX(Element *trackX) {
+    std::shared_ptr<Scrollbar> Scrollbar::setTrackX(std::shared_ptr<Element> trackX) {
         this->trackX = clickable()
             ->setChild(trackX)
-            ->onClick([this] (elementor::EventMouseButton *event, elementor::Position position) {
+            ->onClick([this] (const std::shared_ptr<EventMouseButton>& event, Position position) {
                 float positionX = (position.x / this->child->getWidth()) * this->child->getScrollWidth();
                 this->child->setScrollLeft(positionX - (this->child->getWidth() / 2));
                 return EventCallbackResponse::StopPropagation;
             });
-        return this;
+        return shared_from_this();
     }
 
-    Scrollbar *Scrollbar::setTrackY(Element *trackY) {
+    std::shared_ptr<Scrollbar> Scrollbar::setTrackY(std::shared_ptr<Element> trackY) {
         this->trackY = clickable()
             ->setChild(trackY)
-            ->onClick([this] (elementor::EventMouseButton *event, elementor::Position position) {
+            ->onClick([this] (const std::shared_ptr<EventMouseButton>& event, Position position) {
                 float positionY = (position.y / this->child->getHeight()) * this->child->getScrollHeight();
                 this->child->setScrollTop(positionY - (this->child->getHeight() / 2));
                 return EventCallbackResponse::StopPropagation;
             });
-        return this;
+        return shared_from_this();
     }
 
-    Scrollbar *Scrollbar::setThumbX(Element *thumbX) {
+    std::shared_ptr<Scrollbar> Scrollbar::setThumbX(std::shared_ptr<Element> thumbX) {
         this->thumbX = draggable()
             ->setChild(thumbX)
             ->onMove([this] (Position position, Position absolutePosition, Position diff) {
                 this->child->setScrollLeft(this->child->getScrollLeft() + diff.x * (this->child->getScrollWidth() / this->child->getWidth()));
             });
-        return this;
+        return shared_from_this();
     }
 
-    Scrollbar *Scrollbar::setThumbY(Element *thumbY) {
+    std::shared_ptr<Scrollbar> Scrollbar::setThumbY(std::shared_ptr<Element> thumbY) {
         this->thumbY = draggable()
             ->setChild(thumbY)
             ->onMove([this] (Position position, Position absolutePosition, Position diff) {
                 this->child->setScrollTop(this->child->getScrollTop() + diff.y * (this->child->getScrollHeight() / this->child->getHeight()));
             });
-        return this;
+        return shared_from_this();
     }
 
-    Scrollbar *Scrollbar::setPosition(ScrollbarPosition position) {
+    std::shared_ptr<Scrollbar> Scrollbar::setPosition(ScrollbarPosition position) {
         this->position = position;
-        return this;
+        return shared_from_this();
     }
 
     ScrollbarPosition Scrollbar::getPosition() {
         return this->position;
     }
 
-    Scrollbar *Scrollbar::setVisible(ScrollbarVisible visible) {
+    std::shared_ptr<Scrollbar> Scrollbar::setVisible(ScrollbarVisible visible) {
         this->visible = visible;
-        return this;
+        return shared_from_this();
     }
 
     ScrollbarVisible Scrollbar::getVisible() {
         return this->visible;
     }
 
-    Scrollbar *Scrollbar::setChild(Scrollable *child) {
+    std::shared_ptr<Scrollbar> Scrollbar::setChild(std::shared_ptr<Scrollable> child) {
         this->child = child;
-        return this;
+        return shared_from_this();
     }
 
-    Scrollable *Scrollbar::getChild() {
+    std::shared_ptr<Scrollable> Scrollbar::getChild() {
         return this->child;
     }
 
-    void Scrollbar::scrollToX(int x) {
-        float position = (x / this->child->getWidth()) * this->child->getScrollWidth();
-        this->child->setScrollLeft(position - (this->child->getWidth() / 2));
-    }
-
-    void Scrollbar::scrollToY(int y) {
-        float position = (y / this->child->getHeight()) * this->child->getScrollHeight();
-        this->child->setScrollTop(position - (this->child->getHeight() / 2));
-    }
-
-    Size Scrollbar::getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) {
+    Size Scrollbar::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         return this->child->getSize(ctx, window, boundaries);
     }
 
-    std::vector <RenderElement> Scrollbar::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    std::vector <RenderElement> Scrollbar::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector <RenderElement> children;
 
         if (this->child) {
