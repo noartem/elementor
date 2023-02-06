@@ -4,17 +4,19 @@
 
 #include "Hoverable.h"
 
+#include <utility>
+
 namespace elementor::elements {
     Hoverable *hoverable() {
         return new Hoverable();
     }
 
     Hoverable *Hoverable::onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
-        this->callbackEnter = callback;
+        this->callbackEnter = std::move(callback);
         return this;
     }
 
-    Hoverable *Hoverable::onEnter(std::function<void ()> callback) {
+    Hoverable *Hoverable::onEnter(const std::function<void ()>& callback) {
         this->callbackEnter = [callback](EventMouseMove *event) {
             callback();
             return EventCallbackResponse::None;
@@ -23,11 +25,11 @@ namespace elementor::elements {
     }
 
     Hoverable *Hoverable::onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
-        this->callbackMove = callback;
+        this->callbackMove = std::move(callback);
         return this;
     }
 
-    Hoverable *Hoverable::onMove(std::function<void ()> callback) {
+    Hoverable *Hoverable::onMove(const std::function<void ()>& callback) {
         this->callbackMove = [callback](EventMouseMove *event) {
             callback();
             return EventCallbackResponse::None;
@@ -36,11 +38,11 @@ namespace elementor::elements {
     }
 
     Hoverable *Hoverable::onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback) {
-        this->callbackLeave = callback;
+        this->callbackLeave = std::move(callback);
         return this;
     }
 
-    Hoverable *Hoverable::onLeave(std::function<void ()> callback) {
+    Hoverable *Hoverable::onLeave(const std::function<void ()>& callback) {
         this->callbackLeave = [callback](EventMouseMove *event) {
             callback();
             return EventCallbackResponse::None;

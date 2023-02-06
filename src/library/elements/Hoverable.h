@@ -15,15 +15,15 @@ namespace elementor::elements {
     public:
         Hoverable *onEnter(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
 
-        Hoverable *onEnter(std::function<void ()> callback);
+        Hoverable *onEnter(const std::function<void ()>& callback);
 
         Hoverable *onMove(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
 
-        Hoverable *onMove(std::function<void ()> callback);
+        Hoverable *onMove(const std::function<void ()>& callback);
 
         Hoverable *onLeave(std::function<EventCallbackResponse (EventMouseMove *event)> callback);
 
-        Hoverable *onLeave(std::function<void ()> callback);
+        Hoverable *onLeave(const std::function<void ()>& callback);
 
         Hoverable *setChild(Element *child);
 
