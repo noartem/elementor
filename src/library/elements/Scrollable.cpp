@@ -125,7 +125,7 @@ namespace elementor::elements {
         if (this->hasChild()) {
             RenderElement childElement{};
             childElement.element = this->getChild();
-            this->childSize = this->getChildSize(ctx, window, {rect.size, rect.size});
+            this->childSize = this->getChildSize(ctx, window, {{0, 0}, rect.size});
             childElement.size = this->childSize;
             childElement.position.x = -1 * this->getScrollLeft();
             childElement.position.y = -1 * this->getScrollTop();
