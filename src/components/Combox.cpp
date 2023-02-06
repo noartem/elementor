@@ -1,0 +1,220 @@
+//
+// Created by noartem on 05.02.2023.
+//
+
+#include "Combox.h"
+#include "WithCursor.h"
+#include "Scroll.h"
+
+namespace elementor::components {
+    Combox *combox() {
+        return new Combox();
+    }
+
+    Combox::Combox() {
+        this->paragraphElement = paragraph();
+        this->textElement = text();
+        this->borderElement = border();
+
+        this->tooltipElement = tooltip();
+        this->element = this->tooltipElement
+            ->setChild(clickable()
+                ->setChild(withCursor()
+                    ->setCursorShape(CursorShape::Hand)
+                    ->setChild(background()
+                        ->setColor("#FFFFFF")
+                        ->setChild(borderElement
+                            ->setWidth(4)
+                            ->setColor("#DEEDE6")
+                            ->setRadius(4)
+                            ->setChild(rounded()
+                                ->setRadius(4)
+                                ->setChild(padding()
+                                    ->setPaddings(8)
+                                    ->setChild(height()
+                                        ->setHeight(15)
+                                        ->setChild(paragraphElement
+                                            ->appendChild(textElement
+                                                ->setFontColor("#3F4944")
+                                                ->setFontSize(16)
+                                                ->setFontWeight(500)
+                                                ->setFontFamily("Fira Code")
+                                                ->setText(this->placeholder)))))))))
+                ->onClick([this] () {
+                    if (!this->tooltipElement->getActive()) {
+                        this->tipWidthElement = width();
+                        this->optionsColumnElement = column();
+                        this->updateOptionsElement();
+                        this->tooltipElement
+                            ->setTip(rounded()
+                                ->setRadius(4)
+                                ->setChild(background()
+                                ->setColor("#FFFFFF")
+                                ->setChild(border()
+                                    ->setWidth(4)
+                                    ->setColor("#7FB6A4")
+                                    ->setRadius(4)
+                                    ->setChild(height()
+                                        ->setHeight(300)
+                                        ->setChild(this->tipWidthElement
+                                            ->setWidth(this->rect.size.width)
+                                            ->setChild(scroll()
+                                                ->setChild(this->optionsColumnElement)))))));
+                    }
+
+                    this->tooltipElement->toggleActive();
+                }));
+    }
+
+    void Combox::updateOptionsElement() {
+        if (this->optionsColumnElement == nullptr) {
+            return;
+        }
+
+        this->optionsColumnElement->clearChildren();
+
+        for (auto option : this->options) {
+            Background *backgroundElement = background();
+            this->optionsColumnElement
+                ->appendChild(backgroundElement
+                    ->setColor("#FFFFFF")
+                    ->setChild(hoverable()
+                        ->setChild(clickable()
+                            ->setChild(padding()
+                                ->setPaddings(8)
+                                ->setChild(height()
+                                    ->setHeight(15)
+                                    ->setChild(paragraph()
+                                        ->appendChild(text()
+                                            ->setFontColor("#3F4944")
+                                            ->setFontSize(16)
+                                            ->setFontWeight(500)
+                                            ->setFontFamily("Fira Code")
+                                            ->setText(std::get<1>(option))))))
+                            ->onClick([this, option] () {
+                                this->setValue(option);
+                            }))
+                        ->onEnter([backgroundElement] () {
+                            backgroundElement->setColor("#DCEBE4");
+                        })
+                        ->onLeave([backgroundElement] () {
+                            backgroundElement->setColor("#FFFFFF");
+                        })));
+        }
+    }
+
+    Combox *Combox::setValue(std::tuple<std::string, std::string> option) {
+        this->textElement->setText(std::get<1>(option));
+        this->paragraphElement->forceUpdate();
+        this->tooltipElement->toggleActive();
+
+        auto oldValue = this->value;
+        this->value = std::get<0>(option);
+        if (this->value != oldValue && this->callbackChange) {
+            this->callbackChange(this->value);
+        }
+
+        return this;
+    }
+
+    Combox *Combox::setValue(const std::string &optionValue) {
+        for (auto option: this->options) {
+            if (std::get<0>(option) == optionValue) {
+                this->setValue(option);
+                break;
+            }
+        }
+        return this;
+    }
+
+    std::string Combox::getValue() const {
+        return this->value;
+    }
+
+    Combox *Combox::setOptions(std::vector<std::tuple<std::string, std::string>> newOptions) {
+        this->options = std::move(newOptions);
+        this->updateOptionsElement();
+        return this;
+    }
+
+    Combox *Combox::addOption(std::tuple<std::string, std::string> option) {
+        this->options.push_back(option);
+        this->updateOptionsElement();
+        return this;
+    }
+
+    Combox *Combox::addOption(const std::string &optionValue, const std::string &optionLabel) {
+        this->options.emplace_back(optionValue, optionLabel);
+        this->updateOptionsElement();
+        return this;
+    }
+
+    void Combox::removeOption(size_t i) {
+        this->options.erase(this->options.begin() + i);
+        this->updateOptionsElement();
+    }
+
+    void Combox::removeOption(const std::string &optionValue) {
+        for (unsigned int i = 0; i < this->options.size(); ++i) {
+            if (std::get<0>(this->options[i]) == optionValue) {
+                this->removeOption(i);
+                return;
+            }
+        }
+    }
+
+    void Combox::removeOption(const std::tuple<std::string, std::string> &option) {
+        for (unsigned int i = 0; i < this->options.size(); ++i) {
+            if (this->options[i] == option) {
+                this->removeOption(i);
+                return;
+            }
+        }
+    }
+
+    std::vector<std::tuple<std::string, std::string>> Combox::getOptions() const {
+        return this->options;
+    }
+
+    size_t Combox::getOptionsSize() const {
+        return this->options.size();
+    }
+
+    std::tuple<std::string, std::string> Combox::getOption(size_t i) const {
+        return this->options[i];
+    }
+
+    size_t Combox::optionIndex(const std::tuple<std::string, std::string> &option) const {
+        for (size_t i = 0; i < this->options.size(); ++i) {
+            if (this->options[i] == option) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    size_t Combox::optionIndex(const std::string &optionValue) const {
+        for (size_t i = 0; i < this->options.size(); ++i) {
+            if (std::get<0>(this->options[i]) == optionValue) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    Combox *Combox::onChange(std::function<void(std::string value)> callback) {
+        this->callbackChange = std::move(callback);
+        return this;
+    }
+
+    Combox *Combox::setPlaceholder(const std::string &newPlaceholder) {
+        this->placeholder = newPlaceholder;
+        this->textElement->setText(this->placeholder);
+        this->paragraphElement->forceUpdate();
+        return this;
+    }
+
+    std::string Combox::getPlaceholder() const {
+        return this->placeholder;
+    }
+}

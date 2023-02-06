@@ -81,26 +81,36 @@ std::string tooltipPlacementToString(TooltipPlacement placement) {
 }
 
 Element *tooltipPlacementExample(TooltipPlacement placement) {
+    Tooltip *tooltipElement = tooltip();
+    Background *backgroundElement = background();
     return padding()
         ->setPaddings(64)
-        ->setChild(tooltip()
-            ->setActive(true)
+        ->setChild(tooltipElement
             ->setPlacement(placement)
-            ->setChild(rounded()
-                ->setRadius(8)
-                ->setChild(width()
-                    ->setWidth(192)
-                    ->setChild(height()
-                        ->setHeight(128)
-                        ->setChild(background()
-                            ->setColor("#DEEDE6")
-                            ->setChild(padding()
-                                ->setPaddings(6, 12, 10, 12)
-                                ->setChild(center()
-                                    ->setChild(text()
-                                        ->setFontColor("#006C4C")
-                                        ->setFontSize(12)
-                                        ->setText(tooltipPlacementToString(placement)))))))))
+            ->setChild(hoverable()
+                ->setChild(rounded()
+                    ->setRadius(8)
+                    ->setChild(width()
+                        ->setWidth(192)
+                        ->setChild(height()
+                            ->setHeight(128)
+                            ->setChild(backgroundElement
+                                ->setColor("#DEEDE6")
+                                ->setChild(padding()
+                                    ->setPaddings(6, 12, 10, 12)
+                                    ->setChild(center()
+                                        ->setChild(text()
+                                            ->setFontColor("#006C4C")
+                                            ->setFontSize(12)
+                                            ->setText(tooltipPlacementToString(placement)))))))))
+                ->onEnter([tooltipElement, backgroundElement]() {
+                    tooltipElement->setActive(true);
+                    backgroundElement->setColor("#C2DDD3");
+                })
+                ->onLeave([tooltipElement, backgroundElement]() {
+                    tooltipElement->setActive(false);
+                    backgroundElement->setColor("#DEEDE6");
+                }))
             ->setTip(rounded()
                 ->setRadius(8)
                 ->setChild(background()
@@ -124,7 +134,7 @@ Element *tooltipExample() {
                                                                   {TooltipPlacement::BottomStart, TooltipPlacement::Bottom, TooltipPlacement::BottomEnd},
                                                                   {TooltipPlacement::LeftStart, TooltipPlacement::Left, TooltipPlacement::LeftEnd}};
 
-    for (auto placementGroup : placementGroups) {
+    for (const auto& placementGroup : placementGroups) {
         auto groupExamples = row()
             ->setSpacing(8);
 
@@ -138,12 +148,43 @@ Element *tooltipExample() {
     return examples;
 }
 
+Element *comboxExample() {
+    return combox()
+        ->setPlaceholder("Select an option")
+        ->addOption("1", "Option 1")
+        ->addOption("2", "Option 2")
+        ->addOption("3", "Option 3")
+        ->addOption("4", "Option 4")
+        ->addOption("5", "Option 5")
+        ->addOption("6", "Option 6")
+        ->addOption("7", "Option 7")
+        ->addOption("8", "Option 8")
+        ->addOption("9", "Option 9")
+        ->addOption("10", "Option 10")
+        ->addOption("11", "Option 11")
+        ->addOption("12", "Option 12")
+        ->addOption("13", "Option 13")
+        ->addOption("14", "Option 14")
+        ->addOption("15", "Option 15")
+        ->addOption("16", "Option 16")
+        ->addOption("17", "Option 17")
+        ->addOption("18", "Option 18")
+        ->addOption("19", "Option 19")
+        ->addOption("20", "Option 20");
+}
+
 Element *ExampleStack::getScene(ApplicationContext *ctx) {
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
             ->setChild(column()
                 ->setSpacing(24)
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Combox"))
+                ->appendChild(alignWidth()
+                    ->setChild(comboxExample()))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)

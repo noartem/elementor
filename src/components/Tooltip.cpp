@@ -10,19 +10,13 @@ namespace elementor::components {
         return new Tooltip();
     }
 
-    Tooltip::~Tooltip() {
-        if (this->window) {
-            auto stackElement = this->getStackElement();
-            stackElement->removeChild(this->tipPadding);
-        } else {
-            delete this->tipPadding;
-        }
-
-        delete this->child;
-    }
-
     Tooltip *Tooltip::setActive(bool newActive) {
         this->active = newActive;
+
+        if (!newActive) {
+            this->removeTipFromStack();
+        }
+
         return this;
     }
 
@@ -54,7 +48,7 @@ namespace elementor::components {
 
     Tooltip *Tooltip::setTip(Element *newTip) {
         this->tip = newTip;
-        this->tipPadding->setChild(this->tip);
+        this->tipWrapper->updateChild(this->tip);
         return this;
     }
 
@@ -71,19 +65,37 @@ namespace elementor::components {
         return componentsContext->getStackElement();
     }
 
-    std::vector<RenderElement>
-    Tooltip::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+    void Tooltip::addTipToStack() {
+        if (this->window == nullptr) {
+            return;
+        }
+
+        auto stackElement = this->getStackElement();
+        int tipPaddingIndex = stackElement->childIndex(this->tipWrapper);
+        if (tipPaddingIndex == -1) {
+            stackElement->appendChild(this->tipWrapper);
+        }
+    }
+
+    void Tooltip::removeTipFromStack() {
+        if (this->window == nullptr) {
+            return;
+        }
+
+        auto stackElement = this->getStackElement();
+        stackElement->removeChild(this->tipWrapper);
+        this->tipWrapper = new TipWrapper();
+        this->tipWrapper->updateChild(this->tip);
+    }
+
+    std::vector<RenderElement> Tooltip::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
         this->window = window;
 
         std::vector<RenderElement> children;
         children.push_back({this->child, {0, 0}, rect.size});
 
-        auto stackElement = this->getStackElement();
-        int tipPaddingIndex = stackElement->childIndex(this->tipPadding);
         if (this->active) {
-            if (tipPaddingIndex == -1) {
-                stackElement->appendChild(this->tipPadding);
-            }
+            this->addTipToStack();
 
             auto tipSize = this->tip->getSize(ctx, window, {{0, 0},
                                                             {INFINITY, INFINITY}});
@@ -118,13 +130,39 @@ namespace elementor::components {
                 tipY = rect.position.y + rect.size.height;
             }
 
-            this->tipPadding->setPaddings(tipY / ctx->getPixelScale(), 0, 0, tipX / ctx->getPixelScale());
+            this->tipWrapper->left = tipX;
+            this->tipWrapper->top = tipY;
         } else {
-            if (tipPaddingIndex != -1) {
-                stackElement->removeChild(tipPaddingIndex);
-            }
+            this->removeTipFromStack();
         }
 
         return children;
+    }
+
+    std::vector<RenderElement> TipWrapper::getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) {
+        std::vector<RenderElement> children;
+
+        if (this->hasChild()) {
+            RenderElement childElement{};
+            childElement.element = this->getChild();
+            childElement.position = {this->left, this->top};
+            childElement.size = this->getChild()->getSize(ctx, window, {{0, 0},
+                                                                        {INFINITY, INFINITY}});
+            children.push_back(childElement);
+
+            this->childPosition = childElement.position;
+            this->childSize = childElement.size;
+        }
+
+        return children;
+    }
+
+    EventCallbackResponse TipWrapper::onEvent(EventMouseMove *event) {
+        if (event->x > this->childPosition.x && event->x < this->childPosition.x + this->childSize.width &&
+            event->y > this->childPosition.y && event->y < this->childPosition.y + this->childSize.height) {
+            return EventCallbackResponse::StopPropagation;
+        } else {
+            return EventCallbackResponse::None;
+        }
     }
 }

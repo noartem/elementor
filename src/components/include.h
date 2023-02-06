@@ -6,6 +6,7 @@
 #define ELEMENTOR_COMPONENTS_INCLUDE_H
 
 #include "Button.h"
+#include "Combox.h"
 #include "ComponentsContext.h"
 #include "FPSLabel.h"
 #include "Link.h"

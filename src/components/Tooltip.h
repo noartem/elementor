@@ -24,6 +24,21 @@ namespace elementor::components {
         LeftStart,
     };
 
+    class TipWrapper : public Element, public WithOnMouseMove, public WithChild {
+    public:
+        float left;
+
+        float top;
+
+        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+
+        EventCallbackResponse onEvent(EventMouseMove *event) override;
+
+    private:
+        Position childPosition;
+        Size childSize;
+    };
+
     class Tooltip : public Element {
     public:
         ~Tooltip();
@@ -48,7 +63,7 @@ namespace elementor::components {
 
         Size getSize(ApplicationContext *ctx, Window *window, Boundaries boundaries) override;
 
-        std::vector <RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
+        std::vector<RenderElement> getChildren(ApplicationContext *ctx, Window *window, ElementRect rect) override;
 
     private:
         Window *window;
@@ -57,9 +72,11 @@ namespace elementor::components {
         TooltipPlacement placement = TooltipPlacement::Bottom;
         Element *child = nullptr;
         Element *tip = nullptr;
-        Padding *tipPadding = padding();
+        TipWrapper *tipWrapper = new TipWrapper();
 
         Stack *getStackElement();
+        void addTipToStack();
+        void removeTipFromStack();
     };
 
     Tooltip *tooltip();
