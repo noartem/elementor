@@ -59,6 +59,10 @@ namespace elementor {
         this->children = std::move(newChildren);
     }
 
+    void WithChildren::clearChildren() {
+        this->setChildren({});
+    }
+
     void WithChildren::addChild(Element *child) {
         this->children.push_back(child);
     }

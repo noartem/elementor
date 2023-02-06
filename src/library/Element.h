@@ -132,7 +132,7 @@ namespace elementor {
     public:
         virtual ~WithChild();
 
-        void updateChild(Element *child);
+        virtual void updateChild(Element *child);
 
         Element *getChild() const;
 
@@ -149,6 +149,8 @@ namespace elementor {
         virtual ~WithChildren();
 
         void setChildren(std::vector<Element *> newChildren);
+
+        void clearChildren();
 
         void addChild(Element *child);
 
