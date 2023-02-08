@@ -17,6 +17,9 @@ namespace elementor::components {
         this->borderElement = border();
 
         this->tooltipElement = tooltip();
+        this->tipWidthElement = width();
+        this->optionsColumnElement = column();
+
         this->element = this->tooltipElement
             ->setChild(clickable()
                 ->setChild(withCursor()
@@ -41,29 +44,22 @@ namespace elementor::components {
                                                 ->setFontFamily("Fira Code")
                                                 ->setText(this->placeholder)))))))))
                 ->onClick([this] () {
-                    if (!this->tooltipElement->getActive()) {
-                        this->tipWidthElement = width();
-                        this->optionsColumnElement = column();
-                        this->updateOptionsElement();
-                        this->tooltipElement
-                            ->setTip(rounded()
-                                ->setRadius(4)
-                                ->setChild(background()
-                                ->setColor("#FFFFFF")
-                                ->setChild(border()
-                                    ->setWidth(4)
-                                    ->setColor("#7FB6A4")
-                                    ->setRadius(4)
-                                    ->setChild(height()
-                                        ->setHeight(300)
-                                        ->setChild(this->tipWidthElement
-                                            ->setWidth(this->rect.size.width)
-                                            ->setChild(scroll()
-                                                ->setChild(this->optionsColumnElement)))))));
-                    }
-
-                    this->tooltipElement->toggleActive();
-                }));
+                    this->toggleActive();
+                }))
+            ->setTip(rounded()
+                ->setRadius(4)
+                ->setChild(background()
+                ->setColor("#FFFFFF")
+                ->setChild(border()
+                    ->setWidth(4)
+                    ->setColor("#7FB6A4")
+                    ->setRadius(4)
+                    ->setChild(height()
+                        ->setHeight(300)
+                        ->setChild(this->tipWidthElement
+                            ->setWidth(this->rect.size.width)
+                            ->setChild(scroll()
+                                ->setChild(this->optionsColumnElement)))))));
     }
 
     void Combox::updateOptionsElement() {
@@ -103,10 +99,27 @@ namespace elementor::components {
         }
     }
 
+    void Combox::setActive(bool newValue) {
+        if (newValue) {
+            this->tipWidthElement->setWidth(this->rect.size.width);
+        }
+
+        this->tooltipElement->setActive(newValue);
+    }
+
+    void Combox::toggleActive() {
+        this->setActive(!this->getActive());
+    }
+
+    bool Combox::getActive() const {
+        return this->tooltipElement->getActive();
+    }
+
     std::shared_ptr<Combox> Combox::setValue(std::tuple<std::string, std::string> option) {
         this->textElement->setText(std::get<1>(option));
         this->paragraphElement->forceUpdate();
-        this->tooltipElement->toggleActive();
+
+        this->setActive(false);
 
         auto oldValue = this->value;
         this->value = std::get<0>(option);
@@ -137,7 +150,7 @@ namespace elementor::components {
         return shared_from_this();
     }
 
-    std::shared_ptr<Combox> Combox::addOption(std::tuple<std::string, std::string> option) {
+    std::shared_ptr<Combox> Combox::addOption(const std::tuple<std::string, std::string>& option) {
         this->options.push_back(option);
         this->updateOptionsElement();
         return shared_from_this();

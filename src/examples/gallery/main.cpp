@@ -9,9 +9,7 @@ int main() {
     auto platform = std::make_shared<GLPlatform>();
     auto window = platform->makeWindow({920, 640});
     window->setTitle("Elementor Examples");
-//    auto rootElement = std::make_shared<ExamplesGallery>();
-    auto rootElement = background()
-            ->setColor("#FFAAAA");
+    auto rootElement = std::make_shared<ExamplesGallery>();
     auto componentsContext = std::make_shared<ComponentsContext>(rootElement);
     window->setUserPointer(componentsContext);
     window->setRoot(componentsContext);

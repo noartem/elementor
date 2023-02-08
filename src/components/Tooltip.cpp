@@ -130,8 +130,8 @@ namespace elementor::components {
                 tipY = rect.position.y + rect.size.height;
             }
 
-            this->tipWrapper->left = tipX;
-            this->tipWrapper->top = tipY;
+            this->tipWrapper->position = {tipX, tipY};
+            this->tipWrapper->size = tipSize;
         } else {
             this->removeTipFromStack();
         }
@@ -145,21 +145,17 @@ namespace elementor::components {
         if (this->hasChild()) {
             RenderElement childElement{};
             childElement.element = this->getChild();
-            childElement.position = {this->left, this->top};
-            childElement.size = this->getChild()->getSize(ctx, window, {{0, 0},
-                                                                        {INFINITY, INFINITY}});
+            childElement.position = this->position;
+            childElement.size = this->size;
             children.push_back(childElement);
-
-            this->childPosition = childElement.position;
-            this->childSize = childElement.size;
         }
 
         return children;
     }
 
     EventCallbackResponse TipWrapper::onEvent(std::shared_ptr<EventMouseMove> event) {
-        if (event->x > this->childPosition.x && event->x < this->childPosition.x + this->childSize.width &&
-            event->y > this->childPosition.y && event->y < this->childPosition.y + this->childSize.height) {
+        if (event->x > this->position.x && event->x < this->position.x + this->size.width &&
+            event->y > this->position.y && event->y < this->position.y + this->size.height) {
             return EventCallbackResponse::StopPropagation;
         } else {
             return EventCallbackResponse::None;

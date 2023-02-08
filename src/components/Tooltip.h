@@ -24,19 +24,14 @@ namespace elementor::components {
         LeftStart,
     };
 
-class TipWrapper : public Element, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<TipWrapper> {
+    class TipWrapper : public Element, public WithOnMouseMove, public WithChild {
     public:
-        float left;
-
-        float top;
+        Position position;
+        Size size;
 
         std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
-
-    private:
-        Position childPosition;
-        Size childSize;
     };
 
     class Tooltip : public Element, public std::enable_shared_from_this<Tooltip> {

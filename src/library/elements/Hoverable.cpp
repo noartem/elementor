@@ -40,13 +40,13 @@ namespace elementor::elements {
     }
 
     std::shared_ptr<Hoverable>
-    Hoverable::onLeave(std::function<EventCallbackResponse(std::shared_ptr<EventMouseMove> event)> callback) {
+    Hoverable::onLeave(std::function<EventCallbackResponse()> callback) {
         this->callbackLeave = std::move(callback);
         return shared_from_this();
     }
 
     std::shared_ptr<Hoverable> Hoverable::onLeave(const std::function<void()> &callback) {
-        this->callbackLeave = [callback](const std::shared_ptr<EventMouseMove> &event) {
+        this->callbackLeave = [callback]() {
             callback();
             return EventCallbackResponse::None;
         };
@@ -105,10 +105,22 @@ namespace elementor::elements {
         } else if (this->hovered) {
             this->hovered = false;
             if (this->callbackLeave) {
-                EventCallbackResponse callbackResponse = this->callbackLeave(event);
+                EventCallbackResponse callbackResponse = this->callbackLeave();
                 if (callbackResponse != EventCallbackResponse::None) {
                     return callbackResponse;
                 }
+            }
+        }
+
+        return EventCallbackResponse::None;
+    }
+
+    EventCallbackResponse Hoverable::onEvent(std::shared_ptr<EventMouseWillMove> event) {
+        if (this->hovered) {
+            this->hovered = false;
+            // TODO: Fix it
+            if (this->callbackLeave) {
+                this->callbackLeave();
             }
         }
 

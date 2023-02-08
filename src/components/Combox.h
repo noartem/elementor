@@ -16,7 +16,7 @@ namespace elementor::components {
 
         std::shared_ptr<Combox> setOptions(std::vector<std::tuple<std::string, std::string>> newOptions);
 
-        std::shared_ptr<Combox> addOption(std::tuple<std::string, std::string> option);
+        std::shared_ptr<Combox> addOption(const std::tuple<std::string, std::string>& option);
 
         std::shared_ptr<Combox> addOption(const std::string &value, const std::string &label);
 
@@ -47,6 +47,12 @@ namespace elementor::components {
         std::shared_ptr<Combox> setPlaceholder(const std::string& newPlaceholder);
 
         [[nodiscard]] std::string getPlaceholder() const;
+
+        void setActive(bool active);
+
+        void toggleActive();
+
+        bool getActive() const;
 
     private:
         std::shared_ptr<Paragraph> paragraphElement;

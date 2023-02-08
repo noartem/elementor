@@ -15,6 +15,7 @@ namespace elementor::elements {
             : public Element,
               public WithOnMouseButton,
               public WithOnMouseMove,
+              public WithOnMouseWillMove,
               public WithChild,
               public std::enable_shared_from_this<Clickable> {
     public:
@@ -46,6 +47,8 @@ namespace elementor::elements {
         getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseWillMove> event) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
 

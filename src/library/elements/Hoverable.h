@@ -11,7 +11,7 @@
 #include <functional>
 
 namespace elementor::elements {
-    class Hoverable : public Element, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<Hoverable> {
+    class Hoverable : public Element, public WithOnMouseMove, public WithOnMouseWillMove, public WithChild, public std::enable_shared_from_this<Hoverable> {
     public:
         std::shared_ptr<Hoverable> onEnter(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
 
@@ -21,7 +21,7 @@ namespace elementor::elements {
 
         std::shared_ptr<Hoverable> onMove(const std::function<void ()>& callback);
 
-        std::shared_ptr<Hoverable>onLeave(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
+        std::shared_ptr<Hoverable>onLeave(std::function<EventCallbackResponse ()> callback);
 
         std::shared_ptr<Hoverable>onLeave(const std::function<void ()>& callback);
 
@@ -35,13 +35,15 @@ namespace elementor::elements {
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
 
+        EventCallbackResponse onEvent(std::shared_ptr<EventMouseWillMove> event) override;
+
     private:
         ElementRect rect;
         bool hovered;
 
         std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackEnter;
         std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackMove;
-        std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackLeave;
+        std::function<EventCallbackResponse ()> callbackLeave;
     };
 
     std::shared_ptr<Hoverable>hoverable();

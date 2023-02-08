@@ -13,7 +13,7 @@ std::string ExampleButton::getDescription() {
 }
 
 std::shared_ptr<Element> buttonBasicExample() {
-    auto buttonElement = new Button();
+    auto buttonElement = button();
     const std::string unClickedText = "Click on me...";
     const std::string clickedText = "Clicked!";
 
@@ -25,7 +25,7 @@ std::shared_ptr<Element> buttonBasicExample() {
 }
 
 std::shared_ptr<Element> buttonColorsExample() {
-    auto buttonElement = new Button();
+    auto buttonElement = button();
 
     return hoverable()
         ->setChild(buttonElement

@@ -528,6 +528,9 @@ namespace elementor {
     }
 
     void GLWindow::onMouseMove(double x, double y) {
+        auto willMoveEvent = std::make_shared<EventMouseWillMove>();
+        this->application->dispatchEvent(willMoveEvent);
+
         auto event = std::make_shared<EventMouseMove>(x, y);
         this->application->dispatchEvent(event);
     }

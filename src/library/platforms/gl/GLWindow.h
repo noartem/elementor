@@ -14,7 +14,7 @@
 #include "include/gpu/GrDirectContext.h"
 
 namespace elementor {
-    class GLWindow : public Window, std::enable_shared_from_this<GLWindow> {
+    class GLWindow : public Window, public std::enable_shared_from_this<GLWindow> {
     public:
         GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size);
 

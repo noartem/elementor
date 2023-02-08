@@ -16,6 +16,10 @@ namespace elementor {
             events.emplace_back(EVENT_MOUSE_MOVE);
         }
 
+        if (dynamic_cast<WithOnMouseWillMove *>(element.get()) != nullptr) {
+            events.emplace_back(EVENT_MOUSE_WILL_MOVE);
+        }
+
         if (dynamic_cast<WithOnScroll *>(element.get()) != nullptr) {
             events.emplace_back(EVENT_SCROLL);
         }
@@ -37,6 +41,8 @@ namespace elementor {
             return dynamic_cast<WithOnMouseButton *>(element.get())->onEvent(std::dynamic_pointer_cast<EventMouseButton>(event));
         } else if (eventName == EVENT_MOUSE_MOVE) {
             return dynamic_cast<WithOnMouseMove *>(element.get())->onEvent(std::dynamic_pointer_cast<EventMouseMove>(event));
+        } else if (eventName == EVENT_MOUSE_WILL_MOVE) {
+            return dynamic_cast<WithOnMouseWillMove *>(element.get())->onEvent(std::dynamic_pointer_cast<EventMouseWillMove>(event));
         } else if (eventName == EVENT_SCROLL) {
             return dynamic_cast<WithOnScroll *>(element.get())->onEvent(std::dynamic_pointer_cast<EventScroll>(event));
         } else if (eventName == EVENT_KEYBOARD) {
