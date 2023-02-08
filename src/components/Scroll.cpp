@@ -5,8 +5,8 @@
 #include "Scroll.h"
 
 namespace elementor::components {
-    Scroll *scroll() {
-        return new Scroll();
+    std::shared_ptr<Scroll> scroll() {
+        return std::make_shared<Scroll>();
     }
 
     Scroll::Scroll() {
@@ -27,7 +27,7 @@ namespace elementor::components {
                 ->setDirection(ScrollDirection::Vertical));
     }
 
-    Scroll *Scroll::setChild(const std::shared_ptr<Element>& child) {
+    std::shared_ptr<Scroll> Scroll::setChild(const std::shared_ptr<Element>& child) {
         this->scrollableElement->setChild(child);
         return shared_from_this();
     }

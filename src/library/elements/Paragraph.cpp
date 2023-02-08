@@ -40,7 +40,7 @@ namespace elementor::elements {
     std::shared_ptr<Paragraph> Paragraph::appendChild(const std::shared_ptr<Element> &child) {
         this->addChild(child);
 
-        std::shared_ptr<Text> childText = dynamic_cast<std::shared_ptr<Text>>(child);
+        auto childText = std::dynamic_pointer_cast<Text>(child);
         if (childText) {
             this->childrenText.push_back(childText);
         } else {
@@ -122,7 +122,7 @@ namespace elementor::elements {
         Size childSize = child->getSize(ctx, window, {{0, 0},
                                                       {INFINITY, INFINITY}});
 
-        auto *childPlaceholder = dynamic_cast<std::shared_ptr<ParagraphPlaceholder> >(child);
+        auto childPlaceholder = std::dynamic_pointer_cast<ParagraphPlaceholder>(child);
         if (childPlaceholder) {
             return {childSize.width, childSize.height,
                     childPlaceholder->getSkPlaceholderAlignment(),
@@ -141,7 +141,7 @@ namespace elementor::elements {
         sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
 
         for (const std::shared_ptr<Element> &child: this->getChildrenList()) {
-            std::shared_ptr<Text> childText = dynamic_cast<std::shared_ptr<Text>>(child);
+            auto childText = std::dynamic_pointer_cast<Text>(child);
             if (childText) {
                 builder.pushStyle(childText->makeSkTextStyle(ctx));
                 builder.addText(childText->getText().c_str(), childText->getText().size());

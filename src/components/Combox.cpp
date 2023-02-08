@@ -7,8 +7,8 @@
 #include "Scroll.h"
 
 namespace elementor::components {
-    Combox *combox() {
-        return new Combox();
+    std::shared_ptr<Combox> combox() {
+        return std::make_shared<Combox>();
     }
 
     Combox::Combox() {
@@ -103,7 +103,7 @@ namespace elementor::components {
         }
     }
 
-    Combox *Combox::setValue(std::tuple<std::string, std::string> option) {
+    std::shared_ptr<Combox> Combox::setValue(std::tuple<std::string, std::string> option) {
         this->textElement->setText(std::get<1>(option));
         this->paragraphElement->forceUpdate();
         this->tooltipElement->toggleActive();
@@ -117,7 +117,7 @@ namespace elementor::components {
         return shared_from_this();
     }
 
-    Combox *Combox::setValue(const std::string &optionValue) {
+    std::shared_ptr<Combox> Combox::setValue(const std::string &optionValue) {
         for (auto option: this->options) {
             if (std::get<0>(option) == optionValue) {
                 this->setValue(option);
@@ -131,19 +131,19 @@ namespace elementor::components {
         return this->value;
     }
 
-    Combox *Combox::setOptions(std::vector<std::tuple<std::string, std::string>> newOptions) {
+    std::shared_ptr<Combox> Combox::setOptions(std::vector<std::tuple<std::string, std::string>> newOptions) {
         this->options = std::move(newOptions);
         this->updateOptionsElement();
         return shared_from_this();
     }
 
-    Combox *Combox::addOption(std::tuple<std::string, std::string> option) {
+    std::shared_ptr<Combox> Combox::addOption(std::tuple<std::string, std::string> option) {
         this->options.push_back(option);
         this->updateOptionsElement();
         return shared_from_this();
     }
 
-    Combox *Combox::addOption(const std::string &optionValue, const std::string &optionLabel) {
+    std::shared_ptr<Combox> Combox::addOption(const std::string &optionValue, const std::string &optionLabel) {
         this->options.emplace_back(optionValue, optionLabel);
         this->updateOptionsElement();
         return shared_from_this();
@@ -202,12 +202,12 @@ namespace elementor::components {
         return -1;
     }
 
-    Combox *Combox::onChange(std::function<void(std::string value)> callback) {
+    std::shared_ptr<Combox> Combox::onChange(std::function<void(std::string value)> callback) {
         this->callbackChange = std::move(callback);
         return shared_from_this();
     }
 
-    Combox *Combox::setPlaceholder(const std::string &newPlaceholder) {
+    std::shared_ptr<Combox> Combox::setPlaceholder(const std::string &newPlaceholder) {
         this->placeholder = newPlaceholder;
         this->textElement->setText(this->placeholder);
         this->paragraphElement->forceUpdate();

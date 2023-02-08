@@ -24,7 +24,7 @@ namespace elementor::components {
         LeftStart,
     };
 
-    class TipWrapper : public Element, public WithOnMouseMove, public WithChild {
+class TipWrapper : public Element, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<TipWrapper> {
     public:
         float left;
 
@@ -39,25 +39,23 @@ namespace elementor::components {
         Size childSize;
     };
 
-    class Tooltip : public Element {
+    class Tooltip : public Element, public std::enable_shared_from_this<Tooltip> {
     public:
-        ~Tooltip();
+        std::shared_ptr<Tooltip> setActive(bool active);
 
-        Tooltip *setActive(bool active);
-
-        Tooltip *toggleActive();
+        std::shared_ptr<Tooltip> toggleActive();
 
         [[nodiscard]] bool getActive() const;
 
-        Tooltip *setPlacement(TooltipPlacement placement);
+        std::shared_ptr<Tooltip> setPlacement(TooltipPlacement placement);
 
         [[nodiscard]] TooltipPlacement getPlacement() const;
 
-        Tooltip *setChild(const std::shared_ptr<Element>& child);
+        std::shared_ptr<Tooltip> setChild(const std::shared_ptr<Element>& newChild);
 
         [[nodiscard]] std::shared_ptr<Element> getChild() const;
 
-        Tooltip *setTip(std::shared_ptr<Element> tip);
+        std::shared_ptr<Tooltip> setTip(const std::shared_ptr<Element>& newTip);
 
         std::shared_ptr<Element> getTip();
 
@@ -66,20 +64,20 @@ namespace elementor::components {
         std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
     private:
-        Window *window;
+        std::shared_ptr<Window> window;
 
         bool active = false;
         TooltipPlacement placement = TooltipPlacement::Bottom;
         std::shared_ptr<Element> child = nullptr;
         std::shared_ptr<Element> tip = nullptr;
-        TipWrapper *tipWrapper = new TipWrapper();
+        std::shared_ptr<TipWrapper> tipWrapper = std::make_shared<TipWrapper>();
 
         std::shared_ptr<Stack> getStackElement();
         void addTipToStack();
         void removeTipFromStack();
     };
 
-    Tooltip *tooltip();
+    std::shared_ptr<Tooltip> tooltip();
 }
 
 #endif //ELEMENTOR_COMPONENTS_TOOLTIP_H

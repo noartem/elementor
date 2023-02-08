@@ -6,8 +6,8 @@
 #include "WithCursor.h"
 
 namespace elementor::components {
-    Button *button() {
-        return new Button();
+    std::shared_ptr<Button> button() {
+        return std::make_shared<Button>();
     }
 
     Button::Button() {
@@ -34,11 +34,11 @@ namespace elementor::components {
                 ->setCursorShape(CursorShape::Hand));
     }
 
-    Button *Button::setLabel(std::u32string newLabel) {
+    std::shared_ptr<Button> Button::setLabel(std::u32string newLabel) {
         return this->setLabel(toUTF8(newLabel));
     }
 
-    Button *Button::setLabel(std::string newLabel) {
+    std::shared_ptr<Button> Button::setLabel(std::string newLabel) {
         this->label = std::move(newLabel);
         this->textElement->setText(this->label);
         return shared_from_this();
@@ -48,17 +48,17 @@ namespace elementor::components {
         return this->label;
     }
 
-    Button *Button::onClick(std::function<void()> callback) {
-        this->clickableElement->onClick(std::move(callback));
+    std::shared_ptr<Button> Button::onClick(const std::function<void()>& callback) {
+        this->clickableElement->onClick(callback);
         return shared_from_this();
     }
 
-    Button *Button::setBackgroundColor(std::string hex) {
+    std::shared_ptr<Button> Button::setBackgroundColor(std::string hex) {
         this->backgroundElement->setColor(std::move(hex));
         return shared_from_this();
     }
 
-    Button *Button::setTextColor(std::string hex) {
+    std::shared_ptr<Button> Button::setTextColor(std::string hex) {
         this->textElement->setFontColor(std::move(hex));
         return shared_from_this();
     }

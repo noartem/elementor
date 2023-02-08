@@ -9,17 +9,17 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class Scroll : public Component {
+    class Scroll : public Component, public std::enable_shared_from_this<Scroll> {
     public:
         Scroll();
 
-        Scroll *setChild(const std::shared_ptr<Element>& child);
+        std::shared_ptr<Scroll> setChild(const std::shared_ptr<Element>& child);
 
     private:
         std::shared_ptr<Scrollable> scrollableElement;
     };
 
-    Scroll *scroll();
+    std::shared_ptr<Scroll> scroll();
 }
 
 #endif //ELEMENTOR_COMPONENTS_SCROLL_H

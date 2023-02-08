@@ -62,7 +62,7 @@ namespace elementor {
         std::optional<Size> maxSize;
 
         GLFWwindow *glWindow;
-        GrDirectConstd::shared_ptr<Text> skContext;
+        GrDirectContext *skContext;
         sk_sp<SkSurface> skSurface;
         SkCanvas *skCanvas{};
         void refresh();

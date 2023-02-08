@@ -17,8 +17,6 @@ namespace elementor {
     public:
         GLPlatform();
 
-        ~GLPlatform();
-
         std::shared_ptr<GLWindow> makeWindow(Size size);
 
         void addWindow(const std::shared_ptr<GLWindow>& window);
@@ -39,7 +37,7 @@ namespace elementor {
 
         sk_sp<SkFontMgr> getSkFontManager();
 
-        float getPixelScale() const;
+        [[nodiscard]] float getPixelScale() const;
 
         void setPixelScale(float scale);
 

@@ -5,22 +5,22 @@
 #include "WithCursor.h"
 
 namespace elementor::components {
-    WithCursor *withCursor() {
-        return new WithCursor();
+    std::shared_ptr<WithCursor> withCursor() {
+        return std::make_shared<WithCursor>();
     }
 
     WithCursor::WithCursor() {
         this->hoverableElement = hoverable()
-            ->onEnter([this] () {
-                this->window->getCursor()->set(this->cursorShape);
-            })
-            ->onLeave([this] () {
-                this->window->getCursor()->set(CursorShape::Default);
-            });
+                ->onEnter([this]() {
+                    this->window->getCursor()->set(this->cursorShape);
+                })
+                ->onLeave([this]() {
+                    this->window->getCursor()->set(CursorShape::Default);
+                });
         this->element = this->hoverableElement;
     }
 
-    WithCursor *WithCursor::setCursorShape(CursorShape newCursorShape) {
+    std::shared_ptr<WithCursor> WithCursor::setCursorShape(CursorShape newCursorShape) {
         this->cursorShape = newCursorShape;
         return shared_from_this();
     }
@@ -29,7 +29,7 @@ namespace elementor::components {
         return this->cursorShape;
     }
 
-    WithCursor *WithCursor::setChild(const std::shared_ptr<Element>& child) {
+    std::shared_ptr<WithCursor> WithCursor::setChild(const std::shared_ptr<Element> &child) {
         this->hoverableElement->setChild(child);
         return shared_from_this();
     }

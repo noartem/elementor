@@ -6,7 +6,7 @@
 
 namespace elementor::elements {
     std::shared_ptr<Width> width() {
-        return std::make_shared<Width();
+        return std::make_shared<Width>();
     }
 
     std::shared_ptr<Width> Width::setWidth(float width) {

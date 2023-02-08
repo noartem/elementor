@@ -132,9 +132,9 @@ namespace elementor {
     public:
         virtual void updateChild(const std::shared_ptr<Element>& child);
 
-        std::shared_ptr<Element> getChild() const;
+        [[nodiscard]] std::shared_ptr<Element> getChild() const;
 
-        bool hasChild() const;
+        [[nodiscard]] bool hasChild() const;
 
         void removeChild();
 
@@ -154,11 +154,11 @@ namespace elementor {
 
         void removeChild(const std::shared_ptr<Element>& child);
 
-        std::vector<std::shared_ptr<Element>> getChildrenList() const;
+        [[nodiscard]] std::vector<std::shared_ptr<Element>> getChildrenList() const;
 
-        size_t getChildrenSize() const;
+        [[nodiscard]] size_t getChildrenSize() const;
 
-        std::shared_ptr<Element> getChild(int i) const;
+        [[nodiscard]] std::shared_ptr<Element> getChild(int i) const;
 
         int childIndex(const std::shared_ptr<Element>& child) const;
 

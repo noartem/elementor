@@ -8,8 +8,8 @@
 #include <filesystem>
 
 namespace elementor::components {
-    ScaleControl *scaleControl() {
-        return new ScaleControl();
+    std::shared_ptr<ScaleControl> scaleControl() {
+        return std::make_shared<ScaleControl>();
     }
 
     ScaleControl::ScaleControl() {

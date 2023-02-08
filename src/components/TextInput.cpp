@@ -6,8 +6,8 @@
 #include "WithCursor.h"
 
 namespace elementor::components {
-    TextInput *textInput() {
-        return new TextInput();
+    std::shared_ptr<TextInput> textInput() {
+        return std::make_shared<TextInput>();
     }
 
     TextInput::TextInput() {
@@ -59,7 +59,7 @@ namespace elementor::components {
                 ->onLeave([this, borderElement] () { if (!this->focused) borderElement->setColor("#DEEDE6"); }));
     }
 
-    TextInput *TextInput::setValue(const std::u32string &newValue) {
+    std::shared_ptr<TextInput> TextInput::setValue(const std::u32string &newValue) {
         this->value = newValue;
         if (this->inputableChild) {
             this->inputableChild->setText(newValue);
@@ -71,7 +71,7 @@ namespace elementor::components {
         return this->value;
     }
 
-    TextInput *TextInput::onChange(std::function<std::u32string(std::u32string newValue)> callback) {
+    std::shared_ptr<TextInput> TextInput::onChange(std::function<std::u32string(std::u32string newValue)> callback) {
         this->callbackChange = std::move(callback);
         return shared_from_this();
     }

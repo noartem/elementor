@@ -9,24 +9,24 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class TextInput : public Component {
+    class TextInput : public Component, public std::enable_shared_from_this<TextInput> {
     public:
         TextInput();
 
-        TextInput *setValue(const std::u32string &newValue);
+        std::shared_ptr<TextInput> setValue(const std::u32string &newValue);
 
         std::u32string getValue();
 
-        TextInput *onChange(std::function<std::u32string(std::u32string text)> callback);
+        std::shared_ptr<TextInput> onChange(std::function<std::u32string(std::u32string text)> callback);
 
     private:
-        std::shared_ptr<Inputable>inputableChild;
+        std::shared_ptr<Inputable> inputableChild;
         std::u32string value;
         bool focused;
         std::function<std::u32string(std::u32string text)> callbackChange;
     };
 
-    TextInput *textInput();
+    std::shared_ptr<TextInput> textInput();
 }
 
 #endif //ELEMENTOR_COMPONENTS_TEXT_INPUT_H

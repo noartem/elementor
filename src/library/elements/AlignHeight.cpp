@@ -4,8 +4,6 @@
 
 #include "AlignHeight.h"
 
-#include <utility>
-
 namespace elementor::elements {
     std::shared_ptr<AlignHeight> alignHeight() {
         return std::make_shared<AlignHeight>();

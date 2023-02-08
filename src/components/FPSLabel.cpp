@@ -5,8 +5,8 @@
 #include "FPSLabel.h"
 
 namespace elementor::components {
-    FPSLabel *fpsLabel() {
-        return new FPSLabel();
+    std::shared_ptr<FPSLabel> fpsLabel() {
+        return std::make_shared<FPSLabel>();
     }
 
     FPSLabel::FPSLabel() {

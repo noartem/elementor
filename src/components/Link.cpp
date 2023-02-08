@@ -6,8 +6,8 @@
 #include "WithCursor.h"
 
 namespace elementor::components {
-    Link *link() {
-        return new Link();
+    std::shared_ptr<Link> link() {
+        return std::make_shared<Link>();
     }
 
     Link::Link() {
@@ -28,14 +28,14 @@ namespace elementor::components {
             });
     }
 
-    Link *Link::setLabel(std::u32string label) {
-        this->label = toUTF8(label);
+    std::shared_ptr<Link> Link::setLabel(std::u32string newLabel) {
+        this->label = toUTF8(newLabel);
         this->textElement->setText(this->label);
         return shared_from_this();
     }
 
-    Link *Link::setLabel(std::string label) {
-        this->label = label;
+    std::shared_ptr<Link> Link::setLabel(std::string newLabel) {
+        this->label = newLabel;
         this->textElement->setText(this->label);
         return shared_from_this();
     }
@@ -44,12 +44,12 @@ namespace elementor::components {
         return this->label;
     }
 
-    Link *Link::setURL(std::u32string url) {
+    std::shared_ptr<Link> Link::setURL(std::u32string url) {
         this->url = toUTF8(url);
         return shared_from_this();
     }
 
-    Link *Link::setURL(std::string url) {
+    std::shared_ptr<Link> Link::setURL(std::string url) {
         this->url = url;
         return shared_from_this();
     }
@@ -58,7 +58,7 @@ namespace elementor::components {
         return this->url;
     }
 
-    Link *Link::setTextElement(std::shared_ptr<Text> textElement) {
+    std::shared_ptr<Link> Link::setTextElement(std::shared_ptr<Text> textElement) {
         this->textElement = textElement;
         this->render();
         return shared_from_this();

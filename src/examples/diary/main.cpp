@@ -7,11 +7,11 @@
 #include "DiaryApplication.h"
 
 int main() {
-    auto *diaryService = new DiaryService();
-    auto *diaryApplication = new DiaryApplication(diaryService);
+    auto diaryService = std::make_shared<DiaryService>();
+    auto diaryApplication = std::make_shared<DiaryApplication>(diaryService);
 
-    auto *platform = new GLPlatform();
-    auto *window = platform->makeWindow({920, 640});
+    auto platform = std::make_shared<GLPlatform>();
+    auto window = platform->makeWindow({920, 640});
     window->setTitle("Diary");
     window->setRoot(diaryApplication->makeElement());
     window->setMinSize({630, 320});

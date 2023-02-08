@@ -81,7 +81,7 @@ std::string tooltipPlacementToString(TooltipPlacement placement) {
 }
 
 std::shared_ptr<Element> tooltipPlacementExample(TooltipPlacement placement) {
-    Tooltip *tooltipElement = tooltip();
+    auto tooltipElement = tooltip();
     std::shared_ptr<Background> backgroundElement = background();
     return padding()
         ->setPaddings(64)

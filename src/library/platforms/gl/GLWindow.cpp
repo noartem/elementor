@@ -17,8 +17,8 @@
 #define GL_RGBA8 0x8058
 
 namespace elementor {
-    std::shared_ptr<GLWindow> getGLFWWindowGLWindow(GLFWwindow *window) {
-        return static_cast<std::shared_ptr<GLWindow>>(glfwGetWindowUserPointer(window));
+    GLWindow *getGLFWWindowGLWindow(GLFWwindow *window) {
+        return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }
 
     GLWindow::GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
@@ -34,42 +34,42 @@ namespace elementor {
         this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
 
         glfwSetWindowRefreshCallback(glWindow, [](GLFWwindow *glfwWindow) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->draw();
         });
 
         glfwSetWindowPosCallback(glWindow, [](GLFWwindow *glfwWindow, int xPosition, int yPosition) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->monitor = nullptr;
         });
 
         glfwSetWindowCloseCallback(glWindow, [](GLFWwindow *glfwWindow) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->close();
         });
 
         glfwSetKeyCallback(glWindow, [](GLFWwindow *glfwWindow, int key, int scancode, int action, int mods) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onKeyboard(key, scancode, action, mods);
         });
 
         glfwSetCharCallback(glWindow, [](GLFWwindow *glfwWindow, unsigned int codepoint) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onChar(codepoint);
         });
 
         glfwSetMouseButtonCallback(glWindow, [](GLFWwindow *glfwWindow, int button, int action, int mods) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseButton(button, action, mods);
         });
 
         glfwSetCursorPosCallback(glWindow, [](GLFWwindow *glfwWindow, double x, double y) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onMouseMove(x, y);
         });
 
         glfwSetScrollCallback(glWindow, [](GLFWwindow *glfwWindow, double xOffset, double yOffset) {
-            std::shared_ptr<GLWindow> window = getGLFWWindowGLWindow(glfwWindow);
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onScroll(xOffset, yOffset);
         });
     }

@@ -93,16 +93,15 @@ namespace elementor::elements {
             RenderElement child;
             child.element = this->getChild(i);
 
-            std::shared_ptr<Flexible> childFlexible = dynamic_cast<std::shared_ptr<Flexible>>(child.element);
-
-            if (childFlexible == NULL) {
-                child.size = child.element->getSize(ctx, window, sizedChildBoundaries);
-                fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
-            } else {
+            auto childFlexible = std::dynamic_pointer_cast<Flexible>(child.element);
+            if (childFlexible) {
                 float childGrow = childFlexible->getGrow();
                 std::tuple<int, float> flexibleChild(i, childGrow);
-                flexibleChildren.push_back(flexibleChild);
+                flexibleChildren.emplace_back(flexibleChild);
                 flexibleGrowsSum += childGrow;
+            } else {
+                child.size = child.element->getSize(ctx, window, sizedChildBoundaries);
+                fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
             }
 
             children.push_back(child);

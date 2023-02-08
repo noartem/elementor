@@ -8,7 +8,7 @@
 #include "utility.h"
 #include "Example.h"
 
-class ExampleAnimation: public Example {
+class ExampleAnimation : public Example {
     std::string getName() override;
 
     std::string getDescription() override;
@@ -16,31 +16,21 @@ class ExampleAnimation: public Example {
     std::shared_ptr<Element> getScene(std::shared_ptr<ApplicationContext> ctx) override;
 };
 
-class AnimatedTextExample: public Component {
+class AnimatedTextExample : public Component {
 public:
-    AnimatedTextExample(std::string label, int duration) {
-        this->label = label;
-        this->duration = duration;
-        render();
-    }
+    AnimatedTextExample(const std::string &label, int duration);
 
 private:
     std::string label;
     int duration;
     std::shared_ptr<Background> buttonBackground;
     std::shared_ptr<Text> buttonText;
-    Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
-
-    void render();
+    std::shared_ptr<Animation<std::chrono::milliseconds>> buttonAnimation = nullptr;
 };
 
-class AnimatedPositionExample: public Component {
+class AnimatedPositionExample : public Component {
 public:
-    AnimatedPositionExample(std::string label, int duration) {
-        this->label = label;
-        this->duration = duration;
-        render();
-    }
+    AnimatedPositionExample(const std::string &label, int duration);
 
 private:
     std::string label;
@@ -48,9 +38,7 @@ private:
     std::shared_ptr<Background> buttonBackground;
     std::shared_ptr<Text> buttonText;
     std::shared_ptr<Padding> buttonPadding;
-    Animation<std::chrono::milliseconds> *buttonAnimation = NULL;
-
-    void render();
+    std::shared_ptr<Animation<std::chrono::milliseconds>> buttonAnimation = nullptr;
 };
 
 #endif //GALLERY_EXAMPLE_ANIMATION_H

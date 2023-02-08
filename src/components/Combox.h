@@ -10,15 +10,15 @@
 #include "Tooltip.h"
 
 namespace elementor::components {
-    class Combox : public Component {
+    class Combox : public Component, public std::enable_shared_from_this<Combox> {
     public:
         Combox();
 
-        Combox *setOptions(std::vector<std::tuple<std::string, std::string>> newOptions);
+        std::shared_ptr<Combox> setOptions(std::vector<std::tuple<std::string, std::string>> newOptions);
 
-        Combox *addOption(std::tuple<std::string, std::string> option);
+        std::shared_ptr<Combox> addOption(std::tuple<std::string, std::string> option);
 
-        Combox *addOption(const std::string &value, const std::string &label);
+        std::shared_ptr<Combox> addOption(const std::string &value, const std::string &label);
 
         void removeOption(size_t i);
 
@@ -36,15 +36,15 @@ namespace elementor::components {
 
         [[nodiscard]] size_t optionIndex(const std::string &optionValue) const;
 
-        Combox *setValue(std::tuple<std::string, std::string> option);
+        std::shared_ptr<Combox> setValue(std::tuple<std::string, std::string> option);
 
-        Combox *setValue(const std::string &optionValue);
+        std::shared_ptr<Combox> setValue(const std::string &optionValue);
 
         [[nodiscard]] std::string getValue() const;
 
-        Combox *onChange(std::function<void(std::string value)> callback);
+        std::shared_ptr<Combox> onChange(std::function<void(std::string value)> callback);
 
-        Combox *setPlaceholder(const std::string& newPlaceholder);
+        std::shared_ptr<Combox> setPlaceholder(const std::string& newPlaceholder);
 
         [[nodiscard]] std::string getPlaceholder() const;
 
@@ -52,7 +52,7 @@ namespace elementor::components {
         std::shared_ptr<Paragraph> paragraphElement;
         std::shared_ptr<Text> textElement;
         std::shared_ptr<Border> borderElement;
-        Tooltip *tooltipElement;
+        std::shared_ptr<Tooltip> tooltipElement;
         std::shared_ptr<Column> optionsColumnElement = nullptr;
         std::shared_ptr<Width> tipWidthElement = nullptr;
         std::vector<std::tuple<std::string, std::string>> options;
@@ -63,7 +63,7 @@ namespace elementor::components {
         void updateOptionsElement();
     };
 
-    Combox *combox();
+    std::shared_ptr<Combox> combox();
 }
 
 #endif //ELEMENTOR_COMPONENTS_COMBOX_H

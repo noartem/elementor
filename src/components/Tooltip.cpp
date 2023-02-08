@@ -6,11 +6,11 @@
 #include "ComponentsContext.h"
 
 namespace elementor::components {
-    Tooltip *tooltip() {
-        return new Tooltip();
+    std::shared_ptr<Tooltip> tooltip() {
+        return std::make_shared<Tooltip>();
     }
 
-    Tooltip *Tooltip::setActive(bool newActive) {
+    std::shared_ptr<Tooltip> Tooltip::setActive(bool newActive) {
         this->active = newActive;
 
         if (!newActive) {
@@ -20,7 +20,7 @@ namespace elementor::components {
         return shared_from_this();
     }
 
-    Tooltip *Tooltip::toggleActive() {
+    std::shared_ptr<Tooltip> Tooltip::toggleActive() {
         return this->setActive(!this->active);
     }
 
@@ -28,7 +28,7 @@ namespace elementor::components {
         return this->active;
     }
 
-    Tooltip *Tooltip::setPlacement(TooltipPlacement newPlacement) {
+    std::shared_ptr<Tooltip> Tooltip::setPlacement(TooltipPlacement newPlacement) {
         this->placement = newPlacement;
         return shared_from_this();
     }
@@ -37,7 +37,7 @@ namespace elementor::components {
         return this->placement;
     }
 
-    Tooltip *Tooltip::setChild(std::shared_ptr<Element> newChild) {
+    std::shared_ptr<Tooltip> Tooltip::setChild(const std::shared_ptr<Element>& newChild) {
         this->child = newChild;
         return shared_from_this();
     }
@@ -46,7 +46,7 @@ namespace elementor::components {
         return this->child;
     }
 
-    Tooltip *Tooltip::setTip(std::shared_ptr<Element> newTip) {
+    std::shared_ptr<Tooltip> Tooltip::setTip(const std::shared_ptr<Element>& newTip) {
         this->tip = newTip;
         this->tipWrapper->updateChild(this->tip);
         return shared_from_this();
@@ -61,7 +61,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<Stack> Tooltip::getStackElement() {
-        auto componentsContext = static_cast<ComponentsConstd::shared_ptr<Text>>(window->getUserPointer());
+        auto componentsContext = std::static_pointer_cast<ComponentsContext>(this->window->getUserPointer());
         return componentsContext->getStackElement();
     }
 
@@ -84,7 +84,7 @@ namespace elementor::components {
 
         auto stackElement = this->getStackElement();
         stackElement->removeChild(this->tipWrapper);
-        this->tipWrapper = new TipWrapper();
+        this->tipWrapper = std::make_shared<TipWrapper>();
         this->tipWrapper->updateChild(this->tip);
     }
 

@@ -34,15 +34,15 @@ namespace elementor {
     EventCallbackResponse callElementEventHandler(const std::shared_ptr<Element>& element, const std::shared_ptr<Event>& event) {
         std::string eventName = event->getName();
         if (eventName == EVENT_MOUSE_BUTTON) {
-            return dynamic_cast<WithOnMouseButton *>(element.get())->onEvent(dynamic_cast<std::shared_ptr<EventMouseButton>>(event));
+            return dynamic_cast<WithOnMouseButton *>(element.get())->onEvent(std::dynamic_pointer_cast<EventMouseButton>(event));
         } else if (eventName == EVENT_MOUSE_MOVE) {
-            return dynamic_cast<WithOnMouseMove *>(element.get())->onEvent(dynamic_cast<std::shared_ptr<EventMouseMove>>(event));
+            return dynamic_cast<WithOnMouseMove *>(element.get())->onEvent(std::dynamic_pointer_cast<EventMouseMove>(event));
         } else if (eventName == EVENT_SCROLL) {
-            return dynamic_cast<WithOnScroll *>(element.get())->onEvent(dynamic_cast<std::shared_ptr<EventScroll>>(event));
+            return dynamic_cast<WithOnScroll *>(element.get())->onEvent(std::dynamic_pointer_cast<EventScroll>(event));
         } else if (eventName == EVENT_KEYBOARD) {
-            return dynamic_cast<WithOnKeyboard *>(element.get())->onEvent(dynamic_cast<std::shared_ptr<EventKeyboard>>(event));
+            return dynamic_cast<WithOnKeyboard *>(element.get())->onEvent(std::dynamic_pointer_cast<EventKeyboard>(event));
         } else if (eventName == EVENT_CHAR) {
-            return dynamic_cast<WithOnChar *>(element.get())->onEvent(dynamic_cast<std::shared_ptr<EventChar>>(event));
+            return dynamic_cast<WithOnChar *>(element.get())->onEvent(std::dynamic_pointer_cast<EventChar>(event));
         }
 
         return EventCallbackResponse::None;

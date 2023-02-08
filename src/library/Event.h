@@ -267,7 +267,7 @@ namespace elementor {
 
     class EventChar : public Event {
     public:
-        EventChar(char32_t value) {
+        explicit EventChar(char32_t value) {
             this->value = value;
         }
 

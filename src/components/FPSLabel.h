@@ -9,7 +9,7 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class FPSLabel : public Component {
+    class FPSLabel : public Component, public std::enable_shared_from_this<FPSLabel> {
     public:
         FPSLabel();
 
@@ -19,7 +19,7 @@ namespace elementor::components {
         std::shared_ptr<Text> textElement;
     };
 
-    FPSLabel *fpsLabel();
+    std::shared_ptr<FPSLabel> fpsLabel();
 }
 
 #endif //ELEMENTOR_COMPONENTS_FPS_LABEL_H

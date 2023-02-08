@@ -11,12 +11,12 @@
 
 class DiaryApplication {
 public:
-    DiaryApplication(DiaryService *diaryService);
+    DiaryApplication(std::shared_ptr<DiaryService> diaryService);
 
     std::shared_ptr<Element> makeElement();
 
 private:
-    DiaryService *diaryService;
+    std::shared_ptr<DiaryService> diaryService;
     std::shared_ptr<Element> child;
     std::shared_ptr<Empty> activePageElement;
     PAGE_CHANGER pageChanger = [this] (Page *page) { this->changePage(page); };

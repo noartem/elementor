@@ -11,14 +11,14 @@
 
 class PageEntry: public Page {
 public:
-    PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger);
+    PageEntry(std::shared_ptr<DiaryService> service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger);
 
     std::string getName() override;
 
     std::shared_ptr<Element> makeElement() override;
 
 private:
-    DiaryService *service;
+    std::shared_ptr<DiaryService> service;
     DiaryEntry *entry;
     PAGE_CHANGER pageChanger;
     Page *backPage;

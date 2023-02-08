@@ -162,7 +162,7 @@ std::shared_ptr<Element> DiaryApplication::makeControls() {
                 ->setChild(this->makeSaveControl())));
 }
 
-DiaryApplication::DiaryApplication(DiaryService *diaryService) {
+DiaryApplication::DiaryApplication(std::shared_ptr<DiaryService> diaryService) {
     this->diaryService = diaryService;
     this->activePageElement = empty()->setChild(this->makeAboutSection());
 }

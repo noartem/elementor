@@ -9,23 +9,23 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class Link : public Component {
+    class Link : public Component, public std::enable_shared_from_this<Link> {
     public:
         Link();
 
-        Link *setLabel(std::u32string label);
+        std::shared_ptr<Link> setLabel(std::u32string newLabel);
 
-        Link *setLabel(std::string label);
+        std::shared_ptr<Link> setLabel(std::string newLabel);
 
         std::string getLabel();
 
-        Link *setURL(std::u32string url);
+        std::shared_ptr<Link> setURL(std::u32string url);
 
-        Link *setURL(std::string url);
+        std::shared_ptr<Link> setURL(std::string url);
 
         std::string getURL();
 
-        Link *setTextElement(std::shared_ptr<Text> textElement);
+        std::shared_ptr<Link> setTextElement(std::shared_ptr<Text> textElement);
 
         std::shared_ptr<Text> getTextElement();
 
@@ -37,7 +37,7 @@ namespace elementor::components {
         void render();
     };
 
-    Link *link();
+    std::shared_ptr<Link> link();
 }
 
 #endif //ELEMENTOR_COMPONENTS_LINK_H

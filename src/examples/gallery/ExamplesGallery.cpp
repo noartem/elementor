@@ -33,8 +33,8 @@ ExamplesGallery::ExamplesGallery() {
                                         this->ctx->requestNextFrame([this] () {
                                             auto window = this->ctx->makeWindow({920, 640});
                                             window->setTitle("Elementor Examples");
-                                            auto rootElement = new ExamplesGallery();
-                                            auto componentsContext = new ComponentsContext(rootElement);
+                                            auto rootElement = std::make_shared<ExamplesGallery>();
+                                            auto componentsContext = std::make_shared<ComponentsContext>(rootElement);
                                             window->setUserPointer(componentsContext);
                                             window->setRoot(componentsContext);
                                             window->setMinSize({630, 320});

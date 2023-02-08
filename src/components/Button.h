@@ -9,21 +9,21 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class Button : public Component {
+    class Button : public Component, public std::enable_shared_from_this<Button> {
     public:
         Button();
 
-        Button *setLabel(std::u32string newLabel);
+        std::shared_ptr<Button> setLabel(std::u32string newLabel);
 
-        Button *setLabel(std::string newLabel);
+        std::shared_ptr<Button> setLabel(std::string newLabel);
 
         std::string getLabel();
 
-        Button *onClick(std::function<void()> callback);
+        std::shared_ptr<Button> onClick(const std::function<void()>& callback);
 
-        Button *setBackgroundColor(std::string hex);
+        std::shared_ptr<Button> setBackgroundColor(std::string hex);
 
-        Button *setTextColor(std::string hex);
+        std::shared_ptr<Button> setTextColor(std::string hex);
 
     private:
         std::string label;
@@ -32,7 +32,7 @@ namespace elementor::components {
         std::shared_ptr<Background> backgroundElement;
     };
 
-    Button *button();
+    std::shared_ptr<Button> button();
 }
 
 #endif //ELEMENTOR_COMPONENTS_BUTTON_H

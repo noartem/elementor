@@ -100,14 +100,14 @@ namespace elementor {
     template<typename Duration = std::chrono::milliseconds>
     std::shared_ptr<Animation<Duration>>
     animation(std::shared_ptr<ApplicationContext> ctx, int duration, std::function<void(float value)> callback) {
-        return new Animation<Duration>(ctx, duration, nullptr, callback);
+        return std::make_shared<Animation<Duration>>(ctx, duration, nullptr, callback);
     }
 
     template<typename Duration = std::chrono::milliseconds>
     std::shared_ptr<Animation<Duration>>
     animation(std::shared_ptr<ApplicationContext> ctx, int duration, std::function<float(float value)> timing,
               std::function<void(float value)> callback) {
-        return new Animation<Duration>(ctx, duration, timing, callback);
+        return std::make_shared<Animation<Duration>>(ctx, duration, timing, callback);
     }
 }
 

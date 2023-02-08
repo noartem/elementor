@@ -12,7 +12,10 @@ std::string ExampleAnimation::getDescription() {
     return "Element changes made smooth";
 }
 
-void AnimatedTextExample::render() {
+AnimatedTextExample::AnimatedTextExample(const std::string& label, int duration) {
+    this->label = label;
+    this->duration = duration;
+
     this->buttonBackground = background();
 
     this->buttonText = text()
@@ -40,7 +43,7 @@ void AnimatedTextExample::render() {
             ->onEnter([this] () { this->buttonBackground->setColor("#C2DDD3"); })
             ->onLeave([this] () { this->buttonBackground->setColor("#DEEDE6"); }))
         ->onClick([this] () {
-            if (this->buttonAnimation != NULL) {
+            if (this->buttonAnimation != nullptr) {
                 this->buttonAnimation->pause();
             }
 
@@ -56,7 +59,10 @@ void AnimatedTextExample::render() {
         });
 }
 
-void AnimatedPositionExample::render() {
+AnimatedPositionExample::AnimatedPositionExample(const std::string& label, int duration) {
+    this->label = label;
+    this->duration = duration;
+
     this->buttonBackground = background();
 
     this->buttonText = text()
@@ -115,23 +121,23 @@ std::shared_ptr<Element> ExampleAnimation::getScene(std::shared_ptr<ApplicationC
                     ->setFontSize(16)
                     ->setText("Text"))
                 ->appendChild(alignWidth()
-                    ->setChild(new AnimatedTextExample("0.5s", 500)))
+                    ->setChild(std::make_shared<AnimatedTextExample>("0.5s", 500)))
                 ->appendChild(alignWidth()
-                    ->setChild(new AnimatedTextExample("1s", 1000)))
+                    ->setChild(std::make_shared<AnimatedTextExample>("1s", 1000)))
                 ->appendChild(alignWidth()
-                    ->setChild(new AnimatedTextExample("5s", 5000)))
+                    ->setChild(std::make_shared<AnimatedTextExample>("5s", 5000)))
                 ->appendChild(alignWidth()
-                    ->setChild(new AnimatedTextExample("10s", 10000)))
+                    ->setChild(std::make_shared<AnimatedTextExample>("10s", 10000)))
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)
                     ->setText("Position"))
                 ->appendChild(expandedWidth()
-                    ->setChild(new AnimatedPositionExample("0.5s", 500)))
+                    ->setChild(std::make_shared<AnimatedPositionExample>("0.5s", 500)))
                 ->appendChild(expandedWidth()
-                    ->setChild(new AnimatedPositionExample("1s", 1000)))
+                    ->setChild(std::make_shared<AnimatedPositionExample>("1s", 1000)))
                 ->appendChild(expandedWidth()
-                    ->setChild(new AnimatedPositionExample("5s", 5000)))
+                    ->setChild(std::make_shared<AnimatedPositionExample>("5s", 5000)))
                 ->appendChild(expandedWidth()
-                    ->setChild(new AnimatedPositionExample("10s", 10000)))));
+                    ->setChild(std::make_shared<AnimatedPositionExample>("10s", 10000)))));
 }

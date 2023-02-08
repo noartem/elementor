@@ -9,7 +9,7 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class ScaleControl : public Component {
+    class ScaleControl : public Component, public std::enable_shared_from_this<ScaleControl> {
     public:
         ScaleControl();
 
@@ -27,7 +27,7 @@ namespace elementor::components {
         void decrementScale();
     };
 
-    ScaleControl *scaleControl();
+    std::shared_ptr<ScaleControl> scaleControl();
 }
 
 #endif //ELEMENTOR_COMPONENTS_SCALE_CONTROL_H

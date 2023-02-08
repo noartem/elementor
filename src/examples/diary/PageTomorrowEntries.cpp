@@ -6,7 +6,7 @@
 #include "PageEntry.h"
 #include "DiaryEntryElement.h"
 
-PageTomorrowEntries::PageTomorrowEntries(DiaryService *service, PAGE_CHANGER pageChanger) {
+PageTomorrowEntries::PageTomorrowEntries(std::shared_ptr<DiaryService> service, PAGE_CHANGER pageChanger) {
     this->service = service;
     this->pageChanger = pageChanger;
 }

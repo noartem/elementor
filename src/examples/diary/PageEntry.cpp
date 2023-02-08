@@ -4,7 +4,7 @@
 
 #include "PageEntry.h"
 
-PageEntry::PageEntry(DiaryService *service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger) {
+PageEntry::PageEntry(std::shared_ptr<DiaryService> service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger) {
     this->service = service;
     this->entry = entry;
     this->backPage = backPage;
