@@ -12,7 +12,7 @@ class ExamplesGallery : public Component {
 public:
     ExamplesGallery();
 
-    void setActiveExample(Example *activeExample);
+    void setActiveExample(const std::shared_ptr<Example>& activeExample);
 
 private:
     std::shared_ptr<Empty> activeExampleElement;

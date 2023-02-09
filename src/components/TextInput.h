@@ -13,7 +13,7 @@ namespace elementor::components {
     public:
         TextInput();
 
-        std::shared_ptr<TextInput> setValue(const std::u32string &newValue);
+        std::shared_ptr<TextInput> setValue(std::u32string newValue);
 
         std::u32string getValue();
 

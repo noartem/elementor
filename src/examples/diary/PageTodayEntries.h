@@ -11,7 +11,7 @@
 
 class PageTodayEntries: public Page, public std::enable_shared_from_this<PageTodayEntries> {
 public:
-    PageTodayEntries(std::shared_ptr<DiaryService> service, PAGE_CHANGER pageChanger);
+    PageTodayEntries(const std::shared_ptr<DiaryService>& service, const PAGE_CHANGER& pageChanger);
 
     std::string getName() override;
 

@@ -9,9 +9,9 @@
 #include "Page.h"
 #include "DiaryService.h"
 
-class PageEntry: public Page {
+class PageEntry: public Page, public std::enable_shared_from_this<PageEntry> {
 public:
-    PageEntry(std::shared_ptr<DiaryService> service, std::shared_ptr<DiaryEntry> entry, std::shared_ptr<Page> backPage, PAGE_CHANGER pageChanger);
+    PageEntry(const std::shared_ptr<DiaryService>& service, const std::shared_ptr<DiaryEntry>& entry, const std::shared_ptr<Page>& backPage, const PAGE_CHANGER& pageChanger);
 
     std::string getName() override;
 
@@ -22,9 +22,9 @@ private:
     std::shared_ptr<DiaryEntry> entry;
     PAGE_CHANGER pageChanger;
     std::shared_ptr<Page> backPage;
-    std::shared_ptr<TextInput> inputDatetime;
-    std::shared_ptr<TextInput> inputDuration;
-    std::shared_ptr<TextInput> inputPlace;
+    std::u32string datetime;
+    std::u32string duration;
+    std::u32string place;
 
     void saveEntry();
 

@@ -4,18 +4,13 @@
 
 #include "PageEntry.h"
 
-PageEntry::PageEntry(std::shared_ptr<DiaryService> service, std::shared_ptr<DiaryEntry> entry, std::shared_ptr<Page> backPage, PAGE_CHANGER pageChanger) {
+#include <iostream>
+
+PageEntry::PageEntry(const std::shared_ptr<DiaryService>& service, const std::shared_ptr<DiaryEntry>& entry, const std::shared_ptr<Page>& backPage, const PAGE_CHANGER& pageChanger) {
     this->service = service;
     this->entry = entry;
     this->backPage = backPage;
     this->pageChanger = pageChanger;
-
-    this->inputDatetime = textInput()
-        ->setValue(entry == NULL ? U"2022-07-07 08:00" : entry->getDatetimeFormatted());
-    this->inputDuration = textInput()
-        ->setValue(entry == NULL ? U"1" : entry->getDurationFormatted());
-    this->inputPlace = textInput()
-        ->setValue(entry == NULL ? U"" : entry->getPlace());
 }
 
 std::string PageEntry::getName() {
@@ -23,12 +18,9 @@ std::string PageEntry::getName() {
 }
 
 void PageEntry::saveEntry() {
-    std::u32string datetime = this->inputDatetime->getValue();
-    std::u32string durationU32 = this->inputDuration->getValue();
-    float duration = std::stof(toUTF8(durationU32));
-    std::u32string place = this->inputPlace->getValue();
-    auto newEntry = std::make_shared<DiaryEntry>(datetime, duration, place);
-    if (this->entry != NULL) {
+    float duration = std::stof(toUTF8(this->duration));
+    auto newEntry = std::make_shared<DiaryEntry>(this->datetime, duration, this->place);
+    if (this->entry != nullptr) {
         this->service->remove(this->entry);
     }
     this->service->add(newEntry);
@@ -41,6 +33,7 @@ void PageEntry::deleteEntry() {
 }
 
 std::shared_ptr<Element> PageEntry::makeDatetimeField() {
+    auto thisPointer = shared_from_this();
     return column()
         ->setSpacing(8)
         ->appendChild(row()
@@ -54,10 +47,18 @@ std::shared_ptr<Element> PageEntry::makeDatetimeField() {
                 ->setFontSize(18)
                 ->setText("In format \"YYYY-mm-dd HH:MM\"")))
         ->appendChild(expandedWidth()
-            ->setChild(this->inputDatetime));
+            ->setChild(textInput()
+                ->onChange([thisPointer] (std::u32string newValue) {
+                    thisPointer->datetime = newValue;
+                    return newValue;
+                })
+                ->setValue(entry == nullptr
+                    ? U"2022-07-07 08:00"
+                    : entry->getDatetimeFormatted())));
 }
 
 std::shared_ptr<Element> PageEntry::makeDurationField() {
+    auto thisPointer = shared_from_this();
     return column()
         ->setSpacing(8)
         ->appendChild(text()
@@ -65,10 +66,18 @@ std::shared_ptr<Element> PageEntry::makeDurationField() {
             ->setFontSize(18)
             ->setText("Duration"))
         ->appendChild(expandedWidth()
-            ->setChild(this->inputDuration));
+            ->setChild(textInput()
+                ->onChange([thisPointer] (std::u32string newValue) {
+                    thisPointer->duration = newValue;
+                    return newValue;
+                })
+                ->setValue(entry == nullptr
+                    ? U"1"
+                    : entry->getDurationFormatted())));
 }
 
 std::shared_ptr<Element> PageEntry::makePlaceField() {
+    auto thisPointer = shared_from_this();
     return column()
         ->setSpacing(8)
         ->appendChild(text()
@@ -76,7 +85,14 @@ std::shared_ptr<Element> PageEntry::makePlaceField() {
             ->setFontSize(18)
             ->setText("Place"))
         ->appendChild(expandedWidth()
-            ->setChild(this->inputPlace));
+            ->setChild(textInput()
+                ->onChange([thisPointer] (std::u32string newValue) {
+                    thisPointer->place = newValue;
+                    return newValue;
+                })
+                ->setValue(entry == nullptr
+                    ? U""
+                    : entry->getPlace())));
 }
 
 std::shared_ptr<Element> PageEntry::makeForm() {
@@ -89,7 +105,9 @@ std::shared_ptr<Element> PageEntry::makeForm() {
 
 std::shared_ptr<Element> PageEntry::makeSaveControl() {
     return clickable()
-        ->onClick([this] () { this->saveEntry(); })
+        ->onClick([this] () {
+            this->saveEntry();
+        })
         ->setChild(rounded()
             ->setRadius(6)
             ->setChild(background()
@@ -123,7 +141,7 @@ std::shared_ptr<Element> PageEntry::makeControls() {
 
     controls->appendChild(this->makeSaveControl());
 
-    if (this->entry != NULL) {
+    if (this->entry != nullptr) {
         controls->appendChild(this->makeDeleteControl());
     }
 
@@ -131,6 +149,8 @@ std::shared_ptr<Element> PageEntry::makeControls() {
 }
 
 std::shared_ptr<Element> PageEntry::makeElement() {
+    auto thisPage = shared_from_this();
+
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)

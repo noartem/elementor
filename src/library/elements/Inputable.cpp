@@ -123,7 +123,7 @@ namespace elementor::elements {
                 return EventCallbackResponse::StopPropagation;
             }
 
-            if (event->key == KeyboardKey::Backspace && this->text.size() > 0) {
+            if (event->key == KeyboardKey::Backspace && !this->text.empty()) {
                 this->text.pop_back();
                 if (this->callbackChange) {
                     this->text = this->callbackChange(this->text);

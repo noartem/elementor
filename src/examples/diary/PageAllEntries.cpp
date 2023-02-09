@@ -6,7 +6,9 @@
 #include "PageEntry.h"
 #include "DiaryEntryElement.h"
 
-PageAllEntries::PageAllEntries(std::shared_ptr<DiaryService> service, PAGE_CHANGER pageChanger) {
+#include <memory>
+
+PageAllEntries::PageAllEntries(const std::shared_ptr<DiaryService>& service, const PAGE_CHANGER& pageChanger) {
     this->service = service;
     this->pageChanger = pageChanger;
 }
@@ -16,15 +18,17 @@ std::string PageAllEntries::getName() {
 }
 
 std::shared_ptr<Element> PageAllEntries::makeElement() {
-    std::shared_ptr<Column> entriesColumn = column()
+    auto entriesColumn = column()
         ->setSpacing(12);
 
-    for (std::shared_ptr<DiaryEntry> entry : this->service->findAll()) {
+    for (const auto& entry : this->service->findAll()) {
         entriesColumn
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () { this->pageChanger(std::make_shared<PageEntry>(this->service, entry, shared_from_this(), this->pageChanger)); })));
+                    ->onClick([this, entry] () {
+                        this->pageChanger(std::make_shared<PageEntry>(this->service, entry, shared_from_this(), this->pageChanger));
+                    })));
     }
 
     return scroll()

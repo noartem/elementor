@@ -19,19 +19,19 @@
 #include "ExampleWrap.h"
 #include "ExampleAnimation.h"
 
-std::vector<Example *> examples() {
+std::vector<std::shared_ptr<Example>> examples() {
     return {
-            new ExampleBackground(),
-            new ExampleButton(),
-            new ExampleText(),
-            new ExampleTextInput(),
-            new ExampleSized(),
-            new ExampleImage(),
-            new ExampleAlign(),
-            new ExampleFlex(),
-            new ExampleStack(),
-            new ExampleWrap(),
-            new ExampleAnimation(),
+            std::make_shared<ExampleBackground>(),
+            std::make_shared<ExampleButton>(),
+            std::make_shared<ExampleText>(),
+            std::make_shared<ExampleTextInput>(),
+            std::make_shared<ExampleSized>(),
+            std::make_shared<ExampleImage>(),
+            std::make_shared<ExampleAlign>(),
+            std::make_shared<ExampleFlex>(),
+            std::make_shared<ExampleStack>(),
+            std::make_shared<ExampleWrap>(),
+            std::make_shared<ExampleAnimation>(),
     };
 }
 

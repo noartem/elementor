@@ -11,7 +11,7 @@
 
 class PageAllEntries: public Page, public std::enable_shared_from_this<PageAllEntries> {
 public:
-    PageAllEntries(std::shared_ptr<DiaryService> service, PAGE_CHANGER pageChanger);
+    PageAllEntries(const std::shared_ptr<DiaryService>& service, const PAGE_CHANGER& pageChanger);
 
     std::string getName() override;
 

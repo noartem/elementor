@@ -72,7 +72,7 @@ ExamplesGallery::ExamplesGallery() {
                         ->setChild(this->activeExampleElement)))));
 }
 
-void ExamplesGallery::setActiveExample(Example *example) {
+void ExamplesGallery::setActiveExample(const std::shared_ptr<Example>& example) {
     this->activeExampleElement
         ->setChild(example->getScene(this->ctx));
 
@@ -91,7 +91,7 @@ void ExamplesGallery::setActiveExample(Example *example) {
 
 std::shared_ptr<Element> ExamplesGallery::makeExamplesList() {
     std::shared_ptr<Column> examplesList = column();
-    for (Example *example : examples()) {
+    for (const auto& example : examples()) {
         std::shared_ptr<Background> buttonBackground = background();
         examplesList
             ->appendChild(clickable()

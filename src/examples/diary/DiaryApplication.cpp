@@ -61,9 +61,8 @@ std::shared_ptr<Element> DiaryApplication::makeLogo() {
         ->setText("Diary");
 }
 
-void DiaryApplication::changePage(std::shared_ptr<Page> page) {
-    std::shared_ptr<Element> pageElement = page == NULL ? this->makeAboutSection() : page->makeElement();
-    this->activePageElement->setChild(pageElement);
+void DiaryApplication::changePage(const std::shared_ptr<Page>& page) {
+    this->activePageElement->setChild(page != nullptr ? page->makeElement() : this->makeAboutSection());
 }
 
 std::vector<std::shared_ptr<Page>> DiaryApplication::makePages() {
@@ -76,7 +75,7 @@ std::vector<std::shared_ptr<Page>> DiaryApplication::makePages() {
 
 std::shared_ptr<Element> DiaryApplication::makePagesList() {
     std::shared_ptr<Column> pagesList = column();
-    for (std::shared_ptr<Page> page : this->makePages()) {
+    for (const auto& page : this->makePages()) {
         std::shared_ptr<Background> buttonBackground = background();
         pagesList
             ->appendChild(clickable()
@@ -101,7 +100,9 @@ std::shared_ptr<Element> DiaryApplication::makePagesList() {
 
 std::shared_ptr<Element> DiaryApplication::makeNewControl() {
     return clickable()
-        ->onClick([this] () { this->changePage(std::make_shared<PageEntry>(this->diaryService, nullptr, nullptr, this->pageChanger)); })
+        ->onClick([this] () {
+            this->changePage(std::make_shared<PageEntry>(this->diaryService, nullptr, nullptr, this->pageChanger));
+        })
         ->setChild(rounded()
             ->setRadius(6)
             ->setChild(background()
@@ -162,7 +163,7 @@ std::shared_ptr<Element> DiaryApplication::makeControls() {
                 ->setChild(this->makeSaveControl())));
 }
 
-DiaryApplication::DiaryApplication(std::shared_ptr<DiaryService> diaryService) {
+DiaryApplication::DiaryApplication(const std::shared_ptr<DiaryService>& diaryService) {
     this->diaryService = diaryService;
 
     this->activePageElement = empty();

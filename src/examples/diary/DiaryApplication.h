@@ -11,7 +11,7 @@
 
 class DiaryApplication : public Component {
 public:
-    DiaryApplication(std::shared_ptr<DiaryService> diaryService);
+    DiaryApplication(const std::shared_ptr<DiaryService>& diaryService);
 
 private:
     std::shared_ptr<DiaryService> diaryService;
@@ -19,7 +19,7 @@ private:
     std::shared_ptr<Empty> activePageElement;
     PAGE_CHANGER pageChanger = [this] (std::shared_ptr<Page> page) { this->changePage(page); };
 
-    void changePage(std::shared_ptr<Page> page);
+    void changePage(const std::shared_ptr<Page>& page);
 
     void loadFromFile();
 

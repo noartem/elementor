@@ -59,7 +59,7 @@ namespace elementor::components {
                 ->onLeave([this, borderElement] () { if (!this->focused) borderElement->setColor("#DEEDE6"); }));
     }
 
-    std::shared_ptr<TextInput> TextInput::setValue(const std::u32string &newValue) {
+    std::shared_ptr<TextInput> TextInput::setValue(std::u32string newValue) {
         this->value = newValue;
         if (this->inputableChild) {
             this->inputableChild->setText(newValue);
