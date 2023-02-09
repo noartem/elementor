@@ -36,6 +36,8 @@ namespace elementor::components {
 
     class Tooltip : public Element, public std::enable_shared_from_this<Tooltip> {
     public:
+        ~Tooltip();
+
         std::shared_ptr<Tooltip> setActive(bool active);
 
         std::shared_ptr<Tooltip> toggleActive();
@@ -45,6 +47,10 @@ namespace elementor::components {
         std::shared_ptr<Tooltip> setPlacement(TooltipPlacement placement);
 
         [[nodiscard]] TooltipPlacement getPlacement() const;
+
+        std::shared_ptr<Tooltip> setGap(float gap);
+
+        [[nodiscard]] float getGap() const;
 
         std::shared_ptr<Tooltip> setChild(const std::shared_ptr<Element>& newChild);
 
@@ -63,6 +69,7 @@ namespace elementor::components {
 
         bool active = false;
         TooltipPlacement placement = TooltipPlacement::Bottom;
+        float gap = 0;
         std::shared_ptr<Element> child = nullptr;
         std::shared_ptr<Element> tip = nullptr;
         std::shared_ptr<TipWrapper> tipWrapper = std::make_shared<TipWrapper>();

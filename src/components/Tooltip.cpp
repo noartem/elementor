@@ -10,6 +10,12 @@ namespace elementor::components {
         return std::make_shared<Tooltip>();
     }
 
+    Tooltip::~Tooltip() {
+        if (this->active) {
+            this->removeTipFromStack();
+        }
+    }
+
     std::shared_ptr<Tooltip> Tooltip::setActive(bool newActive) {
         this->active = newActive;
 
@@ -35,6 +41,15 @@ namespace elementor::components {
 
     TooltipPlacement Tooltip::getPlacement() const {
         return this->placement;
+    }
+
+    std::shared_ptr<Tooltip> Tooltip::setGap(float newGap) {
+        this->gap = newGap;
+        return shared_from_this();
+    }
+
+    float Tooltip::getGap() const {
+        return this->gap;
     }
 
     std::shared_ptr<Tooltip> Tooltip::setChild(const std::shared_ptr<Element>& newChild) {
@@ -128,6 +143,18 @@ namespace elementor::components {
             } else if (this->placement == TooltipPlacement::BottomStart ||
                        this->placement == TooltipPlacement::Bottom || this->placement == TooltipPlacement::BottomEnd) {
                 tipY = rect.position.y + rect.size.height;
+            }
+
+            if (this->gap != 0) {
+                if (this->placement == TooltipPlacement::TopStart || this->placement == TooltipPlacement::Top || this->placement == TooltipPlacement::TopEnd) {
+                    tipY -= this->gap * ctx->getPixelScale();
+                } else if (this->placement == TooltipPlacement::RightStart || this->placement == TooltipPlacement::Right || this->placement == TooltipPlacement::RightEnd) {
+                    tipX += this->gap * ctx->getPixelScale();
+                } else if (this->placement == TooltipPlacement::BottomStart || this->placement == TooltipPlacement::Bottom || this->placement == TooltipPlacement::BottomEnd) {
+                    tipY += this->gap * ctx->getPixelScale();
+                } else if (this->placement == TooltipPlacement::LeftStart || this->placement == TooltipPlacement::Left || this->placement == TooltipPlacement::LeftEnd) {
+                    tipX -= this->gap * ctx->getPixelScale();
+                }
             }
 
             this->tipWrapper->position = {tipX, tipY};
