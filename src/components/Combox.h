@@ -59,14 +59,14 @@ namespace elementor::components {
         std::shared_ptr<Text> textElement;
         std::shared_ptr<Border> borderElement;
         std::shared_ptr<Tooltip> tooltipElement;
-        std::shared_ptr<Column> optionsColumnElement = nullptr;
-        std::shared_ptr<Width> tipWidthElement = nullptr;
         std::vector<std::tuple<std::string, std::string>> options;
         std::string value;
-        std::function<void(std::string text)> callbackChange;
         std::string placeholder;
+        std::function<void(std::string text)> callbackChange;
 
-        void updateOptionsElement();
+        std::shared_ptr<Element> renderTip();
+
+        std::shared_ptr<Element> renderOptions();
     };
 
     std::shared_ptr<Combox> combox();

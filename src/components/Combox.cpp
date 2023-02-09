@@ -17,10 +17,8 @@ namespace elementor::components {
         this->borderElement = border();
 
         this->tooltipElement = tooltip();
-        this->tipWidthElement = width();
-        this->optionsColumnElement = column();
-
         this->element = this->tooltipElement
+            ->setGap(4)
             ->setChild(clickable()
                 ->setChild(withCursor()
                     ->setCursorShape(CursorShape::Hand)
@@ -45,63 +43,72 @@ namespace elementor::components {
                                                 ->setText(this->placeholder)))))))))
                 ->onClick([this] () {
                     this->toggleActive();
-                }))
-            ->setTip(rounded()
-                ->setRadius(4)
-                ->setChild(background()
-                ->setColor("#FFFFFF")
-                ->setChild(border()
-                    ->setWidth(4)
-                    ->setColor("#7FB6A4")
-                    ->setRadius(4)
-                    ->setChild(height()
-                        ->setHeight(300)
-                        ->setChild(this->tipWidthElement
-                            ->setWidth(this->rect.size.width)
-                            ->setChild(scroll()
-                                ->setChild(this->optionsColumnElement)))))));
+                }));
     }
 
-    void Combox::updateOptionsElement() {
-        if (this->optionsColumnElement == nullptr) {
-            return;
-        }
+    std::shared_ptr<Element> Combox::renderTip() {
+        float availableHeight = (this->window->getSize().height - this->rect.position.y) / this->ctx->getPixelScale() - 64;
+        float maxHeight = 300;
+        float minHeight = 0;
+        float tipHeight = std::max(std::min(availableHeight, maxHeight), minHeight);
+        float tipWidth = this->rect.size.width / this->ctx->getPixelScale() - 8;
 
-        this->optionsColumnElement->clearChildren();
+        return rounded()
+            ->setRadius(4)
+            ->setChild(background()
+            ->setColor("#FFFFFF")
+            ->setChild(border()
+                ->setWidth(4)
+                ->setColor("#7FB6A4")
+                ->setRadius(4)
+                ->setChild(height()
+                    ->setHeight(tipHeight)
+                    ->setChild(width()
+                        ->setWidth(tipWidth)
+                        ->setChild(scroll()
+                            ->setChild(this->renderOptions()))))));
+    }
+
+    std::shared_ptr<Element> Combox::renderOptions() {
+        auto columnElement = column();
 
         for (auto option : this->options) {
             std::shared_ptr<Background> backgroundElement = background();
-            this->optionsColumnElement
+            columnElement
                 ->appendChild(backgroundElement
                     ->setColor("#FFFFFF")
-                    ->setChild(hoverable()
-                        ->setChild(clickable()
-                            ->setChild(padding()
-                                ->setPaddings(8)
-                                ->setChild(height()
-                                    ->setHeight(15)
-                                    ->setChild(paragraph()
-                                        ->appendChild(text()
-                                            ->setFontColor("#3F4944")
-                                            ->setFontSize(16)
-                                            ->setFontWeight(500)
-                                            ->setFontFamily("Fira Code")
-                                            ->setText(std::get<1>(option))))))
-                            ->onClick([this, option] () {
-                                this->setValue(option);
-                            }))
-                        ->onEnter([backgroundElement] () {
-                            backgroundElement->setColor("#DCEBE4");
-                        })
-                        ->onLeave([backgroundElement] () {
-                            backgroundElement->setColor("#FFFFFF");
-                        })));
+                    ->setChild(withCursor()
+                        ->setCursorShape(CursorShape::Hand)
+                        ->setChild(hoverable()
+                            ->setChild(clickable()
+                                ->setChild(padding()
+                                    ->setPaddings(8)
+                                    ->setChild(height()
+                                        ->setHeight(15)
+                                        ->setChild(paragraph()
+                                            ->appendChild(text()
+                                                ->setFontColor("#3F4944")
+                                                ->setFontSize(16)
+                                                ->setFontWeight(500)
+                                                ->setFontFamily("Fira Code")
+                                                ->setText(std::get<1>(option))))))
+                                ->onClick([this, option] () {
+                                    this->setValue(option);
+                                }))
+                            ->onEnter([backgroundElement] () {
+                                backgroundElement->setColor("#DCEBE4");
+                            })
+                            ->onLeave([backgroundElement] () {
+                                backgroundElement->setColor("#FFFFFF");
+                            }))));
         }
+
+        return columnElement;
     }
 
     void Combox::setActive(bool newValue) {
         if (newValue) {
-            this->tipWidthElement->setWidth(this->rect.size.width);
+            this->tooltipElement->setTip(this->renderTip());
         }
 
         this->tooltipElement->setActive(newValue);
@@ -146,25 +153,21 @@ namespace elementor::components {
 
     std::shared_ptr<Combox> Combox::setOptions(std::vector<std::tuple<std::string, std::string>> newOptions) {
         this->options = std::move(newOptions);
-        this->updateOptionsElement();
         return shared_from_this();
     }
 
     std::shared_ptr<Combox> Combox::addOption(const std::tuple<std::string, std::string>& option) {
         this->options.push_back(option);
-        this->updateOptionsElement();
         return shared_from_this();
     }
 
     std::shared_ptr<Combox> Combox::addOption(const std::string &optionValue, const std::string &optionLabel) {
         this->options.emplace_back(optionValue, optionLabel);
-        this->updateOptionsElement();
         return shared_from_this();
     }
 
     void Combox::removeOption(size_t i) {
         this->options.erase(this->options.begin() + i);
-        this->updateOptionsElement();
     }
 
     void Combox::removeOption(const std::string &optionValue) {
