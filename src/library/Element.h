@@ -33,8 +33,6 @@ namespace elementor {
 
     class Element {
     public:
-        virtual ~Element() = default;
-
         virtual Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries);
         virtual void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect);
         virtual std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect);
@@ -111,8 +109,6 @@ namespace elementor {
 
     class ApplicationContext {
     public:
-        virtual ~ApplicationContext() = default;
-
         virtual float getPixelScale() = 0;
         virtual void setPixelScale(float scale) = 0;
 
