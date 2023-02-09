@@ -8,27 +8,28 @@
 #include "DiaryEntry.h"
 
 #include <vector>
+#include <memory>
 
-std::vector<DiaryEntry *> readEntriesFromFile(std::string path);
+std::vector<std::shared_ptr<DiaryEntry>> readEntriesFromFile(std::string path);
 
-void saveEntriesToFile(std::string path, std::vector<DiaryEntry *>);
+void saveEntriesToFile(std::string path, std::vector<std::shared_ptr<DiaryEntry>>);
 
 class DiaryService {
 public:
-    void add(DiaryEntry *entry);
+    void add(std::shared_ptr<DiaryEntry> entry);
 
-    void add(std::vector<DiaryEntry *> entries);
+    void add(std::vector<std::shared_ptr<DiaryEntry>> entries);
 
     void remove(unsigned int index);
 
-    void remove(DiaryEntry *entry);
+    void remove(std::shared_ptr<DiaryEntry> entry);
 
-    std::vector<DiaryEntry *> findAll();
+    std::vector<std::shared_ptr<DiaryEntry>> findAll();
 
-    std::vector<DiaryEntry *> findWhereDatetimeBetween(std::tm start, std::tm end);
+    std::vector<std::shared_ptr<DiaryEntry>> findWhereDatetimeBetween(std::tm start, std::tm end);
 
 private:
-    std::vector<DiaryEntry *> entries;
+    std::vector<std::shared_ptr<DiaryEntry>> entries;
 };
 
 #endif //DIARY_DIARY_SERVICE_H

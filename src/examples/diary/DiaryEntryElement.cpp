@@ -4,7 +4,7 @@
 
 #include "DiaryEntryElement.h"
 
-std::shared_ptr<Element> diaryEntryElement(DiaryEntry *entry) {
+std::shared_ptr<Element> diaryEntryElement(std::shared_ptr<DiaryEntry> entry) {
     return border()
         ->setWidth(2)
         ->setColor("#E5BEBD")

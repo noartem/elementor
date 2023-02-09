@@ -4,7 +4,7 @@
 
 #include "PageEntry.h"
 
-PageEntry::PageEntry(std::shared_ptr<DiaryService> service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger) {
+PageEntry::PageEntry(std::shared_ptr<DiaryService> service, std::shared_ptr<DiaryEntry> entry, std::shared_ptr<Page> backPage, PAGE_CHANGER pageChanger) {
     this->service = service;
     this->entry = entry;
     this->backPage = backPage;
@@ -27,7 +27,7 @@ void PageEntry::saveEntry() {
     std::u32string durationU32 = this->inputDuration->getValue();
     float duration = std::stof(toUTF8(durationU32));
     std::u32string place = this->inputPlace->getValue();
-    DiaryEntry *newEntry = new DiaryEntry(datetime, duration, place);
+    auto newEntry = std::make_shared<DiaryEntry>(datetime, duration, place);
     if (this->entry != NULL) {
         this->service->remove(this->entry);
     }

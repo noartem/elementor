@@ -53,7 +53,7 @@ target("example-gallery")
 
 target("example-diary")
     set_kind("binary")
-    add_deps("elementor")
+    add_deps("elementor", "elementor-components")
     add_packages("skia-build", "glfw")
     add_packages("fastcppcsvparser", "portable-file-dialogs")
     add_files("src/examples/diary/*.cpp")

@@ -7,7 +7,7 @@
 
 #include "utility.h"
 
-#define PAGE_CHANGER std::function<void (Page *page)>
+#define PAGE_CHANGER std::function<void (std::shared_ptr<Page> page)>
 
 class Page {
 public:

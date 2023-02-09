@@ -13,7 +13,7 @@ int main() {
     auto platform = std::make_shared<GLPlatform>();
     auto window = platform->makeWindow({920, 640});
     window->setTitle("Diary");
-    window->setRoot(diaryApplication->makeElement());
+    window->setRoot(diaryApplication);
     window->setMinSize({630, 320});
     platform->run();
 }

@@ -9,7 +9,7 @@
 #include "Page.h"
 #include "DiaryService.h"
 
-class PageTodayEntries: public Page {
+class PageTodayEntries: public Page, public std::enable_shared_from_this<PageTodayEntries> {
 public:
     PageTodayEntries(std::shared_ptr<DiaryService> service, PAGE_CHANGER pageChanger);
 

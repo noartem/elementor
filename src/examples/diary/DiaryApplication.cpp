@@ -14,7 +14,7 @@
 void DiaryApplication::loadFromFile() {
     auto paths = pfd::open_file("Choose file", "", {"CSV", "*.csv"}).result();
     if (!paths.empty()) {
-        std::vector<DiaryEntry *> entries = readEntriesFromFile(paths[0]);
+        std::vector<std::shared_ptr<DiaryEntry>> entries = readEntriesFromFile(paths[0]);
         this->diaryService->add(entries);
     }
 }
@@ -22,7 +22,7 @@ void DiaryApplication::loadFromFile() {
 void DiaryApplication::saveToFile() {
     std::string path = pfd::save_file("Choose file", pfd::path::separator() + "diary.csv", {"CSV Files", "*.csv"}).result();
     if (!path.empty()) {
-        std::vector<DiaryEntry *> entries = this->diaryService->findAll();
+        std::vector<std::shared_ptr<DiaryEntry>> entries = this->diaryService->findAll();
         saveEntriesToFile(path, entries);
     }
 }
@@ -61,22 +61,22 @@ std::shared_ptr<Element> DiaryApplication::makeLogo() {
         ->setText("Diary");
 }
 
-void DiaryApplication::changePage(Page *page) {
+void DiaryApplication::changePage(std::shared_ptr<Page> page) {
     std::shared_ptr<Element> pageElement = page == NULL ? this->makeAboutSection() : page->makeElement();
     this->activePageElement->setChild(pageElement);
 }
 
-std::vector<Page *> DiaryApplication::makePages() {
+std::vector<std::shared_ptr<Page>> DiaryApplication::makePages() {
     return {
-        new PageTodayEntries(this->diaryService, this->pageChanger),
-        new PageTomorrowEntries(this->diaryService, this->pageChanger),
-        new PageAllEntries(this->diaryService, this->pageChanger),
+        std::make_shared<PageTodayEntries>(this->diaryService, this->pageChanger),
+        std::make_shared<PageTomorrowEntries>(this->diaryService, this->pageChanger),
+        std::make_shared<PageAllEntries>(this->diaryService, this->pageChanger),
     };
 }
 
 std::shared_ptr<Element> DiaryApplication::makePagesList() {
     std::shared_ptr<Column> pagesList = column();
-    for (Page *page : this->makePages()) {
+    for (std::shared_ptr<Page> page : this->makePages()) {
         std::shared_ptr<Background> buttonBackground = background();
         pagesList
             ->appendChild(clickable()
@@ -101,7 +101,7 @@ std::shared_ptr<Element> DiaryApplication::makePagesList() {
 
 std::shared_ptr<Element> DiaryApplication::makeNewControl() {
     return clickable()
-        ->onClick([this] () { this->changePage(new PageEntry(this->diaryService, NULL, NULL, this->pageChanger)); })
+        ->onClick([this] () { this->changePage(std::make_shared<PageEntry>(this->diaryService, nullptr, nullptr, this->pageChanger)); })
         ->setChild(rounded()
             ->setRadius(6)
             ->setChild(background()
@@ -164,11 +164,9 @@ std::shared_ptr<Element> DiaryApplication::makeControls() {
 
 DiaryApplication::DiaryApplication(std::shared_ptr<DiaryService> diaryService) {
     this->diaryService = diaryService;
-    this->activePageElement = empty()->setChild(this->makeAboutSection());
-}
 
-std::shared_ptr<Element> DiaryApplication::makeElement() {
-    return background()
+    this->activePageElement = empty();
+    this->element = background()
         ->setColor("#FFFBFF")
         ->setChild(flex()
             ->appendChild(width()
@@ -190,5 +188,6 @@ std::shared_ptr<Element> DiaryApplication::makeElement() {
                             ->setChild(this->makeControls())))))
             ->appendChild(flexible()
                 ->setGrow(3)
-                ->setChild(this->activePageElement)));
+                ->setChild(this->activePageElement
+                    ->setChild(this->makeAboutSection()))));
 }

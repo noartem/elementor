@@ -8,8 +8,10 @@
 #include "../../library/include.h"
 #include "../../library/platforms/gl/include.h"
 #include "../../library/elements/include.h"
+#include "../../components/include.h"
 
 using namespace elementor;
 using namespace elementor::elements;
+using namespace elementor::components;
 
 #endif //DIARY_ELEMENTOR_H

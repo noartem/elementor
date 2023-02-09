@@ -9,19 +9,17 @@
 #include "DiaryService.h"
 #include "Page.h"
 
-class DiaryApplication {
+class DiaryApplication : public Component {
 public:
     DiaryApplication(std::shared_ptr<DiaryService> diaryService);
-
-    std::shared_ptr<Element> makeElement();
 
 private:
     std::shared_ptr<DiaryService> diaryService;
     std::shared_ptr<Element> child;
     std::shared_ptr<Empty> activePageElement;
-    PAGE_CHANGER pageChanger = [this] (Page *page) { this->changePage(page); };
+    PAGE_CHANGER pageChanger = [this] (std::shared_ptr<Page> page) { this->changePage(page); };
 
-    void changePage(Page *page);
+    void changePage(std::shared_ptr<Page> page);
 
     void loadFromFile();
 
@@ -31,7 +29,7 @@ private:
 
     std::shared_ptr<Element> makeLogo();
 
-    std::vector<Page *> makePages();
+    std::vector<std::shared_ptr<Page>> makePages();
 
     std::shared_ptr<Element> makePagesList();
 

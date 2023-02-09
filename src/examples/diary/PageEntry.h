@@ -11,7 +11,7 @@
 
 class PageEntry: public Page {
 public:
-    PageEntry(std::shared_ptr<DiaryService> service, DiaryEntry *entry, Page *backPage, PAGE_CHANGER pageChanger);
+    PageEntry(std::shared_ptr<DiaryService> service, std::shared_ptr<DiaryEntry> entry, std::shared_ptr<Page> backPage, PAGE_CHANGER pageChanger);
 
     std::string getName() override;
 
@@ -19,12 +19,12 @@ public:
 
 private:
     std::shared_ptr<DiaryService> service;
-    DiaryEntry *entry;
+    std::shared_ptr<DiaryEntry> entry;
     PAGE_CHANGER pageChanger;
-    Page *backPage;
-    TextInput *inputDatetime;
-    TextInput *inputDuration;
-    TextInput *inputPlace;
+    std::shared_ptr<Page> backPage;
+    std::shared_ptr<TextInput> inputDatetime;
+    std::shared_ptr<TextInput> inputDuration;
+    std::shared_ptr<TextInput> inputPlace;
 
     void saveEntry();
 

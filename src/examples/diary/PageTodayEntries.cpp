@@ -29,12 +29,12 @@ std::shared_ptr<Element> PageTodayEntries::makeElement() {
     std::tm todayStart = {0, 0, 0, now->tm_mday, now->tm_mon, now->tm_year};
     std::tm todayEnd = {59, 59, 23, now->tm_mday, now->tm_mon, now->tm_year};
 
-    for (DiaryEntry *entry : this->service->findWhereDatetimeBetween(todayStart, todayEnd)) {
+    for (std::shared_ptr<DiaryEntry> entry : this->service->findWhereDatetimeBetween(todayStart, todayEnd)) {
         entriesColumn
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () { this->pageChanger(new PageEntry(this->service, entry, this, this->pageChanger)); })));
+                    ->onClick([this, entry] () { this->pageChanger(std::make_shared<PageEntry>(this->service, entry, shared_from_this(), this->pageChanger)); })));
     }
 
     return scroll()

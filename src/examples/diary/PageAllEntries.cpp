@@ -19,12 +19,12 @@ std::shared_ptr<Element> PageAllEntries::makeElement() {
     std::shared_ptr<Column> entriesColumn = column()
         ->setSpacing(12);
 
-    for (DiaryEntry *entry : this->service->findAll()) {
+    for (std::shared_ptr<DiaryEntry> entry : this->service->findAll()) {
         entriesColumn
             ->appendChild(alignWidth()
                 ->setChild(clickable()
                     ->setChild(diaryEntryElement(entry))
-                    ->onClick([this, entry] () { this->pageChanger(new PageEntry(this->service, entry, this, this->pageChanger)); })));
+                    ->onClick([this, entry] () { this->pageChanger(std::make_shared<PageEntry>(this->service, entry, shared_from_this(), this->pageChanger)); })));
     }
 
     return scroll()
