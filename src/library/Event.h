@@ -12,7 +12,7 @@
 
 #define EVENT_MOUSE_BUTTON "mouse-button"
 #define EVENT_MOUSE_MOVE "mouse-move"
-#define EVENT_MOUSE_WILL_MOVE "mouse-will-move"
+#define EVENT_MOUSE_MOVING "mouse-moving"
 #define EVENT_SCROLL "scroll"
 #define EVENT_KEYBOARD "keyboard"
 #define EVENT_CHAR "char"
@@ -222,16 +222,15 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) = 0;
     };
 
-    class EventMouseWillMove : public Event {
+    class EventMouseMoving : public Event {
         std::string getName() override {
-            // TODO: Rename to moving
-            return EVENT_MOUSE_WILL_MOVE;
+            return EVENT_MOUSE_MOVING;
         };
     };
 
-    class WithOnMouseWillMove {
+    class WithOnMouseMoving {
     public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseWillMove> event) = 0;
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMoving> event) = 0;
     };
 
     class EventScroll : public Event {

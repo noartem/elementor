@@ -85,6 +85,8 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Hoverable::onEvent(std::shared_ptr<EventMouseMove> event) {
+        this->moving = false;
+
         if (this->rect.visibleContains(event->x, event->y)) {
             if (this->hovered) {
                 if (this->callbackMove) {
@@ -115,12 +117,15 @@ namespace elementor::elements {
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Hoverable::onEvent(std::shared_ptr<EventMouseWillMove> event) {
+    EventCallbackResponse Hoverable::onEvent(std::shared_ptr<EventMouseMoving> event) {
         if (this->hovered) {
-            this->hovered = false;
-            // TODO: Fix it
-            if (this->callbackLeave) {
-                this->callbackLeave();
+            if (this->moving) {
+                this->hovered = false;
+                if (this->callbackLeave) {
+                    this->callbackLeave();
+                }
+            } else {
+                this->moving = false;
             }
         }
 

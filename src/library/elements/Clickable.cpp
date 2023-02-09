@@ -91,7 +91,7 @@ namespace elementor::elements {
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseWillMove> event) {
+    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseMoving> event) {
         this->hovered = false;
         return EventCallbackResponse::None;
     }
