@@ -16,4 +16,19 @@ namespace elementor::components {
 
         system(command.c_str());
     }
+
+    tm now_tm() {
+        time_t now = time(nullptr);
+        return *localtime(&now);
+    }
+
+    std::string leftPadAndFit(const std::string &value, unsigned int size, const char paddingChar) {
+        if (value.length() == size) {
+            return value;
+        } else if (value.length() > size) {
+            return value.substr(value.length() - size);
+        } else {
+            return std::string(size - value.length(), paddingChar) + value;
+        }
+    }
 }

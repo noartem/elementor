@@ -13,6 +13,7 @@
 #include "ScaleControl.h"
 #include "Scroll.h"
 #include "TextInput.h"
+#include "TimePicker.h"
 #include "Tooltip.h"
 #include "WithCursor.h"
 
