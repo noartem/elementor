@@ -89,10 +89,12 @@ namespace elementor::components {
 
         [[nodiscard]] int getSecond() const;
 
+        std::shared_ptr<TimePicker> onInput(const std::function<void()> &callback);
+
     private:
         tm value;
-
         std::vector<TimePickerTemplateElement> timeTemplate = {};
+        std::function<void()> callbackInput;
 
         std::shared_ptr<Row> timeTemplateRow;
         std::map<TimePickerTemplateElement, std::shared_ptr<TimePickerElement>> timeTemplateElements;

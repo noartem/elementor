@@ -127,6 +127,10 @@ namespace elementor::components {
         this->updateHourElement();
         this->updateMinuteElement();
         this->updateSecondElement();
+
+        if (this->callbackInput) {
+            this->callbackInput();
+        }
     }
 
     std::shared_ptr<TimePicker> TimePicker::setTime(const tm &newTime) {
@@ -258,6 +262,11 @@ namespace elementor::components {
 
     int TimePicker::getSecond() const {
         return this->value.tm_sec;
+    }
+
+    std::shared_ptr<TimePicker> TimePicker::onInput(const std::function<void()> &callback) {
+        this->callbackInput = callback;
+        return shared_from_this();
     }
 
     TimePickerElement::TimePickerElement() {
