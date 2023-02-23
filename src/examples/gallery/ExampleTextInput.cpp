@@ -13,6 +13,9 @@ std::string ExampleTextInput::getDescription() {
 }
 
 std::shared_ptr<Element> ExampleTextInput::getScene(std::shared_ptr<ApplicationContext> ctx) {
+    auto tp = timePicker();
+    auto tpResult = text();
+
     return scroll()
         ->setChild(padding()
             ->setPaddings(24, 36)
@@ -22,5 +25,23 @@ std::shared_ptr<Element> ExampleTextInput::getScene(std::shared_ptr<ApplicationC
                     ->setFontColor("#062016")
                     ->setFontSize(16)
                     ->setText("Basic"))
-                ->appendChild(textInput())));
+                ->appendChild(textInput())
+                ->appendChild(text()
+                    ->setFontColor("#062016")
+                    ->setFontSize(16)
+                    ->setText("Time picker (DMYhm)"))
+                ->appendChild(column()
+                    ->setSpacing(8)
+                    ->appendChild(tp
+                        ->onInput([tp, tpResult]() {
+                            char buffer[256];
+                            strftime(buffer, sizeof(buffer), "%a %b %d %H:%M:%S %Y", &tp->getTime());
+                            tpResult->setText("Result: " + std::string(buffer));
+                        }))
+                    ->appendChild(tpResult
+                        ->setFontColor("#062016")
+                        ->setFontSize(14)
+                        ->setText("Result: ")))
+                ->appendChild(timePicker()
+                    ->setTemplate("DMY"))));
 }
