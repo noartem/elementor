@@ -12,22 +12,22 @@ namespace elementor::elements {
         return std::make_shared<Inputable>();
     }
 
-    std::shared_ptr<Inputable> Inputable::onChange(std::function<std::u32string(std::u32string value)> callback) {
-        this->callbackChange = std::move(callback);
+    std::shared_ptr<Inputable> Inputable::onChange(const std::function<std::u32string(std::u32string value)> &callback) {
+        this->callbackChange = callback;
         return shared_from_this();
     }
 
-    std::shared_ptr<Inputable> Inputable::onFocus(std::function<void()> callback) {
-        this->callbackFocus = std::move(callback);
+    std::shared_ptr<Inputable> Inputable::onFocus(const std::function<void()> &callback) {
+        this->callbackFocus = callback;
         return shared_from_this();
     }
 
-    std::shared_ptr<Inputable> Inputable::onBlur(std::function<void()> callback) {
-        this->callbackBlur = std::move(callback);
+    std::shared_ptr<Inputable> Inputable::onBlur(const std::function<void()> &callback) {
+        this->callbackBlur = callback;
         return shared_from_this();
     }
 
-    std::shared_ptr<Inputable> Inputable::setText(std::u32string newText) {
+    std::shared_ptr<Inputable> Inputable::setText(const std::u32string &newText) {
         this->text = newText;
 
         if (this->callbackChange) {
@@ -37,7 +37,7 @@ namespace elementor::elements {
         return shared_from_this();
     }
 
-    std::shared_ptr<Inputable> Inputable::setText(std::string newText) {
+    std::shared_ptr<Inputable> Inputable::setText(const std::string& newText) {
         std::u32string newTextU32;
         fromUTF8(newText, newTextU32);
         return this->setText(newTextU32);
@@ -52,8 +52,7 @@ namespace elementor::elements {
         return shared_from_this();
     }
 
-    Size
-    Inputable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
+    Size Inputable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -61,13 +60,11 @@ namespace elementor::elements {
         }
     }
 
-    void Inputable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                    SkCanvas *canvas, ElementRect rect) {
+    void Inputable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         this->rect = rect;
     }
 
-    std::vector<RenderElement>
-    Inputable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+    std::vector<RenderElement> Inputable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         this->ctx = ctx;
         RenderElement childElement{this->getChild(), {0, 0}, rect.size};
         return {childElement};
@@ -82,16 +79,10 @@ namespace elementor::elements {
     EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventMouseButton> event) {
         if (this->hovered) {
             if (event->action == KeyAction::Press && event->button == MouseButton::Left) {
-                this->focused = true;
-                if (this->callbackFocus) {
-                    this->callbackFocus();
-                }
+                this->focus();
             }
         } else {
-            this->focused = false;
-            if (this->callbackBlur) {
-                this->callbackBlur();
-            }
+            this->blur();
         }
 
         return EventCallbackResponse::None;
@@ -99,11 +90,8 @@ namespace elementor::elements {
 
     EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventKeyboard> event) {
         if (this->focused && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
-            if (event->key == KeyboardKey::Escape) {
-                this->focused = false;
-                if (this->callbackBlur) {
-                    this->callbackBlur();
-                }
+            if (event->key == KeyboardKey::Escape || event->key == KeyboardKey::Enter) {
+                this->blur();
                 return EventCallbackResponse::StopPropagation;
             }
 
@@ -145,5 +133,29 @@ namespace elementor::elements {
         }
 
         return EventCallbackResponse::None;
+    }
+
+    void Inputable::blur() {
+        if (!this->focused) {
+            return;
+        }
+
+        this->focused = false;
+
+        if (this->callbackBlur) {
+            this->callbackBlur();
+        }
+    }
+
+    void Inputable::focus() {
+        if (this->focused) {
+            return;
+        }
+
+        this->focused = true;
+
+        if (this->callbackFocus) {
+            this->callbackFocus();
+        }
     }
 }

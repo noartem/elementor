@@ -31,13 +31,23 @@ namespace elementor::components {
 
         [[nodiscard]] std::string getValue() const;
 
+        void blur();
+
+        void focus();
+
         std::shared_ptr<TimePickerElement> onInput(const std::function<void(std::string text)> &callback);
+
+        std::shared_ptr<TimePickerElement> onFocus(const std::function<void()> &callback);
+
+        std::shared_ptr<TimePickerElement> onBlur(const std::function<void()> &callback);
 
     private:
         unsigned int length = 0;
         std::string value;
         bool focused = false;
         std::function<void(std::string text)> callbackInput;
+        std::function<void()> callbackFocus;
+        std::function<void()> callbackBlur;
         std::shared_ptr<Background> backgroundElement;
         std::shared_ptr<Text> textElement;
         std::shared_ptr<Inputable> inputableElement;
@@ -45,7 +55,7 @@ namespace elementor::components {
 
     std::shared_ptr<TimePickerElement> timePickerElement();
 
-    class TimePicker : public Component, public std::enable_shared_from_this<TimePicker> {
+    class TimePicker : public Component, public WithOnKeyboard, public std::enable_shared_from_this<TimePicker> {
     public:
         TimePicker();
 
@@ -91,8 +101,11 @@ namespace elementor::components {
 
         std::shared_ptr<TimePicker> onInput(const std::function<void()> &callback);
 
+        EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
+
     private:
         tm value;
+        std::optional<TimePickerTemplateElement> activeTemplateElement = std::nullopt;
         std::vector<TimePickerTemplateElement> timeTemplate = {};
         std::function<void()> callbackInput;
 
@@ -112,6 +125,8 @@ namespace elementor::components {
         void updateSecondElement();
 
         void updateTime(const tm &newTime);
+
+        void fixValue();
     };
 
     std::shared_ptr<TimePicker> timePicker();

@@ -64,6 +64,14 @@ namespace elementor::components {
                         }
 
                         this->updateTime(this->value);
+                    })
+                    ->onFocus([this, element] () {
+                        this->activeTemplateElement = element;
+                    })
+                    ->onBlur([this, element] () {
+                        if (this->activeTemplateElement == element) {
+                            this->activeTemplateElement = std::nullopt;
+                        }
                     });
             }
 
@@ -121,6 +129,7 @@ namespace elementor::components {
 
     void TimePicker::updateTime(const tm &newTime) {
         this->value = newTime;
+
         this->updateYearElement();
         this->updateMonthElement();
         this->updateDayElement();
@@ -191,7 +200,8 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setMonth(int newMonth) {
-        this->value.tm_mon = newMonth - 1;
+        this->value.tm_mon = std::min(newMonth - 1, 11);
+        this->fixValue();
         this->updateMonthElement();
         return shared_from_this();
     }
@@ -207,7 +217,8 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setDay(int newDay) {
-        this->value.tm_mday = newDay;
+        this->value.tm_mday = std::min(newDay, daysInMonth(this->getMonth(), this->getYear()));
+        this->fixValue();
         this->updateDayElement();
         return shared_from_this();
     }
@@ -223,7 +234,8 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setHour(int newHour) {
-        this->value.tm_hour = newHour;
+        this->value.tm_hour = std::min(newHour, 23);
+        this->fixValue();
         this->updateHourElement();
         return shared_from_this();
     }
@@ -239,7 +251,8 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setMinute(int newMinute) {
-        this->value.tm_min = newMinute;
+        this->value.tm_min = std::min(newMinute, 59);
+        this->fixValue();
         this->updateMinuteElement();
         return shared_from_this();
     }
@@ -255,7 +268,8 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setSecond(int newSecond) {
-        this->value.tm_sec = newSecond;
+        this->value.tm_sec = std::min(newSecond, 59);
+        this->fixValue();
         this->updateSecondElement();
         return shared_from_this();
     }
@@ -267,6 +281,40 @@ namespace elementor::components {
     std::shared_ptr<TimePicker> TimePicker::onInput(const std::function<void()> &callback) {
         this->callbackInput = callback;
         return shared_from_this();
+    }
+
+    EventCallbackResponse TimePicker::onEvent(std::shared_ptr<EventKeyboard> event) {
+        if (this->activeTemplateElement && (event->action == KeyAction::Press || event->action == KeyAction::Repeat) && event->key == KeyboardKey::Tab) {
+            auto element = this->activeTemplateElement.value();
+
+            // TODO: Refactor with Focusable and FocusableTrap
+            auto elementIndex = std::find(this->timeTemplate.begin(), this->timeTemplate.end(), element);
+            std::vector<TimePickerTemplateElement>::iterator nextElementIndex;
+            if (event->mod == KeyMod::Shift) {
+                if (elementIndex == this->timeTemplate.begin()) {
+                    nextElementIndex = this->timeTemplate.end() - 1;
+                } else {
+                    nextElementIndex = elementIndex - 1;
+                }
+            } else {
+                if (elementIndex == this->timeTemplate.end() - 1) {
+                    nextElementIndex = this->timeTemplate.begin();
+                } else {
+                    nextElementIndex = elementIndex + 1;
+                }
+            }
+            auto nextElement = *nextElementIndex;
+
+            this->timeTemplateElements[element]->blur();
+
+            this->activeTemplateElement = nextElement;
+            this->timeTemplateElements[nextElement]->focus();
+        }
+    }
+
+    void TimePicker::fixValue() {
+        this->value.tm_isdst = -1;
+        mktime(&this->value);
     }
 
     TimePickerElement::TimePickerElement() {
@@ -290,8 +338,16 @@ namespace elementor::components {
                                         ->setFontWeight(500)
                                         ->setFontFamily("Fira Code")))))
                         ->onChange([this] (std::u32string newValue) {
-                            std::string newValueFitted = leftPadAndFit(toUTF8(newValue), this->length, '0');
+                            std::string newValueDigitsOnly;
+                            for (auto c : newValue) {
+                                if (c >= '0' && c <= '9') {
+                                    newValueDigitsOnly += c;
+                                }
+                            }
+
+                            std::string newValueFitted = leftPadAndFit(newValueDigitsOnly, this->length, '0');
                             this->textElement->setText(newValueFitted);
+
                             std::u32string newValueFittedU32;
                             fromUTF8(newValueFitted, newValueFittedU32);
                             return newValueFittedU32;
@@ -299,6 +355,10 @@ namespace elementor::components {
                         ->onFocus([this] () {
                             this->focused = true;
                             this->backgroundElement->setColor("#E2E2E2");
+
+                            if (this->callbackFocus) {
+                                this->callbackFocus();
+                            }
                         })
                         ->onBlur([this] () {
                             this->focused = false;
@@ -308,6 +368,10 @@ namespace elementor::components {
                             if (this->value != newValue && this->callbackInput) {
                                 this->callbackInput(newValue);
                                 this->value = newValue;
+                            }
+
+                            if (this->callbackBlur) {
+                                this->callbackBlur();
                             }
                         }))
                     ->setCursorShape(CursorShape::IBeam))
@@ -345,6 +409,24 @@ namespace elementor::components {
 
     std::shared_ptr<TimePickerElement> TimePickerElement::onInput(const std::function<void(std::string text)> &callback) {
         this->callbackInput = callback;
+        return shared_from_this();
+    }
+
+    void TimePickerElement::blur() {
+        this->inputableElement->blur();
+    }
+
+    void TimePickerElement::focus() {
+        this->inputableElement->focus();
+    }
+
+    std::shared_ptr<TimePickerElement> TimePickerElement::onFocus(const std::function<void()> &callback) {
+        this->callbackFocus = callback;
+        return shared_from_this();
+    }
+
+    std::shared_ptr<TimePickerElement> TimePickerElement::onBlur(const std::function<void()> &callback) {
+        this->callbackBlur = callback;
         return shared_from_this();
     }
 }

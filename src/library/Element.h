@@ -156,7 +156,7 @@ namespace elementor {
 
         [[nodiscard]] std::shared_ptr<Element> getChild(int i) const;
 
-        int childIndex(const std::shared_ptr<Element>& child) const;
+        [[nodiscard]] int childIndex(const std::shared_ptr<Element>& child) const;
 
     private:
         std::vector<std::shared_ptr<Element>> children;

@@ -16,7 +16,7 @@ namespace elementor {
         return result;
     }
 
-    template <typename T> void fromUTF8(std::string& source, std::basic_string<T, std::char_traits<T>, std::allocator<T>>& result) {
+    template <typename T> void fromUTF8(const std::string &source, std::basic_string<T, std::char_traits<T>, std::allocator<T>>& result) {
         std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
         result = convertor.from_bytes(source);
     }

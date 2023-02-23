@@ -20,19 +20,23 @@ namespace elementor::elements {
               public WithChild,
               public std::enable_shared_from_this<Inputable> {
     public:
-        std::shared_ptr<Inputable> onChange(std::function<std::u32string(std::u32string text)> callback);
+        std::shared_ptr<Inputable> onChange(const std::function<std::u32string(std::u32string text)> &callback);
 
-        std::shared_ptr<Inputable> onFocus(std::function<void()> callback);
+        std::shared_ptr<Inputable> onFocus(const std::function<void()> &callback);
 
-        std::shared_ptr<Inputable> onBlur(std::function<void()> callback);
+        std::shared_ptr<Inputable> onBlur(const std::function<void()> &callback);
 
-        std::shared_ptr<Inputable> setText(std::u32string newText);
+        std::shared_ptr<Inputable> setText(const std::u32string& newText);
 
-        std::shared_ptr<Inputable> setText(std::string newText);
+        std::shared_ptr<Inputable> setText(const std::string& newText);
 
         std::u32string getText();
 
         std::shared_ptr<Inputable> setChild(const std::shared_ptr<Element>& child);
+
+        void blur();
+
+        void focus();
 
         Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
                      Boundaries boundaries) override;

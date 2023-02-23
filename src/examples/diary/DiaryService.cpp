@@ -51,7 +51,7 @@ std::vector<std::shared_ptr<DiaryEntry>> DiaryService::findAll() {
 }
 
 void DiaryService::add(std::shared_ptr<DiaryEntry> entry) {
-    if (entry == NULL) {
+    if (entry == nullptr) {
         return;
     }
 
