@@ -19,7 +19,7 @@ namespace elementor::components {
         Second,
     };
 
-    class TimePickerElement : public Component, public std::enable_shared_from_this<TimePickerElement> {
+    class TimePickerElement : public Component, public WithOnKeyboard, public std::enable_shared_from_this<TimePickerElement> {
     public:
         TimePickerElement();
 
@@ -40,6 +40,8 @@ namespace elementor::components {
         std::shared_ptr<TimePickerElement> onFocus(const std::function<void()> &callback);
 
         std::shared_ptr<TimePickerElement> onBlur(const std::function<void()> &callback);
+
+        EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
 
     private:
         unsigned int length = 0;

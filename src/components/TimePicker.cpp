@@ -184,7 +184,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setYear(int newYear) {
-        this->value.tm_year = newYear - 1900;
+        this->value.tm_year = std::max(newYear - 1900, 0);
         this->updateYearElement();
         return shared_from_this();
     }
@@ -200,7 +200,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setMonth(int newMonth) {
-        this->value.tm_mon = std::min(newMonth - 1, 11);
+        this->value.tm_mon = std::max(std::min(newMonth - 1, 11), 0);
         this->fixValue();
         this->updateMonthElement();
         return shared_from_this();
@@ -217,7 +217,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setDay(int newDay) {
-        this->value.tm_mday = std::min(newDay, daysInMonth(this->getMonth(), this->getYear()));
+        this->value.tm_mday = std::max(std::min(newDay, daysInMonth(this->getMonth(), this->getYear())), 0);
         this->fixValue();
         this->updateDayElement();
         return shared_from_this();
@@ -234,7 +234,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setHour(int newHour) {
-        this->value.tm_hour = std::min(newHour, 23);
+        this->value.tm_hour = std::max(std::min(newHour, 23), 0);
         this->fixValue();
         this->updateHourElement();
         return shared_from_this();
@@ -251,7 +251,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setMinute(int newMinute) {
-        this->value.tm_min = std::min(newMinute, 59);
+        this->value.tm_min = std::max(std::min(newMinute, 59), 0);
         this->fixValue();
         this->updateMinuteElement();
         return shared_from_this();
@@ -268,7 +268,7 @@ namespace elementor::components {
     }
 
     std::shared_ptr<TimePicker> TimePicker::setSecond(int newSecond) {
-        this->value.tm_sec = std::min(newSecond, 59);
+        this->value.tm_sec = std::max(std::min(newSecond, 59), 0);
         this->fixValue();
         this->updateSecondElement();
         return shared_from_this();
@@ -284,31 +284,42 @@ namespace elementor::components {
     }
 
     EventCallbackResponse TimePicker::onEvent(std::shared_ptr<EventKeyboard> event) {
-        if (this->activeTemplateElement && (event->action == KeyAction::Press || event->action == KeyAction::Repeat) && event->key == KeyboardKey::Tab) {
-            auto element = this->activeTemplateElement.value();
+        if (this->activeTemplateElement && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
+            if (event->key == KeyboardKey::Tab && event->mod != KeyMod::Shift || event->key == KeyboardKey::Right) {
+                auto element = this->activeTemplateElement.value();
 
-            // TODO: Refactor with Focusable and FocusableTrap
-            auto elementIndex = std::find(this->timeTemplate.begin(), this->timeTemplate.end(), element);
-            std::vector<TimePickerTemplateElement>::iterator nextElementIndex;
-            if (event->mod == KeyMod::Shift) {
-                if (elementIndex == this->timeTemplate.begin()) {
-                    nextElementIndex = this->timeTemplate.end() - 1;
-                } else {
-                    nextElementIndex = elementIndex - 1;
-                }
-            } else {
+                // TODO: Refactor with Focusable and FocusableTrap
+                auto elementIndex = std::find(this->timeTemplate.begin(), this->timeTemplate.end(), element);
+                std::vector<TimePickerTemplateElement>::iterator nextElementIndex;
                 if (elementIndex == this->timeTemplate.end() - 1) {
                     nextElementIndex = this->timeTemplate.begin();
                 } else {
                     nextElementIndex = elementIndex + 1;
                 }
+                auto nextElement = *nextElementIndex;
+
+                this->timeTemplateElements[element]->blur();
+
+                this->activeTemplateElement = nextElement;
+                this->timeTemplateElements[nextElement]->focus();
+            } else if (event->key == KeyboardKey::Tab && event->mod == KeyMod::Shift || event->key == KeyboardKey::Left) {
+                auto element = this->activeTemplateElement.value();
+
+                // TODO: Refactor with Focusable and FocusableTrap
+                auto elementIndex = std::find(this->timeTemplate.begin(), this->timeTemplate.end(), element);
+                std::vector<TimePickerTemplateElement>::iterator nextElementIndex;
+                if (elementIndex == this->timeTemplate.begin()) {
+                    nextElementIndex = this->timeTemplate.end() - 1;
+                } else {
+                    nextElementIndex = elementIndex - 1;
+                }
+                auto nextElement = *nextElementIndex;
+
+                this->timeTemplateElements[element]->blur();
+
+                this->activeTemplateElement = nextElement;
+                this->timeTemplateElements[nextElement]->focus();
             }
-            auto nextElement = *nextElementIndex;
-
-            this->timeTemplateElements[element]->blur();
-
-            this->activeTemplateElement = nextElement;
-            this->timeTemplateElements[nextElement]->focus();
         }
     }
 
@@ -428,5 +439,23 @@ namespace elementor::components {
     std::shared_ptr<TimePickerElement> TimePickerElement::onBlur(const std::function<void()> &callback) {
         this->callbackBlur = callback;
         return shared_from_this();
+    }
+
+    EventCallbackResponse TimePickerElement::onEvent(std::shared_ptr<EventKeyboard> event) {
+        if (this->focused && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
+            if (event->key == KeyboardKey::Up) {
+                int value = std::stoi(this->textElement->getText());
+                this->inputableElement->setText(std::to_string(value + 1));
+                return EventCallbackResponse::StopPropagation;
+            }
+
+            if (event->key == KeyboardKey::Down) {
+                int value = std::stoi(this->textElement->getText());
+                this->inputableElement->setText(std::to_string(std::max(value - 1, 0)));
+                return EventCallbackResponse::StopPropagation;
+            }
+        }
+
+        return EventCallbackResponse::None;
     }
 }
