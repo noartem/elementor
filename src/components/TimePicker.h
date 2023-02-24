@@ -109,6 +109,7 @@ namespace elementor::components {
         tm value;
         std::optional<TimePickerTemplateElement> activeTemplateElement = std::nullopt;
         std::vector<TimePickerTemplateElement> timeTemplate = {};
+        std::vector<std::string> timeTemplateGaps = {};
         std::function<void()> callbackInput;
 
         std::shared_ptr<Row> timeTemplateRow;

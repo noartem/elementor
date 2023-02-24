@@ -26,17 +26,31 @@ namespace elementor::components {
                             ->setHeight(23)
                                 ->setChild(alignHeight()
                                     ->setCoef(0.5, 0.5)
-                                    ->setChild(this->timeTemplateRow
-                                        ->setSpacing(4)))))));
+                                    ->setChild(this->timeTemplateRow))))));
 
-        this->updateTemplate("DMYhm");
+        this->updateTemplate("D.M.Y h:m");
         this->updateTime(now_tm());
     }
 
     void TimePicker::updateTimeTemplateElement() {
         this->timeTemplateRow->clearChildren();
 
-        for (const auto &element : this->timeTemplate) {
+        // for i in timeTemplate
+        for (size_t i = 0; i < this->timeTemplate.size(); i++) {
+            auto gap = this->timeTemplateGaps[i];
+            if (!gap.empty()) {
+                this->timeTemplateRow
+                    ->appendChild(padding()
+                        ->setPaddings(0, 6, 5, 0)
+                        ->setChild(text()
+                            ->setFontColor("#3F4944")
+                            ->setFontSize(16)
+                            ->setFontWeight(500)
+                            ->setFontFamily("Fira Code")
+                            ->setText(gap)));
+            }
+
+            auto element = this->timeTemplate[i];
             if (!this->timeTemplateElements.count(element)) {
                 this->timeTemplateElements[element] = timePickerElement()
                     ->setLength(element == TimePickerTemplateElement::Year ? 4 : 2)
@@ -76,36 +90,63 @@ namespace elementor::components {
             }
 
             this->timeTemplateRow
-                    ->addChild(this->timeTemplateElements[element]);
+                ->addChild(this->timeTemplateElements[element]);
+        }
+
+        auto gap = this->timeTemplateGaps[this->timeTemplateGaps.size() - 1];
+        if (!gap.empty()) {
+            this->timeTemplateRow
+                ->appendChild(text()
+                    ->setFontColor("#3F4944")
+                    ->setFontSize(16)
+                    ->setFontWeight(500)
+                    ->setFontFamily("Fira Code")
+                    ->setText(gap));
         }
     }
 
     void TimePicker::updateTemplate(const std::string &newTemplate) {
         this->timeTemplate.clear();
+        this->timeTemplateGaps.clear();
+        std::string gap;
         for (auto &c : newTemplate) {
             switch (c) {
                 case 'Y':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Year);
                     break;
                 case 'M':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Month);
                     break;
                 case 'D':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Day);
                     break;
                 case 'h':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Hour);
                     break;
                 case 'm':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Minute);
                     break;
                 case 's':
+                    this->timeTemplateGaps.push_back(gap);
+                    gap.clear();
                     this->timeTemplate.push_back(TimePickerTemplateElement::Second);
                     break;
                 default:
+                    gap += c;
                     break;
             }
         }
+        this->timeTemplateGaps.push_back(gap);
         this->updateTimeTemplateElement();
     }
 
