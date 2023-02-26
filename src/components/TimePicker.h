@@ -10,72 +10,11 @@
 #include "Tooltip.h"
 
 namespace elementor::components {
-    enum class TimePickerTemplateElement {
-        Year,
-        Month,
-        Day,
-        Hour,
-        Minute,
-        Second,
-    };
-
-    class TimePickerElement : public Component, public WithOnKeyboard, public std::enable_shared_from_this<TimePickerElement> {
-    public:
-        TimePickerElement();
-
-        std::shared_ptr<TimePickerElement> setLength(unsigned int newLength);
-
-        [[nodiscard]] unsigned int getLength() const;
-
-        std::shared_ptr<TimePickerElement> setValue(const std::string &newValue);
-
-        [[nodiscard]] std::string getValue() const;
-
-        void blur();
-
-        void focus();
-
-        std::shared_ptr<TimePickerElement> onInput(const std::function<void(std::string text)> &callback);
-
-        std::shared_ptr<TimePickerElement> onFocus(const std::function<void()> &callback);
-
-        std::shared_ptr<TimePickerElement> onBlur(const std::function<void()> &callback);
-
-        EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
-
-    private:
-        unsigned int length = 0;
-        std::string value;
-        bool focused = false;
-        std::function<void(std::string text)> callbackInput;
-        std::function<void()> callbackFocus;
-        std::function<void()> callbackBlur;
-        std::shared_ptr<Background> backgroundElement;
-        std::shared_ptr<Text> textElement;
-        std::shared_ptr<Inputable> inputableElement;
-    };
-
-    std::shared_ptr<TimePickerElement> timePickerElement();
-
     class TimePicker : public Component, public WithOnKeyboard, public std::enable_shared_from_this<TimePicker> {
     public:
         TimePicker();
 
         std::shared_ptr<TimePicker> setTemplate(const std::string &newTemplate);
-
-        std::shared_ptr<TimePicker> setTemplate(const std::vector<TimePickerTemplateElement> &newTemplate);
-
-        [[nodiscard]] const std::vector<TimePickerTemplateElement> &getTemplate() const;
-
-        std::shared_ptr<TimePicker> setTime(const tm &newTime);
-
-        [[nodiscard]] const tm &getTime() const;
-
-        std::shared_ptr<TimePicker> setTime(int year, int month, int day, int hour, int minute, int second);
-
-        std::shared_ptr<TimePicker> setTime(int year, int month, int day, int hour, int minute);
-
-        std::shared_ptr<TimePicker> setTime(int year, int month, int day);
 
         std::shared_ptr<TimePicker> setYear(int newYear);
 
@@ -101,24 +40,81 @@ namespace elementor::components {
 
         [[nodiscard]] int getSecond() const;
 
+        std::shared_ptr<TimePicker> setTime(const tm &newTime);
+
+        std::shared_ptr<TimePicker> setTime(int year, int month, int day, int hour, int minute, int second);
+
+        std::shared_ptr<TimePicker> setTime(int year, int month, int day, int hour, int minute);
+
+        std::shared_ptr<TimePicker> setTime(int year, int month, int day);
+
+        [[nodiscard]] const tm &getTime() const;
+
         std::shared_ptr<TimePicker> onInput(const std::function<void()> &callback);
+
+        std::shared_ptr<TimePicker> onFocus(const std::function<void()> &callback);
+
+        std::shared_ptr<TimePicker> onBlur(const std::function<void()> &callback);
 
         EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
 
     private:
-        tm value;
-        std::optional<TimePickerTemplateElement> activeTemplateElement = std::nullopt;
-        std::vector<TimePickerTemplateElement> timeTemplate = {};
+        enum class PartType {
+            Year,
+            Month,
+            Day,
+            Hour,
+            Minute,
+            Second,
+        };
+
+        class Part : public Component, public WithOnKeyboard, public std::enable_shared_from_this<Part> {
+        public:
+            Part(PartType partType);
+
+            PartType partType;
+            unsigned int length = 0;
+            std::string value;
+            bool focused = false;
+            std::function<void(std::string text)> callbackInput;
+            std::function<void()> callbackFocus;
+            std::function<void()> callbackBlur;
+            std::shared_ptr<Background> backgroundElement;
+            std::shared_ptr<Text> textElement;
+            std::shared_ptr<Inputable> inputableElement;
+
+            void blur();
+
+            void focus();
+
+            void setValue(const std::string &newValue);
+
+            EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
+        };
+
+        tm value{};
+        std::optional<PartType> activePart = std::nullopt;
+        std::vector<PartType> timeTemplate = {};
         std::vector<std::string> timeTemplateGaps = {};
         std::function<void()> callbackInput;
+        std::function<void()> callbackFocus;
+        std::function<void()> callbackBlur;
 
         std::shared_ptr<Row> timeTemplateRow;
-        std::map<TimePickerTemplateElement, std::shared_ptr<TimePickerElement>> timeTemplateElements;
+        std::map<PartType, std::shared_ptr<Part>> timeTemplateParts;
 
+        std::shared_ptr<Part> makePart(PartType partType);
+        std::shared_ptr<Element> makeGapElement(const std::string &gap);
         void updateTimeTemplateElement();
 
-        void updateTemplate(const std::vector<TimePickerTemplateElement> &newTemplate);
         void updateTemplate(const std::string &newTemplate);
+
+        void updateYear(int newYear);
+        void updateMonth(int newMonth);
+        void updateDay(int newDay);
+        void updateHour(int newHour);
+        void updateMinute(int newMinute);
+        void updateSecond(int newSecond);
 
         void updateYearElement();
         void updateMonthElement();
@@ -127,9 +123,15 @@ namespace elementor::components {
         void updateMinuteElement();
         void updateSecondElement();
 
+        void updateTimeElements();
+
         void updateTime(const tm &newTime);
 
+        void setTimePartValue(PartType element, int newValue);
+
         void fixValue();
+
+        void setActivePart(std::optional<PartType> partType);
     };
 
     std::shared_ptr<TimePicker> timePicker();

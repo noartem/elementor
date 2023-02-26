@@ -29,7 +29,7 @@ std::shared_ptr<Element> ExampleTextInput::getScene(std::shared_ptr<ApplicationC
                 ->appendChild(text()
                     ->setFontColor("#062016")
                     ->setFontSize(16)
-                    ->setText("Time picker (DMYhm)"))
+                    ->setText("Time picker"))
                 ->appendChild(column()
                     ->setSpacing(8)
                     ->appendChild(tp
@@ -43,5 +43,5 @@ std::shared_ptr<Element> ExampleTextInput::getScene(std::shared_ptr<ApplicationC
                         ->setFontSize(14)
                         ->setText("Result: ")))
                 ->appendChild(timePicker()
-                    ->setTemplate("DMY"))));
+                    ->setTemplate("D.M.Y"))));
 }
