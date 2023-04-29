@@ -4,7 +4,7 @@
 
 #include "GLClipboard.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     void GLClipboard::set(std::string value) {
         glfwSetClipboardString(nullptr, value.c_str());
     }

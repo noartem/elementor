@@ -8,7 +8,7 @@
 #include "../../Element.h"
 #include "GLPlatform.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLApplicationContext : public ApplicationContext {
     public:
         explicit GLApplicationContext(std::shared_ptr<GLPlatform> platform);

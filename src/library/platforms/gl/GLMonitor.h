@@ -9,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLMonitor : public Monitor {
     public:
         GLMonitor(GLFWmonitor *monitor);

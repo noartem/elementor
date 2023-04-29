@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace elementor {
+namespace elementor::platforms::gl {
     unsigned int mapCursorShapeToInt(CursorShape shape) {
         switch (shape) {
             case CursorShape::Default:

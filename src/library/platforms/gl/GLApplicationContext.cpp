@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace elementor {
+namespace elementor::platforms::gl {
     GLApplicationContext::GLApplicationContext(std::shared_ptr<GLPlatform> platform) {
         this->platform = std::move(platform);
     }

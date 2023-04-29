@@ -12,7 +12,7 @@
 #include "GLPerfomance.h"
 #include "GLWindow.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLPlatform {
     public:
         GLPlatform();

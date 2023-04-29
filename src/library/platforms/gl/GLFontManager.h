@@ -11,7 +11,7 @@
 
 namespace sktextlayout = skia::textlayout;
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLFontManager {
     public:
         GLFontManager();

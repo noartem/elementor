@@ -4,7 +4,7 @@
 
 #include "GLPerfomance.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     void GLPerfomance::incrementFramesCount() {
         this->framesCount++;
 

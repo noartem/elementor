@@ -11,6 +11,7 @@
 #include "../../components/include.h"
 
 using namespace elementor;
+using namespace elementor::platforms::gl;
 using namespace elementor::elements;
 using namespace elementor::components;
 

@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace elementor {
+namespace elementor::platforms::gl {
     GLFontManager::GLFontManager() {
         this->skFontManager = sk_make_sp<sktextlayout::TypefaceFontProvider>();
     }

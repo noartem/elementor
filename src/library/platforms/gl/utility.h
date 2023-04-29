@@ -9,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     Size getWindowSize(GLFWwindow *window);
 
     Position getWindowPosition(GLFWwindow *window);

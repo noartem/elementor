@@ -16,7 +16,7 @@
 
 #define GL_RGBA8 0x8058
 
-namespace elementor {
+namespace elementor::platforms::gl {
     GLWindow *getGLFWWindowGLWindow(GLFWwindow *window) {
         return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }

@@ -9,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 
-namespace elementor {    
+namespace elementor::platforms::gl {
     class GLClipboard : public Clipboard {
     public:
         void set(std::string value) override;

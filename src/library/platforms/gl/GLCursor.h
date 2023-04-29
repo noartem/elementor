@@ -9,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLCursor : public Cursor {
     public:
         GLCursor(GLFWwindow *window, std::shared_ptr<ApplicationContext> ctx);

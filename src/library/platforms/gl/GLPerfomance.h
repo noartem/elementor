@@ -9,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     class GLPerfomance : public Perfomance {
     public:
         double getFPS() override;

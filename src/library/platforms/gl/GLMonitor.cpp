@@ -5,7 +5,7 @@
 #include "GLMonitor.h"
 #include "utility.h"
 
-namespace elementor {
+namespace elementor::platforms::gl {
     GLMonitor::GLMonitor(GLFWmonitor *monitor) {
         this->size = getMonitorSize(monitor);
         this->physicalSize = getMonitorPhysicalSize(monitor);

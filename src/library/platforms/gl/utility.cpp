@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-namespace elementor {
+namespace elementor::platforms::gl {
     Size getWindowSize(GLFWwindow *window) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
