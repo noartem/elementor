@@ -1,7 +1,7 @@
 #include "elementor.h"
 
 NGLPlatform::NGLPlatform(const Napi::CallbackInfo& info) : ObjectWrap(info) {
-    this->platform = new GLPlatform();
+    this->platform = std::make_shared<GLPlatform>();
 }
 
 Napi::Function NGLPlatform::GetClass(Napi::Env env) {
@@ -24,7 +24,7 @@ NGLClipboard::NGLClipboard(const Napi::CallbackInfo& info) : ObjectWrap(info) {
         return;
     }
 
-    this->clipboard = new GLClipboard();
+    this->clipboard = std::make_shared<GLClipboard>();
 }
 
 Napi::Function NGLClipboard::GetClass(Napi::Env env) {

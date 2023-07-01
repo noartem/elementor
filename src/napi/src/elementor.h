@@ -1,14 +1,7 @@
 #pragma once
 
 #include <napi.h>
-
-#include "../../library/include.h"
-#include "../../library/animation/include.h"
-#include "../../library/platforms/gl/include.h"
-#include "../../library/elements/include.h"
-
-using namespace elementor;
-using namespace elementor::elements;
+#include "library.h"
 
 class NGLPlatform : public Napi::ObjectWrap<NGLPlatform>
 {
@@ -17,7 +10,7 @@ public:
     static Napi::Function GetClass(Napi::Env);
     Napi::Value getClipboard(const Napi::CallbackInfo&);
 private:
-    GLPlatform *platform;
+    std::shared_ptr<GLPlatform> platform;
 };
 
 class NGLClipboard : public Napi::ObjectWrap<NGLClipboard>
