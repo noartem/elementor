@@ -37,6 +37,15 @@ target("elementor")
 
 if is_plat("windows") then
     add_packages("glew")
+
+    on_build(function (target)
+        local project = target._PROJECT
+        local skiaBuild = project.required_packages()['skia-build']
+        os.cp(
+            path.join(skiaBuild:get('linkdirs'), "icudtl.dat"),
+            path.join(project.directory(), "build", "$(plat)", "$(arch)", "$(mode)")
+        )
+    end)
 end
 
 target("elementor-components")
