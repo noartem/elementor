@@ -1,45 +1,16 @@
+import("core.base.json")
 import("core.base.option")
 import("core.project.config")
 import("core.project.project")
 import("core.platform.platform")
 
-local function isDictionary(value)
-    for k, v in pairs(value) do
-        if type(k) ~= "number" then
-            return true
-        end
-    end
-    return false
-end
-
-local function convertTableToJSON(tbl)
-    local result = {}
-
-    local is_dictionary = isDictionary(tbl)
-
-    for key, value in pairs(tbl) do
-        if type(value) == "table" then
-            value = convertTableToJSON(value)
-        elseif type(value) == "string" then
-            value = "\"" .. string.gsub(string.gsub(value, "\"", "\\\""), "\\", "\\\\") .. "\""
-        end
-
-        if is_dictionary then
-            table.insert(result, string.format("\"%s\":%s", key, value))
-        else
-            table.insert(result, value)
-        end
-    end
-
-    if is_dictionary then
-        return "{" .. table.concat(result, ",") .. "}"
-    else
-        return "[" .. table.concat(result, ",") .. "]"
-    end
-end
-
 function main()
     local result = {}
+
+    result["modes"] = project.modes()
+    result["arch"] = config.get("arch") or os.arch()
+    result["plat"] = config.get("plat") or os.host()
+    result["mode"] = config.get("mode") or "release"
 
     local targetsResult = {}
     for target_name, target in pairs(project.targets()) do
@@ -65,5 +36,5 @@ function main()
     end
     result["packages"] = packagesResult
 
-    print(convertTableToJSON(result))
+    print(json.encode(result))
 end

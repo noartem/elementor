@@ -7,11 +7,11 @@ export const exec = util.promisify(lameExec);
 const BUILD_DIR_PATH_PREFIX = `..${path.sep}..${path.sep}..${path.sep}`;
 
 const projectOut = await exec("xmake lua project-json.lua");
-const {packages, targets} = JSON.parse(projectOut.stdout.toString())
+const {packages, targets, mode} = JSON.parse(projectOut.stdout.toString())
 
 const getTargetLibFile = target => {
-    const targetFilePath = path.parse(`${BUILD_DIR_PATH_PREFIX}${target.targetfile}`)
-    return `${targetFilePath.dir}${path.sep}release${path.sep}${targetFilePath.name}`
+    const targetFilePath = path.parse(BUILD_DIR_PATH_PREFIX + target.targetfile)
+    return [targetFilePath.dir, mode, targetFilePath.name].join(path.sep)
 }
 
 const isBinaryTarget = target => target.kind === 'binary'
