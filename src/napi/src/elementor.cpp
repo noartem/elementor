@@ -43,12 +43,12 @@ Napi::Value NGLClipboard::set(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     if (info.Length() < 1) {
-        Napi::TypeError::New(env, "Clipbard set: Excepted one argument").ThrowAsJavaScriptException();
+        Napi::TypeError::New(env, "Clipboard set: Excepted one argument").ThrowAsJavaScriptException();
         return env.Undefined();
     }
 
     if (!info[0].IsString()) {
-        Napi::TypeError::New(env, "Clipbard set: First argument wrong type").ThrowAsJavaScriptException();
+        Napi::TypeError::New(env, "Clipboard set: First argument wrong type").ThrowAsJavaScriptException();
         return env.Undefined();
     }
 

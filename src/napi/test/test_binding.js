@@ -4,7 +4,7 @@ const assert = require("assert");
 function testPlatform() {
   const platform = new Platform();
 
-  console.log("cliboard from platform", platform.clipboard.get());
+  console.log("clipboard from platform", platform.clipboard.get());
   platform.clipboard.set("SOMETHING");
   console.log("clipboard.get()", platform.clipboard.get());
 }
