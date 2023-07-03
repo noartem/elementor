@@ -1,17 +1,14 @@
-import * as util from "util";
-import {exec as lameExec} from "child_process";
+import {exec, uniq} from "./utils.mjs"
 import * as path from 'path'
 
-export const exec = util.promisify(lameExec);
+const BUILD_DIR_PATH_PREFIX = `..${path.sep}..${path.sep}..${path.sep}`
 
-const BUILD_DIR_PATH_PREFIX = `..${path.sep}..${path.sep}..${path.sep}`;
-
-const projectOut = await exec("xmake lua project-json.lua");
+const projectOut = await exec("xmake lua project-json.lua")
 const {packages, targets, mode} = JSON.parse(projectOut.stdout.toString())
 
 const getTargetLibFile = target => {
     const targetFilePath = path.parse(BUILD_DIR_PATH_PREFIX + target.targetfile)
-    return [targetFilePath.dir, mode, targetFilePath.name].join(path.sep)
+    return [targetFilePath.dir, mode, targetFilePath.base].join(path.sep)
 }
 
 const isBinaryTarget = target => target.kind === 'binary'
@@ -22,15 +19,15 @@ export default {
     targets: [{
         target_name: 'elementor',
         sources: ['src/elementor.cpp'],
-        libraries: [
+        libraries: uniq([
             ...targets.filter(isNotBinaryTarget).map(getTargetLibFile),
             ...packages.flatMap(e => e.libfiles).filter(Boolean),
-            ...packages.flatMap(e => e.syslinks).filter(Boolean)
-        ],
-        include_dirs: [
+            ...packages.flatMap(e => e.syslinks).filter(Boolean).map(e => `-l${e}`)
+        ]),
+        include_dirs: uniq([
             `<!@(node -p "require('node-addon-api').include")`,
-            ...packages.map(e => e.includedirs).filter(Boolean),
-        ],
+            ...packages.flatMap(e => e.includedirs).filter(Boolean),
+        ]),
         dependencies: ["<!(node -p \"require('node-addon-api').gyp\")"],
         defines: ['NAPI_CPP_EXCEPTIONS'],
         cflags: ['-fexceptions', '-fPIC'],
