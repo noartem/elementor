@@ -44,6 +44,8 @@ namespace elementor {
 
     class Clipboard {
     public:
+        virtual ~Clipboard() {}
+
         virtual void set(std::string text) = 0;
         virtual std::string get() = 0;
     };
