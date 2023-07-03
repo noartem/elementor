@@ -1,40 +1,41 @@
-const { NGLPlatform, NGLClipboard } = require("../build/Release/elementor");
+const {NGLPlatform, NGLClipboard} = require("../build/Release/elementor");
 
-interface NativePlatform {
-  getClipboard(): NativeClipboard;
+interface Clipboard {
+    get(): string;
+
+    set(value: string): void;
 }
 
-interface NativeClipboard {
-  get(): string;
-  set(value: string): void;
+interface Platform {
+    getClipboard(): Clipboard;
 }
 
-export class Platform {
-  private instance: NativePlatform;
-  private _clipboard?: Clipboard;
+export class GLPlatform {
+    private instance: Platform;
+    private _clipboard?: Clipboard;
 
-  constructor() {
-    this.instance = new NGLPlatform();
-  }
+    constructor() {
+        this.instance = new NGLPlatform();
+    }
 
-  get clipboard() {
-    this._clipboard ??= new Clipboard(this.instance.getClipboard());
-    return this._clipboard;
-  }
+    get clipboard() {
+        this._clipboard ??= new GLClipboard(this.instance.getClipboard());
+        return this._clipboard;
+    }
 }
 
-export class Clipboard {
-  private instance: NativeClipboard;
+export class GLClipboard {
+    private instance: Clipboard;
 
-  constructor(instance?: NativeClipboard) {
-    this.instance = instance ?? new NGLClipboard();
-  }
+    constructor(instance?: Clipboard) {
+        this.instance = instance ?? new NGLClipboard();
+    }
 
-  get() {
-    return this.instance.get();
-  }
+    get() {
+        return this.instance.get();
+    }
 
-  set(value: string) {
-    return this.instance.set(value);
-  }
+    set(value: string) {
+        return this.instance.set(value);
+    }
 }

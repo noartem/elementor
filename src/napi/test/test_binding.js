@@ -1,8 +1,8 @@
-const { Platform } = require("../dist/binding.js");
+const { GLPlatform } = require("../dist/binding.js");
 const assert = require("assert");
 
 function testPlatform() {
-  const platform = new Platform();
+  const platform = new GLPlatform();
 
   console.log("clipboard from platform", platform.clipboard.get());
   platform.clipboard.set("SOMETHING");
