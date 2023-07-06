@@ -12,10 +12,10 @@
 
 #define EVENT_MOUSE_BUTTON "mouse-button"
 #define EVENT_MOUSE_MOVE "mouse-move"
-#define EVENT_MOUSE_MOVING "mouse-moving"
 #define EVENT_SCROLL "scroll"
 #define EVENT_KEYBOARD "keyboard"
 #define EVENT_CHAR "char"
+#define EVENT_HOVER "hover"
 
 namespace elementor {
     class Event {
@@ -222,17 +222,6 @@ namespace elementor {
         virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) = 0;
     };
 
-    class EventMouseMoving : public Event {
-        std::string getName() override {
-            return EVENT_MOUSE_MOVING;
-        };
-    };
-
-    class WithOnMouseMoving {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMoving> event) = 0;
-    };
-
     class EventScroll : public Event {
     public:
         EventScroll(float xOffset, float yOffset) {
@@ -293,6 +282,24 @@ namespace elementor {
     class WithOnChar {
     public:
         virtual EventCallbackResponse onEvent(std::shared_ptr<EventChar >event) = 0;
+    };
+
+    class EventHover : public Event {
+    public:
+        EventHover(bool hovered) {
+            this->hovered = hovered;
+        }
+
+        bool hovered;
+
+        std::string getName() override {
+            return EVENT_HOVER;
+        };
+    };
+
+    class WithOnHover {
+    public:
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) = 0;
     };
 }
 

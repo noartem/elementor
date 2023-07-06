@@ -14,7 +14,8 @@ namespace elementor {
     struct ElementNode {
         std::shared_ptr <Element> element;
         ElementRect rect;
-        std::vector <ElementNode> children = {};
+        std::vector <std::shared_ptr<ElementNode>> children;
+        std::weak_ptr <ElementNode> parent;
     };
 
     class Application {
@@ -31,17 +32,22 @@ namespace elementor {
     private:
         std::shared_ptr <ApplicationContext> ctx;
         std::shared_ptr <Window> window;
-        ElementNode rootNode;
-        std::map <std::string, std::vector<std::shared_ptr < Element>>>
+        std::shared_ptr <ElementNode> rootNode;
+        std::map <std::string, std::vector<std::shared_ptr < ElementNode>>>
         eventListeners;
+        std::vector <std::shared_ptr<ElementNode>> hoveredElements;
 
-        ElementNode makeRootNode();
+        std::shared_ptr <ElementNode> makeRootNode();
 
-        ElementNode makeNode(const RenderElement &element, const ElementRect &rect, const Rect &boundary);
+        std::shared_ptr <ElementNode> makeNode(const RenderElement &element, const ElementRect &rect, const Rect &boundary);
 
-        void saveElementEventListeners(const std::shared_ptr <Element> &element);
+        void saveNodeEventListeners(const std::shared_ptr <ElementNode> &node);
 
-        void drawNode(const ElementNode &node, SkCanvas *canvas);
+        void drawNode(const std::shared_ptr <ElementNode> &node, SkCanvas *canvas);
+
+        void setHoveredElements(const std::vector <std::shared_ptr<ElementNode>> &newValue);
+
+        void onMouseMove(const std::shared_ptr <EventMouseMove> &event);
     };
 };
 

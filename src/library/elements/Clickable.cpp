@@ -11,8 +11,7 @@ namespace elementor::elements {
         return std::make_shared<Clickable>();
     }
 
-    std::shared_ptr<Clickable> Clickable::onButton(
-            std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
+    std::shared_ptr<Clickable> Clickable::onButton(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
         this->callbackButton = std::move(callback);
         return shared_from_this();
     }
@@ -25,8 +24,7 @@ namespace elementor::elements {
         return shared_from_this();
     }
 
-    std::shared_ptr<Clickable> Clickable::onClick(
-            std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
+    std::shared_ptr<Clickable> Clickable::onClick(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
         this->callbackClick = std::move(callback);
         return shared_from_this();
     }
@@ -39,8 +37,7 @@ namespace elementor::elements {
         return shared_from_this();
     }
 
-    std::shared_ptr<Clickable> Clickable::onRightClick(
-            std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
+    std::shared_ptr<Clickable> Clickable::onRightClick(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
         this->callbackRightClick = std::move(callback);
         return shared_from_this();
     }
@@ -58,8 +55,7 @@ namespace elementor::elements {
         return shared_from_this();
     }
 
-    Size
-    Clickable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
+    Size Clickable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
         if (this->hasChild()) {
             return this->getChild()->getSize(ctx, window, boundaries);
         } else {
@@ -67,14 +63,12 @@ namespace elementor::elements {
         }
     }
 
-    void Clickable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                    SkCanvas *canvas, ElementRect rect) {
+    void Clickable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
         this->window = window;
         this->rect = rect;
     }
 
-    std::vector<RenderElement>
-    Clickable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
+    std::vector<RenderElement> Clickable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
         std::vector<RenderElement> children;
 
         if (this->hasChild()) {
@@ -86,13 +80,12 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        this->hovered = this->rect.visibleContains({event->x, event->y});
         this->cursorPosition = this->rect.absolutePositionToContained(cursorPosition);
         return EventCallbackResponse::None;
     }
 
-    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseMoving> event) {
-        this->hovered = false;
+    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventHover> event) {
+        this->hovered = event->hovered;
         return EventCallbackResponse::None;
     }
 
