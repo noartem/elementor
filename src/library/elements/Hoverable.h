@@ -11,6 +11,7 @@
 #include <functional>
 
 // TODO: Add `ElementSingleChild` for elements like this
+// TODO: Remove hover on window blur
 
 namespace elementor::elements {
     class Hoverable : public Element, public WithOnHover, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<Hoverable> {
