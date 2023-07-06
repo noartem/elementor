@@ -3,6 +3,9 @@
 #include <napi.h>
 #include "library.h"
 
+// TODO: Fix tests - got double free error when running on linux.
+//       Need to test creating just element, maybe double-free related to GLFW
+
 class NGLPlatform : public Napi::ObjectWrap<NGLPlatform>
 {
 public:
