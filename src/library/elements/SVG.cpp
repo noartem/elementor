@@ -11,7 +11,6 @@
 #include <modules/svg/include/SkSVGTypes.h>
 #include <modules/svg/include/SkSVGRenderContext.h>
 
-#include <iostream>
 #include <utility>
 
 namespace elementor::elements {

@@ -5,8 +5,6 @@
 #include "TimePicker.h"
 #include "WithCursor.h"
 
-#include <iostream>
-
 namespace elementor::components {
     std::shared_ptr<TimePicker> timePicker() {
         return std::make_shared<TimePicker>();
