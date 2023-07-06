@@ -95,7 +95,7 @@ namespace elementor::platforms::gl {
     }
 
     std::shared_ptr<GLWindow> GLPlatform::makeWindow(Size size) {
-        auto window = std::make_shared<GLWindow>(this->applicationContext, size);
+        auto window = GLWindow::Make(this->applicationContext, size);
         this->addWindow(window);
         return window;
     }

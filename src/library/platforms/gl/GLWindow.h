@@ -16,7 +16,7 @@
 namespace elementor::platforms::gl {
     class GLWindow : public Window, public std::enable_shared_from_this<GLWindow> {
     public:
-        GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size);
+        static std::shared_ptr<GLWindow> Make(std::shared_ptr<ApplicationContext> applicationContext, Size size);
 
         ~GLWindow();
 
@@ -54,6 +54,8 @@ namespace elementor::platforms::gl {
         std::shared_ptr<void> getUserPointer() override;
 
     private:
+        void init(std::shared_ptr<ApplicationContext> applicationContext, Size size);
+
         std::shared_ptr<Application> application;
 
         std::shared_ptr<Element> root;

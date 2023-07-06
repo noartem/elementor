@@ -21,8 +21,14 @@ namespace elementor::platforms::gl {
         return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }
 
-    GLWindow::GLWindow(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
-        this->application = std::make_shared<Application>();
+    std::shared_ptr<GLWindow> GLWindow::Make(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
+        auto window = std::make_shared<GLWindow>();
+        window->init(std::move(applicationContext), size);
+        return window;
+    }
+
+    void GLWindow::init(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
+        this->application = std::make_shared<Application>(applicationContext, shared_from_this());
         this->applicationContext = std::move(applicationContext);
         this->glWindow = glfwCreateWindow(size.width, size.height, "Elementor", nullptr, nullptr);
         this->cursor = std::make_shared<GLCursor>(this->glWindow, this->applicationContext);
@@ -99,7 +105,7 @@ namespace elementor::platforms::gl {
         this->refresh();
 
         this->skCanvas->clear(SK_ColorBLACK);
-        this->application->draw(this->applicationContext, shared_from_this(), this->skCanvas);
+        this->application->draw(this->skCanvas);
 
         glfwMakeContextCurrent(this->glWindow);
         this->skContext->flush();
