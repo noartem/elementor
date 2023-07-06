@@ -35,6 +35,7 @@ namespace elementor {
         std::shared_ptr <ElementNode> rootNode;
         std::map <std::string, std::vector<std::shared_ptr < ElementNode>>>
         eventListeners;
+        std::vector <std::shared_ptr<Event>> pendingEvents;
         std::vector <std::shared_ptr<ElementNode>> hoveredElements;
 
         std::shared_ptr <ElementNode> makeRootNode();
@@ -47,7 +48,9 @@ namespace elementor {
 
         void setHoveredElements(const std::vector <std::shared_ptr<ElementNode>> &newValue);
 
-        void onMouseMove(const std::shared_ptr <EventMouseMove> &event);
+        void updateHovered();
+
+        void dispatchPendingEvents();
     };
 };
 

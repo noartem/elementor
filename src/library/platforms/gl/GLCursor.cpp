@@ -50,5 +50,13 @@ namespace elementor::platforms::gl {
     CursorShape GLCursor::get() {
         return this->currentShape;
     }
+
+    Position GLCursor::getPosition() {
+        return this->position;
+    }
+
+    void GLCursor::setPosition(elementor::Position position) {
+        this->position = position;
+    }
 }
 

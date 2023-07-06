@@ -27,14 +27,18 @@ namespace elementor {
     struct Rect {
         Size size;
         Position position;
+
+        bool contains(float x, float y);
+
+        bool contains(Position point);
     };
 
-    class ElementRect {
-    public:
-        Position position;
-        Position inParentPosition;
+    struct ElementRect {
         Size size;
+        Position position;
         Size visibleSize;
+        Position visiblePosition;
+        Position inParentPosition;
 
         bool contains(float x, float y);
 

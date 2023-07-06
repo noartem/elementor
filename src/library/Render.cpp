@@ -7,36 +7,50 @@
 #include <algorithm>
 
 namespace elementor {
+    bool Rect::contains(float x, float y) {
+        return (
+                position.x < x &&
+                position.x + size.width > x &&
+                position.y < y &&
+                position.y + size.height > y
+        );
+    }
+
+    bool Rect::contains(Position point) {
+        return contains(point.x, point.y);
+    }
+
     bool ElementRect::contains(float x, float y) {
         return (
-            this->position.x < x &&
-            this->position.x + this->size.width > x &&
-            this->position.y < y &&
-            this->position.y + this->size.height > y
+                position.x < x &&
+                position.x + size.width > x &&
+                position.y < y &&
+                position.y + size.height > y
         );
     }
 
     bool ElementRect::contains(Position point) {
-        return this->contains(point.x, point.y);
+        return contains(point.x, point.y);
     }
 
     bool ElementRect::visibleContains(float x, float y) {
         return (
-            this->position.x < x &&
-            this->position.x + this->visibleSize.width > x &&
-            this->position.y < y &&
-            this->position.y + this->visibleSize.height > y
+                visiblePosition.x < x &&
+                visiblePosition.x + visibleSize.width > x &&
+                visiblePosition.y < y &&
+                visiblePosition.y + visibleSize.height > y
         );
+
     }
 
     bool ElementRect::visibleContains(Position point) {
-        return this->visibleContains(point.x, point.y);
+        return visibleContains(point.x, point.y);
     }
 
-    Position ElementRect::absolutePositionToContained(Position absoulutePosition) {
+    Position ElementRect::absolutePositionToContained(Position absolutePosition) {
         return {
-            absoulutePosition.x - this->position.x,
-            absoulutePosition.y - this->position.y,
+                absolutePosition.x - position.x,
+                absolutePosition.y - position.y,
         };
     }
 

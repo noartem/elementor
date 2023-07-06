@@ -18,12 +18,18 @@ namespace elementor::platforms::gl {
 
         CursorShape get() override;
 
+        Position getPosition() override;
+
+        void setPosition(Position position);
+
     private:
         std::shared_ptr<ApplicationContext> ctx;
         GLFWwindow *window;
-        GLFWcursor *cursor{};
+        GLFWcursor *cursor;
         CursorShape currentShape = CursorShape::Default;
         CursorShape appliedShape = CursorShape::Default;
+
+        Position position;
 
         void updateCursor();
     };

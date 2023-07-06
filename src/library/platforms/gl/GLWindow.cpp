@@ -21,13 +21,13 @@ namespace elementor::platforms::gl {
         return static_cast<GLWindow *>(glfwGetWindowUserPointer(window));
     }
 
-    std::shared_ptr<GLWindow> GLWindow::Make(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
+    std::shared_ptr <GLWindow> GLWindow::Make(std::shared_ptr <ApplicationContext> applicationContext, Size size) {
         auto window = std::make_shared<GLWindow>();
         window->init(std::move(applicationContext), size);
         return window;
     }
 
-    void GLWindow::init(std::shared_ptr<ApplicationContext> applicationContext, Size size) {
+    void GLWindow::init(std::shared_ptr <ApplicationContext> applicationContext, Size size) {
         this->application = std::make_shared<Application>(applicationContext, shared_from_this());
         this->applicationContext = std::move(applicationContext);
         this->glWindow = glfwCreateWindow(size.width, size.height, "Elementor", nullptr, nullptr);
@@ -112,11 +112,11 @@ namespace elementor::platforms::gl {
         glfwSwapBuffers(this->glWindow);
     }
 
-    std::shared_ptr<Element> GLWindow::getRoot() {
+    std::shared_ptr <Element> GLWindow::getRoot() {
         return this->root;
     }
 
-    void GLWindow::setRoot(std::shared_ptr<Element> newRoot) {
+    void GLWindow::setRoot(std::shared_ptr <Element> newRoot) {
         this->root = newRoot;
     }
 
@@ -137,11 +137,11 @@ namespace elementor::platforms::gl {
         glfwSetWindowSize(this->glWindow, std::ceil(size.width), std::ceil(size.height));
     }
 
-    std::optional<Size> GLWindow::getMinSize() {
+    std::optional <Size> GLWindow::getMinSize() {
         return this->minSize;
     }
 
-    std::optional<Size> GLWindow::getMaxSize() {
+    std::optional <Size> GLWindow::getMaxSize() {
         return this->maxSize;
     }
 
@@ -165,7 +165,7 @@ namespace elementor::platforms::gl {
         this->updateWindowSizeLimits();
     }
 
-    void GLWindow::setMinSize(std::optional<Size> size) {
+    void GLWindow::setMinSize(std::optional <Size> size) {
         this->minSize = size;
         this->updateWindowSizeLimits();
     }
@@ -175,7 +175,7 @@ namespace elementor::platforms::gl {
         this->updateWindowSizeLimits();
     }
 
-    void GLWindow::setMaxSize(std::optional<Size> size) {
+    void GLWindow::setMaxSize(std::optional <Size> size) {
         this->maxSize = size;
         this->updateWindowSizeLimits();
     }
@@ -208,11 +208,11 @@ namespace elementor::platforms::gl {
         return this->userPointer;
     }
 
-    std::shared_ptr<Cursor> GLWindow::getCursor() {
+    std::shared_ptr <Cursor> GLWindow::getCursor() {
         return this->cursor;
     }
 
-    std::shared_ptr<Monitor> GLWindow::getMonitor() {
+    std::shared_ptr <Monitor> GLWindow::getMonitor() {
         if (this->monitor == nullptr) {
             this->monitor = std::make_shared<GLMonitor>(getWindowMonitor(this->glWindow));
         }
@@ -534,6 +534,8 @@ namespace elementor::platforms::gl {
     }
 
     void GLWindow::onMouseMove(double x, double y) {
+        this->cursor->setPosition({(float) x, (float) y});
+
         auto event = std::make_shared<EventMouseMove>(x, y);
         this->application->dispatchEvent(event);
     }

@@ -66,6 +66,8 @@ namespace elementor {
     public:
         virtual void set(CursorShape shape) = 0;
         virtual CursorShape get() = 0;
+
+        virtual Position getPosition() = 0;
     };
 
     class Perfomance {
