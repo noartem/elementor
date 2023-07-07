@@ -80,7 +80,7 @@ namespace elementor::elements {
     }
 
     EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        this->cursorPosition = this->rect.absolutePositionToContained(cursorPosition);
+        this->cursorPosition = this->rect.absolutePositionToContained({event->x, event->y});
         return EventCallbackResponse::None;
     }
 
