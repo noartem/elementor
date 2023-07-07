@@ -118,7 +118,7 @@ namespace elementor::elements {
                     RenderElement thumb;
                     thumb.element = this->thumbX;
 
-                    float thumbWidth = rect.size.width * (rect.size.width / scrollWidth);
+                    float thumbWidth = std::max(rect.size.width * (rect.size.width / scrollWidth), 64.f);
                     if (trackHeight == 0) {
                         thumb.size = thumb.element->getSize(ctx, window, {{thumbWidth, 0}, {thumbWidth, rect.size.height}});
                         trackHeight = thumb.size.height;
@@ -152,7 +152,7 @@ namespace elementor::elements {
                     RenderElement thumbElement{};
                     thumbElement.element = this->thumbY;
 
-                    float thumbHeight = rect.size.height * (rect.size.height / scrollHeight);
+                    float thumbHeight = std::max(rect.size.height * (rect.size.height / scrollHeight), 64.f);
                     if (trackWidth == 0) {
                         thumbElement.size = thumbElement.element->getSize(ctx, window, {{0, thumbHeight}, {rect.size.width, thumbHeight}});
                         trackWidth = thumbElement.size.width;
