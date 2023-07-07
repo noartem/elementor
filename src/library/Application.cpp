@@ -4,8 +4,11 @@
 
 #include "Application.h"
 
+#include <iostream>
+
 namespace elementor {
-    std::shared_ptr <ElementNode> Application::makeNode(const RenderElement &element, const ElementRect &rect, const Rect &rootBoundary) {
+    std::shared_ptr <ElementNode> Application::makeNode(const RenderElement &element,
+                                                        const ElementRect &rect, const Rect &rootBoundary) {
         auto node = std::make_shared<ElementNode>();
 
         node->element = element.element;
@@ -15,8 +18,12 @@ namespace elementor {
         if (element.element->getClipBehaviour() != ClipBehavior::None) {
             boundary.position.x = std::max(rootBoundary.position.x, rect.position.x);
             boundary.position.y = std::max(rootBoundary.position.y, rect.position.y);
-            boundary.size.width = std::max(std::min(rootBoundary.position.x + rootBoundary.size.width, rect.position.x + rect.size.width) - boundary.position.x, ZERO);
-            boundary.size.height = std::max(std::min(rootBoundary.position.y + rootBoundary.size.height, rect.position.y + rect.size.height) - boundary.position.y, ZERO);
+            boundary.size.width = std::max(
+                    std::min(rootBoundary.position.x + rootBoundary.size.width, rect.position.x + rect.size.width) -
+                    boundary.position.x, ZERO);
+            boundary.size.height = std::max(
+                    std::min(rootBoundary.position.y + rootBoundary.size.height, rect.position.y + rect.size.height) -
+                    boundary.position.y, ZERO);
         }
 
         for (const RenderElement &child: element.element->getChildren(ctx, window, rect)) {
@@ -29,8 +36,12 @@ namespace elementor {
 
             childRect.visiblePosition.x = std::max(childRect.position.x, boundary.position.x);
             childRect.visiblePosition.y = std::max(childRect.position.y, boundary.position.y);
-            childRect.visibleSize.width = std::max(std::min(boundary.position.x + boundary.size.width, childRect.position.x + childRect.size.width) - childRect.visiblePosition.x, ZERO);
-            childRect.visibleSize.height = std::max(std::min(boundary.position.y + boundary.size.height, childRect.position.y + childRect.size.height) - childRect.visiblePosition.y, ZERO);
+            childRect.visibleSize.width = std::max(
+                    std::min(boundary.position.x + boundary.size.width, childRect.position.x + childRect.size.width) -
+                    childRect.visiblePosition.x, ZERO);
+            childRect.visibleSize.height = std::max(
+                    std::min(boundary.position.y + boundary.size.height, childRect.position.y + childRect.size.height) -
+                    childRect.visiblePosition.y, ZERO);
 
             auto childNode = this->makeNode(child, childRect, boundary);
             childNode->parent = node;
@@ -123,50 +134,75 @@ namespace elementor {
         }
 
         for (const auto &node: oldValue) {
-            if (std::find_if(newValue.begin(), newValue.end(), [node](const std::shared_ptr <ElementNode> &newNode) { return node->element == newNode->element; }) == newValue.end()) {
+            if (std::find_if(newValue.begin(), newValue.end(),
+                             [node](const std::shared_ptr <ElementNode> &newNode) {
+                                 return node->element == newNode->element;
+                             })
+                == newValue.end()) {
                 callElementEventHandler(node->element, std::make_shared<EventHover>(false));
             }
         }
 
         for (const auto &node: newValue) {
-            if (std::find_if(oldValue.begin(), oldValue.end(), [node](const std::shared_ptr <ElementNode> &oldNode) { return node->element == oldNode->element; }) == oldValue.end()) {
+            if (std::find_if(oldValue.begin(), oldValue.end(),
+                             [node](const std::shared_ptr <ElementNode> &oldNode) {
+                                 return node->element == oldNode->element;
+                             })
+                == oldValue.end()) {
                 callElementEventHandler(node->element, std::make_shared<EventHover>(true));
             }
         }
     }
 
-    void Application::updateHovered() {
-        auto cursorPosition = this->window->getCursor()->getPosition();
-
-        auto hoverableNodes = this->eventListeners[EVENT_HOVER];
-        for (int i = hoverableNodes.size() - 1; i >= 0; i--) {
-            auto node = hoverableNodes[i];
-
-            if (node->rect.visibleContains(cursorPosition)) {
-                std::vector <std::shared_ptr<ElementNode>> nodes;
-                std::shared_ptr <ElementNode> currentNode = node;
-                while (currentNode != nullptr) {
-                    if (!currentNode->rect.visibleContains(cursorPosition)) {
-                        break;
-                    }
-
-                    if (dynamic_cast<WithOnHover *>(currentNode->element.get()) != nullptr) {
-                        nodes.push_back(currentNode);
-                    }
-
-                    if (currentNode->parent.expired()) {
-                        currentNode = nullptr;
-                    } else {
-                        currentNode = currentNode->parent.lock();
-                    }
-                }
-
-                this->setHoveredElements(nodes);
-                return;
+    template<typename T>
+    std::optional <T> findLast(std::vector <T> items, std::function<bool(T item)> iter) {
+        for (int i = items.size() - 1; i >= 0; i--) {
+            T item = items[i];
+            if (iter(item)) {
+                return item;
             }
         }
 
-        this->setHoveredElements({});
+        return std::nullopt;
+    }
+
+    void Application::updateHovered() {
+        if (!this->window->getFocused()) {
+            this->setHoveredElements({});
+            return;
+        }
+
+        auto cursorPosition = this->window->getCursor()->getPosition();
+
+        auto hoveredNode = findLast<std::shared_ptr < ElementNode>>
+        (this->eventListeners[EVENT_HOVER],
+                [cursorPosition](std::shared_ptr <ElementNode> node) {
+                    return node->rect.visibleContains(cursorPosition);
+                });
+        if (hoveredNode == std::nullopt) {
+            this->setHoveredElements({});
+            return;
+        }
+
+        std::vector <std::shared_ptr<ElementNode>> hoveredNodes;
+        std::shared_ptr <ElementNode> currentNode = hoveredNode.value();
+        while (currentNode != nullptr) {
+            if (!currentNode->rect.visibleContains(cursorPosition)) {
+                break;
+            }
+
+            if (dynamic_cast<WithOnHover *>(currentNode->element.get()) != nullptr) {
+                hoveredNodes.push_back(currentNode);
+            }
+
+            if (currentNode->parent.expired()) {
+                currentNode = nullptr;
+            } else {
+                currentNode = currentNode->parent.lock();
+            }
+        }
+
+        this->setHoveredElements(hoveredNodes);
     }
 
     void Application::draw(SkCanvas *canvas) {
@@ -176,6 +212,7 @@ namespace elementor {
         this->saveNodeEventListeners(this->rootNode);
 
         this->updateHovered();
+        this->dispatchPendingEvents();
 
         this->drawNode(this->rootNode, canvas);
     }
@@ -206,8 +243,5 @@ namespace elementor {
 
     void Application::dispatchEvent(const std::shared_ptr <Event> &event) {
         this->pendingEvents.push_back(event);
-        this->ctx->requestNextFrame([this]() {
-            this->dispatchPendingEvents();
-        });
     }
 }
