@@ -8,9 +8,9 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class ComponentsContext : public Component, public WithChild, public std::enable_shared_from_this<ComponentsContext> {
+    class ComponentsContext : public Component, public std::enable_shared_from_this<ComponentsContext> {
     public:
-        explicit ComponentsContext(const std::shared_ptr<Element>& rootElement) : Component(), WithChild() {
+        ComponentsContext(const std::shared_ptr<Element>& rootElement) {
             this->stackElement = stack();
             this->element = rounded()
                 ->setChild(this->stackElement
