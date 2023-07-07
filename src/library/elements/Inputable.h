@@ -13,10 +13,10 @@
 namespace elementor::elements {
     class Inputable
             : public Element,
+              public WithOnHover,
               public WithOnKeyboard,
               public WithOnChar,
               public WithOnMouseButton,
-              public WithOnMouseMove,
               public WithChild,
               public std::enable_shared_from_this<Inputable> {
     public:
@@ -47,7 +47,7 @@ namespace elementor::elements {
         std::vector<RenderElement>
         getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
 

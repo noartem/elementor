@@ -70,9 +70,8 @@ namespace elementor::elements {
         return {childElement};
     }
 
-    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        Position cursorPosition = {event->x, event->y};
-        this->hovered = this->rect.visibleContains(cursorPosition);
+    EventCallbackResponse Inputable::onEvent(std::shared_ptr<EventHover> event) {
+        this->hovered = event->hovered;
         return EventCallbackResponse::None;
     }
 
