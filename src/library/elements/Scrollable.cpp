@@ -142,8 +142,8 @@ namespace elementor::elements {
         return ClipBehavior::AntiAlias;
     }
 
-    EventCallbackResponse Scrollable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        this->hovered = this->rect.visibleContains(event->x, event->y);
+    EventCallbackResponse Scrollable::onEvent(std::shared_ptr<EventHover> event) {
+        this->hovered = event->hovered;
         return EventCallbackResponse::None;
     }
 

@@ -17,12 +17,12 @@ namespace elementor::elements {
 
     class Scrollable
             : public Element,
-              public WithOnMouseMove,
+              public WithOnHover,
               public WithOnScroll,
               public WithChild,
               public std::enable_shared_from_this<Scrollable> {
     public:
-        std::shared_ptr<Scrollable> setDirection(ScrollDirection newDirection);
+        std::shared_ptr <Scrollable> setDirection(ScrollDirection newDirection);
 
         ScrollDirection getDirection();
 
@@ -38,11 +38,11 @@ namespace elementor::elements {
 
         float getMaxScrollTop() const;
 
-        std::shared_ptr<Scrollable> setScrollTop(float newScrollTop);
+        std::shared_ptr <Scrollable> setScrollTop(float newScrollTop);
 
         float getScrollTop() const;
 
-        std::shared_ptr<Scrollable> setScrollLeft(float newScrollLeft);
+        std::shared_ptr <Scrollable> setScrollLeft(float newScrollLeft);
 
         float getScrollLeft() const;
 
@@ -50,32 +50,32 @@ namespace elementor::elements {
 
         float getScrollWidth() const;
 
-        std::shared_ptr<Scrollable> setScrollAcceleration(float newScrollAcceleration);
+        std::shared_ptr <Scrollable> setScrollAcceleration(float newScrollAcceleration);
 
         float getScrollAcceleration() const;
 
-        std::shared_ptr<Scrollable> setChild(const std::shared_ptr<Element>& child);
+        std::shared_ptr <Scrollable> setChild(const std::shared_ptr <Element> &child);
 
-        Size
-        getChildSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries);
+        Size getChildSize(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
+                          Boundaries boundaries);
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+        Size getSize(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
                      Boundaries boundaries) override;
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+        void paintBackground(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
+                             SkCanvas *canvas, ElementRect rect) override;
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+        std::vector <RenderElement> getChildren(std::shared_ptr <ApplicationContext> ctx,
+                                                std::shared_ptr <Window> window, ElementRect rect) override;
 
         ClipBehavior getClipBehaviour() override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+        EventCallbackResponse onEvent(std::shared_ptr <EventHover> event) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventScroll> event) override;
+        EventCallbackResponse onEvent(std::shared_ptr <EventScroll> event) override;
 
     private:
-        std::shared_ptr<ApplicationContext> ctx;
+        std::shared_ptr <ApplicationContext> ctx;
         ElementRect rect;
         ScrollDirection direction = ScrollDirection::Both;
         float scrollLeft;
@@ -85,7 +85,7 @@ namespace elementor::elements {
         bool hovered;
     };
 
-    std::shared_ptr<Scrollable> scrollable();
+    std::shared_ptr <Scrollable> scrollable();
 }
 
 
