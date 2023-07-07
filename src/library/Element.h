@@ -103,6 +103,8 @@ namespace elementor {
         virtual Position getPosition() = 0;
         virtual void setPosition(Position Position) = 0;
 
+        virtual bool getFocused() = 0;
+
         virtual std::shared_ptr<Cursor> getCursor() = 0;
 
         virtual std::shared_ptr<Monitor> getMonitor() = 0;

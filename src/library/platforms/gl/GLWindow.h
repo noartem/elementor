@@ -42,6 +42,8 @@ namespace elementor::platforms::gl {
         Position getPosition() override;
         void setPosition(Position Position) override;
 
+        bool getFocused() override;
+
         std::shared_ptr<Cursor> getCursor() override;
 
         std::shared_ptr<Monitor> getMonitor() override;

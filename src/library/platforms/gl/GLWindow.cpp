@@ -54,6 +54,13 @@ namespace elementor::platforms::gl {
             window->close();
         });
 
+        glfwSetWindowFocusCallback(glWindow, [](GLFWwindow *glfwWindow, int focused) {
+            GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
+            if (!focused) {
+                window->cursor->setPosition({-1, -1});
+            }
+        });
+
         glfwSetKeyCallback(glWindow, [](GLFWwindow *glfwWindow, int key, int scancode, int action, int mods) {
             GLWindow *window = getGLFWWindowGLWindow(glfwWindow);
             window->onKeyboard(key, scancode, action, mods);
@@ -143,6 +150,10 @@ namespace elementor::platforms::gl {
 
     std::optional <Size> GLWindow::getMaxSize() {
         return this->maxSize;
+    }
+
+    bool GLWindow::getFocused() {
+        return glfwGetWindowAttrib(this->glWindow, GLFW_FOCUSED);
     }
 
     void GLWindow::updateWindowSizeLimits() {
