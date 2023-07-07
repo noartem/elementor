@@ -13,8 +13,9 @@
 namespace elementor::elements {
     class Draggable
             : public Element,
-              public WithOnMouseButton,
+              public WithOnHover,
               public WithOnMouseMove,
+              public WithOnMouseButton,
               public WithChild,
               public std::enable_shared_from_this<Draggable> {
     public:
@@ -26,8 +27,8 @@ namespace elementor::elements {
 
         std::shared_ptr<Draggable> onEnd(const std::function<void()>& callback);
 
-        std::shared_ptr<Draggable>
-        onMove(std::function<void(Position position, Position absolutePosition, Position diff)> callback);
+        std::shared_ptr<Draggable> onMove(std::function<void(Position position, Position absolutePosition,
+                Position diff)> callback);
 
         std::shared_ptr<Draggable> onMove(const std::function<void()>& callback);
 
@@ -39,12 +40,14 @@ namespace elementor::elements {
         void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
                              ElementRect rect) override;
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+        std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
+                                               ElementRect rect) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
 
         EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
+
+        EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) override;
 
     private:
         ElementRect rect;

@@ -82,10 +82,14 @@ namespace elementor::elements {
         return children;
     }
 
+    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventHover> event) {
+        this->hovered = event->hovered;
+        return EventCallbackResponse::None;
+    }
+
     EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventMouseMove> event) {
         this->previousCursorAbsolutePosition = this->cursorAbsolutePosition;
         this->cursorAbsolutePosition = {event->x, event->y};
-        this->hovered = this->rect.visibleContains(this->cursorAbsolutePosition);
         this->cursorPosition = this->rect.absolutePositionToContained(this->cursorAbsolutePosition);
 
         if (this->dragging && this->callbackMove) {
