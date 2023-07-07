@@ -71,11 +71,19 @@ namespace elementor::components {
     }
 
     void ScaleControl::incrementScale() {
+        if (this->scalePercentage >= 200) {
+            return;
+        }
+
         this->scalePercentage += 10;
         this->applyScale();
     }
 
     void ScaleControl::decrementScale() {
+        if (this->scalePercentage <= 50) {
+            return;
+        }
+
         this->scalePercentage -= 10;
         this->applyScale();
     }
