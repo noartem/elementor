@@ -6,7 +6,7 @@
     "outDir": "./dist",
     "rootDir": "./lib",
     "strict": true,
-    "target": "es6",
+    "target": "esnext",
     "types": [
       "node"
     ],

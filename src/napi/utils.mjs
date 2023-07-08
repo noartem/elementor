@@ -1,7 +1,7 @@
-import util from "util";
-import {exec as lameExec} from "child_process";
+import {promisify} from "util";
+import {exec as _exec} from "child_process";
 
-export const exec = util.promisify(lameExec);
+export const exec = promisify(_exec);
 
 export function uniq(items) {
     const result = []
