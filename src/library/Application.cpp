@@ -105,7 +105,7 @@ namespace elementor {
         debugPaint.setStyle(SkPaint::kStroke_Style);
         debugPaint.setAntiAlias(true);
 
-        SkRect debugRect = SkRect::MakeWH(node.rect.visibleSize.width, node.rect.visibleSize.height);
+        SkRect debugRect = SkRect::MakeWH(node->rect.visibleSize.width, node->rect.visibleSize.height);
         canvas->drawRect(debugRect, debugPaint);
 #endif
 
