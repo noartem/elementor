@@ -1,47 +1,67 @@
-const {NGLPlatform, NPadding, NBackground} = require("../build/Release/elementor.node")
+const {
+  NGLPlatform,
+  NPadding,
+  NBackground,
+} = require("../build/Release/elementor.node");
 
 export interface Size {
-    width: number;
-    height: number;
+  width: number;
+  height: number;
 }
 
 export interface Clipboard {
-    get(): string;
+  get(): string;
 
-    set(value: string): void;
+  set(value: string): void;
 }
 
 export interface Window {
-    setTitle(value: string): void;
+  setTitle(value: string): void;
 
-    setMinSize(value: Size): void;
+  setMinSize(value: Size): void;
 
-    setMaxSize(value: Size): void;
+  setMaxSize(value: Size): void;
 
-    setRoot(value: Element): void;
+  setRoot(value: Element): void;
 
-    getClipboard(): Clipboard;
+  getClipboard(): Clipboard;
 }
 
-export const GLPlatform = NGLPlatform as new () => {
-    makeWindow(size: Size): Window;
+export class GLPlatform extends NGLPlatform {
+  makeWindow(size: Size): Window {
+    return super.makeWindow(size);
+  }
 
-    run(): void;
+  run() {
+    super.run();
+  }
 }
 
-export const Padding = NPadding as new () => {
-    setPaddings(xy: number): void;
-    setPaddings(y: number, x: number): void;
-    setPaddings(top: number, x: number, bottom: number): void;
-    setPaddings(top: number, right: number, bottom: number, left: number): void;
-    setChild(value: Element): void;
+export class Padding extends NPadding {
+  setPaddings(top: number, right?: number, bottom?: number, left?: number) {
+    right ??= top;
+    bottom ??= top;
+    left ??= right;
+    super.setPaddings(top, right, bottom, left);
+    return this;
+  }
+
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
 }
 
-export const Background = NBackground as new () => {
-    setColor(value: string): void;
-    setChild(value: Element): void;
+export class Background extends NBackground {
+  setColor(value: string) {
+    super.setColor(value);
+    return this;
+  }
+
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
 }
 
-export type Element =
-    | typeof Padding
-    | typeof Background
+export type Element = typeof Padding | typeof Background;

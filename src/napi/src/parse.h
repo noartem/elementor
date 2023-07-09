@@ -40,7 +40,7 @@ std::string parse_error_to_string(parse_error error) {
     }
 }
 
-tl::expected <float, parse_error> parse_napi_float(const Napi::Value &value) {
+tl::expected <float, parse_error> parse_napi_float(Napi::Env env, const Napi::Value &value) {
     if (!value.IsNumber()) {
         return tl::unexpected(parse_error::expected_number);
     }
@@ -48,7 +48,7 @@ tl::expected <float, parse_error> parse_napi_float(const Napi::Value &value) {
     return value.As<Napi::Number>().FloatValue();
 }
 
-tl::expected <std::string, parse_error> parse_napi_string(const Napi::Value &value) {
+tl::expected <std::string, parse_error> parse_napi_string(Napi::Env env, const Napi::Value &value) {
     if (!value.IsString()) {
         return tl::unexpected(parse_error::expected_string);
     }
@@ -56,7 +56,7 @@ tl::expected <std::string, parse_error> parse_napi_string(const Napi::Value &val
     return value.As<Napi::String>().Utf8Value();
 }
 
-tl::expected <Size, parse_error> parse_napi_size(const Napi::Value &value) {
+tl::expected <Size, parse_error> parse_napi_size(Napi::Env env, const Napi::Value &value) {
     if (!value.IsObject()) {
         return tl::unexpected(parse_error::expected_object);
     }
@@ -80,7 +80,7 @@ tl::expected <Size, parse_error> parse_napi_size(const Napi::Value &value) {
 }
 
 template<typename T>
-tl::expected <T, parse_error> parse_napi_external(const Napi::Value &value) {
+tl::expected <T, parse_error> parse_napi_external(Napi::Env env, const Napi::Value &value) {
     if (!value.IsExternal()) {
         return tl::unexpected(parse_error::expected_external);
     }
@@ -114,7 +114,7 @@ tl::expected <std::shared_ptr<Element>, parse_error> parse_napi_element(Napi::En
         return tl::unexpected(parse_error::expected_external);
     }
 
-    return parse_napi_external<std::shared_ptr<Element>>(instance);
+    return parse_napi_external<std::shared_ptr<Element>>(env, instance);
 }
 
 #endif //ELEMENTOR_PARSE_H
