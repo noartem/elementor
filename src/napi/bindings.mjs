@@ -1,3 +1,14 @@
+import {merge} from "./utils/index.mjs";
+
+const WithChild = {
+    methods: {
+        setChild: {
+            args: [{name: "child", type: "element"}],
+            body: `this->instance->setChild(child);`,
+        },
+    }
+}
+
 export default {
     GLPlatform: {
         methods: {
@@ -18,11 +29,11 @@ export default {
         },
     },
     GLWindow: {
+        classConstructor: {
+            args: [{name: "window", type: "external<std::shared_ptr<GLWindow>>"}],
+            body: `this->instance = window;`,
+        },
         methods: {
-            __constructor: {
-                args: [{name: "window", type: "external<std::shared_ptr<GLWindow>>"}],
-                body: `this->instance = window;`,
-            },
             setTitle: {
                 args: [{name: "title", type: "string"}],
                 body: `this->instance->setTitle(title);`,
@@ -52,7 +63,7 @@ export default {
             },
         },
     },
-    Padding: {
+    Padding: merge(WithChild, {
         methods: {
             setPaddings: {
                 args: [
@@ -63,22 +74,27 @@ export default {
                 ],
                 body: `this->instance->setPaddings(top, right, bottom, left);`,
             },
-            setChild: {
-                args: [{name: "child", type: "element"}],
-                body: `this->instance->setChild(child);`,
-            },
         },
-    },
-    Background: {
+    }),
+    Background: merge(WithChild, {
         methods: {
             setColor: {
                 args: [{name: "color", type: "string"}],
                 body: `this->instance->setColor(color);`,
             },
-            setChild: {
-                args: [{name: "child", type: "element"}],
-                body: `this->instance->setChild(child);`,
-            },
         },
-    },
+    }),
+    Rounded: merge(WithChild, {
+        methods: {
+            setRadius: {
+                args: [
+                    {name: "topLeft", type: "float"},
+                    {name: "topRight", type: "float"},
+                    {name: "bottomRight", type: "float"},
+                    {name: "bottomLeft", type: "float"},
+                ],
+                body: `this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft);`,
+            }
+        }
+    })
 };

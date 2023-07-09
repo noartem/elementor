@@ -3,15 +3,14 @@ import {declareClass, declareMethod, makeEnv, makeUndefined, realizeMethod,} fro
 export class BindingClassGenerator {
     #name = "";
     #methods = {};
-    #constructorOptions = null;
+    #classConstructor = null;
 
     constructor(name, data) {
-        const {methods} = data;
-        const {__constructor, ...rest} = methods;
+        const {classConstructor, methods} = data;
 
         this.#name = name;
-        this.#methods = rest;
-        this.#constructorOptions = __constructor;
+        this.#methods = methods;
+        this.#classConstructor = classConstructor;
     }
 
     get name() {
@@ -63,13 +62,13 @@ export class BindingClassGenerator {
     }
 
     get #constructorBodyByOptionsRealization() {
-        if (!this.#constructorOptions) {
+        if (!this.#classConstructor) {
             return null;
         }
 
         let result = "";
 
-        const {args = [], body} = this.#constructorOptions;
+        const {args = [], body} = this.#classConstructor;
 
         if (args.length > 0) {
             result += this.#makeArgsCheck(args, {

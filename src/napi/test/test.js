@@ -1,10 +1,14 @@
-const { GLPlatform, Background, Padding } = require("../dist/elementor.js");
+const {
+  GLPlatform,
+  Background,
+  Padding,
+  Rounded,
+} = require("../dist/elementor.js");
 
 const platform = new GLPlatform();
-const window = platform.makeWindow({ width: 300, height: 300 });
+const window = platform.makeWindow({ width: 400, height: 400 });
 window.setTitle("Test");
-window.setMinSize({ width: 200, height: 200 });
-window.setMaxSize({ width: 400, height: 400 });
+window.setMinSize({ width: 300, height: 300 });
 window.setRoot(
   new Background()
     .setColor("#FFAAAA")
@@ -17,7 +21,11 @@ window.setRoot(
             .setChild(
               new Padding()
                 .setPaddings(32 + 64, 64)
-                .setChild(new Background().setColor("#AAAAFF")),
+                .setChild(
+                  new Rounded()
+                    .setRadius(32)
+                    .setChild(new Background().setColor("#AAAAFF")),
+                ),
             ),
         ),
     ),

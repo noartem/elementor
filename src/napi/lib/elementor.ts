@@ -2,6 +2,7 @@ const {
   NGLPlatform,
   NPadding,
   NBackground,
+  NRounded,
 } = require("../build/Release/elementor.node");
 
 export interface Size {
@@ -55,6 +56,26 @@ export class Padding extends NPadding {
 export class Background extends NBackground {
   setColor(value: string) {
     super.setColor(value);
+    return this;
+  }
+
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
+}
+
+export class Rounded extends NRounded {
+  setRadius(
+    topLeft: number,
+    topRight?: number,
+    bottomRight?: number,
+    bottomLeft?: number,
+  ) {
+    topRight ??= topLeft;
+    bottomRight ??= topRight;
+    bottomLeft ??= topLeft;
+    super.setRadius(topLeft, topRight, bottomRight, bottomLeft);
     return this;
   }
 
