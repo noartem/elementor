@@ -9,6 +9,15 @@ const WithChild = {
     }
 }
 
+const WithChildren = {
+    methods: {
+        appendChild: {
+            args: [{name: "child", type: "element"}],
+            body: `this->instance->appendChild(child);`,
+        }
+    }
+}
+
 export default {
     GLPlatform: {
         methods: {
@@ -96,5 +105,31 @@ export default {
                 body: `this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft);`,
             }
         }
-    })
+    }),
+    Row: merge(WithChildren, {
+        methods: {
+            setSpacing: {
+                args: [{name: "spacing", type: "float"}],
+                body: `this->instance->setSpacing(spacing);`,
+            }
+        }
+    }),
+    Flex: merge(WithChildren, {
+        methods: {
+            setSpacing: {
+                args: [{name: "spacing", type: "float"}],
+                body: `this->instance->setSpacing(spacing);`,
+            }
+        }
+    }),
+    Flexible: WithChild,
+    Width: merge(WithChild, {
+        methods: {
+            setWidth: {
+                args: [{name: "width", type: "float"},],
+                body: `this->instance->setWidth(width);`,
+            }
+        }
+    }),
+    Center: WithChild,
 };

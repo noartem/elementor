@@ -3,6 +3,11 @@ const {
   NPadding,
   NBackground,
   NRounded,
+  NRow,
+  NFlex,
+  NFlexible,
+  NWidth,
+  NCenter,
 } = require("../build/Release/elementor.node");
 
 export interface Size {
@@ -85,4 +90,66 @@ export class Rounded extends NRounded {
   }
 }
 
-export type Element = typeof Padding | typeof Background;
+export class Row extends NRow {
+  setSpacing(spacing: number) {
+    super.setSpacing(spacing);
+    return this;
+  }
+
+  appendChild(value: Element) {
+    super.appendChild(value);
+    return this;
+  }
+}
+
+export class Flex extends NFlex {
+  setSpacing(spacing: number) {
+    super.setSpacing(spacing);
+    return this;
+  }
+
+  appendChild(value: Element) {
+    super.appendChild(value);
+    return this;
+  }
+
+  appendFlexible(value: Element) {
+    return this.appendChild(new Flexible().setChild(value));
+  }
+}
+
+export class Flexible extends NFlexible {
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
+}
+
+export class Width extends NWidth {
+  setWidth(width: number) {
+    super.setWidth(width);
+    return this;
+  }
+
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
+}
+
+export class Center extends NCenter {
+  setChild(value: Element) {
+    super.setChild(value);
+    return this;
+  }
+}
+
+export type Element =
+  | Padding
+  | Background
+  | Rounded
+  | Row
+  | Flex
+  | Flexible
+  | Width
+  | Center;
