@@ -74,8 +74,8 @@ tl::expected <Size, parse_error> from_napi_size(Napi::Env env, const Napi::Value
     }
 
     return Size{
-            .width = width.As<Napi::Number>().FloatValue(),
-            .height = height.As<Napi::Number>().FloatValue()
+        width.As<Napi::Number>().FloatValue(),
+        height.As<Napi::Number>().FloatValue()
     };
 }
 
