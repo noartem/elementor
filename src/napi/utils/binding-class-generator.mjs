@@ -1,4 +1,8 @@
 import {declareClass, declareMethod, makeEnv, makeUndefined, realizeMethod,} from "./cpp-generator.mjs";
+import {hasReturn, singleLine} from "./cpp-parser.mjs";
+import {throwError} from "./napi-helpers.mjs";
+
+const validTypes = ['float', 'string', 'size', 'element']
 
 export class BindingClassGenerator {
     #name = "";
@@ -32,17 +36,27 @@ export class BindingClassGenerator {
             },
             fields: {
                 public: [
-                    declareMethod(this.className, [`const Napi::CallbackInfo &info`]),
-                    declareMethod("GetClass", [`Napi::Env env`], "Napi::Function", {
-                        static: true,
+                    declareMethod({
+                        name: this.className,
+                        args: ["const Napi::CallbackInfo &info"],
                     }),
-                    declareMethod(
-                        "getInstance",
-                        [`const Napi::CallbackInfo &info`],
-                        "Napi::Value",
-                    ),
-                    ...Object.keys(this.methods).map((e) =>
-                        declareMethod(e, [`const Napi::CallbackInfo &info`], `Napi::Value`),
+                    declareMethod({
+                        name: "GetClass",
+                        args: ["Napi::Env env"],
+                        returns: "Napi::Function",
+                        isStatic: true,
+                    }),
+                    declareMethod({
+                        name: "getInstance",
+                        args: [`const Napi::CallbackInfo &info`],
+                        returns: "Napi::Value",
+                    }),
+                    ...Object.keys(this.methods).map((method) =>
+                        declareMethod({
+                            name: method,
+                            args: [`const Napi::CallbackInfo &info`],
+                            returns: `Napi::Value`,
+                        }),
                     ),
                 ],
                 private: [`std::shared_ptr<${this.name}> instance`],
@@ -87,16 +101,15 @@ export class BindingClassGenerator {
             this.#constructorBodyByOptionsRealization ??
             this.#constructorBodyDefaultRealization;
 
-        return realizeMethod(
-            `${this.className}::${this.className}`,
-            [`const Napi::CallbackInfo &info`],
-            "",
-            `
+        return realizeMethod({
+            name: `${this.className}::${this.className}`,
+            args: [`const Napi::CallbackInfo &info`],
+            body: `
                 ${makeEnv};
                 ${body}
             `,
-            {inherits: `ObjectWrap(info)`},
-        );
+            inherits: `ObjectWrap(info)`,
+        });
     }
 
     get #getClassMethodRealization() {
@@ -104,38 +117,39 @@ export class BindingClassGenerator {
             .concat("getInstance")
             .map(
                 (e) =>
-                    `${this.className}::InstanceMethod("${e}", &${this.className}::${e})`,
+                    `${this.className}::InstanceMethod("${e}", &${this.className}::${e}),`,
             )
-            .join(",\n");
-        return realizeMethod(
-            `${this.className}::GetClass`,
-            [`Napi::Env env`],
-            `Napi::Function`,
-            `
+            .join("\n");
+
+        return realizeMethod({
+            name: `${this.className}::GetClass`,
+            args: [`Napi::Env env`],
+            returns: `Napi::Function`,
+            body: `
                 return DefineClass(env, "${this.className}", {
                     ${methods}
                 });
             `,
-        );
+        });
     }
 
     get #getInstanceMethodRealization() {
-        return realizeMethod(
-            `${this.className}::getInstance`,
-            [`const Napi::CallbackInfo &info`],
-            `Napi::Value`,
-            `
+        return realizeMethod({
+            name: `${this.className}::getInstance`,
+            args: [`const Napi::CallbackInfo &info`],
+            returns: `Napi::Value`,
+            body: `
                 ${makeEnv};
                 return Napi::External<std::shared_ptr<${this.name}>>::New(env, &this->instance).As<Napi::Value>();
             `,
-        );
+        });
     }
 
     get #methodsRealizations() {
         let result = [];
 
         for (const method in this.methods) {
-            const {args = [], body} = this.methods[method];
+            const {args = [], body, returns} = this.methods[method];
 
             const argsCheck =
                 args.length > 0
@@ -145,18 +159,46 @@ export class BindingClassGenerator {
                     })
                     : "";
 
+            let methodBodyLines = [];
+
+            methodBodyLines.push(`${makeEnv};`);
+
+            if (args.length > 0) {
+                methodBodyLines.push(
+                    this.#makeArgsCheck(args, {
+                        errorLabel: `${this.name} ${method}`,
+                        return: makeUndefined,
+                    }),
+                );
+            }
+
+            if (returns && returns !== "void") {
+                if (hasReturn(body)) {
+                    methodBodyLines.push(body);
+                } else if (singleLine(body)) {
+                    if (validTypes.includes(returns)) {
+                        methodBodyLines.push(`return to_napi_${returns}(env, ${body});`)
+                    } else {
+                        methodBodyLines.push(`return ${body};`);
+                    }
+                } else {
+                    methodBodyLines.push(body);
+                    methodBodyLines.push(`return ${makeUndefined};`);
+                }
+            } else {
+                methodBodyLines.push(body);
+                methodBodyLines.push(`return ${makeUndefined};`);
+            }
+
+            const methodBody = methodBodyLines.join("\n");
+
             result.push(
-                realizeMethod(
-                    `${this.className}::${method}`,
-                    ["const Napi::CallbackInfo& info"],
-                    "Napi::Value",
-                    `
-                    ${makeEnv};
-                    ${argsCheck}
-                    ${body}
-                    return ${makeUndefined};
-                `,
-                ),
+                realizeMethod({
+                    name: `${this.className}::${method}`,
+                    args: ["const Napi::CallbackInfo& info"],
+                    returns: "Napi::Value",
+                    body: methodBody,
+                }),
             );
         }
 
@@ -176,31 +218,41 @@ export class BindingClassGenerator {
 
     #makeArgsCheck(args, options = {}) {
         const makeErrorLabel = options.errorLabel ? `${options.errorLabel}: ` : "";
-        const makeErrorLabelLiteralPlus = makeErrorLabel
-            ? `"${makeErrorLabel}: " + `
-            : "";
         const returnValue = options.return ? ` ${options.return}` : "";
         const makeReturn = `return${returnValue}`;
 
         let result = "";
 
+        const lengthError = throwError(
+            `${makeErrorLabel}Expected >=${args.length} arguments`,
+        );
+
         result += `
             if (info.Length() < ${args.length}) {
-                Napi::TypeError::New(env, "${makeErrorLabel}Expected >=${args.length} arguments").ThrowAsJavaScriptException();
+                ${lengthError};
                 ${makeReturn};
             }
         `;
 
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
-            result += `
-            auto _${arg.name} = parse_napi_${arg.type}(env, info[${i}]);
-            if (!_${arg.name}.has_value()) {
-                Napi::TypeError::New(env, ${makeErrorLabelLiteralPlus}parse_error_to_string(_${arg.name}.error())).ThrowAsJavaScriptException();
-                ${makeReturn};
+
+            if (!validTypes.includes(arg.type) && !(arg.type.startsWith('external<') && arg.type.endsWith('>'))) {
+                throw new Error(`Invalid argument type: "${arg.type}"`)
             }
-            auto ${arg.name} = _${arg.name}.value();
-        `;
+
+            const parseError = throwError(
+                (makeErrorLabel ? `"${makeErrorLabel}" + ` : "") +
+                `from_napi_error_to_string(_${arg.name}.error())`,
+            );
+            result += `
+                auto _${arg.name} = from_napi_${arg.type}(env, info[${i}]);
+                if (!_${arg.name}.has_value()) {
+                    ${parseError};
+                    ${makeReturn};
+                }
+                auto ${arg.name} = _${arg.name}.value();
+            `;
         }
 
         return result;

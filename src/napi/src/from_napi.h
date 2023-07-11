@@ -21,7 +21,7 @@ enum class parse_error {
     missing_property,
 };
 
-std::string parse_error_to_string(parse_error error) {
+std::string from_napi_error_to_string(parse_error error) {
     switch (error) {
         case parse_error::expected_object:
             return "expected object";
@@ -40,7 +40,7 @@ std::string parse_error_to_string(parse_error error) {
     }
 }
 
-tl::expected <float, parse_error> parse_napi_float(Napi::Env env, const Napi::Value &value) {
+tl::expected <float, parse_error> from_napi_float(Napi::Env env, const Napi::Value &value) {
     if (!value.IsNumber()) {
         return tl::unexpected(parse_error::expected_number);
     }
@@ -48,7 +48,7 @@ tl::expected <float, parse_error> parse_napi_float(Napi::Env env, const Napi::Va
     return value.As<Napi::Number>().FloatValue();
 }
 
-tl::expected <std::string, parse_error> parse_napi_string(Napi::Env env, const Napi::Value &value) {
+tl::expected <std::string, parse_error> from_napi_string(Napi::Env env, const Napi::Value &value) {
     if (!value.IsString()) {
         return tl::unexpected(parse_error::expected_string);
     }
@@ -56,7 +56,7 @@ tl::expected <std::string, parse_error> parse_napi_string(Napi::Env env, const N
     return value.As<Napi::String>().Utf8Value();
 }
 
-tl::expected <Size, parse_error> parse_napi_size(Napi::Env env, const Napi::Value &value) {
+tl::expected <Size, parse_error> from_napi_size(Napi::Env env, const Napi::Value &value) {
     if (!value.IsObject()) {
         return tl::unexpected(parse_error::expected_object);
     }
@@ -80,7 +80,7 @@ tl::expected <Size, parse_error> parse_napi_size(Napi::Env env, const Napi::Valu
 }
 
 template<typename T>
-tl::expected <T, parse_error> parse_napi_external(Napi::Env env, const Napi::Value &value) {
+tl::expected <T, parse_error> from_napi_external(Napi::Env env, const Napi::Value &value) {
     if (!value.IsExternal()) {
         return tl::unexpected(parse_error::expected_external);
     }
@@ -93,7 +93,7 @@ tl::expected <T, parse_error> parse_napi_external(Napi::Env env, const Napi::Val
     return *external.Data();
 }
 
-tl::expected <std::shared_ptr<Element>, parse_error> parse_napi_element(Napi::Env env, const Napi::Value &value) {
+tl::expected <std::shared_ptr<Element>, parse_error> from_napi_element(Napi::Env env, const Napi::Value &value) {
     if (!value.IsObject()) {
         return tl::unexpected(parse_error::expected_object);
     }
@@ -114,7 +114,7 @@ tl::expected <std::shared_ptr<Element>, parse_error> parse_napi_element(Napi::En
         return tl::unexpected(parse_error::expected_external);
     }
 
-    return parse_napi_external<std::shared_ptr<Element>>(env, instance);
+    return from_napi_external<std::shared_ptr<Element>>(env, instance);
 }
 
 #endif //ELEMENTOR_PARSE_H

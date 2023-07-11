@@ -1,22 +1,6 @@
 import {merge} from "./utils/index.mjs";
-
-const WithChild = {
-    methods: {
-        setChild: {
-            args: [{name: "child", type: "element"}],
-            body: `this->instance->setChild(child);`,
-        },
-    }
-}
-
-const WithChildren = {
-    methods: {
-        appendChild: {
-            args: [{name: "child", type: "element"}],
-            body: `this->instance->appendChild(child);`,
-        }
-    }
-}
+import * as napi from "./utils/napi-helpers.mjs";
+import {field, setter, WithChild, WithChildren} from "./utils/bindings-helpers.mjs";
 
 export default {
     GLPlatform: {
@@ -33,42 +17,31 @@ export default {
                 `,
             },
             run: {
-                body: `this->instance->run();`,
+                body: `this->instance->run()`,
             },
         },
     },
-    GLWindow: {
-        classConstructor: {
-            args: [{name: "window", type: "external<std::shared_ptr<GLWindow>>"}],
-            body: `this->instance = window;`,
-        },
-        methods: {
-            setTitle: {
-                args: [{name: "title", type: "string"}],
-                body: `this->instance->setTitle(title);`,
-            },
-            setMinSize: {
-                args: [{name: "size", type: "size"}],
-                body: `this->instance->setMinSize(size);`,
-            },
-            setMaxSize: {
-                args: [{name: "size", type: "size"}],
-                body: `this->instance->setMaxSize(size);`,
-            },
-            setRoot: {
-                args: [{name: "root", type: "element"}],
-                body: `this->instance->setRoot(root);`,
+    GLWindow: merge(
+        field("title", "string"),
+        field("minSize", "size"),
+        field("maxSize", "size"),
+        setter("root", "element"),
+        {
+            classConstructor: {
+                args: [{name: "window", type: "external<std::shared_ptr<GLWindow>>"}],
+                body: `this->instance = window`,
             },
         },
-    },
+    ),
     GLClipboard: {
         methods: {
             get: {
-                body: `return Napi::String::New(env, this->instance->get());`,
+                returns: "string",
+                body: napi.newString(`this->instance->get()`),
             },
             set: {
                 args: [{name: "text", type: "string"}],
-                body: `this->instance->set(text);`,
+                body: `this->instance->set(text)`,
             },
         },
     },
@@ -78,58 +51,36 @@ export default {
                 args: [
                     {name: "top", type: "float"},
                     {name: "right", type: "float"},
-                    {name: "bottom", type: "float"},
+                    {
+                        name: "bottom",
+                        type: "float",
+                    },
                     {name: "left", type: "float"},
                 ],
-                body: `this->instance->setPaddings(top, right, bottom, left);`,
+                body: `this->instance->setPaddings(top, right, bottom, left)`,
             },
         },
     }),
-    Background: merge(WithChild, {
-        methods: {
-            setColor: {
-                args: [{name: "color", type: "string"}],
-                body: `this->instance->setColor(color);`,
-            },
-        },
-    }),
+    Background: merge(WithChild, setter("color", "string")),
     Rounded: merge(WithChild, {
         methods: {
             setRadius: {
                 args: [
                     {name: "topLeft", type: "float"},
                     {name: "topRight", type: "float"},
-                    {name: "bottomRight", type: "float"},
+                    {
+                        name: "bottomRight",
+                        type: "float",
+                    },
                     {name: "bottomLeft", type: "float"},
                 ],
-                body: `this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft);`,
-            }
-        }
+                body: `this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft)`,
+            },
+        },
     }),
-    Row: merge(WithChildren, {
-        methods: {
-            setSpacing: {
-                args: [{name: "spacing", type: "float"}],
-                body: `this->instance->setSpacing(spacing);`,
-            }
-        }
-    }),
-    Flex: merge(WithChildren, {
-        methods: {
-            setSpacing: {
-                args: [{name: "spacing", type: "float"}],
-                body: `this->instance->setSpacing(spacing);`,
-            }
-        }
-    }),
-    Flexible: WithChild,
-    Width: merge(WithChild, {
-        methods: {
-            setWidth: {
-                args: [{name: "width", type: "float"},],
-                body: `this->instance->setWidth(width);`,
-            }
-        }
-    }),
+    Row: merge(WithChildren, field("spacing", "float")),
+    Flex: merge(WithChildren, field("spacing", "float")),
+    Flexible: merge(WithChild, field("grow", "float")),
+    Width: merge(WithChild, field("width", "float")),
     Center: WithChild,
 };
