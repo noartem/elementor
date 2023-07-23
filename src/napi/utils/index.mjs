@@ -46,7 +46,14 @@ export function merge(...objects) {
     );
 }
 
-export const upper = (str) => str[0].toUpperCase() + str.slice(1);
+export function upper(value){
+    value = value.trim()
+    if (!value) {
+        return ""
+    }
+
+    return value[0].toUpperCase() + value.slice(1)
+}
 
 export const stringify = (e) => JSON.stringify(e, null, "\t");
 
