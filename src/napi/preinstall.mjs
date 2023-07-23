@@ -1,17 +1,20 @@
-import {writeFile} from "node:fs/promises";
-import {BindingsGenerator} from "./utils/bindings-generator.mjs";
+import {exec, stringify, withCatch, write} from "./utils/index.mjs";
+import {generateCpp} from "./utils/bindings-cpp-gen.mjs";
+import {generateDeclaration, generateRealization} from "./utils/cpp-gen.mjs";
 
 import bindingGyp from "./binding.gyp.mjs";
 import bindings from "./bindings.mjs";
-import {toLines} from "./utils/cpp-parser.mjs";
 
-const bindingGypString = JSON.stringify(bindingGyp, null, "\t");
-await writeFile("binding.gyp", bindingGypString, {flag: "w"});
+const bindingsCpp = generateCpp(bindings);
 
-const bindingsGenerator = new BindingsGenerator(bindings);
-await writeFile("src/elementor.h", bindingsGenerator.header, {flag: "w"});
-await writeFile("src/elementor.cpp", bindingsGenerator.source, {flag: "w"});
+await write("binding.gyp", stringify(bindingGyp));
 
-Object.values(bindings).forEach(e => Object.values(e.methods).forEach(e => e.body = toLines(e.body ?? '')))
-const bindingsString = JSON.stringify(bindings, null, "\t");
-await writeFile("bindings.debug.json", bindingsString, {flag: "w"});
+await write("src/elementor.h", generateDeclaration("elementor", bindingsCpp));
+await write("src/elementor.cpp", generateRealization("elementor", bindingsCpp));
+
+await withCatch(exec)("clang-format src/elementor.h src/elementor.cpp -i")
+
+await write("bindings.debug.json", stringify(bindings), {flag: "w"});
+
+await write("bindings.debug.json", stringify(bindings));
+await write("bindings-cpp.debug.json", stringify(bindingsCpp));

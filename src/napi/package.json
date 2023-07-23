@@ -1,9 +1,9 @@
 {
   "main": "lib/elementor.js",
   "dependencies": {
-    "node-addon-api": "^5.1.0",
-    "ts-node": "^10.9.1",
     "@types/node": "^18.11.18",
+    "node-addon-api": "^5.1.0",
+    "prettier": "3.0.0",
     "typescript": "^4.9.4"
   },
   "scripts": {

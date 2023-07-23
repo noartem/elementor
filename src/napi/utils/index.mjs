@@ -1,7 +1,16 @@
+import {writeFile} from "node:fs/promises";
 import {promisify} from "util";
 import {exec as _exec} from "child_process";
 
 export const exec = promisify(_exec);
+
+export const withCatch = (callback) => async (...args) => {
+    try {
+        return await callback(...args)
+    } catch (e) {
+        return null
+    }
+}
 
 export function uniq(items) {
     const result = [];
@@ -38,3 +47,7 @@ export function merge(...objects) {
 }
 
 export const upper = (str) => str[0].toUpperCase() + str.slice(1);
+
+export const stringify = (e) => JSON.stringify(e, null, "\t");
+
+export const write = (file, value) => writeFile(file, value, {flag: "w"})
