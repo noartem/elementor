@@ -5,6 +5,7 @@ const {
   Rounded,
   Flex,
   Width,
+  Height,
 } = require("../dist/elementor.js");
 
 const platform = new GLPlatform();
@@ -13,15 +14,19 @@ window.setTitle("Test");
 window.setMinSize({ width: 300, height: 300 });
 window.setRoot(
   new Background().setColor("#FFFFFF").setChild(
-    new Padding().setPaddings(32, 64).setChild(
-      new Rounded().setRadius(32).setChild(
+    new Padding().set(32, 64).setChild(
+      new Rounded().set(32).setChild(
         new Flex()
           .setSpacing(16)
           .appendFlexible(new Background().setColor("#FFAAAA"))
           .appendChild(
             new Width()
               .setWidth(64)
-              .setChild(new Background().setColor("#AAAAAA")),
+              .setChild(
+                new Height()
+                  .setHeight(64)
+                  .setChild(new Background().setColor("#AAAAAA")),
+              ),
           )
           .appendFlexible(new Background().setColor("#AAFFAA"))
           .appendFlexible(new Background().setColor("#AAAAFF")),

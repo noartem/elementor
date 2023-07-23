@@ -7,6 +7,7 @@ const {
   NFlex,
   NFlexible,
   NWidth,
+  NHeight,
   NCenter,
 } = require("../build/Release/elementor.node");
 
@@ -15,63 +16,78 @@ export interface Size {
   height: number;
 }
 
+export interface Window {
+  getTitle(): string;
+  setTitle(title: string): void;
+  getMinSize(): Size;
+  setMinSize(minSize: Size): void;
+  getMaxSize(): Size;
+  setMaxSize(maxSize: Size): void;
+  setRoot(root: Element): void;
+}
+
 export interface Clipboard {
   get(): string;
-
   set(value: string): void;
 }
 
-export interface Window {
-  setTitle(value: string): void;
-
-  setMinSize(value: Size): void;
-
-  setMaxSize(value: Size): void;
-
-  setRoot(value: Element): void;
-
-  getClipboard(): Clipboard;
-}
-
 export class GLPlatform extends NGLPlatform {
-  makeWindow(size: Size): Window {
+  public makeWindow(size: Size): Window {
     return super.makeWindow(size);
   }
 
-  run() {
+  public run() {
     super.run();
+    return this;
   }
 }
 
 export class Padding extends NPadding {
-  setPaddings(top: number, right?: number, bottom?: number, left?: number) {
-    right ??= top;
-    bottom ??= top;
-    left ??= right;
-    super.setPaddings(top, right, bottom, left);
+  public setChild(child: Element) {
+    super.setChild(child);
     return this;
   }
 
-  setChild(value: Element) {
-    super.setChild(value);
+  public setPaddings(top: number, right: number, bottom: number, left: number) {
+    super.setPaddings(top, right, bottom, left);
     return this;
+  }
+  set(top: number, right?: number, bottom?: number, left?: number) {
+    right ??= top;
+    bottom ??= top;
+    left ??= right;
+    return this.setPaddings(top, right, bottom, left);
   }
 }
 
 export class Background extends NBackground {
-  setColor(value: string) {
-    super.setColor(value);
+  public setChild(child: Element) {
+    super.setChild(child);
     return this;
   }
 
-  setChild(value: Element) {
-    super.setChild(value);
+  public setColor(color: string) {
+    super.setColor(color);
     return this;
   }
 }
 
 export class Rounded extends NRounded {
-  setRadius(
+  public setChild(child: Element) {
+    super.setChild(child);
+    return this;
+  }
+
+  public setRadius(
+    topLeft: number,
+    topRight: number,
+    bottomRight: number,
+    bottomLeft: number,
+  ) {
+    super.setRadius(topLeft, topRight, bottomRight, bottomLeft);
+    return this;
+  }
+  set(
     topLeft: number,
     topRight?: number,
     bottomRight?: number,
@@ -80,66 +96,76 @@ export class Rounded extends NRounded {
     topRight ??= topLeft;
     bottomRight ??= topRight;
     bottomLeft ??= topLeft;
-    super.setRadius(topLeft, topRight, bottomRight, bottomLeft);
-    return this;
-  }
-
-  setChild(value: Element) {
-    super.setChild(value);
-    return this;
+    return this.setRadius(topLeft, topRight, bottomRight, bottomLeft);
   }
 }
 
 export class Row extends NRow {
-  setSpacing(spacing: number) {
-    super.setSpacing(spacing);
+  public appendChild(child: Element) {
+    super.appendChild(child);
     return this;
   }
 
-  appendChild(value: Element) {
-    super.appendChild(value);
+  public setSpacing(spacing: number) {
+    super.setSpacing(spacing);
     return this;
   }
 }
 
 export class Flex extends NFlex {
-  setSpacing(spacing: number) {
+  public appendChild(child: Element) {
+    super.appendChild(child);
+    return this;
+  }
+
+  public setSpacing(spacing: number) {
     super.setSpacing(spacing);
     return this;
   }
-
-  appendChild(value: Element) {
-    super.appendChild(value);
-    return this;
-  }
-
   appendFlexible(value: Element) {
     return this.appendChild(new Flexible().setChild(value));
   }
 }
 
 export class Flexible extends NFlexible {
-  setChild(value: Element) {
-    super.setChild(value);
+  public setChild(child: Element) {
+    super.setChild(child);
+    return this;
+  }
+
+  public setGrow(grow: number) {
+    super.setGrow(grow);
     return this;
   }
 }
 
 export class Width extends NWidth {
-  setWidth(width: number) {
-    super.setWidth(width);
+  public setChild(child: Element) {
+    super.setChild(child);
     return this;
   }
 
-  setChild(value: Element) {
-    super.setChild(value);
+  public setWidth(width: number) {
+    super.setWidth(width);
+    return this;
+  }
+}
+
+export class Height extends NHeight {
+  public setChild(child: Element) {
+    super.setChild(child);
+    return this;
+  }
+
+  public setHeight(height: number) {
+    super.setHeight(height);
     return this;
   }
 }
 
 export class Center extends NCenter {
-  setChild(value: Element) {
-    super.setChild(value);
+  public setChild(child: Element) {
+    super.setChild(child);
     return this;
   }
 }
@@ -152,4 +178,5 @@ export type Element =
   | Flex
   | Flexible
   | Width
+  | Height
   | Center;

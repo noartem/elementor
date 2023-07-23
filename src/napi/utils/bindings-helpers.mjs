@@ -19,6 +19,11 @@ export const WithChildren = {
 };
 
 export function getter(name, type) {
+    if (name && type === undefined) {
+        type = name;
+        name = "";
+    }
+
     const getterName = `get${upper(name)}`;
     return {
         methods: {
@@ -31,12 +36,18 @@ export function getter(name, type) {
 }
 
 export function setter(name, type) {
+    if (name && type === undefined) {
+        type = name;
+        name = "";
+    }
+
     const setterName = `set${upper(name)}`;
+    const argName = name || 'value'
     return {
         methods: {
             [setterName]: {
-                args: [{name, type}],
-                body: `this->instance->${setterName}(${name})`,
+                args: [{name: argName, type}],
+                body: `this->instance->${setterName}(${argName})`,
             },
         },
     };
@@ -44,4 +55,10 @@ export function setter(name, type) {
 
 export function field(name, type) {
     return merge(getter(name, type), setter(name, type));
+}
+
+export const isElement = {isElement: true}
+
+export function asInterface(name) {
+    return {asInterface: name};
 }

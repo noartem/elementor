@@ -111,7 +111,7 @@ export function generateClassRealization({
         .join("");
 }
 
-export function generateRealization(
+export function generateCPPRealization(
     name,
     {
         comments,
@@ -149,7 +149,7 @@ export function generateRealization(
     return result.map((e) => (Array.isArray(e) ? e.join("\n") : e)).join("\n\n");
 }
 
-export function generateDeclaration(
+export function generateCPPDeclaration(
     name,
     {
         comments,

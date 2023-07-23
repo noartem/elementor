@@ -215,7 +215,7 @@ function makeInitMethod(classes) {
     };
 }
 
-export function generateCpp(classes) {
+export function generateBindingsCPP(classes) {
     classes = Object.entries(classes).map(([name, options]) => ({
         ...options,
         name,

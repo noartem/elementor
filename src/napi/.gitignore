@@ -2,7 +2,6 @@
 /node_modules
 /dist
 
-/src/napi/elementor.h
-/src/napi/elementor.cpp
+*.debug.json
 
 binding.gyp

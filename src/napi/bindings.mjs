@@ -1,12 +1,12 @@
 import {merge} from "./utils/index.mjs";
-import * as napi from "./utils/napi-helpers.mjs";
-import {field, setter, WithChild, WithChildren} from "./utils/bindings-helpers.mjs";
+import {asInterface, field, isElement, setter, WithChild, WithChildren,} from "./utils/bindings-helpers.mjs";
 
 export default {
     GLPlatform: {
         methods: {
             makeWindow: {
                 args: [{name: "size", type: "size"}],
+                returns: 'Window',
                 body: `
                     auto window = this->instance->makeWindow(size);
                     window->setMinSize(size);
@@ -22,6 +22,7 @@ export default {
         },
     },
     GLWindow: merge(
+        asInterface("Window"),
         field("title", "string"),
         field("minSize", "size"),
         field("maxSize", "size"),
@@ -33,19 +34,8 @@ export default {
             },
         },
     ),
-    GLClipboard: {
-        methods: {
-            get: {
-                returns: "string",
-                body: napi.newString(`this->instance->get()`),
-            },
-            set: {
-                args: [{name: "text", type: "string"}],
-                body: `this->instance->set(text)`,
-            },
-        },
-    },
-    Padding: merge(WithChild, {
+    GLClipboard: merge(asInterface("Clipboard"), field("string")),
+    Padding: merge(isElement, WithChild, {
         methods: {
             setPaddings: {
                 args: [
@@ -60,9 +50,17 @@ export default {
                 body: `this->instance->setPaddings(top, right, bottom, left)`,
             },
         },
+        tsAdditional: `
+            set(top: number, right?: number, bottom?: number, left?: number) {
+                right ??= top
+                bottom ??= top
+                left ??= right
+                return this.setPaddings(top, right, bottom, left)
+            }
+        `
     }),
-    Background: merge(WithChild, setter("color", "string")),
-    Rounded: merge(WithChild, {
+    Background: merge(isElement, WithChild, setter("color", "string")),
+    Rounded: merge(isElement, WithChild, {
         methods: {
             setRadius: {
                 args: [
@@ -77,10 +75,25 @@ export default {
                 body: `this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft)`,
             },
         },
+        tsAdditional: `
+            set(topLeft: number, topRight?: number, bottomRight?: number, bottomLeft?: number) {
+                topRight ??= topLeft
+                bottomRight ??= topRight
+                bottomLeft ??= topLeft
+                return this.setRadius(topLeft, topRight, bottomRight, bottomLeft)
+            }
+        `
     }),
-    Row: merge(WithChildren, field("spacing", "float")),
-    Flex: merge(WithChildren, field("spacing", "float")),
-    Flexible: merge(WithChild, field("grow", "float")),
-    Width: merge(WithChild, field("width", "float")),
-    Center: WithChild,
+    Row: merge(isElement, WithChildren, field("spacing", "float")),
+    Flex: merge(isElement, WithChildren, field("spacing", "float"), {
+        tsAdditional: `
+            appendFlexible(value: Element) {
+                return this.appendChild(new Flexible().setChild(value));
+            }
+        `,
+    }),
+    Flexible: merge(isElement, WithChild, field("grow", "float")),
+    Width: merge(isElement, WithChild, field("width", "float")),
+    Height: merge(isElement, WithChild, field("height", "float")),
+    Center: merge(isElement, WithChild),
 };
