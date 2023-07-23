@@ -19,7 +19,7 @@ await withCatch(exec)("clang-format src/elementor.h src/elementor.cpp -i")
 await write("lib/elementor.ts", generateTS(bindingsTS));
 await withCatch(exec)("npx prettier lib/elementor.ts -w")
 
-await write("bindings.debug.json", stringify(bindings), {flag: "w"});
+await write("bindings.debug.json", stringify(bindings));
 
 await write("bindings.debug.json", stringify(bindings));
 await write("bindings-cpp.debug.json", stringify(bindingsCPP));
