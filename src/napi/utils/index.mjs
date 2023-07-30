@@ -58,3 +58,13 @@ export function upper(value){
 export const stringify = (e) => JSON.stringify(e, null, "\t");
 
 export const write = (file, value) => writeFile(file, value, {flag: "w"})
+
+export function toArray(value) {
+    if (Array.isArray(value)) {
+        return value
+    } else if (value === undefined || value === null) {
+        return []
+    } else {
+        return [value]
+    }
+}

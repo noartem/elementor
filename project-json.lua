@@ -32,6 +32,7 @@ function main()
         packageResult["libfiles"] = package:get("libfiles")
         packageResult["bin"] = package:get("envs")["PATH"]
         packageResult["syslinks"] = package:get("syslinks")
+        packageResult["links"] = package:get("links")
         table.insert(packagesResult, packageResult)
     end
     result["packages"] = packagesResult

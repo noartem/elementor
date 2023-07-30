@@ -1,10 +1,8 @@
-import {exec, uniq} from "./utils/index.mjs";
+import {toArray, uniq} from "./utils/index.mjs";
 import * as path from "path";
+import {mode, packages, targets} from "./project.mjs";
 
 const BUILD_DIR_PATH_PREFIX = `..${path.sep}..${path.sep}..${path.sep}`;
-
-const projectOut = await exec("xmake lua project-json.lua");
-const {packages, targets, mode} = JSON.parse(projectOut.stdout.toString());
 
 const getTargetLibFile = (target) => {
     const targetFilePath = path.parse(BUILD_DIR_PATH_PREFIX + target.targetfile);
@@ -26,6 +24,13 @@ export default {
                 ...packages
                     .flatMap((e) => e.syslinks)
                     .filter(Boolean)
+                    .map((e) => `-l${e}`),
+                ...packages
+                    .flatMap((e) =>
+                        (e.links ?? []).filter(
+                            (l) => !toArray(e.libfiles).some((f) => f.includes(l)),
+                        ),
+                    )
                     .map((e) => `-l${e}`),
             ]),
             include_dirs: uniq([

@@ -11,7 +11,8 @@
     "test": "node --napi-modules test/test.js",
     "clear": "rm -rf binding.gyp node_modules build dist",
     "preinstall": "node preinstall.mjs",
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "postinstall": "tsc"
   },
   "gypfile": true,
   "name": "elementor",
