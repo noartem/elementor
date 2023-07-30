@@ -12,7 +12,7 @@
     ```bash
     cd src/napi
     ```
-3. Install depndencies and build node extension
+3. Install dependencies and build node extension
     ```bash
     npm install
     ```
