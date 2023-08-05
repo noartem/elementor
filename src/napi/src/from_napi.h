@@ -40,6 +40,27 @@ std::string from_napi_error_to_string(parse_error error) {
     }
 }
 
+// parse_error from_napi(Napi::Env env, const Napi::Value &value, T& result) {
+// parse_error === 0 ==> No error
+
+
+tl::expected <float, parse_error> from_napi(Napi::Env env, const Napi::Value &value, ) {
+    if (!value.IsNumber()) {
+        return tl::unexpected(parse_error::expected_number);
+    }
+
+    return value.As<Napi::Number>().FloatValue();
+}
+
+tl::expected <std::string, parse_error> from_napi(Napi::Env env, const Napi::Value &value) {
+    if (!value.IsString()) {
+        return tl::unexpected(parse_error::expected_string);
+    }
+
+    return value.As<Napi::String>().Utf8Value();
+}
+
+
 tl::expected <float, parse_error> from_napi_float(Napi::Env env, const Napi::Value &value) {
     if (!value.IsNumber()) {
         return tl::unexpected(parse_error::expected_number);

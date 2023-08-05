@@ -21,6 +21,34 @@ function makeCommonJSImport({path, items = [], default: importDefault}) {
     return result;
 }
 
+function makeESMImport({path, items, default: importDefault}) {
+    let result = "";
+
+    result += "import ";
+
+    if (items.length > 0) {
+        result += "{";
+        result += items
+            .map((e) =>
+                typeof e === "string"
+                    ? e
+                    : "alias" in e
+                        ? `${e.name} as ${e.alias}`
+                        : e.name,
+            )
+            .join(", ");
+        result += "}";
+    }
+
+    if (importDefault) {
+        result += `, ${importDefault}`
+    }
+
+    result += ` from "${path}"`
+
+    return result
+}
+
 function makeItemInterface({name, fields}) {
     return `interface ${name} {\n${fields.map((e) => `\t${e}`).join("\n")}\n}`;
 }
@@ -109,7 +137,7 @@ function makeItemClass({
         .join("\n\n");
 
     if (after) {
-        result += after
+        result += after;
     }
 
     result += "}";
@@ -144,7 +172,8 @@ export function generateTS({imports = [], items = [], before, after}) {
         result.push(before);
     }
 
-    result.push(...imports.map(makeCommonJSImport));
+    result.push(...imports
+        .map(e => (e.module ?? true) ? makeESMImport(e) : makeCommonJSImport(e)));
 
     result.push(...items.map(makeItem));
 

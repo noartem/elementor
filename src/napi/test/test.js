@@ -6,6 +6,8 @@ const {
   Flex,
   Width,
   Height,
+  Text,
+  Center,
 } = require("../dist/elementor.js");
 
 const platform = new GLPlatform();
@@ -28,7 +30,13 @@ window.setRoot(
                   .setChild(new Background().setColor("#AAAAAA")),
               ),
           )
-          .appendFlexible(new Background().setColor("#AAFFAA"))
+          .appendFlexible(
+            new Background()
+              .setColor("#AAFFAA")
+              .setChild(
+                new Center().setChild(new Text().setText("Hello, world!")),
+              ),
+          )
           .appendFlexible(new Background().setColor("#AAAAFF")),
       ),
     ),

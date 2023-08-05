@@ -9,27 +9,22 @@ const {
   NWidth,
   NHeight,
   NCenter,
+  NText,
 } = require("../build/Release/elementor.node");
 
-export interface Size {
-  width: number;
-  height: number;
-}
-
-export interface Window {
-  getTitle(): string;
-  setTitle(title: string): void;
-  getMinSize(): Size;
-  setMinSize(minSize: Size): void;
-  getMaxSize(): Size;
-  setMaxSize(maxSize: Size): void;
-  setRoot(root: Element): void;
-}
-
-export interface Clipboard {
-  get(): string;
-  set(value: string): void;
-}
+import {
+  Size,
+  Boundaries,
+  Position,
+  ElementRect,
+  RenderElement,
+  ClipBehavior,
+  ApplicationContext,
+  Canvas,
+  Element,
+  Window,
+  Clipboard,
+} from "./types";
 
 export class GLPlatform extends NGLPlatform {
   public makeWindow(size: Size): Window {
@@ -42,7 +37,15 @@ export class GLPlatform extends NGLPlatform {
   }
 }
 
-export class Padding extends NPadding {
+export class Padding extends NPadding implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -60,7 +63,15 @@ export class Padding extends NPadding {
   }
 }
 
-export class Background extends NBackground {
+export class Background extends NBackground implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -72,7 +83,15 @@ export class Background extends NBackground {
   }
 }
 
-export class Rounded extends NRounded {
+export class Rounded extends NRounded implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -100,7 +119,15 @@ export class Rounded extends NRounded {
   }
 }
 
-export class Row extends NRow {
+export class Row extends NRow implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public appendChild(child: Element) {
     super.appendChild(child);
     return this;
@@ -112,7 +139,15 @@ export class Row extends NRow {
   }
 }
 
-export class Flex extends NFlex {
+export class Flex extends NFlex implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public appendChild(child: Element) {
     super.appendChild(child);
     return this;
@@ -127,7 +162,15 @@ export class Flex extends NFlex {
   }
 }
 
-export class Flexible extends NFlexible {
+export class Flexible extends NFlexible implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -139,7 +182,15 @@ export class Flexible extends NFlexible {
   }
 }
 
-export class Width extends NWidth {
+export class Width extends NWidth implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -151,7 +202,15 @@ export class Width extends NWidth {
   }
 }
 
-export class Height extends NHeight {
+export class Height extends NHeight implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
@@ -163,20 +222,57 @@ export class Height extends NHeight {
   }
 }
 
-export class Center extends NCenter {
+export class Center extends NCenter implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
   public setChild(child: Element) {
     super.setChild(child);
     return this;
   }
 }
 
-export type Element =
-  | Padding
-  | Background
-  | Rounded
-  | Row
-  | Flex
-  | Flexible
-  | Width
-  | Height
-  | Center;
+export class Text extends NText implements Element {
+  public getSize(
+    ctx: ApplicationContext,
+    window: Window,
+    boundaries: Boundaries,
+  ): Size {
+    return super.getSize(ctx, window, boundaries);
+  }
+
+  public setText(text: string) {
+    super.setText(text);
+    return this;
+  }
+
+  public setFontColor(fontColor: string) {
+    super.setFontColor(fontColor);
+    return this;
+  }
+
+  public setFontSize(fontSize: number) {
+    super.setFontSize(fontSize);
+    return this;
+  }
+
+  public setFontSkew(fontSkew: number) {
+    super.setFontSkew(fontSkew);
+    return this;
+  }
+
+  public setFontScale(fontScale: number) {
+    super.setFontScale(fontScale);
+    return this;
+  }
+
+  public setFontFamily(fontFamily: string) {
+    super.setFontFamily(fontFamily);
+    return this;
+  }
+}

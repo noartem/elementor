@@ -54,6 +54,8 @@ public:
   NPadding(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value setPaddings(const Napi::CallbackInfo &info);
 private:
@@ -65,6 +67,8 @@ public:
   NBackground(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value setColor(const Napi::CallbackInfo &info);
 private:
@@ -76,6 +80,8 @@ public:
   NRounded(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value setRadius(const Napi::CallbackInfo &info);
 private:
@@ -87,6 +93,7 @@ public:
   NRow(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
   Napi::Value appendChild(const Napi::CallbackInfo &info);
   Napi::Value getSpacing(const Napi::CallbackInfo &info);
   Napi::Value setSpacing(const Napi::CallbackInfo &info);
@@ -99,6 +106,7 @@ public:
   NFlex(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
   Napi::Value appendChild(const Napi::CallbackInfo &info);
   Napi::Value getSpacing(const Napi::CallbackInfo &info);
   Napi::Value setSpacing(const Napi::CallbackInfo &info);
@@ -111,6 +119,8 @@ public:
   NFlexible(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value getGrow(const Napi::CallbackInfo &info);
   Napi::Value setGrow(const Napi::CallbackInfo &info);
@@ -123,6 +133,8 @@ public:
   NWidth(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value getWidth(const Napi::CallbackInfo &info);
   Napi::Value setWidth(const Napi::CallbackInfo &info);
@@ -135,6 +147,8 @@ public:
   NHeight(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
   Napi::Value getHeight(const Napi::CallbackInfo &info);
   Napi::Value setHeight(const Napi::CallbackInfo &info);
@@ -147,9 +161,32 @@ public:
   NCenter(const Napi::CallbackInfo &info);
   static Napi::Function GetClass(Napi::Env env);
   Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getChild(const Napi::CallbackInfo &info);
   Napi::Value setChild(const Napi::CallbackInfo &info);
 private:
   std::shared_ptr<Center> instance;
+};
+
+class NText : public Napi::ObjectWrap<NText> {
+public:
+  NText(const Napi::CallbackInfo &info);
+  static Napi::Function GetClass(Napi::Env env);
+  Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getSize(const Napi::CallbackInfo &info);
+  Napi::Value getText(const Napi::CallbackInfo &info);
+  Napi::Value setText(const Napi::CallbackInfo &info);
+  Napi::Value setFontColor(const Napi::CallbackInfo &info);
+  Napi::Value getFontSize(const Napi::CallbackInfo &info);
+  Napi::Value setFontSize(const Napi::CallbackInfo &info);
+  Napi::Value getFontSkew(const Napi::CallbackInfo &info);
+  Napi::Value setFontSkew(const Napi::CallbackInfo &info);
+  Napi::Value getFontScale(const Napi::CallbackInfo &info);
+  Napi::Value setFontScale(const Napi::CallbackInfo &info);
+  Napi::Value getFontFamily(const Napi::CallbackInfo &info);
+  Napi::Value setFontFamily(const Napi::CallbackInfo &info);
+private:
+  std::shared_ptr<Text> instance;
 };
 
 Napi::Object Init(Napi::Env env, Napi::Object exports);

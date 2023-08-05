@@ -1,18 +1,44 @@
 import {merge, upper} from "./index.mjs";
 
-export const WithChild = {
+export const Element = {
     methods: {
-        setChild: {
-            args: [{name: "child", type: "element"}],
-            body: `this->instance->setChild(child)`,
+        getSize: {
+            args: [
+                {name: "ctx", type: "ApplicationContext"},
+                {name: "window", type: "Window"},
+                {name: "boundaries", type: "Boundaries"},
+            ],
+            returns: "Size",
         },
+        paintBackground: {
+            args: [
+                {name: "ctx", type: "ApplicationContext"},
+                {name: "window", type: "Window"},
+                {name: "canvas", type: "Canvas"},
+                {name: "rect", type: "ElementRect"},
+            ]
+        },
+        getChildren: {
+            args: [
+                {name: "ctx", type: "ApplicationContext"},
+                {name: "window", type: "Window"},
+                {name: "rect", type: "ElementRect"},
+            ],
+            returns: {type: "array", item: "RenderElement"}
+        },
+        getClipBehaviour: {
+            returns: "ClipBehavior",
+        }
     },
-};
+    implements: ["Element"]
+}
+
+export const WithChild = field("child", "Element")
 
 export const WithChildren = {
     methods: {
         appendChild: {
-            args: [{name: "child", type: "element"}],
+            args: [{name: "child", type: "Element"}],
             body: `this->instance->appendChild(child)`,
         },
     },
@@ -57,8 +83,6 @@ export function field(name, type) {
     return merge(getter(name, type), setter(name, type));
 }
 
-export const isElement = {isElement: true}
-
-export function asInterface(name) {
-    return {asInterface: name};
+export function exports(exports = true) {
+    return {exports}
 }

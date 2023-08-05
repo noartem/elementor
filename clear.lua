@@ -5,7 +5,7 @@ function main()
     os.rm(".xmake")
     os.rm("CMakelists.txt")
 
---     os.rm(global.directory())
+    --     os.rm(global.directory())
 
     os.rm(path.join("src", "napi", "binding.gyp"))
     os.rm(path.join("src", "napi", "node_modules"))

@@ -1,7 +1,8 @@
 import {throwError} from "./napi-helpers.mjs";
 import {hasReturn, isSingleLine} from "./code.mjs";
+import {toSnakeCase} from "./index.mjs";
 
-const validTypes = ["float", "string", "size", "element"];
+const validTypes = ["float", "string", "size", "position", "boundaries", "element_rect", "element", "application_context", "window"];
 
 function makeArgsCheck(args, options = {}) {
     const makeErrorLabel = options.errorLabel ? `${options.errorLabel}: ` : "";
@@ -24,25 +25,28 @@ function makeArgsCheck(args, options = {}) {
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
 
+        const name = arg.name
+        const type = toSnakeCase(arg.type)
+
         if (
-            !validTypes.includes(arg.type) &&
-            !(arg.type.startsWith("external<") && arg.type.endsWith(">"))
+            !validTypes.includes(type) &&
+            !(type.startsWith("external<") && arg.type.endsWith(">"))
         ) {
-            throw new Error(`Invalid argument type: "${arg.type}"`);
+            throw new Error(`Invalid argument type: "${type}"`);
         }
 
         const parseError = throwError(
             (makeErrorLabel ? `"${makeErrorLabel}" + ` : "") +
-            `from_napi_error_to_string(_${arg.name}.error())`,
+            `from_napi_error_to_string(_${name}.error())`,
         );
 
         result += `
-            auto _${arg.name} = from_napi_${arg.type}(env, info[${i}]);
-            if (!_${arg.name}.has_value()) {
+            auto _${name} = from_napi_${type}(env, info[${i}]);
+            if (!_${name}.has_value()) {
                 ${parseError};
                 ${makeReturn};
             }
-            auto ${arg.name} = _${arg.name}.value();
+            auto ${name} = _${name}.value();
         `;
     }
 
