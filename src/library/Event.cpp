@@ -32,6 +32,10 @@ namespace elementor {
             events.emplace_back(EVENT_HOVER);
         }
 
+        if (dynamic_cast<WithOnFocus *>(element.get()) != nullptr) {
+            events.emplace_back(EVENT_FOCUS);
+        }
+
         return events;
     }
 
@@ -49,6 +53,8 @@ namespace elementor {
             return dynamic_cast<WithOnChar *>(element.get())->onEvent(std::dynamic_pointer_cast<EventChar>(event));
         } else if (eventName == EVENT_HOVER) {
             return dynamic_cast<WithOnHover *>(element.get())->onEvent(std::dynamic_pointer_cast<EventHover>(event));
+        } else if (eventName == EVENT_FOCUS) {
+            return dynamic_cast<WithOnFocus *>(element.get())->onEvent(std::dynamic_pointer_cast<EventFocus>(event));
         }
 
         return EventCallbackResponse::None;

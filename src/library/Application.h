@@ -37,6 +37,7 @@ namespace elementor {
         eventListeners;
         std::vector <std::shared_ptr<Event>> pendingEvents;
         std::vector <std::shared_ptr<ElementNode>> hoveredElements;
+        std::shared_ptr <Element> focusedElement;
 
         std::shared_ptr <ElementNode> makeRootNode();
 

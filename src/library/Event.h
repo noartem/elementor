@@ -16,6 +16,7 @@
 #define EVENT_KEYBOARD "keyboard"
 #define EVENT_CHAR "char"
 #define EVENT_HOVER "hover"
+#define EVENT_FOCUS "focus"
 
 namespace elementor {
     class Event {
@@ -300,6 +301,24 @@ namespace elementor {
     class WithOnHover {
     public:
         virtual EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) = 0;
+    };
+
+    class EventFocus : public Event {
+    public:
+        EventFocus(std::shared_ptr<Element> element) {
+            this->element = element;
+        }
+
+        std::shared_ptr<Element> element;
+
+        std::string getName() override {
+            return EVENT_FOCUS;
+        };
+    };
+
+    class WithOnFocus {
+    public:
+        virtual EventCallbackResponse onEvent(std::shared_ptr<EventFocus> event) = 0;
     };
 }
 
