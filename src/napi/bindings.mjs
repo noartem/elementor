@@ -96,4 +96,5 @@ export default {
     Width: merge(isElement, WithChild, field("width", "float")),
     Height: merge(isElement, WithChild, field("height", "float")),
     Center: merge(isElement, WithChild),
+    Text: merge(isElement, field("text", "string"), setter("fontColor", "string"))
 };

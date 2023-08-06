@@ -9,6 +9,7 @@ const {
   NWidth,
   NHeight,
   NCenter,
+  NText,
 } = require("../build/Release/elementor.node");
 
 export interface Size {
@@ -170,6 +171,18 @@ export class Center extends NCenter {
   }
 }
 
+export class Text extends NText {
+  public setText(text: string) {
+    super.setText(text);
+    return this;
+  }
+
+  public setFontColor(fontColor: string) {
+    super.setFontColor(fontColor);
+    return this;
+  }
+}
+
 export type Element =
   | Padding
   | Background
@@ -179,4 +192,5 @@ export type Element =
   | Flexible
   | Width
   | Height
-  | Center;
+  | Center
+  | Text;

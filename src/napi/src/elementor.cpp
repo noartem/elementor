@@ -895,6 +895,77 @@ Napi::Value NCenter::setChild(const Napi::CallbackInfo &info) {
   return env.Undefined();
 }
 
+NText::NText(const Napi::CallbackInfo &info) : ObjectWrap(info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() == 1 && info[0].IsExternal()) {
+    this->instance =
+        *info[0].As<Napi::External<std::shared_ptr<Text>>>().Data();
+    return;
+  }
+
+  this->instance = std::make_shared<Text>();
+}
+Napi::Function NText::GetClass(Napi::Env env) {
+  return DefineClass(
+      env, "NText",
+      {NText::InstanceMethod("getText", &NText::getText),
+       NText::InstanceMethod("setText", &NText::setText),
+       NText::InstanceMethod("setFontColor", &NText::setFontColor),
+       NText::InstanceMethod("getInstance", &NText::getInstance)});
+}
+Napi::Value NText::getInstance(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  return Napi::External<std::shared_ptr<Text>>::New(env, &this->instance)
+      .As<Napi::Value>();
+}
+Napi::Value NText::getText(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  return to_napi_string(env, this->instance->getText());
+}
+Napi::Value NText::setText(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1) {
+    Napi::TypeError::New(env, "Text setText: Expected >=1 arguments")
+        .ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  auto _text = from_napi_string(env, info[0]);
+  if (!_text.has_value()) {
+    Napi::TypeError::New(env, "Text setText: " +
+                                  from_napi_error_to_string(_text.error()))
+        .ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+  auto text = _text.value();
+
+  this->instance->setText(text);
+  return env.Undefined();
+}
+Napi::Value NText::setFontColor(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1) {
+    Napi::TypeError::New(env, "Text setFontColor: Expected >=1 arguments")
+        .ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  auto _fontColor = from_napi_string(env, info[0]);
+  if (!_fontColor.has_value()) {
+    Napi::TypeError::New(env, "Text setFontColor: " +
+                                  from_napi_error_to_string(_fontColor.error()))
+        .ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+  auto fontColor = _fontColor.value();
+
+  this->instance->setFontColor(fontColor);
+  return env.Undefined();
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set(Napi::String::New(env, "NGLPlatform"),
               NGLPlatform::GetClass(env));
@@ -911,6 +982,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set(Napi::String::New(env, "NWidth"), NWidth::GetClass(env));
   exports.Set(Napi::String::New(env, "NHeight"), NHeight::GetClass(env));
   exports.Set(Napi::String::New(env, "NCenter"), NCenter::GetClass(env));
+  exports.Set(Napi::String::New(env, "NText"), NText::GetClass(env));
   return exports;
 }
 
