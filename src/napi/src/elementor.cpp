@@ -10,1515 +10,1515 @@
 #include "to_napi.h"
 
 NGLPlatform::NGLPlatform(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<GLPlatform>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<GLPlatform>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<GLPlatform>();
+    this->instance = std::make_shared<GLPlatform>();
 }
 Napi::Function NGLPlatform::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NGLPlatform",
-      {NGLPlatform::InstanceMethod("makeWindow", &NGLPlatform::makeWindow),
-       NGLPlatform::InstanceMethod("run", &NGLPlatform::run),
-       NGLPlatform::InstanceMethod("getInstance", &NGLPlatform::getInstance)});
+    return DefineClass(
+            env, "NGLPlatform",
+            {NGLPlatform::InstanceMethod("makeWindow", &NGLPlatform::makeWindow),
+             NGLPlatform::InstanceMethod("run", &NGLPlatform::run),
+             NGLPlatform::InstanceMethod("getInstance", &NGLPlatform::getInstance)});
 }
 Napi::Value NGLPlatform::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<GLPlatform>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<GLPlatform>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NGLPlatform::makeWindow(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLPlatform makeWindow: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLPlatform makeWindow: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _size = from_napi_size(env, info[0]);
-  if (!_size.has_value()) {
-    Napi::TypeError::New(env, "GLPlatform makeWindow: " +
+    auto _size = from_napi_size(env, info[0]);
+    if (!_size.has_value()) {
+        Napi::TypeError::New(env, "GLPlatform makeWindow: " +
                                   from_napi_error_to_string(_size.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto size = _size.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto size = _size.value();
 
-  auto window = this->instance->makeWindow(size);
-  window->setMinSize(size);
+    auto window = this->instance->makeWindow(size);
+    window->setMinSize(size);
 
-  auto windowConstructor = NGLWindow::GetClass(env);
-  auto wrapped = Napi::External<std::shared_ptr<GLWindow>>::New(env, &window);
-  return windowConstructor.New({wrapped});
+    auto windowConstructor = NGLWindow::GetClass(env);
+    auto wrapped = Napi::External<std::shared_ptr<GLWindow>>::New(env, &window);
+    return windowConstructor.New({wrapped});
 }
 Napi::Value NGLPlatform::run(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  this->instance->run();
-  return env.Undefined();
+    Napi::Env env = info.Env();
+    this->instance->run();
+    return env.Undefined();
 }
 
 NGLWindow::NGLWindow(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLWindow: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return;
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLWindow: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return;
+    }
 
-  auto _window = from_napi_external<std::shared_ptr<_g_l_window>>(env, info[0]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "GLWindow: " +
+    auto _window = from_napi_external<std::shared_ptr<_g_l_window>>(env, info[0]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "GLWindow: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return;
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return;
+    }
+    auto window = _window.value();
 
-  this->instance = window;
+    this->instance = window;
 }
 Napi::Function NGLWindow::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NGLWindow",
-      {NGLWindow::InstanceMethod("getTitle", &NGLWindow::getTitle),
-       NGLWindow::InstanceMethod("setTitle", &NGLWindow::setTitle),
-       NGLWindow::InstanceMethod("getMinSize", &NGLWindow::getMinSize),
-       NGLWindow::InstanceMethod("setMinSize", &NGLWindow::setMinSize),
-       NGLWindow::InstanceMethod("getMaxSize", &NGLWindow::getMaxSize),
-       NGLWindow::InstanceMethod("setMaxSize", &NGLWindow::setMaxSize),
-       NGLWindow::InstanceMethod("setRoot", &NGLWindow::setRoot),
-       NGLWindow::InstanceMethod("getInstance", &NGLWindow::getInstance)});
+    return DefineClass(
+            env, "NGLWindow",
+            {NGLWindow::InstanceMethod("getTitle", &NGLWindow::getTitle),
+             NGLWindow::InstanceMethod("setTitle", &NGLWindow::setTitle),
+             NGLWindow::InstanceMethod("getMinSize", &NGLWindow::getMinSize),
+             NGLWindow::InstanceMethod("setMinSize", &NGLWindow::setMinSize),
+             NGLWindow::InstanceMethod("getMaxSize", &NGLWindow::getMaxSize),
+             NGLWindow::InstanceMethod("setMaxSize", &NGLWindow::setMaxSize),
+             NGLWindow::InstanceMethod("setRoot", &NGLWindow::setRoot),
+             NGLWindow::InstanceMethod("getInstance", &NGLWindow::getInstance)});
 }
 Napi::Value NGLWindow::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<GLWindow>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<GLWindow>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NGLWindow::getTitle(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_string(env, this->instance->getTitle());
+    Napi::Env env = info.Env();
+    return to_napi_string(env, this->instance->getTitle());
 }
 Napi::Value NGLWindow::setTitle(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLWindow setTitle: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLWindow setTitle: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _title = from_napi_string(env, info[0]);
-  if (!_title.has_value()) {
-    Napi::TypeError::New(env, "GLWindow setTitle: " +
+    auto _title = from_napi_string(env, info[0]);
+    if (!_title.has_value()) {
+        Napi::TypeError::New(env, "GLWindow setTitle: " +
                                   from_napi_error_to_string(_title.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto title = _title.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto title = _title.value();
 
-  this->instance->setTitle(title);
-  return env.Undefined();
+    this->instance->setTitle(title);
+    return env.Undefined();
 }
 Napi::Value NGLWindow::getMinSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getMinSize();
+    Napi::Env env = info.Env();
+    return this->instance->getMinSize();
 }
 Napi::Value NGLWindow::setMinSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLWindow setMinSize: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLWindow setMinSize: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _minSize = from_napi_size(env, info[0]);
-  if (!_minSize.has_value()) {
-    Napi::TypeError::New(env, "GLWindow setMinSize: " +
+    auto _minSize = from_napi_size(env, info[0]);
+    if (!_minSize.has_value()) {
+        Napi::TypeError::New(env, "GLWindow setMinSize: " +
                                   from_napi_error_to_string(_minSize.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto minSize = _minSize.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto minSize = _minSize.value();
 
-  this->instance->setMinSize(minSize);
-  return env.Undefined();
+    this->instance->setMinSize(minSize);
+    return env.Undefined();
 }
 Napi::Value NGLWindow::getMaxSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getMaxSize();
+    Napi::Env env = info.Env();
+    return this->instance->getMaxSize();
 }
 Napi::Value NGLWindow::setMaxSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLWindow setMaxSize: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLWindow setMaxSize: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _maxSize = from_napi_size(env, info[0]);
-  if (!_maxSize.has_value()) {
-    Napi::TypeError::New(env, "GLWindow setMaxSize: " +
+    auto _maxSize = from_napi_size(env, info[0]);
+    if (!_maxSize.has_value()) {
+        Napi::TypeError::New(env, "GLWindow setMaxSize: " +
                                   from_napi_error_to_string(_maxSize.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto maxSize = _maxSize.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto maxSize = _maxSize.value();
 
-  this->instance->setMaxSize(maxSize);
-  return env.Undefined();
+    this->instance->setMaxSize(maxSize);
+    return env.Undefined();
 }
 Napi::Value NGLWindow::setRoot(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLWindow setRoot: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLWindow setRoot: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _root = from_napi_element(env, info[0]);
-  if (!_root.has_value()) {
-    Napi::TypeError::New(env, "GLWindow setRoot: " +
+    auto _root = from_napi_element(env, info[0]);
+    if (!_root.has_value()) {
+        Napi::TypeError::New(env, "GLWindow setRoot: " +
                                   from_napi_error_to_string(_root.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto root = _root.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto root = _root.value();
 
-  this->instance->setRoot(root);
-  return env.Undefined();
+    this->instance->setRoot(root);
+    return env.Undefined();
 }
 
 NGLClipboard::NGLClipboard(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<GLClipboard>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<GLClipboard>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<GLClipboard>();
+    this->instance = std::make_shared<GLClipboard>();
 }
 Napi::Function NGLClipboard::GetClass(Napi::Env env) {
-  return DefineClass(env, "NGLClipboard",
-                     {NGLClipboard::InstanceMethod("get", &NGLClipboard::get),
-                      NGLClipboard::InstanceMethod("set", &NGLClipboard::set),
-                      NGLClipboard::InstanceMethod(
-                          "getInstance", &NGLClipboard::getInstance)});
+    return DefineClass(env, "NGLClipboard",
+                       {NGLClipboard::InstanceMethod("get", &NGLClipboard::get),
+                        NGLClipboard::InstanceMethod("set", &NGLClipboard::set),
+                        NGLClipboard::InstanceMethod(
+                                "getInstance", &NGLClipboard::getInstance)});
 }
 Napi::Value NGLClipboard::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<GLClipboard>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<GLClipboard>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NGLClipboard::get(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_string(env, this->instance->get());
+    Napi::Env env = info.Env();
+    return to_napi_string(env, this->instance->get());
 }
 Napi::Value NGLClipboard::set(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "GLClipboard set: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "GLClipboard set: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _value = from_napi_string(env, info[0]);
-  if (!_value.has_value()) {
-    Napi::TypeError::New(env, "GLClipboard set: " +
+    auto _value = from_napi_string(env, info[0]);
+    if (!_value.has_value()) {
+        Napi::TypeError::New(env, "GLClipboard set: " +
                                   from_napi_error_to_string(_value.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto value = _value.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto value = _value.value();
 
-  this->instance->set(value);
-  return env.Undefined();
+    this->instance->set(value);
+    return env.Undefined();
 }
 
 NPadding::NPadding(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Padding>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Padding>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Padding>();
+    this->instance = std::make_shared<Padding>();
 }
 Napi::Function NPadding::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NPadding",
-      {NPadding::InstanceMethod("getSize", &NPadding::getSize),
-       NPadding::InstanceMethod("getChild", &NPadding::getChild),
-       NPadding::InstanceMethod("setChild", &NPadding::setChild),
-       NPadding::InstanceMethod("setPaddings", &NPadding::setPaddings),
-       NPadding::InstanceMethod("getInstance", &NPadding::getInstance)});
+    return DefineClass(
+            env, "NPadding",
+            {NPadding::InstanceMethod("getSize", &NPadding::getSize),
+             NPadding::InstanceMethod("getChild", &NPadding::getChild),
+             NPadding::InstanceMethod("setChild", &NPadding::setChild),
+             NPadding::InstanceMethod("setPaddings", &NPadding::setPaddings),
+             NPadding::InstanceMethod("getInstance", &NPadding::getInstance)});
 }
 Napi::Value NPadding::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Padding>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Padding>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NPadding::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Padding getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Padding getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Padding getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Padding getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Padding getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Padding getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env, "Padding getSize: " + from_napi_error_to_string(
-                                                        _boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env, "Padding getSize: " + from_napi_error_to_string(
+                _boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NPadding::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NPadding::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Padding setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Padding setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Padding setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Padding setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NPadding::setPaddings(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 4) {
-    Napi::TypeError::New(env, "Padding setPaddings: Expected >=4 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 4) {
+        Napi::TypeError::New(env, "Padding setPaddings: Expected >=4 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _top = from_napi_float(env, info[0]);
-  if (!_top.has_value()) {
-    Napi::TypeError::New(env, "Padding setPaddings: " +
+    auto _top = from_napi_float(env, info[0]);
+    if (!_top.has_value()) {
+        Napi::TypeError::New(env, "Padding setPaddings: " +
                                   from_napi_error_to_string(_top.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto top = _top.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto top = _top.value();
 
-  auto _right = from_napi_float(env, info[1]);
-  if (!_right.has_value()) {
-    Napi::TypeError::New(env, "Padding setPaddings: " +
+    auto _right = from_napi_float(env, info[1]);
+    if (!_right.has_value()) {
+        Napi::TypeError::New(env, "Padding setPaddings: " +
                                   from_napi_error_to_string(_right.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto right = _right.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto right = _right.value();
 
-  auto _bottom = from_napi_float(env, info[2]);
-  if (!_bottom.has_value()) {
-    Napi::TypeError::New(env, "Padding setPaddings: " +
+    auto _bottom = from_napi_float(env, info[2]);
+    if (!_bottom.has_value()) {
+        Napi::TypeError::New(env, "Padding setPaddings: " +
                                   from_napi_error_to_string(_bottom.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto bottom = _bottom.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto bottom = _bottom.value();
 
-  auto _left = from_napi_float(env, info[3]);
-  if (!_left.has_value()) {
-    Napi::TypeError::New(env, "Padding setPaddings: " +
+    auto _left = from_napi_float(env, info[3]);
+    if (!_left.has_value()) {
+        Napi::TypeError::New(env, "Padding setPaddings: " +
                                   from_napi_error_to_string(_left.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto left = _left.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto left = _left.value();
 
-  this->instance->setPaddings(top, right, bottom, left);
-  return env.Undefined();
+    this->instance->setPaddings(top, right, bottom, left);
+    return env.Undefined();
 }
 
 NBackground::NBackground(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Background>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Background>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Background>();
+    this->instance = std::make_shared<Background>();
 }
 Napi::Function NBackground::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NBackground",
-      {NBackground::InstanceMethod("getSize", &NBackground::getSize),
-       NBackground::InstanceMethod("getChild", &NBackground::getChild),
-       NBackground::InstanceMethod("setChild", &NBackground::setChild),
-       NBackground::InstanceMethod("setColor", &NBackground::setColor),
-       NBackground::InstanceMethod("getInstance", &NBackground::getInstance)});
+    return DefineClass(
+            env, "NBackground",
+            {NBackground::InstanceMethod("getSize", &NBackground::getSize),
+             NBackground::InstanceMethod("getChild", &NBackground::getChild),
+             NBackground::InstanceMethod("setChild", &NBackground::setChild),
+             NBackground::InstanceMethod("setColor", &NBackground::setColor),
+             NBackground::InstanceMethod("getInstance", &NBackground::getInstance)});
 }
 Napi::Value NBackground::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Background>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Background>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NBackground::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Background getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Background getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Background getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Background getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Background getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Background getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env,
-                         "Background getSize: " +
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env,
+                             "Background getSize: " +
                              from_napi_error_to_string(_boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NBackground::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NBackground::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Background setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Background setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Background setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Background setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NBackground::setColor(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Background setColor: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Background setColor: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _color = from_napi_string(env, info[0]);
-  if (!_color.has_value()) {
-    Napi::TypeError::New(env, "Background setColor: " +
+    auto _color = from_napi_string(env, info[0]);
+    if (!_color.has_value()) {
+        Napi::TypeError::New(env, "Background setColor: " +
                                   from_napi_error_to_string(_color.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto color = _color.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto color = _color.value();
 
-  this->instance->setColor(color);
-  return env.Undefined();
+    this->instance->setColor(color);
+    return env.Undefined();
 }
 
 NRounded::NRounded(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Rounded>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Rounded>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Rounded>();
+    this->instance = std::make_shared<Rounded>();
 }
 Napi::Function NRounded::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NRounded",
-      {NRounded::InstanceMethod("getSize", &NRounded::getSize),
-       NRounded::InstanceMethod("getChild", &NRounded::getChild),
-       NRounded::InstanceMethod("setChild", &NRounded::setChild),
-       NRounded::InstanceMethod("setRadius", &NRounded::setRadius),
-       NRounded::InstanceMethod("getInstance", &NRounded::getInstance)});
+    return DefineClass(
+            env, "NRounded",
+            {NRounded::InstanceMethod("getSize", &NRounded::getSize),
+             NRounded::InstanceMethod("getChild", &NRounded::getChild),
+             NRounded::InstanceMethod("setChild", &NRounded::setChild),
+             NRounded::InstanceMethod("setRadius", &NRounded::setRadius),
+             NRounded::InstanceMethod("getInstance", &NRounded::getInstance)});
 }
 Napi::Value NRounded::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Rounded>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Rounded>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NRounded::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Rounded getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Rounded getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Rounded getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Rounded getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Rounded getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Rounded getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env, "Rounded getSize: " + from_napi_error_to_string(
-                                                        _boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env, "Rounded getSize: " + from_napi_error_to_string(
+                _boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NRounded::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NRounded::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Rounded setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Rounded setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Rounded setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Rounded setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NRounded::setRadius(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 4) {
-    Napi::TypeError::New(env, "Rounded setRadius: Expected >=4 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 4) {
+        Napi::TypeError::New(env, "Rounded setRadius: Expected >=4 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _topLeft = from_napi_float(env, info[0]);
-  if (!_topLeft.has_value()) {
-    Napi::TypeError::New(env, "Rounded setRadius: " +
+    auto _topLeft = from_napi_float(env, info[0]);
+    if (!_topLeft.has_value()) {
+        Napi::TypeError::New(env, "Rounded setRadius: " +
                                   from_napi_error_to_string(_topLeft.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto topLeft = _topLeft.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto topLeft = _topLeft.value();
 
-  auto _topRight = from_napi_float(env, info[1]);
-  if (!_topRight.has_value()) {
-    Napi::TypeError::New(env, "Rounded setRadius: " +
+    auto _topRight = from_napi_float(env, info[1]);
+    if (!_topRight.has_value()) {
+        Napi::TypeError::New(env, "Rounded setRadius: " +
                                   from_napi_error_to_string(_topRight.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto topRight = _topRight.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto topRight = _topRight.value();
 
-  auto _bottomRight = from_napi_float(env, info[2]);
-  if (!_bottomRight.has_value()) {
-    Napi::TypeError::New(env, "Rounded setRadius: " + from_napi_error_to_string(
-                                                          _bottomRight.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto bottomRight = _bottomRight.value();
+    auto _bottomRight = from_napi_float(env, info[2]);
+    if (!_bottomRight.has_value()) {
+        Napi::TypeError::New(env, "Rounded setRadius: " + from_napi_error_to_string(
+                _bottomRight.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto bottomRight = _bottomRight.value();
 
-  auto _bottomLeft = from_napi_float(env, info[3]);
-  if (!_bottomLeft.has_value()) {
-    Napi::TypeError::New(env, "Rounded setRadius: " + from_napi_error_to_string(
-                                                          _bottomLeft.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto bottomLeft = _bottomLeft.value();
+    auto _bottomLeft = from_napi_float(env, info[3]);
+    if (!_bottomLeft.has_value()) {
+        Napi::TypeError::New(env, "Rounded setRadius: " + from_napi_error_to_string(
+                _bottomLeft.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto bottomLeft = _bottomLeft.value();
 
-  this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft);
-  return env.Undefined();
+    this->instance->setRadius(topLeft, topRight, bottomRight, bottomLeft);
+    return env.Undefined();
 }
 
 NRow::NRow(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance = *info[0].As<Napi::External<std::shared_ptr<Row>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance = *info[0].As<Napi::External<std::shared_ptr<Row>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Row>();
+    this->instance = std::make_shared<Row>();
 }
 Napi::Function NRow::GetClass(Napi::Env env) {
-  return DefineClass(env, "NRow",
-                     {NRow::InstanceMethod("getSize", &NRow::getSize),
-                      NRow::InstanceMethod("appendChild", &NRow::appendChild),
-                      NRow::InstanceMethod("getSpacing", &NRow::getSpacing),
-                      NRow::InstanceMethod("setSpacing", &NRow::setSpacing),
-                      NRow::InstanceMethod("getInstance", &NRow::getInstance)});
+    return DefineClass(env, "NRow",
+                       {NRow::InstanceMethod("getSize", &NRow::getSize),
+                        NRow::InstanceMethod("appendChild", &NRow::appendChild),
+                        NRow::InstanceMethod("getSpacing", &NRow::getSpacing),
+                        NRow::InstanceMethod("setSpacing", &NRow::setSpacing),
+                        NRow::InstanceMethod("getInstance", &NRow::getInstance)});
 }
 Napi::Value NRow::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Row>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Row>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NRow::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Row getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Row getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Row getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Row getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Row getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Row getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(
-        env, "Row getSize: " + from_napi_error_to_string(_boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(
+                env, "Row getSize: " + from_napi_error_to_string(_boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NRow::appendChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Row appendChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Row appendChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Row appendChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Row appendChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->appendChild(child);
-  return env.Undefined();
+    this->instance->appendChild(child);
+    return env.Undefined();
 }
 Napi::Value NRow::getSpacing(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getSpacing());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getSpacing());
 }
 Napi::Value NRow::setSpacing(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Row setSpacing: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Row setSpacing: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _spacing = from_napi_float(env, info[0]);
-  if (!_spacing.has_value()) {
-    Napi::TypeError::New(env, "Row setSpacing: " +
+    auto _spacing = from_napi_float(env, info[0]);
+    if (!_spacing.has_value()) {
+        Napi::TypeError::New(env, "Row setSpacing: " +
                                   from_napi_error_to_string(_spacing.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto spacing = _spacing.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto spacing = _spacing.value();
 
-  this->instance->setSpacing(spacing);
-  return env.Undefined();
+    this->instance->setSpacing(spacing);
+    return env.Undefined();
 }
 
 NFlex::NFlex(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Flex>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Flex>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Flex>();
+    this->instance = std::make_shared<Flex>();
 }
 Napi::Function NFlex::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NFlex",
-      {NFlex::InstanceMethod("getSize", &NFlex::getSize),
-       NFlex::InstanceMethod("appendChild", &NFlex::appendChild),
-       NFlex::InstanceMethod("getSpacing", &NFlex::getSpacing),
-       NFlex::InstanceMethod("setSpacing", &NFlex::setSpacing),
-       NFlex::InstanceMethod("getInstance", &NFlex::getInstance)});
+    return DefineClass(
+            env, "NFlex",
+            {NFlex::InstanceMethod("getSize", &NFlex::getSize),
+             NFlex::InstanceMethod("appendChild", &NFlex::appendChild),
+             NFlex::InstanceMethod("getSpacing", &NFlex::getSpacing),
+             NFlex::InstanceMethod("setSpacing", &NFlex::setSpacing),
+             NFlex::InstanceMethod("getInstance", &NFlex::getInstance)});
 }
 Napi::Value NFlex::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Flex>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Flex>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NFlex::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Flex getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Flex getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Flex getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Flex getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Flex getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Flex getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(
-        env, "Flex getSize: " + from_napi_error_to_string(_boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(
+                env, "Flex getSize: " + from_napi_error_to_string(_boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NFlex::appendChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Flex appendChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Flex appendChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Flex appendChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Flex appendChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->appendChild(child);
-  return env.Undefined();
+    this->instance->appendChild(child);
+    return env.Undefined();
 }
 Napi::Value NFlex::getSpacing(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getSpacing());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getSpacing());
 }
 Napi::Value NFlex::setSpacing(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Flex setSpacing: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Flex setSpacing: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _spacing = from_napi_float(env, info[0]);
-  if (!_spacing.has_value()) {
-    Napi::TypeError::New(env, "Flex setSpacing: " +
+    auto _spacing = from_napi_float(env, info[0]);
+    if (!_spacing.has_value()) {
+        Napi::TypeError::New(env, "Flex setSpacing: " +
                                   from_napi_error_to_string(_spacing.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto spacing = _spacing.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto spacing = _spacing.value();
 
-  this->instance->setSpacing(spacing);
-  return env.Undefined();
+    this->instance->setSpacing(spacing);
+    return env.Undefined();
 }
 
 NFlexible::NFlexible(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Flexible>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Flexible>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Flexible>();
+    this->instance = std::make_shared<Flexible>();
 }
 Napi::Function NFlexible::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NFlexible",
-      {NFlexible::InstanceMethod("getSize", &NFlexible::getSize),
-       NFlexible::InstanceMethod("getChild", &NFlexible::getChild),
-       NFlexible::InstanceMethod("setChild", &NFlexible::setChild),
-       NFlexible::InstanceMethod("getGrow", &NFlexible::getGrow),
-       NFlexible::InstanceMethod("setGrow", &NFlexible::setGrow),
-       NFlexible::InstanceMethod("getInstance", &NFlexible::getInstance)});
+    return DefineClass(
+            env, "NFlexible",
+            {NFlexible::InstanceMethod("getSize", &NFlexible::getSize),
+             NFlexible::InstanceMethod("getChild", &NFlexible::getChild),
+             NFlexible::InstanceMethod("setChild", &NFlexible::setChild),
+             NFlexible::InstanceMethod("getGrow", &NFlexible::getGrow),
+             NFlexible::InstanceMethod("setGrow", &NFlexible::setGrow),
+             NFlexible::InstanceMethod("getInstance", &NFlexible::getInstance)});
 }
 Napi::Value NFlexible::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Flexible>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Flexible>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NFlexible::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Flexible getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Flexible getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Flexible getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Flexible getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Flexible getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Flexible getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env, "Flexible getSize: " + from_napi_error_to_string(
-                                                         _boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env, "Flexible getSize: " + from_napi_error_to_string(
+                _boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NFlexible::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NFlexible::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Flexible setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Flexible setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Flexible setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Flexible setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NFlexible::getGrow(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getGrow());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getGrow());
 }
 Napi::Value NFlexible::setGrow(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Flexible setGrow: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Flexible setGrow: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _grow = from_napi_float(env, info[0]);
-  if (!_grow.has_value()) {
-    Napi::TypeError::New(env, "Flexible setGrow: " +
+    auto _grow = from_napi_float(env, info[0]);
+    if (!_grow.has_value()) {
+        Napi::TypeError::New(env, "Flexible setGrow: " +
                                   from_napi_error_to_string(_grow.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto grow = _grow.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto grow = _grow.value();
 
-  this->instance->setGrow(grow);
-  return env.Undefined();
+    this->instance->setGrow(grow);
+    return env.Undefined();
 }
 
 NWidth::NWidth(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Width>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Width>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Width>();
+    this->instance = std::make_shared<Width>();
 }
 Napi::Function NWidth::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NWidth",
-      {NWidth::InstanceMethod("getSize", &NWidth::getSize),
-       NWidth::InstanceMethod("getChild", &NWidth::getChild),
-       NWidth::InstanceMethod("setChild", &NWidth::setChild),
-       NWidth::InstanceMethod("getWidth", &NWidth::getWidth),
-       NWidth::InstanceMethod("setWidth", &NWidth::setWidth),
-       NWidth::InstanceMethod("getInstance", &NWidth::getInstance)});
+    return DefineClass(
+            env, "NWidth",
+            {NWidth::InstanceMethod("getSize", &NWidth::getSize),
+             NWidth::InstanceMethod("getChild", &NWidth::getChild),
+             NWidth::InstanceMethod("setChild", &NWidth::setChild),
+             NWidth::InstanceMethod("getWidth", &NWidth::getWidth),
+             NWidth::InstanceMethod("setWidth", &NWidth::setWidth),
+             NWidth::InstanceMethod("getInstance", &NWidth::getInstance)});
 }
 Napi::Value NWidth::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Width>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Width>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NWidth::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Width getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Width getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Width getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Width getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Width getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Width getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(
-        env, "Width getSize: " + from_napi_error_to_string(_boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(
+                env, "Width getSize: " + from_napi_error_to_string(_boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NWidth::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NWidth::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Width setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Width setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Width setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Width setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NWidth::getWidth(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getWidth());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getWidth());
 }
 Napi::Value NWidth::setWidth(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Width setWidth: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Width setWidth: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _width = from_napi_float(env, info[0]);
-  if (!_width.has_value()) {
-    Napi::TypeError::New(env, "Width setWidth: " +
+    auto _width = from_napi_float(env, info[0]);
+    if (!_width.has_value()) {
+        Napi::TypeError::New(env, "Width setWidth: " +
                                   from_napi_error_to_string(_width.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto width = _width.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto width = _width.value();
 
-  this->instance->setWidth(width);
-  return env.Undefined();
+    this->instance->setWidth(width);
+    return env.Undefined();
 }
 
 NHeight::NHeight(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Height>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Height>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Height>();
+    this->instance = std::make_shared<Height>();
 }
 Napi::Function NHeight::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NHeight",
-      {NHeight::InstanceMethod("getSize", &NHeight::getSize),
-       NHeight::InstanceMethod("getChild", &NHeight::getChild),
-       NHeight::InstanceMethod("setChild", &NHeight::setChild),
-       NHeight::InstanceMethod("getHeight", &NHeight::getHeight),
-       NHeight::InstanceMethod("setHeight", &NHeight::setHeight),
-       NHeight::InstanceMethod("getInstance", &NHeight::getInstance)});
+    return DefineClass(
+            env, "NHeight",
+            {NHeight::InstanceMethod("getSize", &NHeight::getSize),
+             NHeight::InstanceMethod("getChild", &NHeight::getChild),
+             NHeight::InstanceMethod("setChild", &NHeight::setChild),
+             NHeight::InstanceMethod("getHeight", &NHeight::getHeight),
+             NHeight::InstanceMethod("setHeight", &NHeight::setHeight),
+             NHeight::InstanceMethod("getInstance", &NHeight::getInstance)});
 }
 Napi::Value NHeight::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Height>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Height>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NHeight::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Height getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Height getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Height getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Height getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Height getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Height getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env, "Height getSize: " + from_napi_error_to_string(
-                                                       _boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env, "Height getSize: " + from_napi_error_to_string(
+                _boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NHeight::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NHeight::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Height setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Height setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Height setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Height setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 Napi::Value NHeight::getHeight(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getHeight());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getHeight());
 }
 Napi::Value NHeight::setHeight(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Height setHeight: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Height setHeight: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _height = from_napi_float(env, info[0]);
-  if (!_height.has_value()) {
-    Napi::TypeError::New(env, "Height setHeight: " +
+    auto _height = from_napi_float(env, info[0]);
+    if (!_height.has_value()) {
+        Napi::TypeError::New(env, "Height setHeight: " +
                                   from_napi_error_to_string(_height.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto height = _height.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto height = _height.value();
 
-  this->instance->setHeight(height);
-  return env.Undefined();
+    this->instance->setHeight(height);
+    return env.Undefined();
 }
 
 NCenter::NCenter(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Center>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Center>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Center>();
+    this->instance = std::make_shared<Center>();
 }
 Napi::Function NCenter::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NCenter",
-      {NCenter::InstanceMethod("getSize", &NCenter::getSize),
-       NCenter::InstanceMethod("getChild", &NCenter::getChild),
-       NCenter::InstanceMethod("setChild", &NCenter::setChild),
-       NCenter::InstanceMethod("getInstance", &NCenter::getInstance)});
+    return DefineClass(
+            env, "NCenter",
+            {NCenter::InstanceMethod("getSize", &NCenter::getSize),
+             NCenter::InstanceMethod("getChild", &NCenter::getChild),
+             NCenter::InstanceMethod("setChild", &NCenter::setChild),
+             NCenter::InstanceMethod("getInstance", &NCenter::getInstance)});
 }
 Napi::Value NCenter::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Center>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Center>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NCenter::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Center getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Center getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Center getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Center getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Center getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Center getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(env, "Center getSize: " + from_napi_error_to_string(
-                                                       _boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(env, "Center getSize: " + from_napi_error_to_string(
+                _boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NCenter::getChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return this->instance->getChild();
+    Napi::Env env = info.Env();
+    return this->instance->getChild();
 }
 Napi::Value NCenter::setChild(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Center setChild: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Center setChild: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _child = from_napi_element(env, info[0]);
-  if (!_child.has_value()) {
-    Napi::TypeError::New(env, "Center setChild: " +
+    auto _child = from_napi_element(env, info[0]);
+    if (!_child.has_value()) {
+        Napi::TypeError::New(env, "Center setChild: " +
                                   from_napi_error_to_string(_child.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto child = _child.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto child = _child.value();
 
-  this->instance->setChild(child);
-  return env.Undefined();
+    this->instance->setChild(child);
+    return env.Undefined();
 }
 
 NText::NText(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() == 1 && info[0].IsExternal()) {
-    this->instance =
-        *info[0].As<Napi::External<std::shared_ptr<Text>>>().Data();
-    return;
-  }
+    if (info.Length() == 1 && info[0].IsExternal()) {
+        this->instance =
+                *info[0].As<Napi::External<std::shared_ptr<Text>>>().Data();
+        return;
+    }
 
-  this->instance = std::make_shared<Text>();
+    this->instance = std::make_shared<Text>();
 }
 Napi::Function NText::GetClass(Napi::Env env) {
-  return DefineClass(
-      env, "NText",
-      {NText::InstanceMethod("getSize", &NText::getSize),
-       NText::InstanceMethod("getText", &NText::getText),
-       NText::InstanceMethod("setText", &NText::setText),
-       NText::InstanceMethod("setFontColor", &NText::setFontColor),
-       NText::InstanceMethod("getFontSize", &NText::getFontSize),
-       NText::InstanceMethod("setFontSize", &NText::setFontSize),
-       NText::InstanceMethod("getFontSkew", &NText::getFontSkew),
-       NText::InstanceMethod("setFontSkew", &NText::setFontSkew),
-       NText::InstanceMethod("getFontScale", &NText::getFontScale),
-       NText::InstanceMethod("setFontScale", &NText::setFontScale),
-       NText::InstanceMethod("getFontFamily", &NText::getFontFamily),
-       NText::InstanceMethod("setFontFamily", &NText::setFontFamily),
-       NText::InstanceMethod("getInstance", &NText::getInstance)});
+    return DefineClass(
+            env, "NText",
+            {NText::InstanceMethod("getSize", &NText::getSize),
+             NText::InstanceMethod("getText", &NText::getText),
+             NText::InstanceMethod("setText", &NText::setText),
+             NText::InstanceMethod("setFontColor", &NText::setFontColor),
+             NText::InstanceMethod("getFontSize", &NText::getFontSize),
+             NText::InstanceMethod("setFontSize", &NText::setFontSize),
+             NText::InstanceMethod("getFontSkew", &NText::getFontSkew),
+             NText::InstanceMethod("setFontSkew", &NText::setFontSkew),
+             NText::InstanceMethod("getFontScale", &NText::getFontScale),
+             NText::InstanceMethod("setFontScale", &NText::setFontScale),
+             NText::InstanceMethod("getFontFamily", &NText::getFontFamily),
+             NText::InstanceMethod("setFontFamily", &NText::setFontFamily),
+             NText::InstanceMethod("getInstance", &NText::getInstance)});
 }
 Napi::Value NText::getInstance(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return Napi::External<std::shared_ptr<Text>>::New(env, &this->instance)
-      .As<Napi::Value>();
+    Napi::Env env = info.Env();
+    return Napi::External<std::shared_ptr<Text>>::New(env, &this->instance)
+            .As<Napi::Value>();
 }
 Napi::Value NText::getSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 3) {
-    Napi::TypeError::New(env, "Text getSize: Expected >=3 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Text getSize: Expected >=3 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _ctx = from_napi_application_context(env, info[0]);
-  if (!_ctx.has_value()) {
-    Napi::TypeError::New(env, "Text getSize: " +
+    auto _ctx = from_napi_application_context(env, info[0]);
+    if (!_ctx.has_value()) {
+        Napi::TypeError::New(env, "Text getSize: " +
                                   from_napi_error_to_string(_ctx.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto ctx = _ctx.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto ctx = _ctx.value();
 
-  auto _window = from_napi_window(env, info[1]);
-  if (!_window.has_value()) {
-    Napi::TypeError::New(env, "Text getSize: " +
+    auto _window = from_napi_window(env, info[1]);
+    if (!_window.has_value()) {
+        Napi::TypeError::New(env, "Text getSize: " +
                                   from_napi_error_to_string(_window.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto window = _window.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto window = _window.value();
 
-  auto _boundaries = from_napi_boundaries(env, info[2]);
-  if (!_boundaries.has_value()) {
-    Napi::TypeError::New(
-        env, "Text getSize: " + from_napi_error_to_string(_boundaries.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto boundaries = _boundaries.value();
+    auto _boundaries = from_napi_boundaries(env, info[2]);
+    if (!_boundaries.has_value()) {
+        Napi::TypeError::New(
+                env, "Text getSize: " + from_napi_error_to_string(_boundaries.error()))
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto boundaries = _boundaries.value();
 
-  return undefined;
+    return undefined;
 }
 Napi::Value NText::getText(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_string(env, this->instance->getText());
+    Napi::Env env = info.Env();
+    return to_napi_string(env, this->instance->getText());
 }
 Napi::Value NText::setText(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setText: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setText: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _text = from_napi_string(env, info[0]);
-  if (!_text.has_value()) {
-    Napi::TypeError::New(env, "Text setText: " +
+    auto _text = from_napi_string(env, info[0]);
+    if (!_text.has_value()) {
+        Napi::TypeError::New(env, "Text setText: " +
                                   from_napi_error_to_string(_text.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto text = _text.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto text = _text.value();
 
-  this->instance->setText(text);
-  return env.Undefined();
+    this->instance->setText(text);
+    return env.Undefined();
 }
 Napi::Value NText::setFontColor(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setFontColor: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setFontColor: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _fontColor = from_napi_string(env, info[0]);
-  if (!_fontColor.has_value()) {
-    Napi::TypeError::New(env, "Text setFontColor: " +
+    auto _fontColor = from_napi_string(env, info[0]);
+    if (!_fontColor.has_value()) {
+        Napi::TypeError::New(env, "Text setFontColor: " +
                                   from_napi_error_to_string(_fontColor.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto fontColor = _fontColor.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto fontColor = _fontColor.value();
 
-  this->instance->setFontColor(fontColor);
-  return env.Undefined();
+    this->instance->setFontColor(fontColor);
+    return env.Undefined();
 }
 Napi::Value NText::getFontSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getFontSize());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getFontSize());
 }
 Napi::Value NText::setFontSize(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setFontSize: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setFontSize: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _fontSize = from_napi_float(env, info[0]);
-  if (!_fontSize.has_value()) {
-    Napi::TypeError::New(env, "Text setFontSize: " +
+    auto _fontSize = from_napi_float(env, info[0]);
+    if (!_fontSize.has_value()) {
+        Napi::TypeError::New(env, "Text setFontSize: " +
                                   from_napi_error_to_string(_fontSize.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto fontSize = _fontSize.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto fontSize = _fontSize.value();
 
-  this->instance->setFontSize(fontSize);
-  return env.Undefined();
+    this->instance->setFontSize(fontSize);
+    return env.Undefined();
 }
 Napi::Value NText::getFontSkew(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getFontSkew());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getFontSkew());
 }
 Napi::Value NText::setFontSkew(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setFontSkew: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setFontSkew: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _fontSkew = from_napi_float(env, info[0]);
-  if (!_fontSkew.has_value()) {
-    Napi::TypeError::New(env, "Text setFontSkew: " +
+    auto _fontSkew = from_napi_float(env, info[0]);
+    if (!_fontSkew.has_value()) {
+        Napi::TypeError::New(env, "Text setFontSkew: " +
                                   from_napi_error_to_string(_fontSkew.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto fontSkew = _fontSkew.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto fontSkew = _fontSkew.value();
 
-  this->instance->setFontSkew(fontSkew);
-  return env.Undefined();
+    this->instance->setFontSkew(fontSkew);
+    return env.Undefined();
 }
 Napi::Value NText::getFontScale(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_float(env, this->instance->getFontScale());
+    Napi::Env env = info.Env();
+    return to_napi_float(env, this->instance->getFontScale());
 }
 Napi::Value NText::setFontScale(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setFontScale: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setFontScale: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _fontScale = from_napi_float(env, info[0]);
-  if (!_fontScale.has_value()) {
-    Napi::TypeError::New(env, "Text setFontScale: " +
+    auto _fontScale = from_napi_float(env, info[0]);
+    if (!_fontScale.has_value()) {
+        Napi::TypeError::New(env, "Text setFontScale: " +
                                   from_napi_error_to_string(_fontScale.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto fontScale = _fontScale.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto fontScale = _fontScale.value();
 
-  this->instance->setFontScale(fontScale);
-  return env.Undefined();
+    this->instance->setFontScale(fontScale);
+    return env.Undefined();
 }
 Napi::Value NText::getFontFamily(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-  return to_napi_string(env, this->instance->getFontFamily());
+    Napi::Env env = info.Env();
+    return to_napi_string(env, this->instance->getFontFamily());
 }
 Napi::Value NText::setFontFamily(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
+    Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    Napi::TypeError::New(env, "Text setFontFamily: Expected >=1 arguments")
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Text setFontFamily: Expected >=1 arguments")
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
 
-  auto _fontFamily = from_napi_string(env, info[0]);
-  if (!_fontFamily.has_value()) {
-    Napi::TypeError::New(env,
-                         "Text setFontFamily: " +
+    auto _fontFamily = from_napi_string(env, info[0]);
+    if (!_fontFamily.has_value()) {
+        Napi::TypeError::New(env,
+                             "Text setFontFamily: " +
                              from_napi_error_to_string(_fontFamily.error()))
-        .ThrowAsJavaScriptException();
-    return env.Undefined();
-  }
-  auto fontFamily = _fontFamily.value();
+                .ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto fontFamily = _fontFamily.value();
 
-  this->instance->setFontFamily(fontFamily);
-  return env.Undefined();
+    this->instance->setFontFamily(fontFamily);
+    return env.Undefined();
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  exports.Set(Napi::String::New(env, "NGLPlatform"),
-              NGLPlatform::GetClass(env));
-  exports.Set(Napi::String::New(env, "NGLWindow"), NGLWindow::GetClass(env));
-  exports.Set(Napi::String::New(env, "NGLClipboard"),
-              NGLClipboard::GetClass(env));
-  exports.Set(Napi::String::New(env, "NPadding"), NPadding::GetClass(env));
-  exports.Set(Napi::String::New(env, "NBackground"),
-              NBackground::GetClass(env));
-  exports.Set(Napi::String::New(env, "NRounded"), NRounded::GetClass(env));
-  exports.Set(Napi::String::New(env, "NRow"), NRow::GetClass(env));
-  exports.Set(Napi::String::New(env, "NFlex"), NFlex::GetClass(env));
-  exports.Set(Napi::String::New(env, "NFlexible"), NFlexible::GetClass(env));
-  exports.Set(Napi::String::New(env, "NWidth"), NWidth::GetClass(env));
-  exports.Set(Napi::String::New(env, "NHeight"), NHeight::GetClass(env));
-  exports.Set(Napi::String::New(env, "NCenter"), NCenter::GetClass(env));
-  exports.Set(Napi::String::New(env, "NText"), NText::GetClass(env));
-  return exports;
+    exports.Set(Napi::String::New(env, "NGLPlatform"),
+                NGLPlatform::GetClass(env));
+    exports.Set(Napi::String::New(env, "NGLWindow"), NGLWindow::GetClass(env));
+    exports.Set(Napi::String::New(env, "NGLClipboard"),
+                NGLClipboard::GetClass(env));
+    exports.Set(Napi::String::New(env, "NPadding"), NPadding::GetClass(env));
+    exports.Set(Napi::String::New(env, "NBackground"),
+                NBackground::GetClass(env));
+    exports.Set(Napi::String::New(env, "NRounded"), NRounded::GetClass(env));
+    exports.Set(Napi::String::New(env, "NRow"), NRow::GetClass(env));
+    exports.Set(Napi::String::New(env, "NFlex"), NFlex::GetClass(env));
+    exports.Set(Napi::String::New(env, "NFlexible"), NFlexible::GetClass(env));
+    exports.Set(Napi::String::New(env, "NWidth"), NWidth::GetClass(env));
+    exports.Set(Napi::String::New(env, "NHeight"), NHeight::GetClass(env));
+    exports.Set(Napi::String::New(env, "NCenter"), NCenter::GetClass(env));
+    exports.Set(Napi::String::New(env, "NText"), NText::GetClass(env));
+    return exports;
 }
 
 NODE_API_MODULE(addon, Init)
