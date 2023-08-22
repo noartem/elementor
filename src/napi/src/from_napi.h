@@ -267,4 +267,6 @@ from_napi_application_context(Napi::Env env, const Napi::Value &value) {
     (env, value);
 }
 
+// TODO: Make an API like to_napi: `parse_error from_napi(Napi::Env env, const Napi::Value &value, T element)`
+
 #endif //ELEMENTOR_PARSE_H
