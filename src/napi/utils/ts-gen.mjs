@@ -57,6 +57,25 @@ function makeItemType({name, value}) {
     return `type ${name} = ${value}`;
 }
 
+function makeItemEnum({name, items}) {
+    return `enum ${name} {\n${Object.entries(items).map(([key, value]) => `${key} = ${value}`).join(',\n')}\n}`
+}
+
+function makeMethodReturns(value) {
+    if (typeof value === 'string') {
+        return value
+    }
+
+    switch (value.type) {
+        case "array":
+            return `Array<${value.item}>`;
+        case "enum":
+            return value.name;
+        default:
+            throw new Error(`Unknown returns type ${value.type}`);
+    }
+}
+
 function makeItemClassMethod({
                                  name,
                                  args = [],
@@ -86,7 +105,7 @@ function makeItemClassMethod({
     result += ")";
 
     if (returns) {
-        result += `: ${returns}`;
+        result += `: ${makeMethodReturns(returns)}`;
     }
 
     result += " {";
@@ -151,6 +170,8 @@ function makeItemByType({type, ...options}) {
             return makeItemInterface(options);
         case "type":
             return makeItemType(options);
+        case "enum":
+            return makeItemEnum(options);
         case "class":
             return makeItemClass(options);
     }

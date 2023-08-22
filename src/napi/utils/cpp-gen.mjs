@@ -135,7 +135,12 @@ export function generateCPPRealization(
     }
 
     if (includes.length > 0) {
-        result.push(includes.map((e) => `#include "${e}"`));
+        result.push(
+            includes
+                .filter((e) => typeof e === "string" || e.type === "realization")
+                .map(e => typeof e === "string" ? e : e.value)
+                .map((e) => `#include "${e}"`),
+        );
     }
 
     result.push(...classes.map(generateClassRealization));
@@ -173,7 +178,12 @@ export function generateCPPDeclaration(
     }
 
     includes.unshift(`${name}.h`);
-    result.push(includes.map((e) => `#include "${e}"`));
+    result.push(
+        includes
+            .filter((e) => typeof e === "string" || e.type === "declaration")
+            .map(e => typeof e === "string" ? e : e.value)
+            .map((e) => `#include "${e}"`),
+    );
 
     result.push(...classes.map(generateClassDeclaration).map(withSuffix(";")));
 

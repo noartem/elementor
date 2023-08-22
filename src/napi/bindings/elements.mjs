@@ -1,60 +1,7 @@
-import {merge} from "./utils/index.mjs";
-import {Element, exports, field, setter, WithChild, WithChildren,} from "./utils/bindings-helpers.mjs";
-
-/** TODO:
- * * Унифицировать from_napi, to_napi -- каждый тип это объект, в котором есть код encode/decode для всех языков
- * * NGLWindow заменить на NWindow
- * * Каждый биндинг в отдельном файле
- * * * Import-export элементов и types.ts в elementor.ts
- * * * Каждый биндинг сам за себе генерирует код
- * * Генерировать все енамы -- смотреть по файлам library/elements/*.h все enum class и парсить их
- * * Разобраться с приведением всех новых типов
- * * * Все которые были (единиый стандарт)
- * * * Енамы
- * * * Массив
- */
-
-const gl = {
-    GLPlatform: {
-        methods: {
-            makeWindow: {
-                args: [{name: "size", type: "Size"}],
-                returns: "Window",
-                body: `
-                    auto window = this->instance->makeWindow(size);
-                    window->setMinSize(size);
-                
-                    auto windowConstructor = NGLWindow::GetClass(env);
-                    auto wrapped = Napi::External < std::shared_ptr < GLWindow >> ::New(env, &window);
-                    return windowConstructor.New({wrapped});
-                `,
-            },
-            run: {
-                body: `this->instance->run()`,
-            },
-        },
-    },
-    GLWindow: merge(
-        exports(false),
-        field("title", "string"),
-        field("minSize", "Size"),
-        field("maxSize", "Size"),
-        setter("root", "element"),
-        {
-            classConstructor: {
-                args: [{name: "window", type: "external<std::shared_ptr<GLWindow>>"}],
-                body: `this->instance = window`,
-            },
-        },
-    ),
-    GLClipboard: merge(
-        exports(false),
-        field("string")
-    ),
-}
+import {merge} from "../utils/index.mjs";
+import {Element, field, setter, WithChild, WithChildren,} from "../utils/bindings-helpers.mjs";
 
 export default {
-    ...gl,
     Padding: merge(Element, WithChild, {
         methods: {
             setPaddings: {

@@ -2,7 +2,18 @@ import {throwError} from "./napi-helpers.mjs";
 import {hasReturn, isSingleLine} from "./code.mjs";
 import {toSnakeCase} from "./index.mjs";
 
-const validTypes = ["float", "string", "size", "position", "boundaries", "element_rect", "element", "application_context", "window"];
+function makeArgFromNapiCall({type}) {
+    if (typeof type === "string") {
+        return `from_napi_${toSnakeCase(type)}`;
+    }
+
+    switch (type.type) {
+        case "external":
+            return `from_napi_external<${type.item}>`;
+        default:
+            throw new Error(`Unknown arg type ${type.type}`);
+    }
+}
 
 function makeArgsCheck(args, options = {}) {
     const makeErrorLabel = options.errorLabel ? `${options.errorLabel}: ` : "";
@@ -25,15 +36,7 @@ function makeArgsCheck(args, options = {}) {
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
 
-        const name = arg.name
-        const type = toSnakeCase(arg.type)
-
-        if (
-            !validTypes.includes(type) &&
-            !(type.startsWith("external<") && arg.type.endsWith(">"))
-        ) {
-            throw new Error(`Invalid argument type: "${type}"`);
-        }
+        const name = arg.name;
 
         const parseError = throwError(
             (makeErrorLabel ? `"${makeErrorLabel}" + ` : "") +
@@ -41,7 +44,7 @@ function makeArgsCheck(args, options = {}) {
         );
 
         result += `
-            auto _${name} = from_napi_${type}(env, info[${i}]);
+            auto _${name} = ${makeArgFromNapiCall(arg)}(env, info[${i}]);
             if (!_${name}.has_value()) {
                 ${parseError};
                 ${makeReturn};
@@ -72,18 +75,33 @@ function makeClassConstructorBody({name}, {args, body}) {
     return result;
 }
 
-function makeClassConstructorBodyDefault({name}) {
+function makeClassConstructorBodyDefault({instanceType}) {
     return `
         if (info.Length() == 1 && info[0].IsExternal()) {
-            this->instance = *info[0].As<Napi::External<std::shared_ptr<${name}>>>().Data();
+            this->instance = *info[0].As<Napi::External<std::shared_ptr<${instanceType}>>>().Data();
             return;
         }
 
-        this->instance = std::make_shared<${name}>();
+        this->instance = std::make_shared<${instanceType}>();
     `;
 }
 
-function makeClassMethodBody(classOptions, {name, args = [], body, returns}) {
+function makeClassMethodBodyReturns({body, returns}) {
+    if (typeof returns === "string") {
+        return `to_napi(env, ${body})`;
+    }
+
+    switch (returns.type) {
+        case "array":
+            return `to_napi_array(env, ${body})`;
+        case "enum":
+            return `to_napi(env, (int) ${body})`;
+        default:
+            throw new Error(`Unknown returns type ${returns.type}`);
+    }
+}
+
+function makeClassMethodBody(classOptions, {name, instanceType, args = [], body, returns}) {
     let result = "";
 
     result += `Napi::Env env = info.Env();\n`;
@@ -96,15 +114,15 @@ function makeClassMethodBody(classOptions, {name, args = [], body, returns}) {
         result += "\n\n";
     }
 
+    if (!body) {
+        body = `this->instance->${name}(${args.map((e) => e.name).join(", ")})`;
+    }
+
     if (returns && returns !== "void") {
         if (hasReturn(body)) {
             result += `${body}\n`;
         } else if (isSingleLine(body)) {
-            if (validTypes.includes(returns)) {
-                result += `return to_napi_${returns}(env, ${body});\n`;
-            } else {
-                result += `return ${body};\n`;
-            }
+            result += `return ${makeClassMethodBodyReturns({body, returns})};\n`;
         } else {
             throw new Error(
                 `'Invalid class method body in "${classOptions.name}::${name}": Method has returns field, but doesn't returns in body.`,
@@ -150,14 +168,14 @@ function makeClassGetClassMethod(className, {methods}) {
     };
 }
 
-function makeCLassGetInstanceMethod({name}) {
+function makeClassGetInstanceMethod({instanceType}) {
     return {
         name: "getInstance",
         args: [{type: "const Napi::CallbackInfo&", name: "info"}],
         returns: "Napi::Value",
         body: `
             Napi::Env env = info.Env();
-            return Napi::External<std::shared_ptr<${name}>>::New(env, &this->instance).As<Napi::Value>();
+            return Napi::External<std::shared_ptr<${instanceType}>>::New(env, &this->instance).As<Napi::Value>();
         `,
     };
 }
@@ -184,7 +202,7 @@ function makeClass(options) {
         ],
         methods: [
             makeClassGetClassMethod(className, options),
-            makeCLassGetInstanceMethod(options),
+            makeClassGetInstanceMethod(options),
             ...Object.entries(options.methods)
                 .map(([name, options]) => ({...options, name}))
                 .map((e) => makeClassMethod(options, e)),
@@ -192,7 +210,7 @@ function makeClass(options) {
         fields: [
             {
                 scope: "private",
-                type: `std::shared_ptr<${options.name}>`,
+                type: `std::shared_ptr<${options.instanceType}>`,
                 name: "instance",
             },
         ],
@@ -219,11 +237,14 @@ function makeInitMethod(classes) {
     };
 }
 
-export function generateBindingsCPP(classes) {
-    classes = Object.entries(classes).map(([name, options]) => ({
-        ...options,
-        name,
-    }));
+export function generateBindingsCPP(items) {
+    const classes = Object.entries(items)
+        .filter(([name, {type}]) => type === "class")
+        .map(([name, options]) => ({
+            instanceType: name,
+            ...options,
+            name,
+        }));
 
     return {
         name: "elementor",
@@ -232,7 +253,7 @@ export function generateBindingsCPP(classes) {
             "library.h",
             "elementor.h",
             "from_napi.h",
-            "to_napi.h",
+            {value: "to_napi.h", type: "realization"},
             "napi.h",
             "tl/expected.hpp",
         ],

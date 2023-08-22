@@ -1,6 +1,22 @@
 import {merge, upper} from "./index.mjs";
 
-export const Element = {
+export const Class = {
+    type: "class",
+}
+
+export const Enum = {
+    type: "enum",
+}
+
+export function makeEnum(items) {
+    if (Array.isArray(items)) {
+        items = Object.fromEntries(items.map((e, i) => [e, i]));
+    }
+
+    return merge(Enum, {items});
+}
+
+export const Element = merge(Class, {
     methods: {
         getSize: {
             args: [
@@ -16,7 +32,7 @@ export const Element = {
                 {name: "window", type: "Window"},
                 {name: "canvas", type: "Canvas"},
                 {name: "rect", type: "ElementRect"},
-            ]
+            ],
         },
         getChildren: {
             args: [
@@ -24,16 +40,31 @@ export const Element = {
                 {name: "window", type: "Window"},
                 {name: "rect", type: "ElementRect"},
             ],
-            returns: {type: "array", item: "RenderElement"}
+            returns: {type: "array", item: "RenderElement"},
         },
         getClipBehaviour: {
-            returns: "ClipBehavior",
-        }
+            returns: {type: "enum", name: "ClipBehavior"},
+        },
     },
-    implements: ["Element"]
-}
+    implements: ["Element"],
+});
 
-export const WithChild = field("child", "Element")
+export const defaultBindings = {
+    NativeElement: merge(Element, {
+        instanceType: "Element",
+        classConstructor: {
+            args: [
+                {
+                    name: "element",
+                    type: "element",
+                },
+            ],
+            body: `this->instance = element`,
+        },
+    }),
+};
+
+export const WithChild = field("child", "Element");
 
 export const WithChildren = {
     methods: {
@@ -68,7 +99,7 @@ export function setter(name, type) {
     }
 
     const setterName = `set${upper(name)}`;
-    const argName = name || 'value'
+    const argName = name || "value";
     return {
         methods: {
             [setterName]: {
@@ -84,5 +115,5 @@ export function field(name, type) {
 }
 
 export function exports(exports = true) {
-    return {exports}
+    return {exports};
 }

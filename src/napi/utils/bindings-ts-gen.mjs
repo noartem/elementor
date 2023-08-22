@@ -9,25 +9,29 @@ function fixType(value) {
     }
 }
 
-export function generateBindingsTS(classes) {
-    classes = Object.entries(classes).map(
-        ([name, {methods = {}, ...options}]) => ({
-            name,
-            className: `N${name}`,
-            methods: Object.entries(methods)
-                .map(([name, options]) => ({...options, name}))
-                .map((e) =>
-                    e.args
-                        ? {
-                            ...e,
-                            args: e.args.map((e) => ({...e, type: fixType(e.type)})),
-                        }
-                        : e,
-                )
-                .map((e) => (e.returns ? {...e, returns: fixType(e.returns)} : e)),
-            ...options,
-        }),
-    );
+export function generateBindingsTS(items) {
+    const classes = Object.entries(items)
+        .filter(([name, {type}]) => type === "class")
+        .map(([name, {methods = {}, ...options}]) => ({
+                name,
+                className: `N${name}`,
+                methods: Object.entries(methods)
+                    .map(([name, options]) => ({...options, name}))
+                    .map((e) =>
+                        e.args
+                            ? {
+                                ...e,
+                                args: e.args.map((e) => ({...e, type: fixType(e.type)})),
+                            }
+                            : e,
+                    )
+                    .map((e) => (e.returns ? {...e, returns: fixType(e.returns)} : e)),
+                ...options,
+            }),
+        );
+    const enums = Object.entries(items)
+        .filter(([name, {type}]) => type === "enum")
+        .map(([name, options]) => ({name, ...options}))
 
     return {
         imports: [
@@ -54,34 +58,39 @@ export function generateBindingsTS(classes) {
                 path: "./types",
             },
         ],
-        items: classes
-            .filter((e) => e.exports ?? true)
-            .map((e) => ({
-                type: "class",
-                name: e.name,
-                classExtends: [e.className],
-                classImplements: toArray(e.implements),
-                methods: Object.fromEntries(
-                    e.methods
-                        .filter(
-                            (e) => !(e.name.startsWith("get") && (e.args ?? []).length === 0),
-                        )
-                        .map((e) => [
-                            e.name,
-                            {
-                                ...e,
-                                body: e.returns
-                                    ? `return super.${e.name}(${(e.args ?? [])
-                                        .map((e) => e.name)
-                                        .join(", ")})`
-                                    : `super.${e.name}(${(e.args ?? [])
-                                        .map((e) => e.name)
-                                        .join(", ")})\nreturn this`,
-                            },
-                        ]),
-                ),
-                after: e.tsAdditional,
-                isExport: true,
-            })),
+        items: [
+            ...enums
+                .map(({name, items}) => ({
+                    type: "enum",
+                    isExport: true,
+                    name,
+                    items,
+                })),
+            ...classes
+                .filter((e) => e.exports ?? true)
+                .map((e) => ({
+                    type: "class",
+                    name: e.name,
+                    classExtends: [e.className],
+                    classImplements: toArray(e.implements),
+                    methods: Object.fromEntries(
+                        e.methods
+                            .map((e) => [
+                                e.name,
+                                {
+                                    ...e,
+                                    body: e.returns
+                                        ? `return super.${e.name}(${(e.args ?? [])
+                                            .map((e) => e.name)
+                                            .join(", ")})`
+                                        : `super.${e.name}(${(e.args ?? [])
+                                            .map((e) => e.name)
+                                            .join(", ")})\nreturn this`,
+                                },
+                            ]),
+                    ),
+                    after: e.tsAdditional,
+                    isExport: true,
+                }))],
     };
 }
