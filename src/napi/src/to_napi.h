@@ -65,7 +65,7 @@ Napi::Value to_napi(Napi::Env env, std::optional <T> value) {
 }
 
 template<typename T>
-Napi::Value to_napi_array(Napi::Env env, std::vector <T> items) {
+Napi::Value to_napi(Napi::Env env, std::vector <T> items) {
     auto array = Napi::Array::New(env, items.size());
     for (size_t i = 0; i < items.size(); i++) {
         array[i] = to_napi(env, items[i]);

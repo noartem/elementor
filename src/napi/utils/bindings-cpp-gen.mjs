@@ -93,7 +93,7 @@ function makeClassMethodBodyReturns({body, returns}) {
 
     switch (returns.type) {
         case "array":
-            return `to_napi_array(env, ${body})`;
+            return `to_napi(env, ${body})`;
         case "enum":
             return `to_napi(env, (int) ${body})`;
         default:

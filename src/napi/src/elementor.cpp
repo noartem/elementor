@@ -173,7 +173,7 @@ Napi::Value NNativeElement::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NNativeElement::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -568,7 +568,7 @@ Napi::Value NPadding::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NPadding::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -802,7 +802,7 @@ Napi::Value NBackground::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NBackground::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -1006,7 +1006,7 @@ Napi::Value NRounded::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NRounded::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -1235,7 +1235,7 @@ Napi::Value NRow::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NRow::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -1438,7 +1438,7 @@ Napi::Value NFlex::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NFlex::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -1645,7 +1645,7 @@ Napi::Value NFlexible::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NFlexible::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -1853,7 +1853,7 @@ Napi::Value NWidth::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NWidth::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -2061,7 +2061,7 @@ Napi::Value NHeight::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NHeight::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -2267,7 +2267,7 @@ Napi::Value NCenter::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NCenter::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -2457,7 +2457,7 @@ Napi::Value NText::getChildren(const Napi::CallbackInfo &info) {
   }
   auto rect = _rect.value();
 
-  return to_napi_array(env, this->instance->getChildren(ctx, window, rect));
+  return to_napi(env, this->instance->getChildren(ctx, window, rect));
 }
 Napi::Value NText::getClipBehaviour(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
