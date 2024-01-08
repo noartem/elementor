@@ -152,4 +152,17 @@ private:
   std::shared_ptr<Center> instance;
 };
 
+class NText : public Napi::ObjectWrap<NText> {
+public:
+  NText(const Napi::CallbackInfo &info);
+  static Napi::Function GetClass(Napi::Env env);
+  Napi::Value getInstance(const Napi::CallbackInfo &info);
+  Napi::Value getText(const Napi::CallbackInfo &info);
+  Napi::Value setText(const Napi::CallbackInfo &info);
+  Napi::Value setFontColor(const Napi::CallbackInfo &info);
+
+private:
+  std::shared_ptr<Text> instance;
+};
+
 Napi::Object Init(Napi::Env env, Napi::Object exports);
