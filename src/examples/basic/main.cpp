@@ -17,10 +17,19 @@ int main() {
 	window->setApplication(application);
 
 	auto root = Background::New(application, {
-		.color = "#fff",
-		.child = Background::New(application, {
-			.color = "#faa",
-		})
+			.color = "#fff",
+			.child = Padding::New(application, {
+					.all = 12,
+					.child = Height::New(application, {
+							.height = 100,
+							.child = Width::New(application, {
+									.width = 100,
+									.child = Background::New(application, {
+											.color = "#faa",
+									})
+							})
+					})
+			})
 	});
 	application->setRoot(root);
 
