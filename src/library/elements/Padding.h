@@ -15,10 +15,14 @@ namespace elementor::elements {
 		float left = 0;
 	};
 
-	struct PaddingProps : PaddingsValue {
+	struct PaddingProps {
 		float all = 0;
 		float x = 0;
 		float y = 0;
+		float top = 0;
+		float right = 0;
+		float bottom = 0;
+		float left = 0;
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
