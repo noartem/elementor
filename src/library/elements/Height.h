@@ -5,28 +5,51 @@
 #ifndef ELEMENTOR_HEIGHT_H
 #define ELEMENTOR_HEIGHT_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Height : public Element, public WithChild, public std::enable_shared_from_this<Height> {
+	struct HeightProps {
+		float height = 0;
+		const std::shared_ptr<Element>& child = nullptr;
+	};
+
+    class Height : public Element, public WithChild {
     public:
-        std::shared_ptr<Height> setHeight(float height);
+		explicit Height(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+		}
 
-        float getHeight();
+		Height(const std::shared_ptr<ApplicationContext>& ctx, const HeightProps& props)
+				: Element(ctx),
+				  WithChild(props.child) {
+			setHeight(props.height);
+		}
 
-        std::shared_ptr<Height> setChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr<Height> New(
+				const std::shared_ptr<ApplicationContext>& ctx,
+				const HeightProps& props
+		) {
+			return std::make_shared<Height>(ctx, props);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		static std::shared_ptr<Height> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+        void setHeight(float newValue) {
+			height = newValue;
+		}
+
+        [[nodiscard]] float getHeight() const {
+			return height;
+		}
+
+        Size getSize(const Boundaries& boundaries) override;
+
+        std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
     private:
         float height = 0;
     };
-
-    std::shared_ptr<Height> height();
 }
 
 

@@ -18,14 +18,15 @@ namespace elementor::elements {
 		explicit Background(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
 		}
 
-		Background(const std::shared_ptr<ApplicationContext>& ctx, BackgroundProps props) : Element(ctx),
-																							WithChild(props.child) {
+		Background(const std::shared_ptr<ApplicationContext>& ctx, const BackgroundProps& props)
+				: Element(ctx),
+				  WithChild(props.child) {
 			setColor(props.color);
 		}
 
 		static std::shared_ptr<Background> New(
 				const std::shared_ptr<ApplicationContext>& ctx,
-				BackgroundProps props
+				const BackgroundProps& props
 		) {
 			return std::make_shared<Background>(ctx, props);
 		}
@@ -34,15 +35,29 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
-		[[nodiscard]] SkColor getColor() const;
+		[[nodiscard]] SkColor getColor() const {
+			return color;
+		}
 
-		void setColor(SkColor skColor);
+		void setColor(SkColor skColor) {
+			color = skColor;
+		}
 
-		void setColor(uint8_t r, uint8_t g, uint8_t b);
+		void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			color = makeSkColorFromRGBA(r, g, b, a);
+		}
 
-		void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+		void setColor(uint8_t r, uint8_t g, uint8_t b) {
+			color = makeSkColorFromRGB(r, g, b);
+		}
 
-		void setColor(const std::string_view& hex);
+		void setColor(const std::string_view& hex) {
+			if (hex.empty()) {
+				return;
+			}
+
+			color = makeSkColorFromHex(std::string(hex));
+		}
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 

@@ -5,45 +5,40 @@
 #include "Height.h"
 
 namespace elementor::elements {
-    std::shared_ptr<Height> height() {
-        return std::make_shared<Height>();
-    }
+	Size Height::getSize(const Boundaries& boundaries) {
+		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float heightScaled = height * pixelScale;
 
-    std::shared_ptr<Height> Height::setHeight(float height) {
-        this->height = height;
-        return shared_from_this();
-    }
+		if (doesNotHaveChild()) {
+			return fitSizeInBoundaries({
+					.width = boundaries.max.width,
+					.height = height
+			}, boundaries);
+		}
 
-    float Height::getHeight() {
-        return this->height;
-    }
+		return child->getSize({
+				.min = {
+						.width = boundaries.min.width,
+						.height = std::max(heightScaled, boundaries.min.height)
+				},
+				.max = {
+						.width = boundaries.max.width,
+						.height = std::min(heightScaled, boundaries.max.height)
+				}
+		});
+	}
 
-    std::shared_ptr<Height> Height::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
+	std::vector<ElementWithRect> Height::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    Size
-    Height::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        float height = this->height * ctx->getPixelScale();
-        if (this->hasChild()) {
-            Boundaries childBoundaries = {{boundaries.min.width, std::max(height, boundaries.min.height)},
-                                          {boundaries.max.width, std::min(height, boundaries.max.height)}};
-            return this->getChild()->getSize(ctx, window, childBoundaries);
-        } else {
-            return fitSizeInBoundaries({boundaries.max.width, height}, boundaries);
-        }
-    }
+		Rect childRect = {
+				.size = rect.size,
+				.position = { .x = 0, .y = 0 },
+		};
 
-    std::vector<RenderElement>
-    Height::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
-
-        if (this->hasChild()) {
-            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
-            children.push_back(childElement);
-        }
-
-        return children;
-    }
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 }
