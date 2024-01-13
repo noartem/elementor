@@ -4,8 +4,6 @@
 
 #include "GLPlatform.h"
 
-#include <utility>
-
 #include "GLFW/glfw3.h"
 
 #include "include/gpu/gl/GrGLInterface.h"
@@ -32,34 +30,38 @@ namespace elementor::platforms::gl {
 		glfwWindowHint(GLFW_ALPHA_BITS, 0);
 		glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
+		this->eventLoop = std::make_shared<GLEventLoop>();
+
 		this->clipboard = std::make_shared<GLClipboard>();
 		this->perfomance = std::make_shared<GLPerfomance>();
 		this->fontManager = std::make_shared<GLFontManager>();
 	}
 
 	void GLPlatform::run() {
-		for (;;) {
-			glfwWaitEvents();
+		eventLoop->setCallback([this]() {
+		applyRnfQueue();
 
-			this->applyRnfQueue();
-
-			for (const std::shared_ptr<GLWindow>& window: this->windows) {
-				window->draw();
-			}
-
-			if (this->windows.empty()) {
-				break;
-			}
-
-			this->perfomance->incrementFramesCount();
+		for (const std::shared_ptr<GLWindow>& window: windows) {
+			window->draw();
 		}
+
+		if (windows.empty()) {
+			return true;
+		}
+
+		perfomance->incrementFramesCount();
+
+		return false;
+		});
+
+		eventLoop->start();
 
 		glfwTerminate();
 	}
 
 	void GLPlatform::requestNextFrame(const std::function<void()>& callback) {
-		glfwPostEmptyEvent();
-		this->rnfNextQueue.push_back(callback);
+		eventLoop->pend();
+		rnfNextQueue.push_back(callback);
 	}
 
 	void GLPlatform::applyRnfQueue() {
@@ -76,9 +78,7 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLPlatform::addWindow(const std::shared_ptr<GLWindow>& window) {
-		window->onClose([this, window]() {
-		this->removeWindow(window);
-		});
+		window->onClose([this, window]() { this->removeWindow(window); });
 		this->windows.push_back(window);
 	}
 

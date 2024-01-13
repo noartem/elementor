@@ -33,7 +33,7 @@ namespace elementor::platforms::gl {
 
 	void onWindowRefresh(GLFWwindow* glfwWindow) {
 		GLWindow* window = getGLFWWindowGLWindow(glfwWindow);
-		window->draw();
+		window->pendDraw();
 	}
 
 	void onWindowPosition(GLFWwindow* glfwWindow, [[maybe_unused]] int x, [[maybe_unused]] int y) {
@@ -77,6 +77,7 @@ namespace elementor::platforms::gl {
 	}
 
 	GLWindow::GLWindow(const std::shared_ptr<PlatformContext>& ctx) {
+		this->ctx = ctx;
 		this->glWindow = glfwCreateWindow(1, 1, "Elementor", nullptr, nullptr);
 
 		glfwMakeContextCurrent(glWindow);
@@ -131,6 +132,8 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLWindow::draw() {
+		pendingDraw = false;
+
 		this->refresh();
 
 		this->skCanvas->clear(SK_ColorBLACK);
@@ -139,6 +142,15 @@ namespace elementor::platforms::gl {
 		glfwMakeContextCurrent(this->glWindow);
 		this->skContext->flush();
 		glfwSwapBuffers(this->glWindow);
+	}
+
+	void GLWindow::pendDraw() {
+//		if (pendingDraw) {
+//			return;
+//		}
+
+		pendingDraw = true;
+		ctx->requestNextFrame([this]() { this->draw(); });
 	}
 
 	void GLWindow::setTitle(std::string newTitle) {

@@ -7,6 +7,7 @@
 
 #include "../../Element.h"
 
+#include "GLEventLoop.h"
 #include "GLClipboard.h"
 #include "GLFontManager.h"
 #include "GLPerfomance.h"
@@ -48,6 +49,8 @@ namespace elementor::platforms::gl {
 		}
 
 	private:
+		std::shared_ptr<GLEventLoop> eventLoop;
+
 		std::shared_ptr<GLClipboard> clipboard;
 		std::shared_ptr<GLPerfomance> perfomance;
 		std::shared_ptr<GLFontManager> fontManager;

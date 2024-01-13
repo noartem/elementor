@@ -28,6 +28,8 @@ namespace elementor::platforms::gl {
 
 		void draw();
 
+		void pendDraw();
+
 		void setTitle(std::string newTitle) override;
 
 		std::string getTitle() override;
@@ -91,10 +93,14 @@ namespace elementor::platforms::gl {
 		void onScroll(double xOffset, double yOffset);
 
 	private:
+		std::shared_ptr<PlatformContext> ctx;
+
 		GLFWwindow* glWindow = nullptr;
 		GrDirectContext* skContext = nullptr;
 		sk_sp<SkSurface> skSurface = nullptr;
 		SkCanvas* skCanvas = nullptr;
+
+		bool pendingDraw = false;
 
 		std::shared_ptr<Application> application;
 
