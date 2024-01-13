@@ -12,18 +12,19 @@ namespace elementor {
 	constexpr float DefaultMonitorScale = 3.8; // 38 logical pixels per centimeter
 
 	class ApplicationContext {
+	public:
 		virtual std::shared_ptr<WindowContext> getWindowCtx() = 0;
 
 		virtual std::shared_ptr<PlatformContext> getPlatformCtx() = 0;
 
 		virtual void addEventListener(
-				const std::string_view &eventName,
-				const std::function<void(const std::shared_ptr<Event>& event)> &listener
+				const std::string_view& eventName,
+				const std::function<void(const std::shared_ptr<Event>& event)>& listener
 		) = 0;
 
 		virtual void removeEventListener(
 				const std::string_view& name,
-				const std::function<void(const std::shared_ptr<Event>& event)> &listener
+				const std::function<void(const std::shared_ptr<Event>& event)>& listener
 		) = 0;
 	};
 };

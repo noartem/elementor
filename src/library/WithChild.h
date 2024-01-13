@@ -12,9 +12,10 @@
 namespace elementor {
 	class WithChild {
 	public:
-		WithChild();
+		explicit WithChild(const std::shared_ptr<Element>& child) : child(child) {
+		}
 
-		WithChild(const std::shared_ptr<Element>& child) : child(child) {
+		WithChild() {
 		}
 
 		void setChild(const std::shared_ptr<Element>& element) {
@@ -27,6 +28,10 @@ namespace elementor {
 
 		[[nodiscard]] bool hasChild() const {
 			return this->child != nullptr;
+		}
+
+		[[nodiscard]] bool doesNotHaveChild() const {
+			return this->child == nullptr;
 		}
 
 		void removeChild() {

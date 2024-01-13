@@ -9,6 +9,7 @@
 #include "ApplicationContext.h"
 #include "Color.h"
 #include "Component.h"
+#include "debug.h"
 #include "Element.h"
 #include "ElementTree.h"
 #include "Event.h"

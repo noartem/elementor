@@ -52,10 +52,12 @@ namespace elementor {
 			const std::shared_ptr<Element>& element,
 			const std::shared_ptr<WindowContext>& windowCtx
 	) {
+		Size windowSize = windowCtx->getSize();
+
 		ElementRect rootRect{};
 		rootRect.position = { 0, 0 };
 		rootRect.inParentPosition = { 0, 0 };
-		rootRect.size = windowCtx->getSize();
+		rootRect.size = element->getSize({ .min = windowSize, .max = windowSize });
 		rootRect.visiblePosition = { 0, 0 };
 		rootRect.visibleSize = windowCtx->getSize();
 
