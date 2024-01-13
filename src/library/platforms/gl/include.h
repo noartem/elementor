@@ -5,7 +5,6 @@
 #ifndef ELEMENTOR_GL_INCLUDE_H
 #define ELEMENTOR_GL_INCLUDE_H
 
-#include "GLApplicationContext.h"
 #include "GLClipboard.h"
 #include "GLCursor.h"
 #include "GLFontManager.h"

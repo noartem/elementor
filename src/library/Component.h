@@ -5,24 +5,40 @@
 #ifndef ELEMENTOR_COMPONENT_H
 #define ELEMENTOR_COMPONENT_H
 
+#include <vector>
+#include <vector>
+
+#include "Render.h"
 #include "Element.h"
 
 namespace elementor::elements {
-    class Component : public Element {
-    public:
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+	class Component : public Element {
+	public:
+		Size getSize(const Boundaries& boundaries) override {
+			if (this->element) {
+				return this->element->getSize(boundaries);
+			}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
+			return boundaries.min;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override {
+			this->lastRect = rect;
+		}
 
-    protected:
-        std::shared_ptr<ApplicationContext> ctx;
-        std::shared_ptr<Window> window;
-        ElementRect rect;
-        std::shared_ptr<Element> element;
-    };
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override {
+			if (this->element) {
+				ElementWithRect elementWithRect(this->element, { rect.size, { 0, 0 }});
+				return { elementWithRect };
+			}
+
+			return {};
+		}
+
+	protected:
+		ElementRect lastRect;
+		std::shared_ptr<Element> element;
+	};
 }
-
 
 #endif //ELEMENTOR_COMPONENT_H

@@ -5,39 +5,54 @@
 #ifndef ELEMENTOR_BACKGROUND_H
 #define ELEMENTOR_BACKGROUND_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Background : public Element, public WithChild, public std::enable_shared_from_this<Background> {
-    public:
-        Background() : Element(), WithChild() {}
+	struct BackgroundProps {
+		const std::string_view& color = "";
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        std::shared_ptr<Background> setColor(SkColor skColor);
+	class Background : public Element, public WithChild {
+	public:
+		explicit Background(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+		}
 
-        std::shared_ptr<Background> setColor(uint8_t r, uint8_t g, uint8_t b);
+		Background(const std::shared_ptr<ApplicationContext>& ctx, BackgroundProps props) : Element(ctx),
+																							WithChild(props.child) {
+			setColor(props.color);
+		}
 
-        std::shared_ptr<Background> setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+		static std::shared_ptr<Background> New(
+				const std::shared_ptr<ApplicationContext>& ctx,
+				BackgroundProps props
+		) {
+			return std::make_shared<Background>(ctx, props);
+		}
 
-        std::shared_ptr<Background> setColor(std::string hex);
+		static std::shared_ptr<Background> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        SkColor getColor() const;
+		[[nodiscard]] SkColor getColor() const;
 
-        std::shared_ptr<Background> setChild(const std::shared_ptr<Element>& child);
+		void setColor(SkColor skColor);
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		void setColor(uint8_t r, uint8_t g, uint8_t b);
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		void setColor(const std::string_view& hex);
 
-    private:
-        SkColor color{};
-    };
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-    std::shared_ptr<Background> background();
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		SkColor color = SK_ColorTRANSPARENT;
+	};
 }
 
 

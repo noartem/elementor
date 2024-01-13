@@ -4,23 +4,21 @@
 
 #include "GLFontManager.h"
 
-#include <utility>
-
 namespace elementor::platforms::gl {
-    GLFontManager::GLFontManager() {
-        this->skFontManager = sk_make_sp<sktextlayout::TypefaceFontProvider>();
-    }
+	GLFontManager::GLFontManager() {
+		this->skFontManager = sk_make_sp<skia::textlayout::TypefaceFontProvider>();
+	}
 
-    sk_sp<SkFontMgr> GLFontManager::getSkFontManager() {
-        return this->skFontManager;
-    }
+	sk_sp<SkFontMgr> GLFontManager::getSkFontManager() {
+		return this->skFontManager;
+	}
 
-    void GLFontManager::registerFontFromSkData(sk_sp<SkData> data) {
-        this->skFontManager->registerTypeface(SkTypeface::MakeFromData(std::move(data)));
-    }
+	void GLFontManager::registerFontFromSkData(sk_sp<SkData> data) {
+		this->skFontManager->registerTypeface(SkTypeface::MakeFromData(std::move(data)));
+	}
 
-    void GLFontManager::registerFontFromPath(const std::string &path) {
-        this->registerFontFromSkData(SkData::MakeFromFileName(path.c_str()));
-    }
+	void GLFontManager::registerFontFromPath(const std::string& path) {
+		this->registerFontFromSkData(SkData::MakeFromFileName(path.c_str()));
+	}
 }
 

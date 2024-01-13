@@ -6,9 +6,6 @@
 #define ELEMENTOR_RENDER_H
 
 namespace elementor {
-    #define ZERO (float) 0
-    #define ONE (float) 1
-
     struct Position {
         float x;
         float y;
@@ -28,27 +25,23 @@ namespace elementor {
         Size size;
         Position position;
 
-        bool contains(float x, float y);
+        [[nodiscard]] bool contains(float x, float y) const;
 
-        bool contains(Position point);
+        [[nodiscard]] bool contains(Position point) const;
     };
 
-    struct ElementRect {
-        Size size;
-        Position position;
+    Rect unionOfRects(const Rect &a, const Rect &b);
+
+    struct ElementRect : Rect {
         Size visibleSize;
         Position visiblePosition;
         Position inParentPosition;
 
-        bool contains(float x, float y);
+        [[nodiscard]] bool visibleContains(float x, float y) const;
 
-        bool contains(Position point);
+        [[nodiscard]] bool visibleContains(Position point) const;
 
-        bool visibleContains(float x, float y);
-
-        bool visibleContains(Position point);
-
-        Position absolutePositionToContained(Position absolutePosition);
+        [[nodiscard]] Position absolutePositionToContained(Position absolutePosition) const;
     };
 
     Size fitSizeInBoundaries(Size size, Boundaries boundaries);

@@ -5,12 +5,12 @@
 #include "GLClipboard.h"
 
 namespace elementor::platforms::gl {
-    void GLClipboard::set(std::string value) {
-        glfwSetClipboardString(nullptr, value.c_str());
-    }
+	void GLClipboard::set(const std::string_view& value) {
+		glfwSetClipboardString(nullptr, value.data());
+	}
 
-    std::string GLClipboard::get() {
-        return glfwGetClipboardString(nullptr);
-    }
+	const std::string_view& GLClipboard::get() {
+		return glfwGetClipboardString(nullptr);
+	}
 }
 

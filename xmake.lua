@@ -49,6 +49,12 @@ if is_plat("windows") then
     end)
 end
 
+target("example")
+    set_kind("binary")
+    add_deps("elementor")
+    add_packages("skia-build", "glfw")
+    add_files("src/examples/basic/*.cpp")
+
 target("elementor-components")
     set_kind("static")
     add_deps("elementor")

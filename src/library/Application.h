@@ -5,53 +5,74 @@
 #ifndef ELEMENTOR_APPLICATION_H
 #define ELEMENTOR_APPLICATION_H
 
+#include <map>
+#include <vector>
+#include <memory>
+#include <algorithm>
+
+#include <include/core/SkCanvas.h>
+
+#include "Render.h"
 #include "Element.h"
 #include "Event.h"
-
-#include <map>
+#include "ElementTree.h"
+#include "WindowContext.h"
+#include "PlatformContext.h"
+#include "ApplicationContext.h"
 
 namespace elementor {
-    struct ElementNode {
-        std::shared_ptr <Element> element;
-        ElementRect rect;
-        std::vector <std::shared_ptr<ElementNode>> children;
-        std::weak_ptr <ElementNode> parent;
-    };
+	class Application : public ApplicationContext, public std::enable_shared_from_this<Application> {
+	public:
+		explicit Application(
+				const std::shared_ptr<PlatformContext>& platformCtx,
+				const std::shared_ptr<WindowContext>& windowCtx
+		) : platformCtx(platformCtx), windowCtx(windowCtx) {
+		}
 
-    class Application {
-    public:
-        Application(const std::shared_ptr <ApplicationContext> &ctx, const std::shared_ptr <Window> &window) {
-            this->ctx = ctx;
-            this->window = window;
-        }
+		void draw(SkCanvas* canvas);
 
-        void draw(SkCanvas *canvas);
+		void setRoot(const std::shared_ptr<Element>& rootElement) {
+			this->root = rootElement;
+		}
 
-        void dispatchEvent(const std::shared_ptr <Event> &event);
+		void emit(const std::shared_ptr<Event>& event) {
+			this->pendingEvents.push_back(event);
+		}
 
-    private:
-        std::shared_ptr <ApplicationContext> ctx;
-        std::shared_ptr <Window> window;
-        std::shared_ptr <ElementNode> rootNode;
-        std::map <std::string, std::vector<std::shared_ptr < ElementNode>>>
-        eventListeners;
-        std::vector <std::shared_ptr<Event>> pendingEvents;
-        std::vector <std::shared_ptr<ElementNode>> hoveredElements;
+		std::shared_ptr<WindowContext> getWindowCtx() override {
+			return windowCtx;
+		}
 
-        std::shared_ptr <ElementNode> makeRootNode();
+		std::shared_ptr<PlatformContext> getPlatformCtx() override {
+			return platformCtx;
+		}
 
-        std::shared_ptr <ElementNode> makeNode(const RenderElement &element, const ElementRect &rect, const Rect &boundary);
+		void addEventListener(
+				const std::string_view& eventName,
+				const std::function<void(const std::shared_ptr<Event>&)>& listener
+		) override;
 
-        void saveNodeEventListeners(const std::shared_ptr <ElementNode> &node);
+		void removeEventListener(
+				const std::string_view& name,
+				const std::function<void(const std::shared_ptr<Event>&)>& listener
+		) override;
 
-        void drawNode(const std::shared_ptr <ElementNode> &node, SkCanvas *canvas);
+	private:
+		std::shared_ptr<PlatformContext> platformCtx;
+		std::shared_ptr<WindowContext> windowCtx;
 
-        void setHoveredElements(const std::vector <std::shared_ptr<ElementNode>> &newValue);
+		std::shared_ptr<ApplicationContext> ctx;
 
-        void updateHovered();
+		std::shared_ptr<Element> root;
+		std::shared_ptr<ElementTreeNode> rootNode;
 
-        void dispatchPendingEvents();
-    };
+		std::vector<std::shared_ptr<Event>> pendingEvents;
+		std::map<std::string_view, std::vector<std::function<void(const std::shared_ptr<Event>&)>>> eventsListeners;
+
+		void drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas);
+
+		void dispatchPendingEvents();
+	};
 };
 
 

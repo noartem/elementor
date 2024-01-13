@@ -4,14 +4,20 @@
 
 #include "Color.h"
 
-namespace elementor {
-    SkColor makeSkColorFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-        return SkColorSetARGB(a, r, g, b);
-    }
+#include <string>
+#include <include/core/SkColor.h>
 
-    SkColor makeSkColorFromRGB(uint8_t r, uint8_t g, uint8_t b) {
-        return SkColorSetARGB(255, r, g, b);
-    }
+#include <iostream>
+#include <charconv>
+
+namespace elementor {
+	SkColor makeSkColorFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+		return SkColorSetARGB(a, r, g, b);
+	}
+
+	SkColor makeSkColorFromRGB(uint8_t r, uint8_t g, uint8_t b) {
+		return SkColorSetARGB(255, r, g, b);
+	}
 
     SkColor makeSkColorFromHex(std::string hex) {
         if (hex.size() == 7 || hex.size() == 4) {

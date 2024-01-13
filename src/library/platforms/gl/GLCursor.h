@@ -2,38 +2,47 @@
 // Created by noartem on 15.08.2022.
 //
 
-#ifndef ELEMENTOR_GL_GLCURSOR_H
-#define ELEMENTOR_GL_GLCURSOR_H
+#ifndef ELEMENTOR_GL_CURSOR_H
+#define ELEMENTOR_GL_CURSOR_H
 
 #include "../../Element.h"
 
 #include "GLFW/glfw3.h"
 
 namespace elementor::platforms::gl {
-    class GLCursor : public Cursor {
-    public:
-        GLCursor(GLFWwindow *window, std::shared_ptr<ApplicationContext> ctx);
+	class GLCursor : public Cursor {
+	public:
+		GLCursor(
+				const std::shared_ptr<PlatformContext>& ctx,
+				GLFWwindow* window
+		) : ctx(ctx), window(window) {
+		}
 
-        void set(CursorShape shape) override;
+		void set(CursorShape shape) override;
 
-        CursorShape get() override;
+		CursorShape get() override {
+			return currentShape;
+		}
 
-        Position getPosition() override;
+		Position getPosition() override {
+			return position;
+		}
 
-        void setPosition(Position position);
+		void setPosition(Position newValue) {
+			position = newValue;
+		}
 
-    private:
-        std::shared_ptr<ApplicationContext> ctx;
-        GLFWwindow *window;
-        GLFWcursor *cursor;
-        CursorShape currentShape = CursorShape::Default;
-        CursorShape appliedShape = CursorShape::Default;
+	private:
+		std::shared_ptr<PlatformContext> ctx;
+		GLFWwindow* window;
+		GLFWcursor* cursor{};
+		CursorShape currentShape = CursorShape::Default;
+		CursorShape appliedShape = CursorShape::Default;
 
-        Position position;
+		Position position{};
 
-        void updateCursor();
-    };
+		void updateCursor();
+	};
 };
 
-
-#endif //ELEMENTOR_GL_GLCURSOR_H
+#endif //ELEMENTOR_GL_CURSOR_H
