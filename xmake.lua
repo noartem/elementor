@@ -1,6 +1,6 @@
 add_rules("mode.debug", "mode.release")
 
-set_languages("c99", "cxx17")
+set_languages("c99", "cxx20")
 
 includes("third_party/skia-build.lua")
 includes("third_party/portable-file-dialogs.lua")
