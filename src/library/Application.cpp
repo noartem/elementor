@@ -34,10 +34,10 @@ namespace elementor {
 		ClipBehavior clipBehavior = node->element->getClipBehaviour();
 		if (clipBehavior != ClipBehavior::None) {
 			SkRect rect = SkRect::MakeXYWH(
-					node->rect.visiblePosition.x - node->rect.position.x,
-					node->rect.visiblePosition.y - node->rect.position.y,
-					node->rect.visibleSize.width,
-					node->rect.visibleSize.height
+				node->rect.visiblePosition.x - node->rect.position.x,
+				node->rect.visiblePosition.y - node->rect.position.y,
+				node->rect.visibleSize.width,
+				node->rect.visibleSize.height
 			);
 			canvas->clipRect(rect, SkClipOp::kIntersect, clipBehavior == ClipBehavior::Hard);
 		}
@@ -63,8 +63,8 @@ namespace elementor {
 	}
 
 	EventCallbackResponse callElementEventHandler(
-			const std::shared_ptr<Element>& element,
-			const std::shared_ptr<Event>& event
+		const std::shared_ptr<Element>& element,
+		const std::shared_ptr<Event>& event
 	) {
 		auto elementEventHandler = dynamic_cast<WithEvents*>(element.get());
 		if (elementEventHandler == nullptr) {
@@ -87,15 +87,15 @@ namespace elementor {
 	}
 
 	void Application::addEventListener(
-			const std::string_view& eventName,
-			const std::function<void(const std::shared_ptr<Event>&)>& listener
+		const std::string_view& eventName,
+		const std::function<void(const std::shared_ptr<Event>&)>& listener
 	) {
 		eventsListeners[eventName].push_back(listener);
 	}
 
 	void Application::removeEventListener(
-			const std::string_view& name,
-			const std::function<void(const std::shared_ptr<Event>&)>& listener
+		const std::string_view& name,
+		const std::function<void(const std::shared_ptr<Event>&)>& listener
 	) {
 		auto eventListeners = eventsListeners[name];
 		if (eventListeners.empty()) {

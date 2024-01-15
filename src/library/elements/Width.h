@@ -15,18 +15,19 @@ namespace elementor::elements {
 
 	class Width : public Element, public WithChild {
 	public:
-		explicit Width(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+		explicit Width(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
 		}
 
 		Width(const std::shared_ptr<ApplicationContext>& ctx, const WidthProps& props)
-				: Element(ctx),
-				  WithChild(props.child) {
+			: Element(ctx),
+			  WithChild(props.child) {
 			setWidth(props.width);
 		}
 
 		static std::shared_ptr<Width> New(
-				const std::shared_ptr<ApplicationContext>& ctx,
-				const WidthProps& props
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const WidthProps& props
 		) {
 			return std::make_shared<Width>(ctx, props);
 		}

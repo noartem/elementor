@@ -11,20 +11,20 @@ namespace elementor::elements {
 
 		if (doesNotHaveChild()) {
 			return fitSizeInBoundaries({
-					.width = boundaries.max.width,
-					.height = height
+				.width = boundaries.max.width,
+				.height = height
 			}, boundaries);
 		}
 
 		return child->getSize({
-				.min = {
-						.width = boundaries.min.width,
-						.height = std::max(heightScaled, boundaries.min.height)
-				},
-				.max = {
-						.width = boundaries.max.width,
-						.height = std::min(heightScaled, boundaries.max.height)
-				}
+			.min = {
+				.width = boundaries.min.width,
+				.height = std::max(heightScaled, boundaries.min.height)
+			},
+			.max = {
+				.width = boundaries.max.width,
+				.height = std::min(heightScaled, boundaries.max.height)
+			}
 		});
 	}
 
@@ -34,8 +34,8 @@ namespace elementor::elements {
 		}
 
 		Rect childRect = {
-				.size = rect.size,
-				.position = { .x = 0, .y = 0 },
+			.size = rect.size,
+			.position = { .x = 0, .y = 0 },
 		};
 
 		ElementWithRect childElement(child, childRect);

@@ -28,23 +28,24 @@ namespace elementor::elements {
 
 	class Padding : public Element, public WithChild {
 	public:
-		explicit Padding(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+		explicit Padding(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
 		}
 
 		Padding(const std::shared_ptr<ApplicationContext>& ctx, const PaddingProps& props)
-				: Element(ctx),
-				  WithChild(props.child) {
+			: Element(ctx),
+			  WithChild(props.child) {
 			setPaddings(
-					(props.top == 0) ? ((props.y == 0) ? props.all : props.y) : props.top,
-					(props.right == 0) ? ((props.x == 0) ? props.all : props.x) : props.right,
-					(props.bottom == 0) ? ((props.y == 0) ? props.all : props.y) : props.bottom,
-					(props.left == 0) ? ((props.x == 0) ? props.all : props.x) : props.left
+				(props.top == 0) ? ((props.y == 0) ? props.all : props.y) : props.top,
+				(props.right == 0) ? ((props.x == 0) ? props.all : props.x) : props.right,
+				(props.bottom == 0) ? ((props.y == 0) ? props.all : props.y) : props.bottom,
+				(props.left == 0) ? ((props.x == 0) ? props.all : props.x) : props.left
 			);
 		}
 
 		static std::shared_ptr<Padding> New(
-				const std::shared_ptr<ApplicationContext>& ctx,
-				const PaddingProps& props
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const PaddingProps& props
 		) {
 			return std::make_shared<Padding>(ctx, props);
 		}

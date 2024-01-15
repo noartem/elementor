@@ -12,7 +12,8 @@
 namespace elementor {
 	class WithChild {
 	public:
-		explicit WithChild(const std::shared_ptr<Element>& child) : child(child) {
+		explicit WithChild(const std::shared_ptr<Element>& child)
+			: child(child) {
 		}
 
 		WithChild() {

@@ -15,18 +15,19 @@ namespace elementor::elements {
 
 	class Background : public Element, public WithChild {
 	public:
-		explicit Background(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+		explicit Background(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
 		}
 
 		Background(const std::shared_ptr<ApplicationContext>& ctx, const BackgroundProps& props)
-				: Element(ctx),
-				  WithChild(props.child) {
+			: Element(ctx),
+			  WithChild(props.child) {
 			setColor(props.color);
 		}
 
 		static std::shared_ptr<Background> New(
-				const std::shared_ptr<ApplicationContext>& ctx,
-				const BackgroundProps& props
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const BackgroundProps& props
 		) {
 			return std::make_shared<Background>(ctx, props);
 		}

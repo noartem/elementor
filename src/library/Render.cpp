@@ -9,7 +9,7 @@
 namespace elementor {
 	bool Rect::contains(float x, float y) const {
 		return (
-				position.x < x &&
+			position.x < x &&
 				position.x + size.width > x &&
 				position.y < y &&
 				position.y + size.height > y
@@ -25,17 +25,17 @@ namespace elementor {
 		result.position.x = std::max(a.position.x, b.position.x);
 		result.position.y = std::max(a.position.y, b.position.y);
 		result.size.width = std::max(
-				std::min(a.position.x + a.size.width, b.position.x + b.size.width) - result.position.x, 0.0f
+			std::min(a.position.x + a.size.width, b.position.x + b.size.width) - result.position.x, 0.0f
 		);
 		result.size.height = std::max(
-				std::min(a.position.y + a.size.height, b.position.y + b.size.height) - result.position.y, 0.0f
+			std::min(a.position.y + a.size.height, b.position.y + b.size.height) - result.position.y, 0.0f
 		);
 		return result;
 	}
 
 	bool ElementRect::visibleContains(float x, float y) const {
 		return (
-				visiblePosition.x < x &&
+			visiblePosition.x < x &&
 				visiblePosition.x + visibleSize.width > x &&
 				visiblePosition.y < y &&
 				visiblePosition.y + visibleSize.height > y
@@ -48,15 +48,15 @@ namespace elementor {
 
 	Position ElementRect::absolutePositionToContained(Position absolutePosition) const {
 		return {
-				.x = absolutePosition.x - position.x,
-				.y = absolutePosition.y - position.y,
+			.x = absolutePosition.x - position.x,
+			.y = absolutePosition.y - position.y,
 		};
 	}
 
 	Size fitSizeInBoundaries(Size size, Boundaries boundaries) {
 		return {
-				.width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width),
-				.height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height)
+			.width = std::min(std::max(size.width, boundaries.min.width), boundaries.max.width),
+			.height = std::min(std::max(size.height, boundaries.min.height), boundaries.max.height)
 		};
 	}
 }

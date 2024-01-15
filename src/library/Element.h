@@ -25,7 +25,8 @@ namespace elementor {
 
 	class Element {
 	public:
-		explicit Element(const std::shared_ptr<ApplicationContext>& ctx) : ctx(ctx) {
+		explicit Element(const std::shared_ptr<ApplicationContext>& ctx)
+			: ctx(ctx) {
 		}
 
 		virtual ~Element() = default;
@@ -38,7 +39,7 @@ namespace elementor {
 		}
 
 		virtual std::vector<std::tuple<const std::shared_ptr<Element>&, Rect>> getChildren(
-				const ElementRect& rect
+			const ElementRect& rect
 		) {
 			return {};
 		}

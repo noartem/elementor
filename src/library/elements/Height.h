@@ -13,20 +13,21 @@ namespace elementor::elements {
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
-    class Height : public Element, public WithChild {
-    public:
-		explicit Height(const std::shared_ptr<ApplicationContext>& ctx) : Element(ctx), WithChild() {
+	class Height : public Element, public WithChild {
+	public:
+		explicit Height(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
 		}
 
 		Height(const std::shared_ptr<ApplicationContext>& ctx, const HeightProps& props)
-				: Element(ctx),
-				  WithChild(props.child) {
+			: Element(ctx),
+			  WithChild(props.child) {
 			setHeight(props.height);
 		}
 
 		static std::shared_ptr<Height> New(
-				const std::shared_ptr<ApplicationContext>& ctx,
-				const HeightProps& props
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const HeightProps& props
 		) {
 			return std::make_shared<Height>(ctx, props);
 		}
@@ -35,21 +36,21 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
-        void setHeight(float newValue) {
+		void setHeight(float newValue) {
 			height = newValue;
 		}
 
-        [[nodiscard]] float getHeight() const {
+		[[nodiscard]] float getHeight() const {
 			return height;
 		}
 
-        Size getSize(const Boundaries& boundaries) override;
+		Size getSize(const Boundaries& boundaries) override;
 
-        std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-    private:
-        float height = 0;
-    };
+	private:
+		float height = 0;
+	};
 }
 
 

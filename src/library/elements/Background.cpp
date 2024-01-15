@@ -26,14 +26,9 @@ namespace elementor::elements {
 			return {};
 		}
 
-		Boundaries childBoundaries = {
-				.min = { .width = 0.0f, .height = 0.0f },
-				.max = rect.size
-		};
-
 		Rect childRect = {
-				.size = child->getSize(childBoundaries),
-				.position = { .x = 0.0f, .y = 0.0f },
+			.size = rect.size,
+			.position = { .x = 0.0f, .y = 0.0f },
 		};
 
 		ElementWithRect childElementWithRect(child, childRect);

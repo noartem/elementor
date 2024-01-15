@@ -6,21 +6,27 @@
 
 std::shared_ptr<Element> example(const std::shared_ptr<ApplicationContext>& ctx) {
 	return (
-			Background::New(ctx, {
-					.color = "#fff",
-					.child = Padding::New(ctx, {
-							.all = 12,
-							.child = Height::New(ctx, {
-									.height = 100,
-									.child = Width::New(ctx, {
-											.width = 100,
-											.child = Background::New(ctx, {
-													.color = "#faa",
-											})
-									})
+				Background::New(ctx, {
+			.color = "#fff",
+			.child = Padding::New(ctx, {
+				.all = 12,
+				.child = Align::New(ctx, {
+					.coefficient = 0.5,
+					.child = Rounded::New(ctx, {
+						.all = 8,
+						.child = Height::New(ctx, {
+							.height = 100,
+							.child = Width::New(ctx, {
+								.width = 100,
+								.child = Background::New(ctx, {
+									.color = "#faa",
+								})
 							})
+						})
 					})
+				}),
 			})
+		})
 	);
 }
 

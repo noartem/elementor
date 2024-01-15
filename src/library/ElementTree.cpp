@@ -13,9 +13,9 @@
 
 namespace elementor {
 	std::shared_ptr<ElementTreeNode> makeNode(
-			const std::shared_ptr<Element>& element,
-			const ElementRect& elementRect,
-			const Rect& parentBoundary
+		const std::shared_ptr<Element>& element,
+		const ElementRect& elementRect,
+		const Rect& parentBoundary
 	) {
 		auto node = std::make_shared<ElementTreeNode>();
 		node->element = element;
@@ -49,8 +49,8 @@ namespace elementor {
 	}
 
 	std::shared_ptr<ElementTreeNode> makeRootNode(
-			const std::shared_ptr<Element>& element,
-			const std::shared_ptr<WindowContext>& windowCtx
+		const std::shared_ptr<Element>& element,
+		const std::shared_ptr<WindowContext>& windowCtx
 	) {
 		Size windowSize = windowCtx->getSize();
 

@@ -24,9 +24,10 @@ namespace elementor {
 	class Application : public ApplicationContext, public std::enable_shared_from_this<Application> {
 	public:
 		explicit Application(
-				const std::shared_ptr<PlatformContext>& platformCtx,
-				const std::shared_ptr<WindowContext>& windowCtx
-		) : platformCtx(platformCtx), windowCtx(windowCtx) {
+			const std::shared_ptr<PlatformContext>& platformCtx,
+			const std::shared_ptr<WindowContext>& windowCtx
+		)
+			: platformCtx(platformCtx), windowCtx(windowCtx) {
 		}
 
 		void draw(SkCanvas* canvas);
@@ -48,13 +49,13 @@ namespace elementor {
 		}
 
 		void addEventListener(
-				const std::string_view& eventName,
-				const std::function<void(const std::shared_ptr<Event>&)>& listener
+			const std::string_view& eventName,
+			const std::function<void(const std::shared_ptr<Event>&)>& listener
 		) override;
 
 		void removeEventListener(
-				const std::string_view& name,
-				const std::function<void(const std::shared_ptr<Event>&)>& listener
+			const std::string_view& name,
+			const std::function<void(const std::shared_ptr<Event>&)>& listener
 		) override;
 
 	private:
