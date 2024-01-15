@@ -45,19 +45,15 @@ namespace elementor::elements {
 		}
 
 		void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-			color = makeSkColorFromRGBA(r, g, b, a);
+			setColor(makeSkColorFromRGBA(r, g, b, a));
 		}
 
 		void setColor(uint8_t r, uint8_t g, uint8_t b) {
-			color = makeSkColorFromRGB(r, g, b);
+			setColor(makeSkColorFromRGB(r, g, b));
 		}
 
 		void setColor(const std::string_view& hex) {
-			if (hex.empty()) {
-				return;
-			}
-
-			color = makeSkColorFromHex(std::string(hex));
+			setColor(makeSkColorFromHex(std::string(hex)));
 		}
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
@@ -65,6 +61,10 @@ namespace elementor::elements {
 		Size getSize(const Boundaries& boundaries) override;
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+		ClipBehavior getClipBehaviour() override {
+			return ClipBehavior::Hard;
+		}
 
 	private:
 		SkColor color = SK_ColorTRANSPARENT;

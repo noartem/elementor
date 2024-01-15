@@ -12,11 +12,11 @@ namespace elementor::elements {
 		if (doesNotHaveChild()) {
 			return fitSizeInBoundaries({
 				.width = boundaries.max.width,
-				.height = height
+				.height = heightScaled
 			}, boundaries);
 		}
 
-		return child->getSize({
+		Boundaries childBoundaries = {
 			.min = {
 				.width = boundaries.min.width,
 				.height = std::max(heightScaled, boundaries.min.height)
@@ -25,7 +25,9 @@ namespace elementor::elements {
 				.width = boundaries.max.width,
 				.height = std::min(heightScaled, boundaries.max.height)
 			}
-		});
+		};
+
+		return child->getSize(childBoundaries);
 	}
 
 	std::vector<ElementWithRect> Height::getChildren(const ElementRect& rect) {

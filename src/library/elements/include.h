@@ -7,7 +7,7 @@
 
 #include "Align.h"
 #include "Background.h"
-//#include "Border.h"
+#include "Border.h"
 //#include "Clickable.h"
 //#include "Column.h"
 //#include "Draggable.h"

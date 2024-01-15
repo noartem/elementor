@@ -29,14 +29,15 @@ namespace elementor::elements {
 				.height = std::max(boundaries.max.height - paddingY, 0.0f)
 			}
 		};
-
 		Size childSize = child->getSize(childBoundaries);
 
-		childSize.width += paddingX;
-		childSize.height += paddingY;
-		childSize = fitSizeInBoundaries(childSize, boundaries);
+		Size elementSize = {
+			.width = childSize.width + paddingX,
+			.height = childSize.height + paddingY
+		};
+		elementSize = fitSizeInBoundaries(elementSize, boundaries);
 
-		return childSize;
+		return elementSize;
 	}
 
 	std::vector<ElementWithRect> Padding::getChildren(const ElementRect& rect) {

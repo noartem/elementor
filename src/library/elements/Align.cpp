@@ -34,7 +34,7 @@ namespace elementor::elements {
 		}
 
 		Boundaries childBoundaries = {
-			.min = { rect.size.width, 0 },
+			.min = { 0, 0 },
 			.max = rect.size,
 		};
 		Size childSize = child->getSize(childBoundaries);

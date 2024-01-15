@@ -59,10 +59,8 @@ namespace elementor::elements {
 		Align(const std::shared_ptr<ApplicationContext>& ctx, const AlignProps& props)
 			: Element(ctx),
 			  WithChild(props.child) {
-			widthCoefficient = props.getWidthCoefficient();
-			widthChildCoefficient = props.getWidthChildCoefficient();
-			heightCoefficient = props.getHeightCoefficient();
-			heightChildCoefficient = props.getHeightChildCoefficient();
+			setWidthCoefficient(props.getWidthCoefficient(), props.getWidthChildCoefficient());
+			setHeightCoefficient(props.getHeightCoefficient(), props.getHeightChildCoefficient());
 		}
 
 		static std::shared_ptr<Align> New(
@@ -76,26 +74,6 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
-		void setWidthCoefficient(float newCoefficient, float newChildCoefficient) {
-			widthCoefficient = newCoefficient;
-			widthChildCoefficient = newChildCoefficient;
-		}
-
-		void setWidthCoefficient(std::optional<float> newValue) {
-			widthCoefficient = newValue;
-			widthChildCoefficient = newValue;
-		}
-
-		void setHeightCoefficient(float newCoefficient, float newChildCoefficient) {
-			heightCoefficient = newCoefficient;
-			heightChildCoefficient = newChildCoefficient;
-		}
-
-		void setHeightCoefficient(std::optional<float> newValue) {
-			heightCoefficient = newValue;
-			heightChildCoefficient = newValue;
-		}
-
 		[[nodiscard]] std::optional<float> getWidthCoefficient() const {
 			return widthCoefficient;
 		}
@@ -104,12 +82,30 @@ namespace elementor::elements {
 			return widthChildCoefficient;
 		}
 
+		void setWidthCoefficient(std::optional<float> newCoefficient, std::optional<float> newChildCoefficient) {
+			widthCoefficient = newCoefficient;
+			widthChildCoefficient = newChildCoefficient;
+		}
+
+		void setWidthCoefficient(std::optional<float> newCoefficient) {
+			setWidthCoefficient(newCoefficient, newCoefficient);
+		}
+
 		[[nodiscard]] std::optional<float> getHeightCoefficient() const {
 			return heightCoefficient;
 		}
 
 		[[nodiscard]] std::optional<float> getHeightChildCoefficient() const {
 			return heightChildCoefficient;
+		}
+
+		void setHeightCoefficient(std::optional<float> newCoefficient, std::optional<float> newChildCoefficient) {
+			heightCoefficient = newCoefficient;
+			heightChildCoefficient = newChildCoefficient;
+		}
+
+		void setHeightCoefficient(std::optional<float> newCoefficient) {
+			setHeightCoefficient(newCoefficient, newCoefficient);
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
