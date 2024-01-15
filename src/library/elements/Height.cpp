@@ -23,7 +23,7 @@ namespace elementor::elements {
 			},
 			.max = {
 				.width = boundaries.max.width,
-				.height = std::min(heightScaled, boundaries.max.height)
+				.height = std::max(std::min(heightScaled, boundaries.max.height), boundaries.min.height)
 			}
 		};
 

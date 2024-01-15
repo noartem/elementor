@@ -11,7 +11,7 @@ namespace elementor::elements {
 
 		if (doesNotHaveChild()) {
 			return fitSizeInBoundaries({
-				.width = widthScaled,
+				.width = std::max(widthScaled, boundaries.min.width),
 				.height = boundaries.max.height
 			}, boundaries);
 		}
@@ -22,7 +22,7 @@ namespace elementor::elements {
 				.height = boundaries.min.height,
 			},
 			.max = {
-				.width = std::min(widthScaled, boundaries.max.width),
+				.width = std::max(std::min(widthScaled, boundaries.max.width), boundaries.min.width),
 				.height = boundaries.max.height,
 			}
 		};

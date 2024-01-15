@@ -21,12 +21,12 @@ namespace elementor::elements {
 
 		Boundaries childBoundaries = {
 			.min = {
-				.width = boundaries.min.width - 2 * widthScaled,
-				.height = boundaries.min.height - 2 * widthScaled
+				.width = std::max(boundaries.min.width - 2 * widthScaled, 0.0f),
+				.height = std::max(boundaries.min.height - 2 * widthScaled, 0.0f),
 			},
 			.max = {
-				.width = boundaries.max.width - 2 * widthScaled,
-				.height = boundaries.max.height - 2 * widthScaled
+				.width = std::max(boundaries.max.width - 2 * widthScaled, 0.0f),
+				.height = std::max(boundaries.max.height - 2 * widthScaled, 0.0f)
 			}
 		};
 

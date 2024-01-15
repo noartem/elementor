@@ -12,24 +12,74 @@ std::shared_ptr<Element> example(const std::shared_ptr<ApplicationContext>& ctx)
 				.all = 12,
 				.child = Align::New(ctx, {
 					.coefficient = 0.5,
-					.child = Border::New(ctx, {
-						.radius = 16,
-						.width = 16,
-						.color = "#faa",
-						.child = Rounded::New(ctx, {
-							.all = 8,
-							.child = Height::New(ctx, {
-								.height = 100,
-								.child = Width::New(ctx, {
-									.width = 100,
-									.child = Background::New(ctx, {
+					.child = Column::New(ctx, {
+						.spacing = 8,
+						.children = {
+							Row::New(ctx, {
+								.spacing = 8,
+								.children = {
+									Border::New(ctx, {
+										.radius = 16,
+										.width = 16,
+										.color = "#faa",
+										.child = Rounded::New(ctx, {
+											.all = 8,
+											.child = Height::New(ctx, {
+												.height = 100,
+												.child = Width::New(ctx, {
+													.width = 100,
+													.child = Background::New(ctx, {
+														.color = "#aaa",
+													})
+												})
+											})
+										})
+									}),
+									Height::New(ctx, {
+										.height = 0,
+										.child = Width::New(ctx, {
+											.width = 0
+										})
+									}),
+									Border::New(ctx, {
+										.radius = 16,
+										.width = 16,
 										.color = "#aaa",
+										.child = Rounded::New(ctx, {
+											.all = 8,
+											.child = Height::New(ctx, {
+												.height = 100,
+												.child = Width::New(ctx, {
+													.width = 100,
+													.child = Background::New(ctx, {
+														.color = "#faa",
+													})
+												})
+											})
+										})
+									})
+								}
+							}),
+							Border::New(ctx, {
+								.radius = 16,
+								.width = 16,
+								.color = "#aaa",
+								.child = Rounded::New(ctx, {
+									.all = 8,
+									.child = Height::New(ctx, {
+										.height = 100,
+										.child = Width::New(ctx, {
+											.width = 100,
+											.child = Background::New(ctx, {
+												.color = "#faa",
+											})
+										})
 									})
 								})
-							})
-						})
+							}),
+						}
 					})
-				}),
+				})
 			})
 		})
 	);

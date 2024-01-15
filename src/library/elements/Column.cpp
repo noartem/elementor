@@ -4,60 +4,65 @@
 
 #include "Column.h"
 
-#include <utility>
-
 namespace elementor::elements {
-    std::shared_ptr<Column> column() {
-        return std::make_shared<Column>();
-    }
+	Size Column::getSize(const Boundaries& boundaries) {
+		float maxWidth = 0;
+		float totalHeight = 0;
+		for (const auto& childElement: children) {
+			Boundaries childBoundaries = {
+				.min = { .width = boundaries.min.width, .height = 0 },
+				.max = boundaries.max
+			};
+			Size childSize = childElement->getSize(childBoundaries);
 
-    std::shared_ptr<Column> Column::setSpacing(float newSpacing) {
-        this->spacing = newSpacing;
-        return shared_from_this();
-    }
+			maxWidth = std::max(childSize.width, maxWidth);
+			totalHeight += childSize.height;
+		}
 
-    float Column::getSpacing() const {
-        return this->spacing;
-    }
+		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto spacingScaled = spacing * pixelScale;
 
-    std::shared_ptr<Column> Column::appendChild(const std::shared_ptr<Element>& child) {
-        this->addChild(std::move(child));
-        return shared_from_this();
-    }
+		totalHeight += ((float)children.size() - 1) * spacingScaled;
 
-    Size
-    Column::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        float maxWidth = 0;
-        float totalHeight = 0;
-        for (const std::shared_ptr<Element> &childElement: this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
-            maxWidth = std::max(childSize.width, maxWidth);
-            totalHeight += childSize.height;
-        }
+		Size elementSize = {
+			.width = maxWidth,
+			.height = totalHeight,
+		};
+		elementSize = fitSizeInBoundaries(elementSize, boundaries);
 
-        totalHeight += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->getPixelScale();
+		return elementSize;
+	}
 
-        return fitSizeInBoundaries({maxWidth, totalHeight}, boundaries);
-    }
+	std::vector<ElementWithRect> Column::getChildren(const ElementRect& rect) {
+		std::vector<ElementWithRect> childrenElements;
 
-    std::vector<RenderElement>
-    Column::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
+		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto spacingScaled = spacing * pixelScale;
 
-        float spacing = this->getSpacing() * ctx->getPixelScale();
+		float yPosition = 0;
+		for (const auto& child: children) {
+			E_PRINT(rect.size.width);
+			Boundaries childBoundaries = {
+				.min = { .width = rect.size.width, .height = 0 },
+				.max = rect.size
+			};
+			Size childSize = child->getSize(childBoundaries);
 
-        float yPosition = 0;
-        for (const std::shared_ptr<Element> &child: this->getChildrenList()) {
-            RenderElement childElement{};
-            childElement.element = child;
-            childElement.size = child->getSize(ctx, window, {{rect.size.width, 0}, rect.size});
+			Rect childRect = {
+				.size = childSize,
+				.position = {
+					.x = 0,
+					.y = yPosition,
+				}
+			};
 
-            childElement.position = {0, yPosition};
-            yPosition += childElement.size.height + spacing;
+			ElementWithRect childElement(child, childRect);
+			childrenElements.push_back(childElement);
 
-            children.push_back(childElement);
-        }
+			yPosition += childSize.height;
+			yPosition += spacingScaled;
+		}
 
-        return children;
-    }
+		return childrenElements;
+	}
 }

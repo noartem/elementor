@@ -5,28 +5,49 @@
 #ifndef ELEMENTOR_COLUMN_H
 #define ELEMENTOR_COLUMN_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Column : public Element, public WithChildren, public std::enable_shared_from_this<Column> {
-    public:
-        std::shared_ptr<Column> setSpacing(float newSpacing);
 
-        float getSpacing() const;
+	struct ColumnProps {
+		float spacing = 0;
+		const std::vector<std::shared_ptr<Element>>& children = {};
+	};
 
-        std::shared_ptr<Column> appendChild(const std::shared_ptr<Element>& child);
+	class Column : public Element, public WithChildren {
+	public:
+		Column(const std::shared_ptr<ApplicationContext>& ctx, const ColumnProps& props)
+			: Element(ctx),
+			  WithChildren(props.children) {
+			setSpacing(props.spacing);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		static std::shared_ptr<Column> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const ColumnProps& props
+		) {
+			return std::make_shared<Column>(ctx, props);
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		static std::shared_ptr<Column> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-    private:
-        float spacing = 0;
-    };
+		float getSpacing() const {
+			return spacing;
+		}
 
-    std::shared_ptr<Column> column();
+		void setSpacing(float newSpacing) {
+			spacing = newSpacing;
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float spacing = 0;
+	};
 }
 
 

@@ -11,7 +11,10 @@ namespace elementor::elements {
 		}
 
 		Boundaries childBoundaries = {
-			.min = { 0, 0 },
+			.min = {
+				widthCoefficient.has_value() ? 0 : boundaries.min.width,
+				heightCoefficient.has_value() ? 0 : boundaries.min.height,
+				},
 			.max = boundaries.max
 		};
 		Size childSize = child->getSize(childBoundaries);
@@ -34,7 +37,10 @@ namespace elementor::elements {
 		}
 
 		Boundaries childBoundaries = {
-			.min = { 0, 0 },
+			.min = {
+				.width = widthCoefficient.has_value() ? 0 : rect.size.width,
+				.height = heightCoefficient.has_value() ? 0 : rect.size.height,
+			},
 			.max = rect.size,
 		};
 		Size childSize = child->getSize(childBoundaries);

@@ -5,26 +5,49 @@
 #ifndef ELEMENTOR_ROW_H
 #define ELEMENTOR_ROW_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Row : public Element, public WithChildren, public std::enable_shared_from_this<Row> {
-    public:
-        std::shared_ptr<Row> setSpacing(float newSpacing);
 
-        float getSpacing() const;
+	struct RowProps {
+		float spacing = 0;
+		const std::vector<std::shared_ptr<Element>>& children = {};
+	};
 
-        std::shared_ptr<Row> appendChild(const std::shared_ptr<Element>& child);
+	class Row : public Element, public WithChildren {
+	public:
+		Row(const std::shared_ptr<ApplicationContext>& ctx, const RowProps& props)
+			: Element(ctx),
+			  WithChildren(props.children) {
+			setSpacing(props.spacing);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+		static std::shared_ptr<Row> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const RowProps& props
+		) {
+			return std::make_shared<Row>(ctx, props);
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		static std::shared_ptr<Row> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-    private:
-        float spacing = 0;
-    };
+		float getSpacing() const {
+			return spacing;
+		}
 
-    std::shared_ptr<Row> row();
+		void setSpacing(float newSpacing) {
+			spacing = newSpacing;
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float spacing = 0;
+	};
 }
 
 
