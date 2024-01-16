@@ -9,8 +9,6 @@
 #include "PlatformContext.h"
 
 namespace elementor {
-	constexpr float DefaultMonitorScale = 3.8; // 38 logical pixels per centimeter
-
 	class ApplicationContext {
 	public:
 		virtual std::shared_ptr<WindowContext> getWindowCtx() = 0;

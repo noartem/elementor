@@ -5,21 +5,41 @@
 #ifndef ELEMENTOR_FIT_COVER_H
 #define ELEMENTOR_FIT_COVER_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class FitCover : public Element, public WithChild, public std::enable_shared_from_this<FitCover> {
-    public:
-        std::shared_ptr<FitCover> setChild(const std::shared_ptr<Element>& child);
+	struct FitCoverProps {
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        ClipBehavior getClipBehaviour() override;
+	class FitCover : public Element, public WithChild {
+	public:
+		explicit FitCover(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
-    };
+		FitCover(const std::shared_ptr<ApplicationContext>& ctx, const FitCoverProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+		}
 
-    std::shared_ptr<FitCover> fitCover();
+		static std::shared_ptr<FitCover> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const FitCoverProps& props
+		) {
+			return std::make_shared<FitCover>(ctx, props);
+		}
+
+		static std::shared_ptr<FitCover> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+		ClipBehavior getClipBehaviour() override {
+			return ClipBehavior::AntiAlias;
+		}
+	};
 }
-
 
 #endif //ELEMENTOR_FIT_COVER_H

@@ -5,41 +5,79 @@
 #ifndef ELEMENTOR_IMAGE_H
 #define ELEMENTOR_IMAGE_H
 
-#include "../Element.h"
+#include "../include.h"
 
 #include <include/core/SkData.h>
 #include <include/core/SkImage.h>
 #include <include/core/SkSamplingOptions.h>
 
 namespace elementor::elements {
-    class Image : public Element, public std::enable_shared_from_this<Image> {
-    public:
-        std::shared_ptr<Image> fromSkImage(sk_sp<SkImage> image);
+	struct ImageProps {
+		std::optional<sk_sp<SkImage>> fromImage = std::nullopt;
+		std::optional<sk_sp<SkData>> fromData = std::nullopt;
+		std::optional<std::string> src = std::nullopt;
+		SkSamplingOptions samplingOptions = SkSamplingOptions(SkCubicResampler::Mitchell());
+	};
 
-        sk_sp<SkImage> getSkImage();
+	class Image : public Element {
+	public:
+		explicit Image(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        std::shared_ptr<Image> fromSkData(sk_sp<SkData> data);
+		Image(const std::shared_ptr<ApplicationContext>& ctx, const ImageProps& props)
+			: Element(ctx) {
+			if (props.fromImage.has_value()) fromSkImage(props.fromImage.value());
+			if (props.fromData.has_value()) fromSkData(props.fromData.value());
+			if (props.src.has_value()) fromPath(props.src.value());
+			setSamplingOptions(samplingOptions);
+		}
 
-        std::shared_ptr<Image> fromPath(const std::string &path);
+		static std::shared_ptr<Image> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const ImageProps& props
+		) {
+			return std::make_shared<Image>(ctx, props);
+		}
 
-        std::shared_ptr<Image> setSamplingOptions(SkSamplingOptions newOptions);
+		static std::shared_ptr<Image> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        SkSamplingOptions getSamplingOptions();
+		sk_sp <SkImage> getSkImage() const {
+			return skImage;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		void fromSkImage(const sk_sp <SkImage>& newSkImage) {
+			skImage = newSkImage;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		void fromSkData(const sk_sp<SkData>& data) {
+			fromSkImage(SkImage::MakeFromEncoded(data));
+		}
 
-    private:
-        sk_sp<SkImage> skImage;
-        SkSamplingOptions samplingOptions = SkSamplingOptions(SkCubicResampler::Mitchell());
+		void fromPath(const std::string& path) {
+			fromSkImage(makeImageFromFile(path));
+		}
 
-        sk_sp<SkImage> makeImageFromFile(const std::string &path);
-    };
+		SkSamplingOptions getSamplingOptions() const {
+			return samplingOptions;
+		}
 
-    std::shared_ptr<Image> image();
+		void setSamplingOptions(const SkSamplingOptions& newSamplingOptions) {
+			samplingOptions = newSamplingOptions;
+		}
+
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
+
+		Size getSize(const Boundaries& boundaries) override;
+
+	private:
+		sk_sp <SkImage> skImage;
+		SkSamplingOptions samplingOptions;
+
+		sk_sp <SkImage> makeImageFromFile(const std::string& path);
+	};
 }
 
 

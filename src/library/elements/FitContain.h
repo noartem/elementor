@@ -5,19 +5,37 @@
 #ifndef ELEMENTOR_FIT_CONTAIN_H
 #define ELEMENTOR_FIT_CONTAIN_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class FitContain : public Element, public WithChild, public std::enable_shared_from_this<FitContain> {
-    public:
-        std::shared_ptr<FitContain> setChild(const std::shared_ptr<Element>& child);
+	struct FitContainProps {
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
-    };
+	class FitContain : public Element, public WithChild {
+	public:
+		explicit FitContain(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-    std::shared_ptr<FitContain> fitContain();
+		FitContain(const std::shared_ptr<ApplicationContext>& ctx, const FitContainProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+		}
+
+		static std::shared_ptr<FitContain> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const FitContainProps& props
+		) {
+			return std::make_shared<FitContain>(ctx, props);
+		}
+
+		static std::shared_ptr<FitContain> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+	};
 }
-
 
 #endif //ELEMENTOR_FIT_CONTAIN_H

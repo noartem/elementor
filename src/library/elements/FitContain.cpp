@@ -7,31 +7,35 @@
 #include <utility>
 
 namespace elementor::elements {
-    std::shared_ptr<FitContain> fitContain() {
-        return std::make_shared<FitContain>();
-    }
+	Size fitSizeWithin(const Size& inner, const Size& outer) {
+		float innerRatio = inner.width / inner.height;
+		float outerRatio = outer.width / outer.height;
+		float resizeFactor = (innerRatio >= outerRatio)
+							 ? (outer.width / inner.width)
+							 : (outer.height / inner.height);
 
-    std::shared_ptr<FitContain> FitContain::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
+		return {
+			.width = inner.width * resizeFactor,
+			.height = inner.height * resizeFactor
+		};
+	}
 
-    Size fitSizeWithin(Size inner, Size outer) {
-        float innerRatio = inner.width / inner.height;
-        float outerRatio = outer.width / outer.height;
-        float resizeFactor = (innerRatio >= outerRatio) ? (outer.width / inner.width) : (outer.height / inner.height);
-        return {inner.width * resizeFactor, inner.height * resizeFactor};
-    }
+	std::vector<ElementWithRect> FitContain::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    std::vector<RenderElement>
-    FitContain::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        RenderElement childElement{};
-        childElement.element = this->getChild();
-        Size childSize = childElement.element->getSize(ctx, window, {{0, 0},
-                                                                     {INFINITY, INFINITY}});
-        childElement.size = fitSizeWithin(childSize, rect.size);
-        childElement.position.x = (rect.size.width - childElement.size.width) / 2;
-        childElement.position.y = (rect.size.height - childElement.size.height) / 2;
-        return {childElement};
-    }
+		Size realChildSize = child->getSize(InfiniteBoundaries);
+		Size childSize = fitSizeWithin(realChildSize, rect.size);
+
+		Position childPosition = {
+			.x = (rect.size.width - childSize.width) / 2,
+			.y = (rect.size.height - childSize.height) / 2
+		};
+
+		Rect childRect = { .size = childSize, .position = childPosition };
+
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 }

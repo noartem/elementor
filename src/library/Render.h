@@ -5,7 +5,10 @@
 #ifndef ELEMENTOR_RENDER_H
 #define ELEMENTOR_RENDER_H
 
+#include <limits>
+
 namespace elementor {
+
 	struct Position {
 		float x;
 		float y;
@@ -45,6 +48,17 @@ namespace elementor {
 	};
 
 	Size fitSizeInBoundaries(Size size, Boundaries boundaries);
+
+	constexpr float Infinity = std::numeric_limits<float>::infinity();
+
+	constexpr Size ZeroSize = { 0, 0 };
+
+	constexpr Size InfiniteSize = { Infinity, Infinity };
+
+	constexpr Boundaries InfiniteBoundaries = {
+		.min = ZeroSize,
+		.max = InfiniteSize
+	};
 }
 
 #endif //ELEMENTOR_RENDER_H

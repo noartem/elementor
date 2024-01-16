@@ -578,7 +578,7 @@ namespace elementor::platforms::gl {
 
 	float GLWindow::calcPixelScale() {
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-		return getMonitorSize(monitor).width / getMonitorPhysicalSize(monitor).width / DefaultMonitorScale;
+		return getMonitorSize(monitor).width / getMonitorPhysicalSize(monitor).width / DefaultPixelScale;
 	}
 }
 

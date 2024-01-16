@@ -7,49 +7,32 @@
 #include <utility>
 
 namespace elementor::elements {
-    std::shared_ptr<Image> image() {
-        return std::make_shared<Image>();
-    }
+	sk_sp<SkImage> Image::makeImageFromFile(const std::string& path) {
+		sk_sp<SkData> encodedData = SkData::MakeFromFileName(path.c_str());
+		return SkImage::MakeFromEncoded(encodedData);
+	}
 
-    std::shared_ptr<Image> Image::fromSkImage(sk_sp<SkImage> image) {
-        this->skImage = std::move(image);
-        return shared_from_this();
-    }
+	void Image::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
+		if (skImage == nullptr) {
+			return;
+		}
 
-    sk_sp<SkImage> Image::getSkImage() {
-        return this->skImage;
-    }
+		SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
+		canvas->drawImageRect(skImage, skRect, samplingOptions);
+	}
 
-    sk_sp<SkImage> Image::makeImageFromFile(const std::string& path) {
-        sk_sp<SkData> encodedData = SkData::MakeFromFileName(path.c_str());
-        return SkImage::MakeFromEncoded(encodedData);
-    }
+	Size Image::getSize(const Boundaries& boundaries) {
+		if (skImage == nullptr) {
+			return boundaries.min;
+		}
 
-    std::shared_ptr<Image> Image::fromPath(const std::string& path) {
-        return this->fromSkImage(this->makeImageFromFile(path));
-    }
+		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float imageWidthScaled = skImage->width() * pixelScale;
+		float imageHeightScaled = skImage->height() * pixelScale;
 
-    std::shared_ptr<Image> Image::fromSkData(sk_sp<SkData> data) {
-        return this->fromSkImage(SkImage::MakeFromEncoded(std::move(data)));
-    }
+		Size size = { imageWidthScaled, imageHeightScaled };
+		size = fitSizeInBoundaries(size, boundaries);
 
-    std::shared_ptr<Image> Image::setSamplingOptions(SkSamplingOptions newOptions) {
-        this->samplingOptions = newOptions;
-        return shared_from_this();
-    }
-
-    SkSamplingOptions Image::getSamplingOptions() {
-        return this->samplingOptions;
-    }
-
-    void Image::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
-        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        canvas->drawImageRect(this->skImage, skRect, this->samplingOptions);
-    }
-
-    Size Image::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        float imageWidth = this->skImage->width();
-        float imageHeight = this->skImage->height();
-        return fitSizeInBoundaries({imageWidth * ctx->getPixelScale(), imageHeight * ctx->getPixelScale()}, boundaries);
-    }
+		return size;
+	}
 }

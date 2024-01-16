@@ -4,6 +4,8 @@
 
 #include "elementor.h"
 
+#include <filesystem>
+
 std::shared_ptr<Element> Box(const std::shared_ptr<ApplicationContext>& ctx) {
 	return (
 		Border::New(ctx, {
@@ -36,6 +38,17 @@ std::shared_ptr<Element> Sized(const std::shared_ptr<ApplicationContext>& ctx, c
 			})
 		})
 	);
+}
+
+std::filesystem::path getThisPath() {
+	return std::filesystem::current_path()
+		.append("..")
+		.append("..")
+		.append("..")
+		.append("..")
+		.append("src")
+		.append("examples")
+		.append("basic");
 }
 
 std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
@@ -71,7 +84,14 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 									.alignment = FlexAlignment::Center,
 									.children = {
 										Flexible::New(ctx, {
-											.child = Box(ctx)
+											.child = Rounded::New(ctx, {
+												.all = 16,
+												.child = FitCover::New(ctx, {
+													.child = Image::New(ctx, {
+														.src = getThisPath().append("cat.jpg").string(),
+													}),
+												})
+											})
 										}),
 										Sized(ctx, {
 											.width = 100,
@@ -79,7 +99,17 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 											.child = Box(ctx),
 										}),
 										Flexible::New(ctx, {
-											.child = Box(ctx)
+											.child = Rounded::New(ctx, {
+												.all = 16,
+												.child = Background::New(ctx, {
+													.color = "#f0f3f9",
+													.child = FitContain::New(ctx, {
+														.child = Image::New(ctx, {
+															.src = getThisPath().append("cat.jpg").string(),
+														}),
+													})
+												})
+											})
 										}),
 									}
 								})
