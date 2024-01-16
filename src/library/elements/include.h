@@ -11,13 +11,12 @@
 //#include "Clickable.h"
 #include "Column.h"
 //#include "Draggable.h"
-//#include "Empty.h"
 //#include "ExpandedHeight.h"
 //#include "ExpandedWidth.h"
 //#include "FitContain.h"
 //#include "FitCover.h"
-//#include "Flex.h"
-//#include "Flexible.h"
+#include "Flex.h"
+#include "Flexible.h"
 #include "Height.h"
 //#include "Hoverable.h"
 //#include "Image.h"
@@ -33,6 +32,5 @@
 //#include "SVG.h"
 //#include "Text.h"
 #include "Width.h"
-//#include "Wrap.h"
 
 #endif //ELEMENTOR_ELEMENTS_INCLUDE_H

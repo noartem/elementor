@@ -5,63 +5,108 @@
 #ifndef ELEMENTOR_FLEX_H
 #define ELEMENTOR_FLEX_H
 
-#include "../Element.h"
+#include "../include.h"
+
+// TODO: https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+//   - flex-wrap
+//   - row/column gap
+//   - align-content
 
 namespace elementor::elements {
-    enum class FlexDirection {
-        Row,
-        Column,
-    };
+	enum class FlexDirection {
+		Row,
+		Column,
+	};
 
-    enum class FlexAlignment {
-        Start,
-        Center,
-        End,
-        Stretch,
-    };
+	enum class FlexAlignment {
+		Start,
+		Center,
+		End,
+		Stretch,
+	};
 
-    enum class FlexCrossAlignment {
-        Start,
-        Center,
-        End,
-        SpaceBetween,
-        SpaceEvenly,
-    };
+	enum class FlexCrossAlignment {
+		Start,
+		Center,
+		End,
+		SpaceBetween,
+		SpaceEvenly,
+	};
 
-    class Flex : public Element, public WithChildren, public std::enable_shared_from_this<Flex> {
-    public:
-        std::shared_ptr<Flex> setSpacing(float newSpacing);
+	struct FlexProps {
+		float spacing = 0;
+		FlexDirection direction = FlexDirection::Row;
+		FlexAlignment alignment = FlexAlignment::Start;
+		FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
+		const std::vector<std::shared_ptr<Element>>& children = {};
+	};
 
-        float getSpacing() const;
+	class Flex : public Element, public WithChildren {
+	public:
+		Flex(const std::shared_ptr<ApplicationContext>& ctx, const FlexProps& props)
+			: Element(ctx),
+			  WithChildren(props.children) {
+			setSpacing(props.spacing);
+			setDirection(props.direction);
+			setAlignment(props.alignment);
+			setCrossAlignment(props.crossAlignment);
+		}
 
-        std::shared_ptr<Flex> setDirection(FlexDirection newDirection);
+		static std::shared_ptr<Flex> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const FlexProps& props
+		) {
+			return std::make_shared<Flex>(ctx, props);
+		}
 
-        FlexDirection getDirection();
+		static std::shared_ptr<Flex> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr<Flex> setAlignment(FlexAlignment newAlignment);
+		[[nodiscard]] float getSpacing() const {
+			return spacing;
+		}
 
-        FlexAlignment getAlignment();
+		void setSpacing(float newSpacing) {
+			spacing = newSpacing;
+		}
 
-        std::shared_ptr<Flex> setCrossAlignment(FlexCrossAlignment newAlignment);
+		[[nodiscard]] FlexDirection getDirection() {
+			return direction;
+		}
 
-        FlexCrossAlignment getCrossAlignment();
+		void setDirection(FlexDirection newDirection) {
+			direction = newDirection;
+		}
 
-        std::shared_ptr<Flex> appendChild(const std::shared_ptr<Element>& child);
+		[[nodiscard]] FlexAlignment getAlignment() {
+			return alignment;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		void setAlignment(FlexAlignment newAlignment) {
+			alignment = newAlignment;
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		[[nodiscard]] FlexCrossAlignment getCrossAlignment() {
+			return crossAlignment;
+		}
 
-    private:
-        float spacing = 0;
-        FlexDirection direction = FlexDirection::Row;
-        FlexAlignment alignment = FlexAlignment::Start;
-        FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
-    };
+		void setCrossAlignment(FlexCrossAlignment newAlignment) {
+			crossAlignment = newAlignment;
+		}
 
-    std::shared_ptr<Flex> flex();
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float spacing = 0;
+		FlexDirection direction = FlexDirection::Row;
+		FlexAlignment alignment = FlexAlignment::Start;
+		FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
+	};
+
+	std::shared_ptr<Flex> flex();
 }
 
 

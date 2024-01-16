@@ -13,6 +13,10 @@
 namespace elementor {
 	class WithChildren {
 	public:
+		WithChildren(const std::vector<std::shared_ptr<Element>>& children)
+			: children(children) {
+		}
+
 		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
 			this->children = newChildren;
 		}

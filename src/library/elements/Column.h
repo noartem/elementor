@@ -33,7 +33,7 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
-		float getSpacing() const {
+		[[nodiscard]] float getSpacing() const {
 			return spacing;
 		}
 

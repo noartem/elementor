@@ -41,7 +41,6 @@ namespace elementor::elements {
 
 		float yPosition = 0;
 		for (const auto& child: children) {
-			E_PRINT(rect.size.width);
 			Boundaries childBoundaries = {
 				.min = { .width = rect.size.width, .height = 0 },
 				.max = rect.size

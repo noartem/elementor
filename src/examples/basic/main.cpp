@@ -4,12 +4,46 @@
 
 #include "elementor.h"
 
-std::shared_ptr<Element> example(const std::shared_ptr<ApplicationContext>& ctx) {
+std::shared_ptr<Element> Box(const std::shared_ptr<ApplicationContext>& ctx) {
+	return (
+		Border::New(ctx, {
+			.radius = 16,
+			.width = 16,
+			.color = "#aaa",
+			.child = Rounded::New(ctx, {
+				.all = 8,
+				.child = Background::New(ctx, {
+					.color = "#faa",
+				})
+			})
+		})
+	);
+}
+
+struct SizedProps {
+	float width = 0;
+	float height = 0;
+	const std::shared_ptr<Element>& child = nullptr;
+};
+
+std::shared_ptr<Element> Sized(const std::shared_ptr<ApplicationContext>& ctx, const SizedProps& props) {
+	return (
+		Height::New(ctx, {
+			.height = props.height,
+			.child = Width::New(ctx, {
+				.width = props.width,
+				.child = props.child
+			})
+		})
+	);
+}
+
+std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
 	return (
 		Background::New(ctx, {
 			.color = "#fff",
 			.child = Padding::New(ctx, {
-				.all = 12,
+				.all = 24,
 				.child = Align::New(ctx, {
 					.coefficient = 0.5,
 					.child = Column::New(ctx, {
@@ -18,65 +52,38 @@ std::shared_ptr<Element> example(const std::shared_ptr<ApplicationContext>& ctx)
 							Row::New(ctx, {
 								.spacing = 8,
 								.children = {
-									Border::New(ctx, {
-										.radius = 16,
-										.width = 16,
-										.color = "#faa",
-										.child = Rounded::New(ctx, {
-											.all = 8,
-											.child = Height::New(ctx, {
-												.height = 100,
-												.child = Width::New(ctx, {
-													.width = 100,
-													.child = Background::New(ctx, {
-														.color = "#aaa",
-													})
-												})
-											})
-										})
+									Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = Box(ctx),
 									}),
-									Height::New(ctx, {
-										.height = 0,
-										.child = Width::New(ctx, {
-											.width = 0
-										})
-									}),
-									Border::New(ctx, {
-										.radius = 16,
-										.width = 16,
-										.color = "#aaa",
-										.child = Rounded::New(ctx, {
-											.all = 8,
-											.child = Height::New(ctx, {
-												.height = 100,
-												.child = Width::New(ctx, {
-													.width = 100,
-													.child = Background::New(ctx, {
-														.color = "#faa",
-													})
-												})
-											})
-										})
+									Sized(ctx, {
+										.width = 200,
+										.height = 100,
+										.child = Box(ctx),
 									})
 								}
 							}),
-							Border::New(ctx, {
-								.radius = 16,
-								.width = 16,
-								.color = "#aaa",
-								.child = Rounded::New(ctx, {
-									.all = 8,
-									.child = Height::New(ctx, {
-										.height = 100,
-										.child = Width::New(ctx, {
+							Height::New(ctx, {
+								.height = 100,
+								.child = Flex::New(ctx, {
+									.spacing = 8,
+									.alignment = FlexAlignment::Center,
+									.children = {
+										Flexible::New(ctx, {
+											.child = Box(ctx)
+										}),
+										Sized(ctx, {
 											.width = 100,
-											.child = Background::New(ctx, {
-												.color = "#faa",
-											})
-										})
-									})
+											.height = 50,
+											.child = Box(ctx),
+										}),
+										Flexible::New(ctx, {
+											.child = Box(ctx)
+										}),
+									}
 								})
-							}),
+							})
 						}
 					})
 				})
@@ -97,7 +104,7 @@ int main() {
 	auto application = std::make_shared<Application>(platform, window);
 	window->setApplication(application);
 
-	auto root = example(application);
+	auto root = Example(application);
 	application->setRoot(root);
 
 	platform->run();

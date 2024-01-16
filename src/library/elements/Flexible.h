@@ -5,28 +5,53 @@
 #ifndef ELEMENTOR_FLEXIBLE_H
 #define ELEMENTOR_FLEXIBLE_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Flexible : public Element, public WithChild, public std::enable_shared_from_this<Flexible> {
+
+	struct FlexibleProps {
+		float grow = 1.0;
+		const std::shared_ptr<Element>& child = nullptr;
+	};
+
+    class Flexible : public Element, public WithChild {
     public:
-        std::shared_ptr<Flexible> setGrow(float newGrow);
+		explicit Flexible(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
+		}
 
-        float getGrow() const;
+		Flexible(const std::shared_ptr<ApplicationContext>& ctx, const FlexibleProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+			setGrow(props.grow);
+		}
 
-        std::shared_ptr<Flexible> setChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr<Flexible> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const FlexibleProps& props
+		) {
+			return std::make_shared<Flexible>(ctx, props);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		static std::shared_ptr<Flexible> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+        void setGrow(float newGrow) {
+			grow = newGrow;
+		}
+
+        float getGrow() const {
+			return grow;
+		}
+
+        Size getSize(const Boundaries& boundaries) override;
+
+        std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
     private:
         float grow = 1;
     };
-
-    std::shared_ptr<Flexible> flexible();
 }
 
 

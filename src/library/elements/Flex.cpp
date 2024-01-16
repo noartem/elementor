@@ -5,183 +5,172 @@
 #include "Flex.h"
 #include "Flexible.h"
 
-#include <tuple>
-#include <algorithm>
-#include <utility>
-
 namespace elementor::elements {
-    std::shared_ptr<Flex> flex() {
-        return std::make_shared<Flex>();
-    }
+	Size Flex::getSize(const Boundaries& boundaries) {
+		float minWidth =
+			alignment == FlexAlignment::Stretch && direction == FlexDirection::Column ? boundaries.max.width : 0;
+		float minHeight =
+			alignment == FlexAlignment::Stretch && direction == FlexDirection::Row ? boundaries.max.height : 0;
+		Size minSize = { .width = minWidth, .height = minHeight };
 
-    std::shared_ptr<Flex> Flex::setSpacing(float newSpacing) {
-        this->spacing = newSpacing;
-        return shared_from_this();
-    }
+		Boundaries childBoundaries = { .min = minSize, .max = boundaries.max };
 
-    float Flex::getSpacing() const {
-        return this->spacing;
-    }
+		float totalAxisSize = 0;
+		float maxCrossAxisSize = 0;
+		bool hasFlexibleChildren = false;
 
-    std::shared_ptr<Flex> Flex::setDirection(FlexDirection newDirection) {
-        this->direction = newDirection;
-        return shared_from_this();
-    }
+		for (const auto& child: this->getChildrenList()) {
+			Size childSize = child->getSize(childBoundaries);
 
-    FlexDirection Flex::getDirection() {
-        return this->direction;
-    }
+			float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;
+			float childAxisSize = this->direction == FlexDirection::Row ? childSize.width : childSize.height;
 
-    std::shared_ptr<Flex> Flex::setAlignment(FlexAlignment newAlignment) {
-        this->alignment = newAlignment;
-        return shared_from_this();
-    }
+			maxCrossAxisSize = std::max(childCrossAxisSize, maxCrossAxisSize);
+			totalAxisSize += childAxisSize;
 
-    FlexAlignment Flex::getAlignment() {
-        return this->alignment;
-    }
+			auto childFlexible = std::dynamic_pointer_cast<Flexible>(child);
+			if (childFlexible) {
+				hasFlexibleChildren = true;
+			}
+		}
 
-    std::shared_ptr<Flex> Flex::setCrossAlignment(FlexCrossAlignment newAlignment) {
-        this->crossAlignment = newAlignment;
-        return shared_from_this();
-    }
+		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float spacingScaled = spacing * pixelScale;
+		totalAxisSize += ((float)children.size() - 1) * spacingScaled;
 
-    FlexCrossAlignment Flex::getCrossAlignment() {
-        return this->crossAlignment;
-    }
+		float maxAxisSize = this->direction == FlexDirection::Row ? boundaries.max.width : boundaries.max.height;
+		float axisSize = hasFlexibleChildren ? maxAxisSize : totalAxisSize;
 
-    std::shared_ptr<Flex> Flex::appendChild(const std::shared_ptr<Element>& child) {
-        this->addChild(std::move(child));
-        return shared_from_this();
-    }
+		float width = this->direction == FlexDirection::Row ? axisSize : maxCrossAxisSize;
+		float height = this->direction == FlexDirection::Row ? maxCrossAxisSize : axisSize;
 
-    Size Flex::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        if (this->alignment == FlexAlignment::Stretch) {
-            return boundaries.max;
-        }
+		Size size = { width, height };
+		size = fitSizeInBoundaries(size, boundaries);
 
-        float maxCrossAxisSize = 0;
-        for (const std::shared_ptr<Element>& childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
-            float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;
-            maxCrossAxisSize = std::max(childCrossAxisSize, maxCrossAxisSize);
-        }
+		return size;
+	}
 
-        Size size = {boundaries.max.width, boundaries.max.height};
-        if (this->direction == FlexDirection::Row) {
-            size.height = maxCrossAxisSize;
-        } else {
-            size.width = maxCrossAxisSize;
-        }
+	std::vector<ElementWithRect> Flex::getChildren(const ElementRect& rect) {
+		std::vector<ElementWithRect> childrenElements;
 
-        return fitSizeInBoundaries(size, boundaries);
-    }
+		float minWidth = alignment == FlexAlignment::Stretch && direction == FlexDirection::Column
+						 ? rect.size.width : 0;
+		float minHeight = alignment == FlexAlignment::Stretch && direction == FlexDirection::Row
+						  ? rect.size.height : 0;
+		Size minSize = { .width = minWidth, .height = minHeight };
 
-    std::vector <RenderElement> Flex::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector <RenderElement> children;
+		Boundaries sizedChildBoundaries = { .min = minSize, .max = rect.size };
 
-        Boundaries sizedChildBoundaries = {{0, 0}, rect.size};
+		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float spacingScaled = spacing * pixelScale;
 
-        int childrenCount = this->getChildrenSize();
-        float spacing = this->spacing * ctx->getPixelScale();
-        float fixedSize = this->spacing * (childrenCount - 1);
+		std::vector<std::tuple<int, float>> flexibleChildren;
+		float flexibleGrowsSum = 0;
+		float fixedSize = spacingScaled * ((float)children.size() - 1);
 
-        std::vector <std::tuple<int, int>> flexibleChildren;
-        int flexibleGrowsSum = 0;
+		for (int i = 0; i < children.size(); i++) {
+			const auto& child = children[i];
 
-        for (int i = 0; i < childrenCount; i++) {
-            RenderElement child;
-            child.element = this->getChild(i);
+			auto childFlexible = std::dynamic_pointer_cast<Flexible>(child);
+			if (childFlexible) {
+				float childGrow = childFlexible->getGrow();
+				flexibleGrowsSum += childGrow;
 
-            auto childFlexible = std::dynamic_pointer_cast<Flexible>(child.element);
-            if (childFlexible) {
-                float childGrow = childFlexible->getGrow();
-                std::tuple<int, float> flexibleChild(i, childGrow);
-                flexibleChildren.emplace_back(flexibleChild);
-                flexibleGrowsSum += childGrow;
-            } else {
-                child.size = child.element->getSize(ctx, window, sizedChildBoundaries);
-                fixedSize += this->direction == FlexDirection::Row ? child.size.width : child.size.height;
-            }
+				std::tuple<int, float> flexibleChild(i, childGrow);
+				flexibleChildren.emplace_back(flexibleChild);
 
-            children.push_back(child);
-        }
+				ElementWithRect childElement(child, { .size = { 0, 0 }, .position = { 0, 0 }});
+				childrenElements.push_back(childElement);
+				continue;
+			}
 
-        float axisSize = this->direction == FlexDirection::Row ? rect.size.width : rect.size.height;
-        float crossAxisSize = this->direction == FlexDirection::Row ? rect.size.height : rect.size.width;
-        float freeSize = axisSize - fixedSize;
-        float sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1);
+			Size childSize = child->getSize(sizedChildBoundaries);
+			Rect childRect = {
+				.size = childSize,
+				.position = { .x = 0, .y = 0 }
+			};
 
-        for (std::tuple<int, int> flexibleChild: flexibleChildren) {
-            int childIndex = std::get<0>(flexibleChild);
-            RenderElement &child = children[childIndex];
+			ElementWithRect childElement(child, childRect);
+			childrenElements.push_back(childElement);
 
-            float childGrow = std::get<1>(flexibleChild);
-            float childAxisSize = sizePerGrow * childGrow;
+			auto childAxisSize = direction == FlexDirection::Row ? childSize.width : childSize.height;
+			fixedSize += childAxisSize;
+		}
 
-            if (this->direction == FlexDirection::Row) {
-                child.size = {childAxisSize, rect.size.height};
-            } else {
-                child.size = {rect.size.width, childAxisSize};
-            }
-        }
+		float axisSize = direction == FlexDirection::Row ? rect.size.width : rect.size.height;
+		float crossAxisSize = direction == FlexDirection::Row ? rect.size.height : rect.size.width;
+		float freeSize = axisSize - fixedSize;
+		float sizePerGrow = freeSize / std::max(flexibleGrowsSum, 1.0f);
 
-        if (this->alignment == FlexAlignment::Stretch) {
-            for (RenderElement &child: children) {
-                if (this->direction == FlexDirection::Row) {
-                    child.size.height = crossAxisSize;
-                } else {
-                    child.size.width = crossAxisSize;
-                }
-            }
-        }
+		for (auto flexibleChild: flexibleChildren) {
+			int childIndex = std::get<0>(flexibleChild);
+			auto& childElement = childrenElements[childIndex];
+			auto child = std::get<0>(childElement);
+			auto& childRect = std::get<1>(childElement);
 
-        float axisPosition = 0;
+			float childGrow = std::get<1>(flexibleChild);
+			float childAxisSize = sizePerGrow * childGrow;
 
-        if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::End) {
-            axisPosition += freeSize;
-        }
+			float childMinWidth = direction == FlexDirection::Row ? childAxisSize : 0;
+			float childMaxWidth = direction == FlexDirection::Row ? std::min(childAxisSize, rect.size.width) : rect.size.width;
+			float childMinHeight = direction == FlexDirection::Column ? childAxisSize : 0;
+			float childMaxHeight = direction == FlexDirection::Column ? std::min(childAxisSize, rect.size.height) : rect.size.height;
+			Boundaries childBoundaries = {
+				.min = { .width = std::max(minWidth, childMinWidth), .height = std::max(minHeight, childMinHeight) },
+				.max = { .width = childMaxWidth, .height = childMaxHeight },
+			};
 
-        if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::Center) {
-            axisPosition += freeSize / 2;
-        }
+			childRect.size = child->getSize(childBoundaries);
+		}
 
-        float spaceBetween = freeSize / (childrenCount - 1);
-        bool addSpaceEvenly = flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceEvenly;
-        float spaceEvenly = freeSize / (childrenCount + 1);
-        if (addSpaceEvenly) {
-            axisPosition += spaceEvenly;
-        }
+		float axisPosition = 0;
 
-        for (RenderElement &child: children) {
-            float childAxisSize = this->direction == FlexDirection::Row ? child.size.width : child.size.height;
-            float childCrossAxisSize = this->direction == FlexDirection::Row ? child.size.height : child.size.width;
+		if (flexibleGrowsSum == 0 && crossAlignment == FlexCrossAlignment::End) {
+			axisPosition += freeSize;
+		}
 
-            float crossAxisPosition = 0;
-            if (this->alignment == FlexAlignment::End) {
-                crossAxisPosition = crossAxisSize - childCrossAxisSize;
-            } else if (this->alignment == FlexAlignment::Center) {
-                crossAxisPosition = (crossAxisSize - childCrossAxisSize) / 2;
-            }
+		if (flexibleGrowsSum == 0 && crossAlignment == FlexCrossAlignment::Center) {
+			axisPosition += freeSize / 2;
+		}
 
-            if (this->direction == FlexDirection::Row) {
-                child.position = {axisPosition, crossAxisPosition};
-            } else {
-                child.position = {crossAxisPosition, axisPosition};
-            }
+		float spaceBetween = (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceBetween)
+							 ? freeSize / (children.size() - 1)
+							 : 0;
 
-            axisPosition += this->spacing;
-            axisPosition += childAxisSize;
+		float spaceEvenly = (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceEvenly)
+							? freeSize / (children.size() + 1)
+							: 0;
+		axisPosition += spaceEvenly;
 
-            if (addSpaceEvenly) {
-                axisPosition += spaceEvenly;
-            }
+		for (auto& childElement: childrenElements) {
+			const auto& child = std::get<0>(childElement);
+			auto& childRect = std::get<1>(childElement);
+			auto& childSize = childRect.size;
 
-            if (flexibleGrowsSum == 0 && this->crossAlignment == FlexCrossAlignment::SpaceBetween) {
-                axisPosition += spaceBetween;
-            }
-        }
+			float childAxisSize = direction == FlexDirection::Row ? childSize.width : childSize.height;
+			float childCrossAxisSize = direction == FlexDirection::Row ? childSize.height : childSize.width;
 
-        return children;
-    }
+			float crossAxisPosition = 0;
+			if (this->alignment == FlexAlignment::End) {
+				crossAxisPosition = crossAxisSize - childCrossAxisSize;
+			}
+			if (this->alignment == FlexAlignment::Center) {
+				crossAxisPosition = (crossAxisSize - childCrossAxisSize) / 2;
+			}
+
+			if (this->direction == FlexDirection::Row) {
+				childRect.position = { axisPosition, crossAxisPosition };
+			}
+			if (this->direction == FlexDirection::Column) {
+				childRect.position = { crossAxisPosition, axisPosition };
+			}
+
+			axisPosition += spacingScaled;
+			axisPosition += childAxisSize;
+			axisPosition += spaceEvenly;
+			axisPosition += spaceBetween;
+		}
+
+		return childrenElements;
+	}
 }
