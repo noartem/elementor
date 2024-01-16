@@ -29,7 +29,7 @@
 //#include "Scrollable.h"
 //#include "Scrollbar.h"
 //#include "Stack.h"
-//#include "SVG.h"
+#include "SVG.h"
 //#include "Text.h"
 #include "Width.h"
 

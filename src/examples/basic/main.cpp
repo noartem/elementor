@@ -111,6 +111,13 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 												})
 											})
 										}),
+										Sized(ctx, {
+											.width = 100,
+											.height = 100,
+											.child = SVG::New(ctx, {
+												.src = getThisPath().append("logo.svg").string(),
+											})
+										})
 									}
 								})
 							})
