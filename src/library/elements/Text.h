@@ -22,8 +22,8 @@ namespace elementor::elements {
 	};
 
 	enum class TextDirection {
-		LTR,
-		RTL,
+		LeftToRight,
+		RightToLeft,
 	};
 
 	enum class TextBaseline {
@@ -296,7 +296,7 @@ namespace elementor::elements {
 			locale = newLocale;
 		}
 
-		skia::textlayout::TextStyle makeSkTextStyle(std::shared_ptr<ApplicationContext> ctx);
+		skia::textlayout::TextStyle makeSkTextStyle() const;
 
 		Size getSize(const Boundaries& boundaries) override;
 
@@ -325,23 +325,23 @@ namespace elementor::elements {
 		std::optional<SkFont> font;
 		std::optional<SkPaint> paint;
 
-		SkFontStyle::Slant getSkFontStyleSlant();
+		SkFontStyle::Slant getSkFontStyleSlant() const;
 
-		SkFont::Edging getSkFontEdging();
+		SkFont::Edging getSkFontEdging() const;
 
-		SkFontStyle makeSkFontStyle();
+		SkFontStyle makeSkFontStyle() const;
 
-		sk_sp<SkTypeface> makeSkTypeface();
+		sk_sp<SkTypeface> makeSkTypeface() const;
 
-		SkFont makeSkFont(std::shared_ptr<ApplicationContext> ctx);
+		SkFont makeSkFont() const;
 
-		SkPaint makeSkPaint();
+		SkPaint makeSkPaint() const;
 
-		skia::textlayout::TextDecoration getSkTextDecoration();
+		skia::textlayout::TextDecoration getSkTextDecoration() const;
 
-		skia::textlayout::TextDecorationMode getSkTextDecorationMode();
+		skia::textlayout::TextDecorationMode getSkTextDecorationMode() const;
 
-		skia::textlayout::TextDecorationStyle getSkTextDecorationStyle();
+		skia::textlayout::TextDecorationStyle getSkTextDecorationStyle() const;
 	};
 }
 

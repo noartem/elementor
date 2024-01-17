@@ -5,51 +5,91 @@
 #ifndef ELEMENTOR_PARAGRAPH_PLACEHOLDER_H
 #define ELEMENTOR_PARAGRAPH_PLACEHOLDER_H
 
-#include "../Element.h"
+#include "../include.h"
+
 #include "Text.h"
 
 namespace elementor::elements {
-    enum class PlaceholderAlignment {
-        Baseline,
-        AboveBaseline,
-        BelowBaseline,
-        Top,
-        Bottom,
-        Middle,
-    };
+	enum class ParagraphPlaceholderAlignment {
+		Baseline,
+		AboveBaseline,
+		BelowBaseline,
+		Top,
+		Bottom,
+		Middle,
+	};
 
-    class ParagraphPlaceholder : public Element, public WithChild, public std::enable_shared_from_this<ParagraphPlaceholder> {
-    public:
-        std::shared_ptr<ParagraphPlaceholder> setChild(const std::shared_ptr<Element>& child);
+	struct ParagraphPlaceholderProps {
+		std::optional<ParagraphPlaceholderAlignment> alignment;
+		std::optional<TextBaseline> baseline;
+		std::optional<float> offset;
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        std::shared_ptr<ParagraphPlaceholder> setAlignment(PlaceholderAlignment newAlignment);
+	class ParagraphPlaceholder : public Element, public WithChild {
+	public:
+		explicit ParagraphPlaceholder(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx), WithChild() {
+		}
 
-        PlaceholderAlignment getAlignment();
+		ParagraphPlaceholder(const std::shared_ptr<ApplicationContext>& ctx, const ParagraphPlaceholderProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+			if (props.alignment.has_value()) setAlignment(props.alignment.value());
+			if (props.baseline.has_value()) setBaseline(props.baseline.value());
+			if (props.offset.has_value()) setOffset(props.offset.value());
+		}
 
-        sktextlayout::PlaceholderAlignment getSkPlaceholderAlignment();
+		static std::shared_ptr<ParagraphPlaceholder> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const ParagraphPlaceholderProps& props
+		) {
+			return std::make_shared<ParagraphPlaceholder>(ctx, props);
+		}
 
-        std::shared_ptr<ParagraphPlaceholder> setBaseline(TextBaseline baseline);
+		static std::shared_ptr<ParagraphPlaceholder> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        TextBaseline getBaseline();
+		ParagraphPlaceholderAlignment getAlignment() const {
+			return alignment;
+		}
 
-        sktextlayout::TextBaseline getSkBaseline();
+		void setAlignment(ParagraphPlaceholderAlignment newAlignment) {
+			alignment = newAlignment;
+		}
 
-        std::shared_ptr<ParagraphPlaceholder> setOffset(float offset);
+		[[nodiscard]] TextBaseline getBaseline() const {
+			return baseline;
+		}
 
-        float getOffset();
+		void setBaseline(TextBaseline newBaseline) {
+			baseline = newBaseline;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+		[[nodiscard]] float getOffset() const {
+			return offset;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
-    
-    private:
-        PlaceholderAlignment alignment = PlaceholderAlignment::Middle;
-        TextBaseline baseline = TextBaseline::Alphabetic;
-        float offset;
-    };
+		void setOffset(float newOffset) {
+			offset = newOffset;
+		}
 
-    std::shared_ptr<ParagraphPlaceholder> paragraphPlaceholder();
-    std::shared_ptr<ParagraphPlaceholder> placeholder();
+		skia::textlayout::PlaceholderStyle getSkPlaceholderStyle(const Size& size) const;
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		ParagraphPlaceholderAlignment alignment = ParagraphPlaceholderAlignment::Middle;
+		TextBaseline baseline = TextBaseline::Alphabetic;
+		float offset = 0;
+
+		skia::textlayout::PlaceholderAlignment getSkPlaceholderAlignment() const;
+
+		skia::textlayout::TextBaseline getSkBaseline() const;
+	};
 }
 
 

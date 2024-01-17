@@ -3,199 +3,185 @@
 //
 
 #include "Paragraph.h"
-#include "ParagraphPlaceholder.h"
 
 #include <include/core/SkFontMgr.h>
 #include <include/core/SkFontStyle.h>
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
 
-#include <memory>
-#include <utility>
+#include "ParagraphPlaceholder.h"
 
 namespace elementor::elements {
-    std::shared_ptr<Paragraph> paragraph() {
-        return std::make_shared<Paragraph>();
-    }
+	sk_sp<skia::textlayout::FontCollection>
+	Paragraph::makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) const {
+		sk_sp<skia::textlayout::FontCollection> fontCollection = sk_make_sp<skia::textlayout::FontCollection>();
+		fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
+		fontCollection->setDynamicFontManager(ctx->getPlatformCtx()->getSkFontManager());
+		return fontCollection;
+	}
 
-    TextAlign Paragraph::getTextAlign() {
-        return this->textAlign;
-    }
+	skia::textlayout::TextStyle Paragraph::makeDefaultTextStyle() const {
+		skia::textlayout::TextStyle textStyle;
+		textStyle.setFontSize(16);
+		textStyle.setColor(SK_ColorBLACK);
+		textStyle.setFontStyle(SkFontStyle{ SkFontStyle::Weight::kNormal_Weight,
+											SkFontStyle::Width::kNormal_Width,
+											SkFontStyle::Slant::kUpright_Slant });
+		return textStyle;
+	}
 
-    std::shared_ptr<Paragraph> Paragraph::setTextAlign(TextAlign newTextAlign) {
-        this->textAlign = newTextAlign;
-        this->skParagraph = nullptr;
-        return shared_from_this();
-    }
+	skia::textlayout::ParagraphStyle Paragraph::makeParagraphStyle() const {
+		skia::textlayout::ParagraphStyle paragraphStyle{};
+		paragraphStyle.setTextStyle(makeDefaultTextStyle());
+		paragraphStyle.setTextDirection(getSkTextDirection());
+		return paragraphStyle;
+	}
 
-    TextDirection Paragraph::getTextDirection() {
-        return this->textDirection;
-    }
+	skia::textlayout::ParagraphBuilderImpl
+	Paragraph::makeBuilder(const std::shared_ptr<ApplicationContext>& ctx) const {
+		skia::textlayout::ParagraphStyle paragraphStyle = makeParagraphStyle();
+		sk_sp<skia::textlayout::FontCollection> fontCollection = makeFontCollection(ctx);
+		skia::textlayout::ParagraphBuilderImpl builder{ paragraphStyle, fontCollection };
+		return builder;
+	}
 
-    std::shared_ptr<Paragraph> Paragraph::setTextDirection(TextDirection newTextDirection) {
-        this->textDirection = newTextDirection;
-        this->skParagraph = nullptr;
-        return shared_from_this();
-    }
+	skia::textlayout::TextAlign Paragraph::getSkTextAlign() const {
+		switch (textAlign) {
+		case TextAlign::Left:
+			return skia::textlayout::TextAlign::kLeft;
+		case TextAlign::Right:
+			return skia::textlayout::TextAlign::kRight;
+		case TextAlign::Center:
+			return skia::textlayout::TextAlign::kCenter;
+		case TextAlign::Justify:
+			return skia::textlayout::TextAlign::kJustify;
+		case TextAlign::Start:
+			return skia::textlayout::TextAlign::kStart;
+		case TextAlign::End:
+			return skia::textlayout::TextAlign::kEnd;
+		default:
+			return skia::textlayout::TextAlign::kLeft;
+		}
+	}
 
-    std::shared_ptr<Paragraph> Paragraph::appendChild(const std::shared_ptr<Element> &child) {
-        this->addChild(child);
+	skia::textlayout::TextDirection Paragraph::getSkTextDirection() const {
+		switch (textDirection) {
+		case TextDirection::LeftToRight:
+			return skia::textlayout::TextDirection::kLtr;
+		case TextDirection::RightToLeft:
+			return skia::textlayout::TextDirection::kRtl;
+		default:
+			return skia::textlayout::TextDirection::kLtr;
+		}
+	}
 
-        auto childText = std::dynamic_pointer_cast<Text>(child);
-        if (childText) {
-            this->childrenText.push_back(childText);
-        } else {
-            this->childrenElements.push_back(child);
-        }
+	skia::textlayout::PlaceholderStyle Paragraph::makeElementChildPlaceholderStyle(const Size& childSize) const {
+		return {
+			childSize.width, childSize.height,
+			skia::textlayout::PlaceholderAlignment::kMiddle,
+			skia::textlayout::TextBaseline::kAlphabetic,
+			0.0f,
+		};
+	}
 
-        this->skParagraph = nullptr;
-        return shared_from_this();
-    }
+	skia::textlayout::PlaceholderStyle
+	Paragraph::makeChildPlaceholderStyle(const std::shared_ptr<Element>& child) const {
+		Size childSize = child->getSize(InfiniteBoundaries);
 
-    void Paragraph::forceUpdate() {
-        this->skParagraph = nullptr;
-    }
+		auto childPlaceholder = std::dynamic_pointer_cast<ParagraphPlaceholder>(child);
+		if (childPlaceholder) {
+			return childPlaceholder->getSkPlaceholderStyle(childSize);
+		}
 
-    sk_sp<sktextlayout::FontCollection> Paragraph::makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) {
-        sk_sp<sktextlayout::FontCollection> fontCollection = sk_make_sp<sktextlayout::FontCollection>();
-        fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
-        fontCollection->setDynamicFontManager(ctx->getSkFontManager());
-        return fontCollection;
-    }
+		return makeElementChildPlaceholderStyle(childSize);
+	}
 
-    sktextlayout::TextStyle Paragraph::makeDefaultTextStyle() {
-        sktextlayout::TextStyle textStyle;
-        textStyle.setFontSize(16);
-        textStyle.setColor(SK_ColorBLACK);
-        textStyle.setFontStyle(SkFontStyle{SkFontStyle::Weight::kNormal_Weight,
-                                           SkFontStyle::Width::kNormal_Width,
-                                           SkFontStyle::Slant::kUpright_Slant});
-        return textStyle;
-    }
+	std::unique_ptr<skia::textlayout::Paragraph> Paragraph::makeSkParagraph() const {
+		skia::textlayout::ParagraphBuilderImpl builder = makeBuilder(ctx);
 
-    sktextlayout::ParagraphStyle Paragraph::makeParagraphStyle() {
-        sktextlayout::ParagraphStyle paragraphStyle{};
-        paragraphStyle.setTextStyle(this->makeDefaultTextStyle());
-        paragraphStyle.setTextDirection(this->getSkTextDirection());
-        return paragraphStyle;
-    }
+		for (const std::shared_ptr<Element>& child: getChildrenList()) {
+			auto textChild = std::dynamic_pointer_cast<Text>(child);
+			if (textChild) {
+				auto textChildValue = textChild->getText();
 
-    sktextlayout::ParagraphBuilderImpl Paragraph::makeBuilder(const std::shared_ptr<ApplicationContext>& ctx) {
-        sktextlayout::ParagraphStyle paragraphStyle = this->makeParagraphStyle();
-        sk_sp<sktextlayout::FontCollection> fontCollection = this->makeFontCollection(ctx);
-        sktextlayout::ParagraphBuilderImpl builder{paragraphStyle, fontCollection};
-        return builder;
-    }
+				builder.pushStyle(textChild->makeSkTextStyle());
+				builder.addText(textChildValue.data(), textChildValue.size());
+				builder.pop();
+			}
+			else {
+				builder.addPlaceholder(makeChildPlaceholderStyle(child));
+			}
+		}
 
-    sktextlayout::TextAlign Paragraph::getSkTextAlign() {
-        switch (this->textAlign) {
-            case TextAlign::Left:
-                return sktextlayout::TextAlign::kLeft;
-            case TextAlign::Right:
-                return sktextlayout::TextAlign::kRight;
-            case TextAlign::Center:
-                return sktextlayout::TextAlign::kCenter;
-            case TextAlign::Justify:
-                return sktextlayout::TextAlign::kJustify;
-            case TextAlign::Start:
-                return sktextlayout::TextAlign::kStart;
-            case TextAlign::End:
-                return sktextlayout::TextAlign::kEnd;
-            default:
-                return sktextlayout::TextAlign::kLeft;
-        }
-    }
+		std::unique_ptr<skia::textlayout::Paragraph> paragraph = builder.Build();
 
-    sktextlayout::TextDirection Paragraph::getSkTextDirection() {
-        switch (this->textDirection) {
-            case TextDirection::LTR:
-                return sktextlayout::TextDirection::kLtr;
-            case TextDirection::RTL:
-                return sktextlayout::TextDirection::kRtl;
-            default:
-                return sktextlayout::TextDirection::kLtr;
-        }
-    }
+		paragraph->updateTextAlign(getSkTextAlign());
 
-    sktextlayout::PlaceholderStyle
-    Paragraph::makeChildPlaceholderStyle(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                         const std::shared_ptr<Element>& child) {
-        Size childSize = child->getSize(ctx, window, {{0, 0},
-                                                      {INFINITY, INFINITY}});
+		return paragraph;
+	}
 
-        auto childPlaceholder = std::dynamic_pointer_cast<ParagraphPlaceholder>(child);
-        if (childPlaceholder) {
-            return {childSize.width, childSize.height,
-                    childPlaceholder->getSkPlaceholderAlignment(),
-                    childPlaceholder->getSkBaseline(),
-                    childPlaceholder->getOffset()};
-        } else {
-            return {childSize.width, childSize.height,
-                    sktextlayout::PlaceholderAlignment::kMiddle,
-                    sktextlayout::TextBaseline::kAlphabetic,
-                    ZERO};
-        }
-    }
+	void Paragraph::updateSkParagraph() {
+		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		if (skParagraph != nullptr && pixelScale == lastPixelScale) {
+			return;
+		}
 
-    std::unique_ptr<sktextlayout::Paragraph>
-    Paragraph::makeSkParagraph(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window) {
-        sktextlayout::ParagraphBuilderImpl builder = this->makeBuilder(ctx);
+		skParagraph = makeSkParagraph();
+		lastPixelScale = pixelScale;
+	}
 
-        for (const std::shared_ptr<Element> &child: this->getChildrenList()) {
-            auto childText = std::dynamic_pointer_cast<Text>(child);
-            if (childText) {
-                builder.pushStyle(childText->makeSkTextStyle(ctx));
-                builder.addText(childText->getText().c_str(), childText->getText().size());
-                builder.pop();
-            } else {
-                builder.addPlaceholder(this->makeChildPlaceholderStyle(ctx, window, child));
-            }
-        }
+	Size Paragraph::getSize(const Boundaries& boundaries) {
+		updateSkParagraph();
 
-        std::unique_ptr<sktextlayout::Paragraph> paragraph = builder.Build();
+		skParagraph->layout(boundaries.max.width);
+		Size paragraphSize = {
+			.width = skParagraph->getMaxWidth(),
+			.height = skParagraph->getHeight()
+		};
 
-        paragraph->updateTextAlign(this->getSkTextAlign());
+		return fitSizeInBoundaries(paragraphSize, boundaries);
+	}
 
-        return paragraph;
-    }
+	void Paragraph::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
+		updateSkParagraph();
 
-    Size
-    Paragraph::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
-            this->skParagraph = this->makeSkParagraph(ctx, window);
-        this->lastPixelScale = ctx->getPixelScale();
+		skParagraph->layout(rect.size.width);
+		skParagraph->paint(canvas, 0, 0);
+	}
 
-        this->skParagraph->layout(boundaries.max.width);
-        return fitSizeInBoundaries({this->skParagraph->getMaxWidth(), this->skParagraph->getHeight()}, boundaries);
-    }
+	std::vector<ElementWithRect> Paragraph::getChildren(const ElementRect& rect) {
+		updateSkParagraph();
 
-    void Paragraph::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                    SkCanvas *canvas, ElementRect rect) {
-        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
-            this->skParagraph = this->makeSkParagraph(ctx, window);
-        this->lastPixelScale = ctx->getPixelScale();
+		std::vector<ElementWithRect> childrenElements;
 
-        this->skParagraph->layout(rect.size.width);
-        this->skParagraph->paint(canvas, 0, 0);
-    }
+		std::vector<skia::textlayout::TextBox> placeholdersRects = skParagraph->getRectsForPlaceholders();
+		for (unsigned int i = 0; i < placeholdersRects.size(); i++) {
+			auto child = placeholdersChildren[i];
 
-    std::vector<RenderElement>
-    Paragraph::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        if (this->skParagraph == nullptr || ctx->getPixelScale() != this->lastPixelScale)
-            this->skParagraph = this->makeSkParagraph(ctx, window);
-        this->lastPixelScale = ctx->getPixelScale();
+			SkRect childSkRect = placeholdersRects[i].rect;
+			Rect childRect = {
+				.size = { .width = childSkRect.width(), .height = childSkRect.height() },
+				.position = { .x = childSkRect.x(), .y = childSkRect.y() },
+			};
 
-        std::vector<RenderElement> children;
-        std::vector<sktextlayout::TextBox> childsRects = this->skParagraph->getRectsForPlaceholders();
-        int childrenSize = std::min((int) childsRects.size(), (int) this->getChildrenSize());
-        for (unsigned int i = 0; i < childrenSize; i++) {
-            RenderElement child{};
-            child.element = this->childrenElements[i];
-            SkRect childRect = childsRects[i].rect;
-            child.position = {childRect.x(), childRect.y()};
-            child.size = {childRect.width(), childRect.height()};
-            children.push_back(child);
-        }
+			ElementWithRect childElement{ child, childRect };
+			childrenElements.push_back(childElement);
+		}
 
-        return children;
-    }
+		return childrenElements;
+	}
+
+	void Paragraph::setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
+		children = newChildren;
+		skParagraph = nullptr;
+
+		placeholdersChildren.clear();
+		for (const auto& child: children) {
+			auto textChild = std::dynamic_pointer_cast<Text>(child);
+			if (textChild) {
+				continue;
+			}
+
+			placeholdersChildren.push_back(child);
+		}
+	}
 }

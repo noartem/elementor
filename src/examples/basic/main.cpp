@@ -62,86 +62,96 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 					.child = Column::New(ctx, {
 						.spacing = 8,
 						.children = {
+							Align::New(ctx, {
+								.width = { 0 },
+								.child = Background::New(ctx, {
+									.color = "#0a0",
+									.child = Padding::New(ctx, {
+										.top = 15,
+										.right = 13,
+										.bottom = 20,
+										.left = 10,
+										.child = Text::New(ctx, {
+											.text = "Hello, world!",
+											.fontColor = "#fff",
+											.fontSize = 32,
+											.fontWeight = 700,
+											.fontSlant = FontSlant::Italic,
+											.fontFamily = "Fira Code",
+										})
+									})
+								})
+							}),
+							Height::New(ctx, {
+								.height = 100,
+								.child = Rounded::New(ctx, {
+									.all = 16,
+									.child = FitCover::New(ctx, {
+										.child = Image::New(ctx, {
+											.src = getThisPath().append("cat.jpg").string(),
+										}),
+									})
+								})
+							}),
 							Row::New(ctx, {
 								.spacing = 8,
 								.children = {
-									Align::New(ctx, {
-										.height = { 0.5 },
-										.child = Background::New(ctx, {
-											.color = "#0a0",
-											.child = Padding::New(ctx, {
-												.top = 15,
-												.right = 13,
-												.bottom = 20,
-												.left = 10,
-												.child = Text::New(ctx, {
-													.text = "Hello, world!",
-													.fontColor = "#fff",
-													.fontSize = 32,
-													.fontWeight = 700,
-													.fontSlant = FontSlant::Italic,
-													.fontFamily = "Fira Code",
-												})
-											})
+									Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = SVG::New(ctx, {
+											.src = getThisPath().append("cat.svg").string(),
+										})
+									}),
+									Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = SVG::New(ctx, {
+											.src = getThisPath().append("cat-2.svg").string(),
+										})
+									}),
+									Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = SVG::New(ctx, {
+											.src = getThisPath().append("cat.svg").string(),
+										})
+									}),
+									Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = SVG::New(ctx, {
+											.src = getThisPath().append("cat-2.svg").string(),
 										})
 									}),
 									Align::New(ctx, {
-										.height = { 0.5 },
-										.child = Background::New(ctx, {
-											.child = Padding::New(ctx, {
-												.top = 15,
-												.right = 13,
-												.bottom = 20,
-												.left = 10,
-												.child = Text::New(ctx, {
-													.text = "How are you?",
-													.fontColor = "#0a0",
-													.fontSize = 24,
-													.fontWeight = 500,
+										.height = { 0 },
+										.child = Width::New(ctx, {
+											.width = 100,
+											.child = Ratio::New(ctx, {
+												.ratio = 3.0 / 1.65,
+												.child = SVG::New(ctx, {
+													.src = getThisPath().append("cat.svg").string(),
 												})
-											})
+											}),
 										})
 									})
 								}
 							}),
-							Height::New(ctx, {
-								.height = 100,
-								.child = Flex::New(ctx, {
-									.spacing = 8,
-									.alignment = FlexAlignment::Center,
-									.children = {
-										Flexible::New(ctx, {
-											.child = Rounded::New(ctx, {
-												.all = 16,
-												.child = FitCover::New(ctx, {
-													.child = Image::New(ctx, {
-														.src = getThisPath().append("cat.jpg").string(),
-													}),
-												})
-											})
-										}),
-										Flexible::New(ctx, {
-											.child = Rounded::New(ctx, {
-												.all = 16,
-												.child = Background::New(ctx, {
-													.color = "#f0f3f9",
-													.child = FitContain::New(ctx, {
-														.child = Image::New(ctx, {
-															.src = getThisPath().append("cat.jpg").string(),
-														}),
-													})
-												})
-											})
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = SVG::New(ctx, {
-												.src = getThisPath().append("logo.svg").string(),
-											})
-										})
-									}
-								})
+							Paragraph::New(ctx, {
+								.children = {
+									Text::New(ctx, {
+										.text = "It supports emoji! Examples: 😊🌌🚀☄️\n",
+										.fontColor = "#222",
+										.fontSize = 18,
+									}),
+									Text::New(ctx, {
+										.text = "And ligatures! Examples: == === !! != !== << >> --- || |- -|\n",
+										.fontColor = "#0a0",
+										.fontSize = 18,
+										.fontFamily = "Fira Code",
+									}),
+								}
 							})
 						}
 					})

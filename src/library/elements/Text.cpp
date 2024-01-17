@@ -7,7 +7,7 @@
 #include <include/core/SkTypeface.h>
 
 namespace elementor::elements {
-	SkFontStyle::Slant Text::getSkFontStyleSlant() {
+	SkFontStyle::Slant Text::getSkFontStyleSlant() const {
 		switch (fontSlant) {
 		case FontSlant::Italic:
 			return SkFontStyle::kItalic_Slant;
@@ -18,7 +18,7 @@ namespace elementor::elements {
 		}
 	}
 
-	SkFont::Edging Text::getSkFontEdging() {
+	SkFont::Edging Text::getSkFontEdging() const {
 		switch (fontEdging) {
 		case FontEdging::Alias:
 			return SkFont::Edging::kAlias;
@@ -29,15 +29,15 @@ namespace elementor::elements {
 		}
 	}
 
-	SkFontStyle Text::makeSkFontStyle() {
+	SkFontStyle Text::makeSkFontStyle() const {
 		return SkFontStyle(fontWeight, fontWidth, getSkFontStyleSlant());
 	}
 
-	sk_sp<SkTypeface> Text::makeSkTypeface() {
+	sk_sp<SkTypeface> Text::makeSkTypeface() const {
 		return SkTypeface::MakeFromName(fontFamily.data(), makeSkFontStyle());
 	}
 
-	SkFont Text::makeSkFont(std::shared_ptr<ApplicationContext> ctx) {
+	SkFont Text::makeSkFont() const {
 		float pixelScale = ctx->getWindowCtx()->getPixelScale();
 		float fontSizeScaled = fontSize * pixelScale;
 
@@ -50,13 +50,13 @@ namespace elementor::elements {
 		return skFont;
 	}
 
-	SkPaint Text::makeSkPaint() {
+	SkPaint Text::makeSkPaint() const {
 		SkPaint skPaint;
 		skPaint.setColor(getFontColor());
 		return skPaint;
 	}
 
-	skia::textlayout::TextDecoration Text::getSkTextDecoration() {
+	skia::textlayout::TextDecoration Text::getSkTextDecoration() const {
 		switch (decoration) {
 		case TextDecoration::NoDecoration:
 			return skia::textlayout::TextDecoration::kNoDecoration;
@@ -71,7 +71,7 @@ namespace elementor::elements {
 		}
 	}
 
-	skia::textlayout::TextDecorationMode Text::getSkTextDecorationMode() {
+	skia::textlayout::TextDecorationMode Text::getSkTextDecorationMode() const {
 		switch (decorationMode) {
 		case TextDecorationMode::Gaps:
 			return skia::textlayout::TextDecorationMode::kGaps;
@@ -82,7 +82,7 @@ namespace elementor::elements {
 		}
 	}
 
-	skia::textlayout::TextDecorationStyle Text::getSkTextDecorationStyle() {
+	skia::textlayout::TextDecorationStyle Text::getSkTextDecorationStyle() const {
 		switch (decorationStyle) {
 		case TextDecorationStyle::Solid:
 			return skia::textlayout::TextDecorationStyle::kSolid;
@@ -99,7 +99,7 @@ namespace elementor::elements {
 		}
 	}
 
-	skia::textlayout::TextStyle Text::makeSkTextStyle(std::shared_ptr<ApplicationContext> ctx) {
+	skia::textlayout::TextStyle Text::makeSkTextStyle() const {
 		float pixelScale = ctx->getWindowCtx()->getPixelScale();
 		float fontSizeScaled = fontSize * pixelScale;
 
@@ -123,7 +123,7 @@ namespace elementor::elements {
 	Size Text::getSize(const Boundaries& boundaries) {
 		float pixelScale = ctx->getWindowCtx()->getPixelScale();
 
-		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont(ctx);
+		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont();
 		if (!paint.has_value()) paint = makeSkPaint();
 		lastPixelScale = pixelScale;
 
@@ -135,7 +135,7 @@ namespace elementor::elements {
 	void Text::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
 		float pixelScale = ctx->getWindowCtx()->getPixelScale();
 
-		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont(ctx);
+		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont();
 		if (!paint.has_value()) paint = makeSkPaint();
 		lastPixelScale = pixelScale;
 
