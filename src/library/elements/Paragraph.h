@@ -19,13 +19,14 @@ namespace elementor::elements {
 		const std::vector<std::shared_ptr<Element>>& children = {};
 	};
 
-	class Paragraph : public Element, public WithChildren {
+	class Paragraph : public Element, private WithChildren {
 	public:
 		Paragraph(const std::shared_ptr<ApplicationContext>& ctx, const ParagraphProps& props)
 			: Element(ctx),
-			  WithChildren(props.children) {
+			  WithChildren({}) {
 			if (props.textAlign.has_value()) setTextAlign(props.textAlign.value());
 			if (props.textDirection.has_value()) setTextDirection(props.textDirection.value());
+			setChildren(props.children);
 		}
 
 		static std::shared_ptr<Paragraph> New(
@@ -63,7 +64,7 @@ namespace elementor::elements {
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) override;
+		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren);
 
 	private:
 		TextAlign textAlign = TextAlign::Left;

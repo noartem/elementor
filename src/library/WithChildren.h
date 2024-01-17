@@ -13,16 +13,30 @@
 namespace elementor {
 	class WithChildren {
 	public:
-		explicit WithChildren(const std::vector<std::shared_ptr<Element>>& children) {
-			setChildren(children);
+		explicit WithChildren(const std::vector<std::shared_ptr<Element>>& children)
+			: children(children) {
 		}
 
-		virtual void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
+		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
 			children = newChildren;
 		}
 
 		void clearChildren() {
 			setChildren({});
+		}
+
+		void addChild(const std::shared_ptr<Element>& child) {
+			children.push_back(child);
+		}
+
+		void removeChild(int i) {
+			if (i >= 0 && i < children.size()) {
+				children.erase(children.begin() + i);
+			}
+		}
+
+		void removeChild(const std::shared_ptr<Element>& child) {
+			removeChild(childIndex(child));
 		}
 
 		[[nodiscard]] std::vector<std::shared_ptr<Element>> getChildrenList() const {

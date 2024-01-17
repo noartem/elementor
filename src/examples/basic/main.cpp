@@ -151,6 +151,52 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 										.fontSize = 18,
 										.fontFamily = "Fira Code",
 									}),
+									Text::New(ctx, {
+										.text = "You also can insert some elements here, here is example: ",
+										.fontColor = "#222",
+										.fontSize = 18,
+									}),
+									Sized(ctx, {
+										.width = 100,
+										.height = 50,
+										.child = Box(ctx)
+									}),
+//									ParagraphPlaceholder::New(ctx, {
+//										.child = Sized(ctx, {
+//											.width = 100,
+//											.height = 50,
+//											.child = Box(ctx)
+//										}),
+//									}),
+									Text::New(ctx, {
+										.text = " and it is inlined.",
+										.fontColor = "#222",
+										.fontSize = 18,
+									}),
+								}
+							}),
+							Stack::New(ctx, {
+								.children = {
+									Sized(ctx, {
+										.width = 500,
+										.height = 500,
+										.child = Box(ctx)
+									}),
+									Sized(ctx, {
+										.width = 400,
+										.height = 200,
+										.child = Box(ctx)
+									}),
+									Sized(ctx, {
+										.width = 200,
+										.height = 400,
+										.child = Box(ctx)
+									}),
+									Sized(ctx, {
+										.width = 150,
+										.height = 200,
+										.child = Box(ctx)
+									})
 								}
 							})
 						}

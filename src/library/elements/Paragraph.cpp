@@ -155,6 +155,10 @@ namespace elementor::elements {
 
 		std::vector<skia::textlayout::TextBox> placeholdersRects = skParagraph->getRectsForPlaceholders();
 		for (unsigned int i = 0; i < placeholdersRects.size(); i++) {
+			if (placeholdersChildren.size() <= i) {
+				break;
+			}
+
 			auto child = placeholdersChildren[i];
 
 			SkRect childSkRect = placeholdersRects[i].rect;
@@ -171,6 +175,7 @@ namespace elementor::elements {
 	}
 
 	void Paragraph::setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
+		E_PRINT((int)(skParagraph == nullptr));
 		children = newChildren;
 		skParagraph = nullptr;
 

@@ -5,19 +5,35 @@
 #ifndef ELEMENTOR_STACK_H
 #define ELEMENTOR_STACK_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Stack : public Element, public WithChildren, public std::enable_shared_from_this<Stack> {
-    public:
-        std::shared_ptr<Stack> appendChild(const std::shared_ptr<Element>& child);
+	struct StackProps {
+		const std::vector<std::shared_ptr<Element>>& children = {};
+	};
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+	class Stack : public Element, public WithChildren {
+	public:
+		Stack(const std::shared_ptr<ApplicationContext>& ctx, const StackProps& props)
+			: Element(ctx),
+			  WithChildren(props.children) {
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
-    };
+		static std::shared_ptr<Stack> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const StackProps& props
+		) {
+			return std::make_shared<Stack>(ctx, props);
+		}
 
-    std::shared_ptr<Stack> stack();
+		static std::shared_ptr<Stack> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+	};
 }
 
 
