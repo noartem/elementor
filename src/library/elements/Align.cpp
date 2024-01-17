@@ -17,16 +17,9 @@ namespace elementor::elements {
 				},
 			.max = boundaries.max
 		};
-		Size childSize = child->getSize(childBoundaries);
 
-		Boundaries elementBoundaries = {
-			.min = {
-				.width = widthCoefficient.has_value() ? boundaries.max.width : boundaries.min.width,
-				.height = heightCoefficient.has_value() ? boundaries.max.height : boundaries.min.height
-			},
-			.max = boundaries.max
-		};
-		Size elementSize = fitSizeInBoundaries(childSize, elementBoundaries);
+		Size childSize = child->getSize(childBoundaries);
+		Size elementSize = fitSizeInBoundaries(childSize, boundaries);
 
 		return elementSize;
 	}

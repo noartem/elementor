@@ -30,7 +30,7 @@
 //#include "Scrollbar.h"
 //#include "Stack.h"
 #include "SVG.h"
-//#include "Text.h"
+#include "Text.h"
 #include "Width.h"
 
 #endif //ELEMENTOR_ELEMENTS_INCLUDE_H

@@ -65,15 +65,42 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 							Row::New(ctx, {
 								.spacing = 8,
 								.children = {
-									Sized(ctx, {
-										.width = 100,
-										.height = 100,
-										.child = Box(ctx),
+									Align::New(ctx, {
+										.height = { 0.5 },
+										.child = Background::New(ctx, {
+											.color = "#0a0",
+											.child = Padding::New(ctx, {
+												.top = 15,
+												.right = 13,
+												.bottom = 20,
+												.left = 10,
+												.child = Text::New(ctx, {
+													.text = "Hello, world!",
+													.fontColor = "#fff",
+													.fontSize = 32,
+													.fontWeight = 700,
+													.fontSlant = FontSlant::Italic,
+													.fontFamily = "Fira Code",
+												})
+											})
+										})
 									}),
-									Sized(ctx, {
-										.width = 200,
-										.height = 100,
-										.child = Box(ctx),
+									Align::New(ctx, {
+										.height = { 0.5 },
+										.child = Background::New(ctx, {
+											.child = Padding::New(ctx, {
+												.top = 15,
+												.right = 13,
+												.bottom = 20,
+												.left = 10,
+												.child = Text::New(ctx, {
+													.text = "How are you?",
+													.fontColor = "#0a0",
+													.fontSize = 24,
+													.fontWeight = 500,
+												})
+											})
+										})
 									})
 								}
 							}),
@@ -92,11 +119,6 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 													}),
 												})
 											})
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 50,
-											.child = Box(ctx),
 										}),
 										Flexible::New(ctx, {
 											.child = Rounded::New(ctx, {
