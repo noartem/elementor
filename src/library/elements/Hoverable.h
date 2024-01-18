@@ -5,43 +5,59 @@
 #ifndef ELEMENTOR_HOVERABLE_H
 #define ELEMENTOR_HOVERABLE_H
 
-#include "../Element.h"
-#include "../Event.h"
-
-#include <functional>
-
-// TODO: Add `ElementSingleChild` for elements like this
+#include "../include.h"
 
 namespace elementor::elements {
-    class Hoverable : public Element, public WithOnHover, public WithOnMouseMove, public WithChild, public std::enable_shared_from_this<Hoverable> {
-    public:
-        std::shared_ptr<Hoverable> onEnter(const std::function<void ()>& callback);
+	struct HoverableProps {
+		std::optional<std::function<EventCallbackResponse()>> onEnter;
+		std::optional<std::function<EventCallbackResponse()>> onLeave;
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        std::shared_ptr<Hoverable>onLeave(const std::function<void ()>& callback);
+	class Hoverable : public Element, public WithEvents, public WithChild {
+	public:
+		explicit Hoverable(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        std::shared_ptr<Hoverable> onMove(std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callback);
+		Hoverable(const std::shared_ptr<ApplicationContext>& ctx, const HoverableProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+			if (props.onEnter.has_value()) onEnter(props.onEnter.value());
+			if (props.onLeave.has_value()) onLeave(props.onLeave.value());
+		}
 
-        std::shared_ptr<Hoverable> onMove(const std::function<void ()>& callback);
+		static std::shared_ptr<Hoverable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const HoverableProps& props
+		) {
+			return std::make_shared<Hoverable>(ctx, props);
+		}
 
-        std::shared_ptr<Hoverable>setChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr<Hoverable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+		void onEnter(const std::function<EventCallbackResponse()>& newCallbackEnter) {
+			callbackEnter = newCallbackEnter;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		void onLeave(const std::function<EventCallbackResponse()>& newCallbackLeave) {
+			callbackLeave = newCallbackLeave;
+		}
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+		Size getSize(const Boundaries& boundaries) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) override;
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-    private:
-        bool hovered;
+		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
 
-        std::function<void ()> callbackEnter;
-        std::function<void ()> callbackLeave;
-        std::function<EventCallbackResponse (std::shared_ptr<EventMouseMove> event)> callbackMove;
-    };
+	private:
+		bool hovered;
 
-    std::shared_ptr<Hoverable>hoverable();
+		std::function<EventCallbackResponse()> callbackEnter;
+		std::function<EventCallbackResponse()> callbackLeave;
+	};
 }
 
 

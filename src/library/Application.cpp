@@ -5,12 +5,14 @@
 #include "Application.h"
 
 #include <memory>
+#include <ranges>
 
 #include <include/core/SkCanvas.h>
 
 #include "Element.h"
 #include "ElementTree.h"
 #include "Event.h"
+#include "debug.h"
 
 namespace elementor {
 	template<typename T, typename... U>
@@ -21,10 +23,16 @@ namespace elementor {
 	}
 
 	void Application::draw(SkCanvas* canvas) {
-		this->dispatchPendingEvents();
+		const auto& newRootNode = makeRootNode(root, windowCtx);
+		drawNode(newRootNode, canvas);
 
-		this->rootNode = makeRootNode(this->root, windowCtx);
-		this->drawNode(this->rootNode, canvas);
+		dispatchPendingEvents();
+
+		auto cursorPosition = windowCtx->getCursor()->getPosition();
+		const auto& newHoveredNode = getHoveredNodeOrChild(newRootNode, cursorPosition);
+		setHoveredNode(newHoveredNode);
+
+		rootNode = newRootNode;
 	}
 
 	void Application::drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas) {
@@ -66,12 +74,28 @@ namespace elementor {
 		const std::shared_ptr<Element>& element,
 		const std::shared_ptr<Event>& event
 	) {
-		auto elementEventHandler = dynamic_cast<WithEvents*>(element.get());
+		const auto& elementEventHandler = std::dynamic_pointer_cast<WithEvents>(element);
 		if (elementEventHandler == nullptr) {
 			return EventCallbackResponse::None;
 		}
 
 		return elementEventHandler->onEvent(event);
+	}
+
+	EventCallbackResponse Application::bubbleEvent(
+		const std::shared_ptr<ElementTreeNode>& elementNode,
+		const std::shared_ptr<Event>& event
+	) const {
+		auto elementResponse = callElementEventHandler(elementNode->element, event);
+		if (elementResponse == EventCallbackResponse::StopPropagation) {
+			return EventCallbackResponse::StopPropagation;
+		}
+
+		if (elementNode->parent == nullptr) {
+			return EventCallbackResponse::None;
+		}
+
+		return bubbleEvent(elementNode->parent, event);
 	}
 
 	void Application::dispatchPendingEvents() {
@@ -107,6 +131,37 @@ namespace elementor {
 				eventListeners.erase(it);
 				break;
 			}
+		}
+	}
+
+	std::shared_ptr<ElementTreeNode> Application::getHoveredNodeOrChild(
+		const std::shared_ptr<ElementTreeNode>& node,
+		const elementor::Position& cursorPosition
+	) const {
+		for (const auto& childNode: node->children | std::views::reverse) {
+			if (childNode->rect.contains(cursorPosition)) {
+				return getHoveredNodeOrChild(childNode, cursorPosition);
+			}
+		}
+
+		return node;
+	}
+
+	void Application::setHoveredNode(const std::shared_ptr<ElementTreeNode>& newHoveredNode) {
+		if (hoveredNode && newHoveredNode && hoveredNode->element == newHoveredNode->element) {
+			return;
+		}
+
+		if (hoveredNode) {
+			auto hoverLeaveEvent = std::make_shared<HoverEvent>(false);
+			bubbleEvent(hoveredNode, hoverLeaveEvent);
+		}
+
+		if (newHoveredNode) {
+			auto hoverEnterEvent = std::make_shared<HoverEvent>(true);
+			bubbleEvent(newHoveredNode, hoverEnterEvent);
+
+			hoveredNode = newHoveredNode;
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace elementor {
 		std::shared_ptr<Element> element;
 		ElementRect rect{};
 		std::vector<std::shared_ptr<ElementTreeNode>> children;
-		std::weak_ptr<ElementTreeNode> parent;
+		std::shared_ptr<ElementTreeNode> parent;
 	};
 
 	std::shared_ptr<ElementTreeNode> makeNode(

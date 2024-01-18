@@ -70,9 +70,17 @@ namespace elementor {
 		std::vector<std::shared_ptr<Event>> pendingEvents;
 		std::map<std::string_view, std::vector<std::function<void(const std::shared_ptr<Event>&)>>> eventsListeners;
 
+		std::shared_ptr<ElementTreeNode> hoveredNode;
+
 		void drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas);
 
 		void dispatchPendingEvents();
+
+		EventCallbackResponse bubbleEvent(const std::shared_ptr<ElementTreeNode>& elementNode, const std::shared_ptr<Event> &event) const;
+
+		std::shared_ptr<ElementTreeNode> getHoveredNodeOrChild(const std::shared_ptr<ElementTreeNode>& node, const Position& cursorPosition) const;
+
+		void setHoveredNode(const std::shared_ptr<ElementTreeNode>& newHoveredNode);
 	};
 };
 

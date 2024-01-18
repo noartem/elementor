@@ -18,7 +18,7 @@
 #include "Flex.h"
 #include "Flexible.h"
 #include "Height.h"
-//#include "Hoverable.h"
+#include "Hoverable.h"
 #include "Image.h"
 //#include "Inputable.h"
 #include "Padding.h"

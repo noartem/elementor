@@ -28,10 +28,6 @@ namespace elementor::elements {
 
 	class ParagraphPlaceholder : public Element, public WithChild {
 	public:
-		explicit ParagraphPlaceholder(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
 		ParagraphPlaceholder(const std::shared_ptr<ApplicationContext>& ctx, const ParagraphPlaceholderProps& props)
 			: Element(ctx),
 			  WithChild(props.child) {

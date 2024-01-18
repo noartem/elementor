@@ -21,7 +21,7 @@ namespace elementor {
 
 	class WithEvents {
 	public:
-		virtual EventCallbackResponse onEvent(std::shared_ptr<Event> event) = 0;
+		virtual EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) = 0;
 	};
 
 	enum class MouseButton {

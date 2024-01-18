@@ -52,6 +52,10 @@ std::filesystem::path getThisPath() {
 }
 
 std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
+	auto hoverableBackground = Background::New(ctx, {
+		.color = "#f00",
+	});
+
 	return (
 		Background::New(ctx, {
 			.color = "#fff",
@@ -161,19 +165,45 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 										.height = 50,
 										.child = Box(ctx)
 									}),
-//									ParagraphPlaceholder::New(ctx, {
-//										.child = Sized(ctx, {
-//											.width = 100,
-//											.height = 50,
-//											.child = Box(ctx)
-//										}),
-//									}),
 									Text::New(ctx, {
 										.text = " and it is inlined.",
 										.fontColor = "#222",
 										.fontSize = 18,
 									}),
 								}
+							}),
+							Align::New(ctx, {
+								.width = { 0 },
+								.child = Rounded::New(ctx, {
+									.all = 8,
+									.child = Sized(ctx, {
+										.width = 100,
+										.height = 100,
+										.child = Background::New(ctx, {
+											.color = "#aaa",
+											.child = Hoverable::New(ctx, {
+												.onEnter = [hoverableBackground]() {
+													hoverableBackground->setColor("#a00");
+													return EventCallbackResponse::None;
+												},
+												.onLeave = [hoverableBackground]() {
+													hoverableBackground->setColor("#f00");
+													return EventCallbackResponse::None;
+												},
+												.child = Padding::New(ctx, {
+													.bottom = 24,
+													.left = 24,
+													.child = Hoverable::New(ctx, {
+														.onLeave = [hoverableBackground]() {
+															return EventCallbackResponse::StopPropagation;
+														},
+														.child = hoverableBackground,
+													})
+												})
+											})
+										})
+									})
+								})
 							}),
 							Stack::New(ctx, {
 								.children = {

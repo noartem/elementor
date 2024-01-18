@@ -76,15 +76,17 @@ namespace elementor::elements {
 
 	skia::textlayout::PlaceholderStyle Paragraph::makeElementChildPlaceholderStyle(const Size& childSize) const {
 		return {
-			childSize.width, childSize.height,
+			childSize.width,
+			childSize.height,
 			skia::textlayout::PlaceholderAlignment::kMiddle,
 			skia::textlayout::TextBaseline::kAlphabetic,
 			0.0f,
 		};
 	}
 
-	skia::textlayout::PlaceholderStyle
-	Paragraph::makeChildPlaceholderStyle(const std::shared_ptr<Element>& child) const {
+	skia::textlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(
+		const std::shared_ptr<Element>& child
+	) const {
 		Size childSize = child->getSize(InfiniteBoundaries);
 
 		auto childPlaceholder = std::dynamic_pointer_cast<ParagraphPlaceholder>(child);
@@ -106,8 +108,7 @@ namespace elementor::elements {
 				builder.pushStyle(textChild->makeSkTextStyle());
 				builder.addText(textChildValue.data(), textChildValue.size());
 				builder.pop();
-			}
-			else {
+			} else {
 				builder.addPlaceholder(makeChildPlaceholderStyle(child));
 			}
 		}
@@ -159,7 +160,7 @@ namespace elementor::elements {
 				break;
 			}
 
-			auto child = placeholdersChildren[i];
+			const auto& child = placeholdersChildren[i];
 
 			SkRect childSkRect = placeholdersRects[i].rect;
 			Rect childRect = {
@@ -175,12 +176,11 @@ namespace elementor::elements {
 	}
 
 	void Paragraph::setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
-		E_PRINT((int)(skParagraph == nullptr));
 		children = newChildren;
 		skParagraph = nullptr;
 
 		placeholdersChildren.clear();
-		for (const auto& child: children) {
+		for (const auto& child: newChildren) {
 			auto textChild = std::dynamic_pointer_cast<Text>(child);
 			if (textChild) {
 				continue;

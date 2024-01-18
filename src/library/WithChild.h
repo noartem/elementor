@@ -20,19 +20,19 @@ namespace elementor {
 		}
 
 		void setChild(const std::shared_ptr<Element>& element) {
-			this->child = element;
+			child = element;
 		}
 
-		[[nodiscard]] std::shared_ptr<Element> getChild() const {
-			return this->child;
+		[[nodiscard]] auto getChild() const {
+			return child;
 		}
 
 		[[nodiscard]] bool hasChild() const {
-			return this->child != nullptr;
+			return child != nullptr;
 		}
 
 		[[nodiscard]] bool doesNotHaveChild() const {
-			return this->child == nullptr;
+			return child == nullptr;
 		}
 
 		void removeChild() {
