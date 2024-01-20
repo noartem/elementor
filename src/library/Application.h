@@ -48,15 +48,12 @@ namespace elementor {
 			return platformCtx;
 		}
 
-		void addEventListener(
+		int addEventListener(
 			const std::string_view& eventName,
-			const std::function<void(const std::shared_ptr<Event>&)>& listener
+			const std::function<void(const std::shared_ptr<Event>& event)>& eventListener
 		) override;
 
-		void removeEventListener(
-			const std::string_view& name,
-			const std::function<void(const std::shared_ptr<Event>&)>& listener
-		) override;
+		void removeEventListener(const std::string_view& name, int eventListenerId) override;
 
 	private:
 		std::shared_ptr<PlatformContext> platformCtx;
@@ -69,6 +66,7 @@ namespace elementor {
 
 		std::vector<std::shared_ptr<Event>> pendingEvents;
 		std::map<std::string_view, std::vector<std::function<void(const std::shared_ptr<Event>&)>>> eventsListeners;
+		std::map<std::string_view, std::vector<int>> eventsListenersFreeIndexes;
 
 		std::shared_ptr<ElementTreeNode> hoveredNode;
 

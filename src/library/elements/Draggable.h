@@ -5,64 +5,98 @@
 #ifndef ELEMENTOR_DRAGGABLE_H
 #define ELEMENTOR_DRAGGABLE_H
 
-#include "../Element.h"
-#include "../Event.h"
-
-#include <functional>
+#include "../include.h"
 
 namespace elementor::elements {
-    class Draggable
-            : public Element,
-              public WithOnHover,
-              public WithOnMouseMove,
-              public WithOnMouseButton,
-              public WithChild,
-              public std::enable_shared_from_this<Draggable> {
-    public:
-        std::shared_ptr<Draggable> onStart(std::function<bool(Position position, Position absolutePosition)> callback);
+	struct DraggableProps {
+		std::optional<std::function<bool(Position position, Position absolutePosition)>> onStart;
+		std::optional<std::function<void(Position position, Position absolutePosition)>> onEnd;
+		std::optional<std::function<void(Position position, Position absolutePosition, Position diff)>> onMove;
+		const std::shared_ptr<Element>& child = nullptr;
+	};
 
-        std::shared_ptr<Draggable> onStart(const std::function<void()>& callback);
+	class Draggable : public Element, public WithEvents, public WithChild {
+	public:
+		Draggable(const std::shared_ptr<ApplicationContext>& ctx, const DraggableProps& props)
+			: Element(ctx),
+			  WithChild(props.child) {
+			if (props.onStart.has_value()) onStart(props.onStart.value());
+			if (props.onEnd.has_value()) onEnd(props.onEnd.value());
+			if (props.onMove.has_value()) onMove(props.onMove.value());
+		}
 
-        std::shared_ptr<Draggable> onEnd(std::function<void(Position position, Position absolutePosition)> callback);
+		~Draggable() {
+			ctx->removeEventListener("mouse-move", mouseMoveListenerId);
+			ctx->removeEventListener("mouse-button", mouseButtonListenerId);
+		}
 
-        std::shared_ptr<Draggable> onEnd(const std::function<void()>& callback);
+		static std::shared_ptr<Draggable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const DraggableProps& props
+		) {
+			return std::make_shared<Draggable>(ctx, props);
+		}
 
-        std::shared_ptr<Draggable> onMove(std::function<void(Position position, Position absolutePosition,
-                Position diff)> callback);
+		static std::shared_ptr<Draggable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr<Draggable> onMove(const std::function<void()>& callback);
+		void onStart(
+			const std::optional<std::function<bool(
+				Position position,
+				Position absolutePosition
+			)>>& newCallback) {
+			callbackStart = newCallback;
+		}
 
-        std::shared_ptr<Draggable> setChild(const std::shared_ptr<Element>& child);
+		void onEnd(
+			const std::optional<std::function<void(
+				Position position,
+				Position absolutePosition
+			)>>& newCallback
+		) {
+			callbackEnd = newCallback;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		void onMove(
+			const std::optional<std::function<void(
+				Position position,
+				Position absolutePosition,
+				Position diff
+			)>>& newCallback
+		) {
+			callbackMove = newCallback;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		Size getSize(const Boundaries& boundaries) override;
 
-        std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                               ElementRect rect) override;
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) override;
+		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) override;
+	private:
+		ElementRect lastRect;
+		Position cursorPosition;
+		Position cursorAbsolutePosition;
+		Position previousCursorAbsolutePosition;
+		bool hovered;
+		bool dragging;
 
-    private:
-        ElementRect rect;
-        Position cursorPosition;
-        Position cursorAbsolutePosition;
-        Position previousCursorAbsolutePosition;
-        bool hovered;
-        bool dragging;
+		int mouseMoveListenerId = -1;
+		int mouseButtonListenerId = -1;
 
-        std::function<bool(Position position, Position absolutePosition)> callbackStart;
-        std::function<void(Position position, Position absolutePosition)> callbackEnd;
-        std::function<void(Position position, Position absolutePosition, Position diff)> callbackMove;
-    };
+		void onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event);
 
-    std::shared_ptr<Draggable> draggable();
+		void onApplicationMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event);
+
+		void onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event);
+
+		std::optional<std::function<bool(Position position, Position absolutePosition)>> callbackStart;
+		std::optional<std::function<void(Position position, Position absolutePosition)>> callbackEnd;
+		std::optional<std::function<void(Position position, Position absolutePosition, Position diff)>> callbackMove;
+	};
 }
 
 

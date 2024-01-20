@@ -98,11 +98,11 @@ namespace elementor {
 		return bubbleEvent(elementNode->parent, event);
 	}
 
-	bool isCursorCausedEvent(const std::shared_ptr<Event> &event) {
+	bool isCursorCausedEvent(const std::shared_ptr<Event>& event) {
 		return (
 			event->getName() == "mouse-button" ||
-			event->getName() == "mouse-move" ||
-			event->getName() == "scroll"
+				event->getName() == "mouse-move" ||
+				event->getName() == "scroll"
 		);
 	}
 
@@ -119,33 +119,36 @@ namespace elementor {
 
 			auto eventListeners = eventsListeners[event->getName()];
 			for (const auto& listener: eventListeners) {
+				if (listener == nullptr) {
+					continue;
+				}
+
 				listener(event);
 			}
 		}
 	}
 
-	void Application::addEventListener(
+	int Application::addEventListener(
 		const std::string_view& eventName,
-		const std::function<void(const std::shared_ptr<Event>&)>& listener
+		const std::function<void(const std::shared_ptr<Event>&)>& eventListener
 	) {
-		eventsListeners[eventName].push_back(listener);
+		for (int i = 0; i < eventsListeners[eventName].size(); i++) {
+			if (eventsListeners[eventName][i] == nullptr) {
+				eventsListeners[eventName][i] = eventListener;
+				return i;
+			}
+		}
+
+		eventsListeners[eventName].push_back(eventListener);
+		return (int)eventsListeners[eventName].size() - 1;
 	}
 
-	void Application::removeEventListener(
-		const std::string_view& name,
-		const std::function<void(const std::shared_ptr<Event>&)>& listener
-	) {
-		auto eventListeners = eventsListeners[name];
-		if (eventListeners.empty()) {
+	void Application::removeEventListener(const std::string_view& eventName, int eventListenerIndex) {
+		if (eventListenerIndex < 0 || eventListenerIndex >= eventsListeners[eventName].size()) {
 			return;
 		}
 
-		for (auto it = eventListeners.begin(); it != eventListeners.end(); ++it) {
-			if (getAddress(*it) == getAddress(listener)) {
-				eventListeners.erase(it);
-				break;
-			}
-		}
+		eventsListeners[eventName][eventListenerIndex] = nullptr;
 	}
 
 	std::shared_ptr<ElementTreeNode> Application::getHoveredNodeOrChild(

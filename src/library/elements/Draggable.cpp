@@ -4,130 +4,112 @@
 
 #include "Draggable.h"
 
-#include <utility>
-
 namespace elementor::elements {
-    std::shared_ptr<Draggable> draggable() {
-        return std::make_shared<Draggable>();
-    }
+	Size Draggable::getSize(const Boundaries& boundaries) {
+		if (doesNotHaveChild()) {
+			return boundaries.max;
+		}
 
-    std::shared_ptr<Draggable>
-    Draggable::onStart(std::function<bool(Position position, Position absolutePosition)> callback) {
-        this->callbackStart = std::move(callback);
-        return shared_from_this();
-    }
+		return child->getSize(boundaries);
+	}
 
-    std::shared_ptr<Draggable> Draggable::onStart(const std::function<void()> &callback) {
-        this->callbackStart = [callback](Position position, Position absolutePosition) {
-            callback();
-            return true;
-        };
-        return shared_from_this();
-    }
+	void Draggable::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
+		lastRect = rect;
+	}
 
-    std::shared_ptr<Draggable>
-    Draggable::onEnd(std::function<void(Position position, Position absolutePosition)> callback) {
-        this->callbackEnd = std::move(callback);
-        return shared_from_this();
-    }
+	std::vector<ElementWithRect> Draggable::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    std::shared_ptr<Draggable> Draggable::onEnd(const std::function<void()> &callback) {
-        this->callbackEnd = [callback](Position position, Position absolutePosition) {
-            callback();
-        };
-        return shared_from_this();
-    }
+		Rect childRect = {
+			.size = rect.size,
+			.position = { .x = 0, .y = 0 },
+		};
 
-    std::shared_ptr<Draggable>
-    Draggable::onMove(std::function<void(Position position, Position absolutePosition, Position diff)> callback) {
-        this->callbackMove = std::move(callback);
-        return shared_from_this();
-    }
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 
-    std::shared_ptr<Draggable> Draggable::onMove(const std::function<void()> &callback) {
-        this->callbackMove = [callback](Position position, Position absolutePosition, Position diff) {
-            callback();
-        };
-        return shared_from_this();
-    }
+	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event) {
+		if (!dragging) {
+			return;
+		}
 
-    std::shared_ptr<Draggable> Draggable::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
+		previousCursorAbsolutePosition = cursorAbsolutePosition;
+		cursorAbsolutePosition = { event->x, event->y };
+		cursorPosition = lastRect.absolutePositionToContained(cursorAbsolutePosition);
 
-    Size
-    Draggable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, window, boundaries);
-        } else {
-            return boundaries.max;
-        }
-    }
+		if (callbackMove.has_value()) {
+			Position cursorPositionDiff = {
+				.x = cursorAbsolutePosition.x - previousCursorAbsolutePosition.x,
+				.y = cursorAbsolutePosition.y - previousCursorAbsolutePosition.y,
+			};
+			callbackMove.value()(
+				this->cursorPosition,
+				this->cursorAbsolutePosition,
+				cursorPositionDiff
+			);
+		}
+	}
 
-    void Draggable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                    SkCanvas *canvas, ElementRect rect) {
-        this->rect = rect;
-    }
+	void Draggable::onApplicationMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
+		if (!dragging || event->button != MouseButton::Left || event->action != KeyAction::Release) {
+			return;
+		}
 
-    std::vector<RenderElement>
-    Draggable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
+		if (callbackEnd.has_value()) {
+			callbackEnd.value()(this->cursorPosition, this->cursorAbsolutePosition);
+		}
 
-        if (this->hasChild()) {
-            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
-            children.push_back(childElement);
-        }
+		dragging = false;
 
-        return children;
-    }
+		ctx->removeEventListener("mouse-move", mouseMoveListenerId);
+		ctx->removeEventListener("mouse-button", mouseButtonListenerId);
+	}
 
-    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventHover> event) {
-        this->hovered = event->hovered;
-        return EventCallbackResponse::None;
-    }
+	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
+		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
+			return;
+		}
 
-    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        this->previousCursorAbsolutePosition = this->cursorAbsolutePosition;
-        this->cursorAbsolutePosition = {event->x, event->y};
-        this->cursorPosition = this->rect.absolutePositionToContained(this->cursorAbsolutePosition);
+		if (callbackStart.has_value()) {
+			bool startAllowed = callbackStart.value()(cursorPosition, cursorAbsolutePosition);
+			if (!startAllowed) {
+				return;
+			}
+		}
 
-        if (this->dragging && this->callbackMove) {
-            Position cursorPositionDiff = {
-                    this->cursorAbsolutePosition.x - this->previousCursorAbsolutePosition.x,
-                    this->cursorAbsolutePosition.y - this->previousCursorAbsolutePosition.y,
-            };
-            this->callbackMove(this->cursorPosition, this->cursorAbsolutePosition, cursorPositionDiff);
-        }
+		dragging = true;
 
-        return EventCallbackResponse::None;
-    }
+		mouseMoveListenerId = ctx->addEventListener("mouse-move", [this](const std::shared_ptr<Event>& event) {
+			auto mouseMoveEvent = std::dynamic_pointer_cast<MouseMoveEvent>(event);
+			if (mouseMoveEvent) {
+				onApplicationMouseMoveEvent(mouseMoveEvent);
+			}
+		});
 
-    EventCallbackResponse Draggable::onEvent(std::shared_ptr<EventMouseButton> event) {
-        if (this->hovered && !this->dragging && event->action == KeyAction::Press &&
-            event->button == MouseButton::Left) {
-            if (this->callbackStart) {
-                bool startAllowed = this->callbackStart(this->cursorPosition, this->cursorAbsolutePosition);
-                if (!startAllowed) {
-                    return EventCallbackResponse::None;
-                }
-            }
+		mouseButtonListenerId = ctx->addEventListener("mouse-button", [this](const std::shared_ptr<Event>& event) {
+			auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
+			if (mouseButtonEvent) {
+				onApplicationMouseButtonEvent(mouseButtonEvent);
+			}
+		});
+	}
 
-            this->dragging = true;
+	EventCallbackResponse Draggable::onEvent(const std::shared_ptr<Event>& event) {
+		auto hoverEvent = std::dynamic_pointer_cast<HoverEvent>(event);
+		if (hoverEvent) {
+			hovered = hoverEvent->hovered;
+			return EventCallbackResponse::None;
+		}
 
-            return EventCallbackResponse::StopPropagation;
-        }
+		auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
+		if (mouseButtonEvent) {
+			onMouseButtonEvent(mouseButtonEvent);
+			return EventCallbackResponse::None;
+		}
 
-        if (this->dragging && event->action == KeyAction::Release && event->button == MouseButton::Left) {
-            if (this->callbackEnd) {
-                this->callbackEnd(this->cursorPosition, this->cursorAbsolutePosition);
-            }
-
-            this->dragging = false;
-
-            return EventCallbackResponse::StopPropagation;
-        }
-
-        return EventCallbackResponse::None;
-    }
+		return EventCallbackResponse::None;
+	}
 }
