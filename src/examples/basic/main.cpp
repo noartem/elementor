@@ -4,6 +4,7 @@
 
 #include "elementor.h"
 
+#include <format>
 #include <filesystem>
 
 std::shared_ptr<Element> Box(const std::shared_ptr<ApplicationContext>& ctx) {
@@ -51,6 +52,54 @@ std::filesystem::path getThisPath() {
 		.append("basic");
 }
 
+class LikeButton : public Component {
+public:
+	explicit LikeButton(const std::shared_ptr<ApplicationContext>& ctx)
+		: Component(ctx) {
+		text = Text::New(ctx, {
+			.text = "Лайкнуть",
+			.fontColor = "fff",
+			.fontSize = 16,
+			.fontFamily = "Arial",
+		});
+
+		element = Clickable::New(ctx, {
+			.onClick = [this](KeyMod _) mutable {
+				incCount();
+				return EventCallbackResponse::None;
+			},
+			.child = Rounded::New(ctx, {
+				.all = 4,
+				.child = Background::New(ctx, {
+					.color = "ff5020",
+					.child = Padding::New(ctx, {
+						.all = 8,
+						.top = 6,
+						.child = text
+					})
+				})
+			})
+		});
+	}
+
+	static std::shared_ptr<LikeButton> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		return std::make_shared<LikeButton>(ctx);
+	}
+
+private:
+	void setCount(int newCount) {
+		count = newCount;
+		text->setText(std::format("Лайкнуть ({})", count));
+	}
+
+	void incCount() {
+		setCount(count + 1);
+	}
+
+	int count = 0;
+	std::shared_ptr<Text> text = nullptr;
+};
+
 std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
 	auto hoverableBackground = Background::New(ctx, {
 		.color = "#f00",
@@ -66,25 +115,30 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 					.child = Column::New(ctx, {
 						.spacing = 8,
 						.children = {
-							Align::New(ctx, {
-								.width = { 0 },
-								.child = Background::New(ctx, {
-									.color = "#0a0",
-									.child = Padding::New(ctx, {
-										.top = 15,
-										.right = 13,
-										.bottom = 20,
-										.left = 10,
-										.child = Text::New(ctx, {
-											.text = "Hello, world!",
-											.fontColor = "#fff",
-											.fontSize = 32,
-											.fontWeight = 700,
-											.fontSlant = FontSlant::Italic,
-											.fontFamily = "Fira Code",
+							Flex::New(ctx, {
+								.spacing = 8,
+								.alignment = FlexAlignment::Center,
+								.children = {
+									Background::New(ctx, {
+										.color = "#0a0",
+										.child = Padding::New(ctx, {
+											.top = 15,
+											.right = 13,
+											.bottom = 20,
+											.left = 10,
+											.child = Text::New(ctx, {
+												.text = "Hello, world!",
+												.fontColor = "#fff",
+												.fontSize = 32,
+												.fontWeight = 700,
+												.fontSlant = FontSlant::Italic,
+												.fontFamily = "Fira Code",
+											})
 										})
-									})
-								})
+									}),
+									LikeButton::New(ctx),
+									LikeButton::New(ctx)
+								}
 							}),
 							Height::New(ctx, {
 								.height = 100,
@@ -141,6 +195,10 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 										})
 									})
 								}
+							}),
+							Align::New(ctx, {
+								.width = { 0 },
+								.child = LikeButton::New(ctx),
 							}),
 							Paragraph::New(ctx, {
 								.children = {

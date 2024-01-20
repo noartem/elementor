@@ -11,4 +11,8 @@
 #define E_PRINT(x) std::cout << #x"=" << x << std::endl
 #endif
 
+#ifndef E_LOG
+#define E_LOG(x) std::cout << x << std::endl
+#endif
+
 #endif //ELEMENTOR_DEBUG_H

@@ -14,30 +14,33 @@
 namespace elementor::elements {
 	class Component : public Element {
 	public:
-		Size getSize(const Boundaries& boundaries) override {
-			if (this->element) {
-				return this->element->getSize(boundaries);
-			}
-
-			return boundaries.min;
+		explicit Component(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
 		}
 
-		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override {
-			this->lastRect = rect;
+		Size getSize(const Boundaries& boundaries) override {
+			if (element == nullptr) {
+				return boundaries.max;
+			}
+
+			return element->getSize(boundaries);
 		}
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override {
-			if (this->element) {
-				ElementWithRect elementWithRect(this->element, { rect.size, { 0, 0 }});
-				return { elementWithRect };
+			if (element == nullptr) {
+				return {};
 			}
 
-			return {};
+			Rect elementRect = {
+				.size = rect.size,
+				.position = { .x =  0, .y = 0 },
+			};
+			ElementWithRect elementWithRect(this->element, elementRect);
+			return { elementWithRect };
 		}
 
 	protected:
-		ElementRect lastRect;
-		std::shared_ptr<Element> element;
+		std::shared_ptr<Element> element = nullptr;
 	};
 }
 

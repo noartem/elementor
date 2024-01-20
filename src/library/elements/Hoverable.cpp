@@ -41,6 +41,7 @@ namespace elementor::elements {
 			}
 
 			hovered = hoverEvent->hovered;
+			return EventCallbackResponse::None;
 		}
 
 		return EventCallbackResponse::None;

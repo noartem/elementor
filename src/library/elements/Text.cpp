@@ -127,9 +127,15 @@ namespace elementor::elements {
 		if (!paint.has_value()) paint = makeSkPaint();
 		lastPixelScale = pixelScale;
 
-		SkRect textBounds;
-		font.value().measureText(text.data(), text.size(), SkTextEncoding::kUTF8, &textBounds, &paint.value());
-		return fitSizeInBoundaries({ textBounds.width(), textBounds.height() }, boundaries);
+		SkRect textRect;
+		font.value().measureText(text.data(), text.size(), SkTextEncoding::kUTF8, &textRect, &paint.value());
+
+		Size textSize = {
+			.width = textRect.width(),
+			.height = textRect.height()
+		};
+
+		return fitSizeInBoundaries(textSize, boundaries);
 	}
 
 	void Text::paintBackground(SkCanvas* canvas, const ElementRect& rect) {

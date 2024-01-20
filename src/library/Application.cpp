@@ -98,11 +98,25 @@ namespace elementor {
 		return bubbleEvent(elementNode->parent, event);
 	}
 
+	bool isCursorCausedEvent(const std::shared_ptr<Event> &event) {
+		return (
+			event->getName() == "mouse-button" ||
+			event->getName() == "mouse-move" ||
+			event->getName() == "scroll"
+		);
+	}
+
 	void Application::dispatchPendingEvents() {
 		auto lastPendingEvents = pendingEvents;
 		pendingEvents = {};
 
 		for (const auto& event: lastPendingEvents) {
+			if (isCursorCausedEvent(event) && hoveredNode) {
+				if (bubbleEvent(hoveredNode, event) == EventCallbackResponse::StopPropagation) {
+					continue;
+				}
+			}
+
 			auto eventListeners = eventsListeners[event->getName()];
 			for (const auto& listener: eventListeners) {
 				listener(event);

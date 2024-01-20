@@ -64,30 +64,26 @@ namespace elementor::elements {
 	};
 
 	struct TextProps {
-		std::optional<std::string_view> text;
-		std::optional<std::string_view> fontColor;
+		std::optional<std::string> text;
+		std::optional<std::string> fontColor;
 		std::optional<float> fontSize;
 		std::optional<float> fontSkew;
 		std::optional<float> fontScale;
 		std::optional<float> fontWeight;
 		std::optional<float> fontWidth;
 		std::optional<FontSlant> fontSlant;
-		std::optional<std::string_view> fontFamily;
+		std::optional<std::string> fontFamily;
 		std::optional<FontEdging> fontEdging;
 		std::optional<TextDecoration> decoration;
 		std::optional<TextDecorationMode> decorationMode;
 		std::optional<TextDecorationStyle> decorationStyle;
 		std::optional<SkColor> decorationColor;
 		std::optional<float> decorationThicknessMultiplier;
-		std::optional<std::string_view> locale;
+		std::optional<std::string> locale;
 	};
 
 	class Text : public Element {
 	public:
-		explicit Text(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx) {
-		}
-
 		Text(const std::shared_ptr<ApplicationContext>& ctx, const TextProps& props)
 			: Element(ctx) {
 			if (props.text.has_value())
@@ -135,11 +131,11 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
-		[[nodiscard]] std::string_view getText() const {
+		[[nodiscard]] std::string getText() const {
 			return text;
 		}
 
-		void setText(const std::string_view& newText) {
+		void setText(const std::string& newText) {
 			text = newText;
 		}
 
@@ -160,8 +156,8 @@ namespace elementor::elements {
 			setFontColor(makeSkColorFromRGB(r, g, b));
 		}
 
-		void setFontColor(const std::string_view& newFontColor) {
-			setFontColor(makeSkColorFromHex(std::string(newFontColor)));
+		void setFontColor(const std::string& newFontColor) {
+			setFontColor(makeSkColorFromHex(newFontColor));
 		}
 
 		[[nodiscard]] float getFontSize() const {
@@ -218,11 +214,11 @@ namespace elementor::elements {
 			font = std::nullopt;
 		}
 
-		[[nodiscard]] std::string_view getFontFamily() const {
+		[[nodiscard]] std::string getFontFamily() const {
 			return fontFamily;
 		}
 
-		void setFontFamily(const std::string_view& newFontFamily) {
+		void setFontFamily(const std::string& newFontFamily) {
 			fontFamily = newFontFamily;
 			font = std::nullopt;
 		}
@@ -276,7 +272,7 @@ namespace elementor::elements {
 			setDecorationColor(makeSkColorFromRGB(r, g, b));
 		}
 
-		void setDecorationColor(const std::string_view& color) {
+		void setDecorationColor(const std::string& color) {
 			setDecorationColor(makeSkColorFromHex(std::string(color)));
 		}
 
@@ -288,22 +284,22 @@ namespace elementor::elements {
 			decorationThicknessMultiplier = newDecorationThicknessMultiplier;
 		}
 
-		[[nodiscard]] std::optional<std::string_view> getLocale() const {
+		[[nodiscard]] std::optional<std::string> getLocale() const {
 			return locale;
 		}
 
-		void setLocale(std::optional<std::string_view> newLocale) {
+		void setLocale(const std::optional<std::string>& newLocale) {
 			locale = newLocale;
 		}
 
-		skia::textlayout::TextStyle makeSkTextStyle() const;
+		[[nodiscard]] skia::textlayout::TextStyle makeSkTextStyle() const;
 
 		Size getSize(const Boundaries& boundaries) override;
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
 	private:
-		std::string_view text;
+		std::string text;
 		SkColor fontColor = SK_ColorBLACK;
 		float fontSize = 16.0;
 		float fontSkew = 0.0;
@@ -311,37 +307,37 @@ namespace elementor::elements {
 		float fontWeight = SkFontStyle::kNormal_Weight;
 		float fontWidth = SkFontStyle::kNormal_Width;
 		FontSlant fontSlant = FontSlant::Upright;
-		std::string_view fontFamily;
+		std::string fontFamily;
 		FontEdging fontEdging = FontEdging::AntiAlias;
 		TextDecoration decoration = TextDecoration::NoDecoration;
 		TextDecorationMode decorationMode = TextDecorationMode::Through;
 		TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
 		SkColor decorationColor = SK_ColorTRANSPARENT;
 		float decorationThicknessMultiplier = 1;
-		std::optional<std::string_view> locale;
+		std::optional<std::string> locale;
 
-		float lastPixelScale;
+		float lastPixelScale = 0;
 
 		std::optional<SkFont> font;
 		std::optional<SkPaint> paint;
 
-		SkFontStyle::Slant getSkFontStyleSlant() const;
+		[[nodiscard]] SkFontStyle::Slant getSkFontStyleSlant() const;
 
-		SkFont::Edging getSkFontEdging() const;
+		[[nodiscard]] SkFont::Edging getSkFontEdging() const;
 
-		SkFontStyle makeSkFontStyle() const;
+		[[nodiscard]] SkFontStyle makeSkFontStyle() const;
 
-		sk_sp<SkTypeface> makeSkTypeface() const;
+		[[nodiscard]] sk_sp<SkTypeface> makeSkTypeface() const;
 
-		SkFont makeSkFont() const;
+		[[nodiscard]] SkFont makeSkFont() const;
 
-		SkPaint makeSkPaint() const;
+		[[nodiscard]] SkPaint makeSkPaint() const;
 
-		skia::textlayout::TextDecoration getSkTextDecoration() const;
+		[[nodiscard]] skia::textlayout::TextDecoration getSkTextDecoration() const;
 
-		skia::textlayout::TextDecorationMode getSkTextDecorationMode() const;
+		[[nodiscard]] skia::textlayout::TextDecorationMode getSkTextDecorationMode() const;
 
-		skia::textlayout::TextDecorationStyle getSkTextDecorationStyle() const;
+		[[nodiscard]] skia::textlayout::TextDecorationStyle getSkTextDecorationStyle() const;
 	};
 }
 
