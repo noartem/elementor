@@ -23,16 +23,13 @@ namespace elementor {
 	}
 
 	void Application::draw(SkCanvas* canvas) {
-		const auto& newRootNode = makeRootNode(root, windowCtx);
-		drawNode(newRootNode, canvas);
+		rootNode = makeRootNode(root, windowCtx);
 
+		updateHoveredNode();
 		dispatchPendingEvents();
 
-		auto cursorPosition = windowCtx->getCursor()->getPosition();
-		const auto& newHoveredNode = getHoveredNodeOrChild(newRootNode, cursorPosition);
-		setHoveredNode(newHoveredNode);
-
-		rootNode = newRootNode;
+		rootNode = makeRootNode(root, windowCtx);
+		drawNode(rootNode, canvas);
 	}
 
 	void Application::drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas) {
@@ -86,24 +83,22 @@ namespace elementor {
 		const std::shared_ptr<ElementTreeNode>& elementNode,
 		const std::shared_ptr<Event>& event
 	) const {
-		auto elementResponse = callElementEventHandler(elementNode->element, event);
-		if (elementResponse == EventCallbackResponse::StopPropagation) {
-			return EventCallbackResponse::StopPropagation;
+		auto currentNode = elementNode;
+
+		while (currentNode != nullptr) {
+			auto elementResponse = callElementEventHandler(currentNode->element, event);
+			if (elementResponse == EventCallbackResponse::StopPropagation) {
+				return EventCallbackResponse::StopPropagation;
+			}
+
+			currentNode = currentNode->parent;
 		}
 
-		if (elementNode->parent == nullptr) {
-			return EventCallbackResponse::None;
-		}
-
-		return bubbleEvent(elementNode->parent, event);
+		return EventCallbackResponse::None;
 	}
 
 	bool isCursorCausedEvent(const std::shared_ptr<Event>& event) {
-		return (
-			event->getName() == "mouse-button" ||
-				event->getName() == "mouse-move" ||
-				event->getName() == "scroll"
-		);
+		return event->getName() == "mouse-button" || event->getName() == "mouse-move" || event->getName() == "scroll";
 	}
 
 	void Application::dispatchPendingEvents() {
@@ -180,5 +175,11 @@ namespace elementor {
 
 			hoveredNode = newHoveredNode;
 		}
+	}
+
+	void Application::updateHoveredNode() {
+		auto cursorPosition = windowCtx->getCursor()->getPosition();
+		const auto& newHoveredNode = getHoveredNodeOrChild(rootNode, cursorPosition);
+		setHoveredNode(newHoveredNode);
 	}
 }

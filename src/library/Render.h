@@ -17,6 +17,10 @@ namespace elementor {
 	struct Size {
 		float width;
 		float height;
+
+		bool operator==(const Size& other) const {
+			return other.width == this->width && other.height == this->height;
+		}
 	};
 
 	struct Boundaries {

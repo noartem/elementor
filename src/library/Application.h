@@ -79,6 +79,8 @@ namespace elementor {
 		std::shared_ptr<ElementTreeNode> getHoveredNodeOrChild(const std::shared_ptr<ElementTreeNode>& node, const Position& cursorPosition) const;
 
 		void setHoveredNode(const std::shared_ptr<ElementTreeNode>& newHoveredNode);
+
+		void updateHoveredNode();
 	};
 };
 
