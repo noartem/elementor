@@ -20,6 +20,8 @@
 #include "PlatformContext.h"
 #include "ApplicationContext.h"
 
+#include "elements/Focusable.h"
+
 namespace elementor {
 	class Application : public ApplicationContext, public std::enable_shared_from_this<Application> {
 	public:
@@ -70,6 +72,9 @@ namespace elementor {
 
 		std::shared_ptr<ElementTreeNode> hoveredNode;
 
+		std::vector<std::shared_ptr<elements::Focusable>> focusableElements;
+		std::shared_ptr<elements::Focusable> focusedElement;
+
 		void drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas);
 
 		void dispatchPendingEvents();
@@ -81,6 +86,20 @@ namespace elementor {
 		void setHoveredNode(const std::shared_ptr<ElementTreeNode>& newHoveredNode);
 
 		void updateHoveredNode();
+
+		void pushTreeFocusableElements(const std::shared_ptr<ElementTreeNode>& node);
+
+		void setFocusedElement(const std::shared_ptr<elements::Focusable>& newFocusedElement);
+
+		void clearFocusedElementIfRemoved();
+
+		void updateFocusableElements();
+
+		void focusNextFocusableElement();
+
+		void focusPreviousFocusableElement();
+
+		std::shared_ptr<ElementTreeNode> getFocusedElementNode();
 	};
 };
 

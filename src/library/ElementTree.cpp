@@ -67,4 +67,19 @@ namespace elementor {
 
 		return makeNode(element, rootRect, rootBoundary);
 	}
+
+	std::shared_ptr<ElementTreeNode> ElementTreeNode::findElementNode(const std::shared_ptr<Element>& targetElement) {
+		if (element == targetElement) {
+			return shared_from_this();
+		}
+
+		for (const auto& childNode: children) {
+			auto foundNode = childNode->findElementNode(targetElement);
+			if (foundNode != nullptr) {
+				return foundNode;
+			}
+		}
+
+		return nullptr;
+	}
 }

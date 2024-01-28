@@ -5,6 +5,11 @@
 #ifndef ELEMENTOR_APPLICATION_CONTEXT_H
 #define ELEMENTOR_APPLICATION_CONTEXT_H
 
+#include <memory>
+#include <functional>
+#include <string_view>
+
+#include "Event.h"
 #include "WindowContext.h"
 #include "PlatformContext.h"
 

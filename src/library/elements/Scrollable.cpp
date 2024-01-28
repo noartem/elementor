@@ -22,30 +22,7 @@ namespace elementor::elements {
 	}
 
 	Size Scrollable::getSize(const Boundaries& boundaries) {
-		lastChildSize = getChildSize(boundaries);
-		return fitSizeInBoundaries(lastChildSize, boundaries);
-	}
-
-	void Scrollable::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
-		if (rect.size == lastSize) {
-			return;
-		}
-
-		if (isHorizontalScroll() && rect.size.width + scrollLeft > lastChildSize.width) {
-			scrollLeft = std::min(
-				std::max(lastChildSize.width - rect.size.width, 0.0f),
-				getMaxScrollLeft()
-			);
-		}
-
-		if (isVerticalScroll() && rect.size.height + scrollTop > lastChildSize.height) {
-			scrollTop = std::min(
-				std::max(lastChildSize.height - rect.size.height, 0.0f),
-				getMaxScrollTop()
-			);
-		}
-
-		lastSize = rect.size;
+		return fitSizeInBoundaries(getChildSize(boundaries), boundaries);
 	}
 
 	std::vector<ElementWithRect> Scrollable::getChildren(const ElementRect& rect) {
@@ -53,35 +30,30 @@ namespace elementor::elements {
 			return {};
 		}
 
+		Size childSize = getChildSize({
+			.min = ZeroSize,
+			.max = {
+				.width = rect.size.width,
+				.height = rect.size.height,
+			}
+		});
+
+		lastChildSize = childSize;
+		lastSize = rect.size;
+
+		setScrollLeft(scrollLeft);
+		setScrollTop(scrollTop);
+
 		Rect childRect = {
-			.size = getChildSize({
-				.min = ZeroSize,
-				.max = {
-					.width = rect.size.width,
-					.height = rect.size.height,
-				}
-			}),
+			.size = childSize,
 			.position = {
 				.x = -1 * scrollLeft,
 				.y = -1 * scrollTop
 			},
 		};
-		lastChildSize = childRect.size;
 
 		ElementWithRect childElement(child, childRect);
-
 		return { childElement };
-	}
-
-	EventCallbackResponse Scrollable::onScrollEvent(const std::shared_ptr<ScrollEvent>& event) {
-		if (!this->hovered) {
-			return EventCallbackResponse::None;
-		}
-
-		setScrollLeft(scrollLeft - event->xOffset * scrollAcceleration);
-		setScrollTop(scrollTop - event->yOffset * scrollAcceleration);
-
-		return EventCallbackResponse::StopPropagation;
 	}
 
 	EventCallbackResponse Scrollable::onEvent(const std::shared_ptr<Event>& event) {
@@ -93,7 +65,14 @@ namespace elementor::elements {
 
 		auto scrollEvent = std::dynamic_pointer_cast<ScrollEvent>(event);
 		if (scrollEvent) {
-			return onScrollEvent(scrollEvent);
+			if (!this->hovered) {
+				return EventCallbackResponse::None;
+			}
+
+			setScrollLeft(scrollLeft - scrollEvent->xOffset * scrollAcceleration);
+			setScrollTop(scrollTop - scrollEvent->yOffset * scrollAcceleration);
+
+			return EventCallbackResponse::StopPropagation;
 		}
 
 		return EventCallbackResponse::None;

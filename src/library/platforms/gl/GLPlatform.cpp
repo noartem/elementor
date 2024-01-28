@@ -39,19 +39,19 @@ namespace elementor::platforms::gl {
 
 	void GLPlatform::run() {
 		eventLoop->setCallback([this]() {
-		applyRnfQueue();
+			applyRnfQueue();
 
-		for (const std::shared_ptr<GLWindow>& window: windows) {
-			window->draw();
-		}
+			for (const std::shared_ptr<GLWindow>& window: windows) {
+				window->draw();
+			}
 
-		if (windows.empty()) {
-			return true;
-		}
+			if (windows.empty()) {
+				return true;
+			}
 
-		perfomance->incrementFramesCount();
+			perfomance->incrementFramesCount();
 
-		return false;
+			return false;
 		});
 
 		eventLoop->start();

@@ -12,6 +12,7 @@
 #include "Element.h"
 #include "ElementTree.h"
 #include "Event.h"
+
 #include "debug.h"
 
 namespace elementor {
@@ -24,12 +25,13 @@ namespace elementor {
 
 	void Application::draw(SkCanvas* canvas) {
 		rootNode = makeRootNode(root, windowCtx);
-
-		updateHoveredNode();
-		dispatchPendingEvents();
-
-		rootNode = makeRootNode(root, windowCtx);
 		drawNode(rootNode, canvas);
+
+		platformCtx->requestNextFrame([this]() {
+			updateHoveredNode();
+			updateFocusableElements();
+			dispatchPendingEvents();
+		});
 	}
 
 	void Application::drawNode(const std::shared_ptr<ElementTreeNode>& node, SkCanvas* canvas) {
@@ -98,7 +100,30 @@ namespace elementor {
 	}
 
 	bool isCursorCausedEvent(const std::shared_ptr<Event>& event) {
-		return event->getName() == "mouse-button" || event->getName() == "mouse-move" || event->getName() == "scroll";
+		return event->getName() == "mouse-button"
+			|| event->getName() == "mouse-move"
+			|| event->getName() == "scroll";
+	}
+
+	bool isGoToNextFocusableEvent(const std::shared_ptr<Event>& event) {
+		auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+		return keyboardEvent != nullptr
+			&& keyboardEvent->action == KeyAction::Release
+			&& keyboardEvent->mod != KeyMod::Shift
+			&& keyboardEvent->key == KeyboardKey::Tab;
+	}
+
+	bool isGoToPreviousFocusableEvent(const std::shared_ptr<Event>& event) {
+		auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+		return keyboardEvent != nullptr
+			&& keyboardEvent->action == KeyAction::Release
+			&& keyboardEvent->mod == KeyMod::Shift
+			&& keyboardEvent->key == KeyboardKey::Tab;
+	}
+
+	bool isFocusRelatedEvent(const std::shared_ptr<Event>& event) {
+		return event->getName() == "keyboard"
+			|| event->getName() == "char";
 	}
 
 	void Application::dispatchPendingEvents() {
@@ -106,10 +131,21 @@ namespace elementor {
 		pendingEvents = {};
 
 		for (const auto& event: lastPendingEvents) {
-			if (isCursorCausedEvent(event) && hoveredNode) {
-				if (bubbleEvent(hoveredNode, event) == EventCallbackResponse::StopPropagation) {
+			if (hoveredNode && isCursorCausedEvent(event)) {
+				auto bubbleEventResponse = bubbleEvent(hoveredNode, event);
+				if (bubbleEventResponse == EventCallbackResponse::StopPropagation) {
 					continue;
 				}
+			} else if (focusedElement && isFocusRelatedEvent(event)) {
+				auto focusedElementNode = getFocusedElementNode();
+				auto bubbleEventResponse = bubbleEvent(focusedElementNode, event);
+				if (bubbleEventResponse == EventCallbackResponse::StopPropagation) {
+					continue;
+				}
+			} else if (isGoToNextFocusableEvent(event)) {
+				focusNextFocusableElement();
+			} else if (isGoToPreviousFocusableEvent(event)) {
+				focusPreviousFocusableElement();
 			}
 
 			auto eventListeners = eventsListeners[event->getName()];
@@ -167,6 +203,8 @@ namespace elementor {
 		if (hoveredNode) {
 			auto hoverLeaveEvent = std::make_shared<HoverEvent>(false);
 			bubbleEvent(hoveredNode, hoverLeaveEvent);
+
+			hoveredNode = nullptr;
 		}
 
 		if (newHoveredNode) {
@@ -181,5 +219,121 @@ namespace elementor {
 		auto cursorPosition = windowCtx->getCursor()->getPosition();
 		const auto& newHoveredNode = getHoveredNodeOrChild(rootNode, cursorPosition);
 		setHoveredNode(newHoveredNode);
+	}
+
+	void Application::pushTreeFocusableElements(const std::shared_ptr<ElementTreeNode>& node) {
+		auto nodeElementFocusable = std::dynamic_pointer_cast<elements::Focusable>(node->element);
+		if (nodeElementFocusable != nullptr && nodeElementFocusable->getCanRequestFocus()) {
+			focusableElements.push_back(nodeElementFocusable);
+		}
+
+		for (const auto& child: node->children) {
+			pushTreeFocusableElements(child);
+		}
+	}
+
+	void Application::setFocusedElement(const std::shared_ptr<elements::Focusable>& newFocusedElement) {
+		if (newFocusedElement == focusedElement) {
+			return;
+		}
+
+		if (focusedElement) {
+			auto blurEvent = std::make_shared<FocusEvent>(false);
+			focusedElement->onEvent(blurEvent);
+
+			focusedElement = nullptr;
+		}
+
+		if (newFocusedElement) {
+			auto focusEvent = std::make_shared<FocusEvent>(true);
+			newFocusedElement->onEvent(focusEvent);
+
+			focusedElement = newFocusedElement;
+		}
+	}
+
+	void Application::clearFocusedElementIfRemoved() {
+		if (focusedElement == nullptr) {
+			return;
+		}
+
+		for (const auto& element: focusableElements) {
+			if (element == focusedElement) {
+				return;
+			}
+		}
+
+		setFocusedElement(nullptr);
+	}
+
+	void Application::updateFocusableElements() {
+		focusableElements.clear();
+
+		pushTreeFocusableElements(rootNode);
+		clearFocusedElementIfRemoved();
+
+		if (focusedElement == nullptr) {
+			for (const auto& focusableElement: focusableElements) {
+				if (focusableElement->getPendingFocus()) {
+					setFocusedElement(focusableElement);
+					break;
+				}
+			}
+		}
+	}
+
+	void Application::focusNextFocusableElement() {
+		if (focusedElement == nullptr) {
+			if (!focusableElements.empty()) {
+				setFocusedElement(focusableElements[0]);
+			}
+
+			return;
+		}
+
+		for (int i = 0; i < focusableElements.size(); i++) {
+			if (focusableElements[i] == focusedElement) {
+				if (i + 1 < focusableElements.size()) {
+					setFocusedElement(focusableElements[i + 1]);
+					return;
+				}
+			}
+		}
+	}
+
+	void Application::focusPreviousFocusableElement() {
+		if (focusedElement == nullptr) {
+			if (!focusableElements.empty()) {
+				setFocusedElement(focusableElements[0]);
+			}
+
+			return;
+		}
+
+		for (int i = 0; i < focusableElements.size(); i++) {
+			if (focusableElements[i] == focusedElement) {
+				if (i - 1 >= 0) {
+					setFocusedElement(focusableElements[i - 1]);
+					return;
+				}
+			}
+		}
+	}
+
+	std::shared_ptr<ElementTreeNode> Application::getFocusedElementNode() {
+		if (rootNode == nullptr) {
+			return nullptr;
+		}
+
+		if (focusedElement == nullptr) {
+			return nullptr;
+		}
+
+		auto focusedElementAsElement = std::dynamic_pointer_cast<Element>(focusedElement);
+		if (focusedElementAsElement == nullptr) {
+			return nullptr;
+		}
+
+		return rootNode->findElementNode(focusedElementAsElement);
 	}
 }

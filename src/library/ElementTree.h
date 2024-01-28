@@ -13,11 +13,14 @@
 #include "Element.h"
 
 namespace elementor {
-	struct ElementTreeNode {
+	struct ElementTreeNode : public std::enable_shared_from_this<ElementTreeNode> {
 		std::shared_ptr<Element> element;
 		ElementRect rect{};
 		std::vector<std::shared_ptr<ElementTreeNode>> children;
 		std::shared_ptr<ElementTreeNode> parent;
+
+	public:
+		std::shared_ptr<ElementTreeNode> findElementNode(const std::shared_ptr<Element>& targetElement);
 	};
 
 	std::shared_ptr<ElementTreeNode> makeNode(

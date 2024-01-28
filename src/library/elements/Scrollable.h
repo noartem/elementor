@@ -99,8 +99,6 @@ namespace elementor::elements {
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
-
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
 		ClipBehavior getClipBehaviour() override {
@@ -119,8 +117,6 @@ namespace elementor::elements {
 
 		Size lastSize = {0,0};
 		Size lastChildSize = {0,0};
-
-		EventCallbackResponse onScrollEvent(const std::shared_ptr<ScrollEvent>& event);
 	};
 }
 

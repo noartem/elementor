@@ -174,10 +174,8 @@ namespace elementor {
 
 	class MouseButtonEvent : public Event {
 	public:
-		MouseButtonEvent(MouseButton button, KeyAction action, KeyMod mod) {
-			this->button = button;
-			this->action = action;
-			this->mod = mod;
+		MouseButtonEvent(MouseButton button, KeyAction action, KeyMod mod)
+			: button(button), action(action), mod(mod) {
 		}
 
 		MouseButton button;
@@ -191,9 +189,8 @@ namespace elementor {
 
 	class MouseMoveEvent : public Event {
 	public:
-		MouseMoveEvent(float x, float y) {
-			this->x = x;
-			this->y = y;
+		MouseMoveEvent(float x, float y)
+			: x(x), y(x) {
 		}
 
 		float x;
@@ -206,9 +203,8 @@ namespace elementor {
 
 	class ScrollEvent : public Event {
 	public:
-		ScrollEvent(float xOffset, float yOffset) {
-			this->xOffset = xOffset;
-			this->yOffset = yOffset;
+		ScrollEvent(float xOffset, float yOffset)
+			: xOffset(xOffset), yOffset(yOffset) {
 		}
 
 		float xOffset;
@@ -221,11 +217,8 @@ namespace elementor {
 
 	class KeyboardEvent : public Event {
 	public:
-		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, KeyMod mod) {
-			this->key = key;
-			this->scancode = scancode;
-			this->action = action;
-			this->mod = mod;
+		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, KeyMod mod)
+			: key(key), scancode(scancode), action(action), mod(mod) {
 		}
 
 		KeyboardKey key;
@@ -240,8 +233,8 @@ namespace elementor {
 
 	class CharEvent : public Event {
 	public:
-		explicit CharEvent(char32_t value) {
-			this->value = value;
+		explicit CharEvent(char32_t value)
+			: value(value) {
 		}
 
 		char32_t value;
@@ -253,11 +246,24 @@ namespace elementor {
 
 	class HoverEvent : public Event {
 	public:
-		explicit HoverEvent(bool hovered) {
-			this->hovered = hovered;
+		explicit HoverEvent(bool hovered)
+			: hovered(hovered) {
 		}
 
 		bool hovered;
+
+		std::string_view getName() override {
+			return "hover";
+		}
+	};
+
+	class FocusEvent : public Event {
+	public:
+		explicit FocusEvent(bool focused)
+			: focused(focused) {
+		}
+
+		bool focused;
 
 		std::string_view getName() override {
 			return "hover";

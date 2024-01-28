@@ -7,40 +7,6 @@
 #include <format>
 #include <filesystem>
 
-std::shared_ptr<Element> Box(const std::shared_ptr<ApplicationContext>& ctx) {
-	return (
-		Border::New(ctx, {
-			.radius = 16,
-			.width = 16,
-			.color = "#aaa",
-			.child = Rounded::New(ctx, {
-				.all = 8,
-				.child = Background::New(ctx, {
-					.color = "#faa",
-				})
-			})
-		})
-	);
-}
-
-struct SizedProps {
-	float width = 0;
-	float height = 0;
-	const std::shared_ptr<Element>& child = nullptr;
-};
-
-std::shared_ptr<Element> Sized(const std::shared_ptr<ApplicationContext>& ctx, const SizedProps& props) {
-	return (
-		Height::New(ctx, {
-			.height = props.height,
-			.child = Width::New(ctx, {
-				.width = props.width,
-				.child = props.child
-			})
-		})
-	);
-}
-
 std::filesystem::path getThisPath() {
 	return std::filesystem::current_path()
 		.append("..")
@@ -100,69 +66,144 @@ private:
 	std::shared_ptr<Text> text = nullptr;
 };
 
-struct SelfDraggableProps {
-	float width = 0;
-	float height = 0;
-	const std::shared_ptr<Element>& child = nullptr;
-};
-
-class SelfDraggable : public Component {
+class TextInput : public Component, public WithEvents {
 public:
-	explicit SelfDraggable(const std::shared_ptr<ApplicationContext>& ctx, const SelfDraggableProps& props)
+	explicit TextInput(const std::shared_ptr<ApplicationContext>& ctx)
 		: Component(ctx) {
-		padding = Padding::New(ctx, {
-			.all = 100,
-			.child = props.child,
+
+		text = Text::New(ctx, {
+			.fontColor = "#000",
+			.fontSize = 14,
+			.fontFamily = "Arial",
 		});
 
-		element = Draggable::New(ctx, {
-			.onStart = [this](Position cursorPosition, Position cursorAbsolutePosition) {
-				startCursorAbsolutePosition = cursorAbsolutePosition;
-				setPosition({ .x = 0, .y = 0 });
-				return true;
-			},
-			.onEnd = [this](Position cursorPosition, Position cursorAbsolutePosition) {
-				setPosition({ .x = 0, .y = 0 });
-			},
-			.onMove = [this](Position cursorPosition, Position cursorAbsolutePosition, Position diff) {
-				setPosition({
-					.x = cursorAbsolutePosition.x - startCursorAbsolutePosition.x,
-					.y = cursorAbsolutePosition.y - startCursorAbsolutePosition.y
-				});
-			},
-			.child = padding
+		paragraph = Paragraph::New(ctx, {
+			.children = {
+				text,
+			}
 		});
+
+		auto input = Rounded::New(ctx, {
+			.all = 6,
+			.child = Background::New(ctx, {
+				.color = "#ebf0f0",
+				.child = Padding::New(ctx, {
+					.all = 6,
+					.child = paragraph
+				})
+			})
+		});
+
+		focusable = Focusable::New(ctx, {
+			.onFocusChange = [this](bool focused) {
+				setInputFocused(focused);
+			},
+			.child = input,
+		});
+
+		element = focusable;
+
+		setValue(U"How are you?");
 	}
 
-	static std::shared_ptr<SelfDraggable> New(
-		const std::shared_ptr<ApplicationContext>& ctx,
-		const SelfDraggableProps& props
-	) {
-		return std::make_shared<SelfDraggable>(ctx, props);
+	static std::shared_ptr<TextInput> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		return std::make_shared<TextInput>(ctx);
+	}
+
+	EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override {
+		if (!inputFocused) {
+			return EventCallbackResponse::None;
+		}
+
+		auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+		if (keyboardEvent) {
+			onKeyboardEvent(keyboardEvent);
+			return EventCallbackResponse::StopPropagation;
+		}
+
+		auto charEvent = std::dynamic_pointer_cast<CharEvent>(event);
+		if (charEvent) {
+			onCharEvent(charEvent);
+			return EventCallbackResponse::StopPropagation;
+		}
+
+		return EventCallbackResponse::None;
+	}
+
+	void blur() {
+		focusable->setPendingFocus(false);
+	}
+
+	void focus() {
+		focusable->setPendingFocus(true);
+	}
+
+	void setValue(const std::u32string& newValue) {
+		value = newValue;
+
+		auto textValue = value.empty() ? " " : toUTF8(value);
+		text->setText(textValue);
+
+		paragraph->forceUpdate();
 	}
 
 private:
-	Position startCursorAbsolutePosition = {0, 0};
+	std::u32string value;
 
-	void setPosition(const Position& newValue) {
-		position = newValue;
-		padding->setPaddings(
-			std::clamp(100 + position.y, 0.0f, 200.0f),
-			std::clamp(100 - position.x, 0.0f, 200.0f),
-			std::clamp(100 - position.y, 0.0f, 200.0f),
-			std::clamp(100 + position.x, 0.0f, 200.0f)
-		);
+	std::shared_ptr<Focusable> focusable = nullptr;
+	std::shared_ptr<Text> text = nullptr;
+	std::shared_ptr<Paragraph> paragraph = nullptr;
+
+	bool inputFocused = false;
+
+	void setInputFocused(bool focused) {
+		inputFocused = focused;
+
+		// TODO: Add cursor
 	}
 
-	Position position = { 0, 0 };
-	std::shared_ptr<Padding> padding;
+	void onKeyboardEvent(const std::shared_ptr<KeyboardEvent>& event) {
+		if (event->action == KeyAction::Release) {
+			return;
+		}
+
+		if (event->key == KeyboardKey::Escape || event->key == KeyboardKey::Enter) {
+			blur();
+			return;
+		}
+
+		if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
+			ctx->getPlatformCtx()->getClipboard()->set(text->getText());
+			return;
+		}
+
+		if (event->key == KeyboardKey::V && event->mod == KeyMod::Control) {
+			auto clipboard = ctx->getPlatformCtx()->getClipboard();
+			auto clipboardValueU8 = clipboard->get();
+
+			std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+			std::u32string clipboardValueU32 = converter.from_bytes(clipboardValueU8.data());
+
+			setValue(value + clipboardValueU32);
+
+			return;
+		}
+
+		if (event->key == KeyboardKey::Backspace || event->key == KeyboardKey::Delete) {
+			if (value.empty()) {
+				return;
+			}
+
+			setValue(value.substr(0, value.size() - 1));
+		}
+	}
+
+	bool onCharEvent(const std::shared_ptr<CharEvent>& event) {
+		setValue(value + event->value);
+	}
 };
 
 std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
-	auto hoverableBackground = Background::New(ctx, {
-		.color = "#f00",
-	});
-
 	return (
 		Background::New(ctx, {
 			.color = "#fff",
@@ -196,10 +237,10 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 												})
 											})
 										}),
-										LikeButton::New(ctx),
 										LikeButton::New(ctx)
 									}
 								}),
+								TextInput::New(ctx),
 								Height::New(ctx, {
 									.height = 100,
 									.child = Rounded::New(ctx, {
@@ -214,34 +255,6 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 								Row::New(ctx, {
 									.spacing = 8,
 									.children = {
-										Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = SVG::New(ctx, {
-												.src = getThisPath().append("cat.svg").string(),
-											})
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = SVG::New(ctx, {
-												.src = getThisPath().append("cat-2.svg").string(),
-											})
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = SVG::New(ctx, {
-												.src = getThisPath().append("cat.svg").string(),
-											})
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = SVG::New(ctx, {
-												.src = getThisPath().append("cat-2.svg").string(),
-											})
-										}),
 										Align::New(ctx, {
 											.height = { 0 },
 											.child = Width::New(ctx, {
@@ -253,93 +266,6 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 													})
 												}),
 											})
-										})
-									}
-								}),
-								Paragraph::New(ctx, {
-									.children = {
-										Text::New(ctx, {
-											.text = "It supports emoji! Examples: 😊🌌🚀☄️\n",
-											.fontColor = "#222",
-											.fontSize = 18,
-										}),
-										Text::New(ctx, {
-											.text = "And ligatures! Examples: == === !! != !== << >> --- || |- -|\n",
-											.fontColor = "#0a0",
-											.fontSize = 18,
-											.fontFamily = "Fira Code",
-										}),
-										Text::New(ctx, {
-											.text = "You also can insert some elements here, here is example: ",
-											.fontColor = "#222",
-											.fontSize = 18,
-										}),
-										Sized(ctx, {
-											.width = 100,
-											.height = 50,
-											.child = Box(ctx)
-										}),
-										Text::New(ctx, {
-											.text = " and it is inlined.",
-											.fontColor = "#222",
-											.fontSize = 18,
-										}),
-									}
-								}),
-								Align::New(ctx, {
-									.width = { 0 },
-									.child = Rounded::New(ctx, {
-										.all = 8,
-										.child = Sized(ctx, {
-											.width = 100,
-											.height = 100,
-											.child = Background::New(ctx, {
-												.color = "#aaa",
-												.child = Hoverable::New(ctx, {
-													.onEnter = [hoverableBackground]() {
-														hoverableBackground->setColor("#a00");
-														return EventCallbackResponse::None;
-													},
-													.onLeave = [hoverableBackground]() {
-														hoverableBackground->setColor("#f00");
-														return EventCallbackResponse::None;
-													},
-													.child = Padding::New(ctx, {
-														.bottom = 24,
-														.left = 24,
-														.child = Hoverable::New(ctx, {
-															.onLeave = [hoverableBackground]() {
-																return EventCallbackResponse::StopPropagation;
-															},
-															.child = hoverableBackground,
-														})
-													})
-												})
-											})
-										})
-									})
-								}),
-								Stack::New(ctx, {
-									.children = {
-										Sized(ctx, {
-											.width = 500,
-											.height = 500,
-											.child = Box(ctx)
-										}),
-										Sized(ctx, {
-											.width = 400,
-											.height = 200,
-											.child = Box(ctx)
-										}),
-										Sized(ctx, {
-											.width = 200,
-											.height = 400,
-											.child = Box(ctx)
-										}),
-										Sized(ctx, {
-											.width = 150,
-											.height = 200,
-											.child = Box(ctx)
 										})
 									}
 								})

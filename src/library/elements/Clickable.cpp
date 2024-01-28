@@ -36,7 +36,7 @@ namespace elementor::elements {
 
 		auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
 		if (mouseButtonEvent) {
-			if (!hovered || mouseButtonEvent->action != KeyAction::Press) {
+			if (!hovered || mouseButtonEvent->action == KeyAction::Press || mouseButtonEvent->action == KeyAction::Repeat) {
 				return EventCallbackResponse::None;
 			}
 
@@ -60,6 +60,5 @@ namespace elementor::elements {
 		}
 
 		return EventCallbackResponse::None;
-
 	}
 }

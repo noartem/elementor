@@ -66,6 +66,11 @@ namespace elementor::elements {
 
 		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren);
 
+		void forceUpdate() {
+			// TODO: Refactor it. Make it update text value without hacks like this
+			skParagraph = makeSkParagraph();
+		}
+
 	private:
 		TextAlign textAlign = TextAlign::Left;
 		TextDirection textDirection = TextDirection::LeftToRight;
