@@ -1,6 +1,6 @@
 add_rules("mode.debug", "mode.release")
 
-set_languages("c99", "cxx20")
+set_languages("c99", "cxx23")
 
 includes("third_party/skia-build.lua")
 includes("third_party/portable-file-dialogs.lua")
@@ -49,32 +49,14 @@ if is_plat("windows") then
     end)
 end
 
-target("example")
-    set_kind("binary")
-    add_deps("elementor")
-    add_packages("skia-build", "glfw")
-    add_files("src/examples/basic/*.cpp")
-
 target("elementor-components")
     set_kind("static")
     add_deps("elementor")
     add_packages("skia-build", "glfw")
     add_files("src/components/*.cpp")
 
-target("example-gallery")
+target("example")
     set_kind("binary")
     add_deps("elementor", "elementor-components")
     add_packages("skia-build", "glfw")
-    add_files("src/examples/gallery/*.cpp")
-
-target("example-diary")
-    set_kind("binary")
-    add_deps("elementor", "elementor-components")
-    add_packages("skia-build", "glfw")
-    add_packages("fastcppcsvparser", "portable-file-dialogs")
-    add_files("src/examples/diary/*.cpp")
-
-target("tests")
-    set_kind("binary")
-    add_packages("doctest")
-    add_files("tests/*.cpp")
+    add_files("src/example/*.cpp")

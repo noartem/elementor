@@ -17,8 +17,20 @@ namespace elementor {
 	}
 
 	SkColor makeSkColorFromHex(std::string hex) {
-		if (hex.size() == 7 || hex.size() == 4) {
+		if (hex.empty()) {
+			return SK_ColorTRANSPARENT;
+		}
+
+		if (hex[0] == '#') {
 			hex = hex.substr(1);
+		}
+
+		if (hex.size() == 8) {
+			uint8_t r = std::stoul(hex.substr(0, 2), nullptr, 16);
+			uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
+			uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
+			uint8_t a = std::stoul(hex.substr(6, 2), nullptr, 16);
+			return makeSkColorFromRGBA(r, g, b, a);
 		}
 
 		if (hex.size() == 6) {
@@ -26,6 +38,18 @@ namespace elementor {
 			uint8_t g = std::stoul(hex.substr(2, 2), nullptr, 16);
 			uint8_t b = std::stoul(hex.substr(4, 2), nullptr, 16);
 			return makeSkColorFromRGB(r, g, b);
+		}
+
+		if (hex.size() == 4) {
+			uint8_t r = std::stoul(hex.substr(0, 1), nullptr, 16);
+			r = r * 16 + r;
+			uint8_t g = std::stoul(hex.substr(1, 1), nullptr, 16);
+			g = g * 16 + g;
+			uint8_t b = std::stoul(hex.substr(2, 1), nullptr, 16);
+			b = b * 16 + b;
+			uint8_t a = std::stoul(hex.substr(3, 1), nullptr, 16);
+			a = a * 16 + a;
+			return makeSkColorFromRGBA(r, g, b, a);
 		}
 
 		if (hex.size() == 3) {

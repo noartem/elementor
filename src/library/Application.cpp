@@ -136,15 +136,21 @@ namespace elementor {
 				if (bubbleEventResponse == EventCallbackResponse::StopPropagation) {
 					continue;
 				}
-			} else if (focusedElement && isFocusRelatedEvent(event)) {
+			}
+
+			if (focusedElement && isFocusRelatedEvent(event)) {
 				auto focusedElementNode = getFocusedElementNode();
 				auto bubbleEventResponse = bubbleEvent(focusedElementNode, event);
 				if (bubbleEventResponse == EventCallbackResponse::StopPropagation) {
 					continue;
 				}
-			} else if (isGoToNextFocusableEvent(event)) {
+			}
+
+			if (isGoToNextFocusableEvent(event)) {
 				focusNextFocusableElement();
-			} else if (isGoToPreviousFocusableEvent(event)) {
+			}
+
+			if (isGoToPreviousFocusableEvent(event)) {
 				focusPreviousFocusableElement();
 			}
 

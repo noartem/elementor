@@ -9,13 +9,13 @@
 #include <time.h>
 
 namespace elementor::components {
-    void openURL(std::string url);
+	void openURL(std::string url);
 
-    tm now_tm();
+	tm now_tm();
 
-    std::string leftPadAndFit(const std::string &value, unsigned  int size, const char paddingChar);
+	std::string leftPadAndFit(const std::string& value, unsigned int size, const char paddingChar);
 
-    int daysInMonth(int month, int year);
+	int daysInMonth(int month, int year);
 }
 
 #endif //ELEMENTOR_COMPONENTS_UTILITY_H

@@ -5,16 +5,16 @@
 #ifndef ELEMENTOR_COMPONENTS_INCLUDE_H
 #define ELEMENTOR_COMPONENTS_INCLUDE_H
 
-#include "Button.h"
-#include "Combox.h"
-#include "ComponentsContext.h"
+//#include "Button.h"
+//#include "Combox.h"
+//#include "ComponentsContext.h"
 #include "FPSLabel.h"
-#include "Link.h"
-#include "ScaleControl.h"
-#include "Scroll.h"
-#include "TextInput.h"
-#include "TimePicker.h"
-#include "Tooltip.h"
-#include "WithCursor.h"
+//#include "Link.h"
+//#include "ScaleControl.h"
+//#include "Scroll.h"
+//#include "TextInput.h"
+//#include "TimePicker.h"
+//#include "Tooltip.h"
+#include "Cursorable.h"
 
 #endif //ELEMENTOR_COMPONENTS_INCLUDE_H

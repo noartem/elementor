@@ -60,8 +60,8 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLPlatform::requestNextFrame(const std::function<void()>& callback) {
-		eventLoop->pend();
 		rnfNextQueue.push_back(callback);
+		eventLoop->pend();
 	}
 
 	void GLPlatform::applyRnfQueue() {

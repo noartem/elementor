@@ -3,11 +3,12 @@
 //
 
 #include "GLCursor.h"
+#include "../../debug.h"
 
 #include <utility>
 
 namespace elementor::platforms::gl {
-	unsigned int mapCursorShapeToInt(CursorShape shape) {
+	int mapCursorShapeToInt(CursorShape shape) {
 		switch (shape) {
 		case CursorShape::Default:
 		case CursorShape::Arrow:
@@ -28,17 +29,17 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLCursor::updateCursor() {
-		if (this->appliedShape != this->currentShape) {
-			this->cursor = glfwCreateStandardCursor(mapCursorShapeToInt(this->currentShape));
-			glfwSetCursor(this->window, this->cursor);
-			this->appliedShape = this->currentShape;
+		if (appliedShape != currentShape) {
+			auto cursor = glfwCreateStandardCursor(mapCursorShapeToInt(currentShape));
+			glfwSetCursor(window, cursor);
+			appliedShape = currentShape;
 		}
 	}
 
 	void GLCursor::set(CursorShape shape) {
-		this->currentShape = shape;
-		this->ctx->requestNextFrame([this]() {
-		this->updateCursor();
+		currentShape = shape;
+		ctx->requestNextFrame([this]() {
+			updateCursor();
 		});
 	}
 }

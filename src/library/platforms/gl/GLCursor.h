@@ -12,10 +12,8 @@
 namespace elementor::platforms::gl {
 	class GLCursor : public Cursor {
 	public:
-		GLCursor(
-				const std::shared_ptr<PlatformContext>& ctx,
-				GLFWwindow* window
-		) : ctx(ctx), window(window) {
+		GLCursor(const std::shared_ptr<PlatformContext>& ctx, GLFWwindow* window)
+			: ctx(ctx), window(window) {
 		}
 
 		void set(CursorShape shape) override;
@@ -35,11 +33,11 @@ namespace elementor::platforms::gl {
 	private:
 		std::shared_ptr<PlatformContext> ctx;
 		GLFWwindow* window;
-		GLFWcursor* cursor{};
+
 		CursorShape currentShape = CursorShape::Default;
 		CursorShape appliedShape = CursorShape::Default;
 
-		Position position{};
+		Position position = { .x = -1, .y = -1 };
 
 		void updateCursor();
 	};

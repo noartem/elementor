@@ -37,6 +37,8 @@ namespace elementor::platforms::gl {
 		}
 
 		void pend() {
+			glfwPostEmptyEvent();
+
 			if (!canCall()) {
 				return;
 			}

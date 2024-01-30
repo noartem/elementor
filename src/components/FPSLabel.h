@@ -9,17 +9,64 @@
 #include "elementor.h"
 
 namespace elementor::components {
-    class FPSLabel : public Component, public std::enable_shared_from_this<FPSLabel> {
-    public:
-        FPSLabel();
+	class FPSLabel : public Component {
+	public:
+		explicit FPSLabel(const std::shared_ptr<ApplicationContext>& ctx)
+			: Component(ctx) {
+			auto labelText = Text::New(ctx, {
+				.text = "FPS: ",
+				.fontColor = "#000",
+				.fontSize = 16.0f,
+				.fontFamily = "Arial",
+			});
 
-        std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+			fpsText = Text::New(ctx, {
+				.text = "0",
+				.fontColor = "#000",
+				.fontSize = 16,
+				.fontWeight = 500,
+				.fontFamily = "Fira Code",
+			});
 
-    private:
-        std::shared_ptr<Text> textElement;
-    };
+			element = Rounded::New(ctx, {
+				.all = 3,
+				.child = Background::New(ctx, {
+					.color = "#e8e8e8cc",
+					.child = Padding::New(ctx, {
+						.all = 8,
+						.child = Row::New(ctx, {
+							.spacing = 4,
+							.children = {
+								labelText,
+								Height::New(ctx, {
+									.height = 14,
+									.child = fpsText,
+								})
+							}
+						})
+					})
+				})
+			});
 
-    std::shared_ptr<FPSLabel> fpsLabel();
+			updateFPS();
+		}
+
+		static std::shared_ptr<FPSLabel> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return std::make_shared<FPSLabel>(ctx);
+		}
+
+	private:
+		std::shared_ptr<Text> fpsText;
+
+		void updateFPS() {
+			int fps = ctx->getPlatformCtx()->getPerfomance()->getFPS();
+			fpsText->setText(std::to_string(fps));
+
+			ctx->getPlatformCtx()->requestNextFrame([this]() {
+				updateFPS();
+			});
+		}
+	};
 }
 
 #endif //ELEMENTOR_COMPONENTS_FPS_LABEL_H
