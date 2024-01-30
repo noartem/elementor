@@ -30,6 +30,12 @@ namespace elementor::elements {
 	EventCallbackResponse Focusable::onEvent(const std::shared_ptr<Event>& event) {
 		auto focusEvent = std::dynamic_pointer_cast<FocusEvent>(event);
 		if (focusEvent) {
+			if (focusEvent->focused) {
+				pendingFocus = false;
+			} else {
+				pendingBlur = false;
+			}
+
 			if (callbackFocusChange.has_value()) {
 				callbackFocusChange.value()(focusEvent->focused);
 				return EventCallbackResponse::StopPropagation;

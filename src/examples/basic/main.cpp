@@ -66,11 +66,14 @@ private:
 	std::shared_ptr<Text> text = nullptr;
 };
 
+struct TextInputProps {
+	std::u32string value;
+};
+
 class TextInput : public Component, public WithEvents {
 public:
-	explicit TextInput(const std::shared_ptr<ApplicationContext>& ctx)
+	explicit TextInput(const std::shared_ptr<ApplicationContext>& ctx, const TextInputProps& props)
 		: Component(ctx) {
-
 		text = Text::New(ctx, {
 			.fontColor = "#000",
 			.fontSize = 14,
@@ -101,13 +104,24 @@ public:
 			.child = input,
 		});
 
-		element = focusable;
+		element = Clickable::New(ctx, {
+			.onClick = [this](KeyMod _) {
+				focus();
 
-		setValue(U"How are you?");
+				return EventCallbackResponse::StopPropagation;
+			},
+			.child = focusable
+		});
+
+		setValue(props.value);
+	}
+
+	static std::shared_ptr<TextInput> New(const std::shared_ptr<ApplicationContext>& ctx, const TextInputProps& props) {
+		return std::make_shared<TextInput>(ctx, props);
 	}
 
 	static std::shared_ptr<TextInput> New(const std::shared_ptr<ApplicationContext>& ctx) {
-		return std::make_shared<TextInput>(ctx);
+		return New(ctx, {});
 	}
 
 	EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override {
@@ -131,11 +145,11 @@ public:
 	}
 
 	void blur() {
-		focusable->setPendingFocus(false);
+		focusable->blur();
 	}
 
 	void focus() {
-		focusable->setPendingFocus(true);
+		focusable->focus();
 	}
 
 	void setValue(const std::u32string& newValue) {
@@ -167,13 +181,18 @@ private:
 			return;
 		}
 
-		if (event->key == KeyboardKey::Escape || event->key == KeyboardKey::Enter) {
+		if (event->key == KeyboardKey::Escape) {
 			blur();
 			return;
 		}
 
+		if (event->key == KeyboardKey::Enter) {
+			setValue(value + U"\n");
+			return;
+		}
+
 		if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
-			ctx->getPlatformCtx()->getClipboard()->set(text->getText());
+			ctx->getPlatformCtx()->getClipboard()->set(toUTF8(value));
 			return;
 		}
 
@@ -240,7 +259,9 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 										LikeButton::New(ctx)
 									}
 								}),
-								TextInput::New(ctx),
+								TextInput::New(ctx, {
+									.value = U"How are you?"
+								}),
 								Height::New(ctx, {
 									.height = 100,
 									.child = Rounded::New(ctx, {

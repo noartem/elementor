@@ -93,6 +93,8 @@ namespace elementor {
 
 		void clearFocusedElementIfRemoved();
 
+		void clearFocusedElementIfPendingBlur();
+
 		void updateFocusableElements();
 
 		void focusNextFocusableElement();

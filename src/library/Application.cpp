@@ -223,7 +223,7 @@ namespace elementor {
 
 	void Application::pushTreeFocusableElements(const std::shared_ptr<ElementTreeNode>& node) {
 		auto nodeElementFocusable = std::dynamic_pointer_cast<elements::Focusable>(node->element);
-		if (nodeElementFocusable != nullptr && nodeElementFocusable->getCanRequestFocus()) {
+		if (nodeElementFocusable != nullptr && nodeElementFocusable->isFocusAllowed()) {
 			focusableElements.push_back(nodeElementFocusable);
 		}
 
@@ -266,15 +266,22 @@ namespace elementor {
 		setFocusedElement(nullptr);
 	}
 
+	void Application::clearFocusedElementIfPendingBlur() {
+		if (focusedElement && focusedElement->isPendingBlur()) {
+			setFocusedElement(nullptr);
+		}
+	}
+
 	void Application::updateFocusableElements() {
 		focusableElements.clear();
 
 		pushTreeFocusableElements(rootNode);
 		clearFocusedElementIfRemoved();
+		clearFocusedElementIfPendingBlur();
 
 		if (focusedElement == nullptr) {
 			for (const auto& focusableElement: focusableElements) {
-				if (focusableElement->getPendingFocus()) {
+				if (focusableElement->isPendingFocus()) {
 					setFocusedElement(focusableElement);
 					break;
 				}

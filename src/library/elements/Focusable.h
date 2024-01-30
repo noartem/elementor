@@ -12,7 +12,6 @@
 namespace elementor::elements {
 	struct FocusableProps {
 		std::optional<std::function<void(bool focused)>> onFocusChange;
-		std::optional<bool> canRequestFocus;
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
@@ -26,7 +25,6 @@ namespace elementor::elements {
 			: Element(ctx),
 			  WithChild(props.child) {
 			if (props.onFocusChange.has_value()) onFocusChange(props.onFocusChange.value());
-			if (props.canRequestFocus.has_value()) setCanRequestFocus(props.canRequestFocus.value());
 		}
 
 		static std::shared_ptr<Focusable> New(
@@ -44,20 +42,34 @@ namespace elementor::elements {
 			callbackFocusChange = newCallback;
 		}
 
-		[[nodiscard]] bool getCanRequestFocus() const {
-			return canRequestFocus;
+		[[nodiscard]] bool isFocusAllowed() const {
+			return focusAllowed;
 		}
 
-		void setCanRequestFocus(bool newCanRequestFocus) {
-			canRequestFocus = newCanRequestFocus;
+		void disableFocus() {
+			focusAllowed = false;
 		}
 
-		[[nodiscard]] bool getPendingFocus() const {
+		void enableFocus() {
+			focusAllowed = true;
+		}
+
+		[[nodiscard]] bool isPendingBlur() const {
+			return pendingBlur;
+		}
+
+		void blur() {
+			pendingFocus = false;
+			pendingBlur = true;
+		}
+
+		[[nodiscard]] bool isPendingFocus() const {
 			return pendingFocus;
 		}
 
-		void setPendingFocus(bool newPendingFocus) {
-			pendingFocus = newPendingFocus;
+		void focus() {
+			pendingFocus = true;
+			pendingBlur = false;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
@@ -67,9 +79,11 @@ namespace elementor::elements {
 		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
 
 	private:
-		std::optional<std::function<void(bool focused)>> callbackFocusChange;
-		bool canRequestFocus = true;
+		bool focusAllowed = true;
 		bool pendingFocus = false;
+		bool pendingBlur = false;
+
+		std::optional<std::function<void(bool focused)>> callbackFocusChange;
 	};
 }
 
