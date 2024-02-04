@@ -13,21 +13,6 @@ namespace elementor::components {
 	public:
 		explicit FPSLabel(const std::shared_ptr<ApplicationContext>& ctx)
 			: Component(ctx) {
-			auto labelText = Text::New(ctx, {
-				.text = "FPS: ",
-				.fontColor = "#000",
-				.fontSize = 16.0f,
-				.fontFamily = "Arial",
-			});
-
-			fpsText = Text::New(ctx, {
-				.text = "0",
-				.fontColor = "#000",
-				.fontSize = 16,
-				.fontWeight = 500,
-				.fontFamily = "Fira Code",
-			});
-
 			element = Rounded::New(ctx, {
 				.all = 3,
 				.child = Background::New(ctx, {
@@ -37,10 +22,21 @@ namespace elementor::components {
 						.child = Row::New(ctx, {
 							.spacing = 4,
 							.children = {
-								labelText,
+								Text::New(ctx, {
+									.text = "FPS: ",
+									.fontColor = "#000",
+									.fontSize = 16.0f,
+									.fontFamily = "Arial",
+								}),
 								Height::New(ctx, {
 									.height = 14,
-									.child = fpsText,
+									.child = Text::New(ctx, fpsText, {
+										.text = "0",
+										.fontColor = "#000",
+										.fontSize = 16,
+										.fontWeight = 500,
+										.fontFamily = "Fira Code",
+									}),
 								})
 							}
 						})
@@ -59,8 +55,8 @@ namespace elementor::components {
 		std::shared_ptr<Text> fpsText;
 
 		void updateFPS() {
-			int fps = ctx->getPlatformCtx()->getPerfomance()->getFPS();
-			fpsText->setText(std::to_string(fps));
+			auto fps = ctx->getPlatformCtx()->getPerfomance()->getFPS();
+			fpsText->setText(std::to_string((int)fps));
 
 			ctx->getPlatformCtx()->requestNextFrame([this]() {
 				updateFPS();

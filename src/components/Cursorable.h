@@ -18,7 +18,7 @@ namespace elementor::components {
 	public:
 		explicit Cursorable(const std::shared_ptr<ApplicationContext>& ctx, const CursorableProps& props)
 			: Component(ctx) {
-			hoverable = Hoverable::New(ctx, {
+			element = Hoverable::New(ctx, hoverable, {
 				.onEnter = [this]() {
 					this->ctx->getWindowCtx()->getCursor()->set(cursorShape);
 					return EventCallbackResponse::None;
@@ -28,8 +28,6 @@ namespace elementor::components {
 					return EventCallbackResponse::None;
 				},
 			});
-
-			element = hoverable;
 
 			if (props.cursorShape.has_value()) setCursorShape(props.cursorShape.value());
 			setChild(props.child);

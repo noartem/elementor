@@ -1,5 +1,5 @@
 //
-// Created by noartem on 03.02.2023.
+// Created by noartem on 02.02.2023.
 //
 
 #ifndef ELEMENTOR_COMPONENTS_BUTTON_H
@@ -8,31 +8,138 @@
 #include "utility.h"
 #include "elementor.h"
 
+#include "./ClickableOutside.h"
+#include "./Cursorable.h"
+#include "./Outline.h"
+
 namespace elementor::components {
-    class Button : public Component, public std::enable_shared_from_this<Button> {
-    public:
-        Button();
+	struct ButtonProps {
+		std::optional<std::string> text;
+		std::optional<std::string> fontColor;
+		std::optional<std::string> backgroundColor;
+		std::optional<std::string> outlineColor;
+		std::optional<std::function<EventCallbackResponse()>> onClick;
+	};
 
-        std::shared_ptr<Button> setLabel(std::u32string newLabel);
+	class Button : public Component, public WithEventsHandlers {
+	public:
+		explicit Button(const std::shared_ptr<ApplicationContext>& ctx, const ButtonProps& props)
+			: Component(ctx) {
+			element = Outline::New(ctx, {
+				.border = {
+					.radius = 6,
+					.width = 3,
+					.color = props.outlineColor.value_or(props.fontColor.value_or("")),
+					.style = BorderStyle::Dashed,
+				},
+				.offset = 6,
+				.child = Focusable::New(ctx, focusable, {
+					.onFocusChange = [this](bool newFocused) {
+						focused = newFocused;
+					},
+					.child = Cursorable::New(ctx, {
+						.cursorShape = CursorShape::Hand,
+						.child = ClickableOutside::New(ctx, {
+							.onClickOutside = [this]() {
+								blur();
+							},
+							.child = Clickable::New(ctx, {
+								.onClick = [this](KeyMod _) {
+									focus();
 
-        std::shared_ptr<Button> setLabel(std::string newLabel);
+									if (!callbackClick.has_value()) {
+										return EventCallbackResponse::None;
+									}
 
-        std::string getLabel();
+									return callbackClick.value()();
+								},
+								.child = Rounded::New(ctx, {
+									.all = 4,
+									.child = Background::New(ctx, {
+										.color = props.backgroundColor,
+										.child = Padding::New(ctx, {
+											.all = 8,
+											.top = 6,
+											.child = Text::New(ctx, text, {
+												.text = props.text,
+												.fontColor = props.fontColor,
+												.fontSize = 16,
+												.fontFamily = "Arial",
+											})
+										})
+									})
+								})
+							})
+						})
+					})
+				})
+			});
 
-        std::shared_ptr<Button> onClick(const std::function<void()>& callback);
+			if (props.onClick.has_value()) onClick(props.onClick.value());
+		}
 
-        std::shared_ptr<Button> setBackgroundColor(std::string hex);
+		static std::shared_ptr<Button> New(const std::shared_ptr<ApplicationContext>& ctx, const ButtonProps& props) {
+			return std::make_shared<Button>(ctx, props);
+		}
 
-        std::shared_ptr<Button> setTextColor(std::string hex);
+		static std::shared_ptr<Button> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Button>& elementRef,
+			const ButtonProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-    private:
-        std::string label;
-        std::shared_ptr<Clickable> clickableElement;
-        std::shared_ptr<Text> textElement;
-        std::shared_ptr<Background> backgroundElement;
-    };
+		static std::shared_ptr<Button> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-    std::shared_ptr<Button> button();
+		void onClick(const std::optional<std::function<EventCallbackResponse()>>& newCallback) {
+			callbackClick = newCallback;
+		}
+
+		void setText(const std::string& newText) {
+			text->setText(newText);
+		}
+
+		void focus() {
+			focusable->focus();
+		}
+
+		void blur() {
+			focusable->blur();
+		}
+
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override {
+			return {
+				KeyboardEvent::Handle([this](const auto& event) {
+					if (event->key == KeyboardKey::Escape &&
+						event->action == KeyAction::Release) {
+						blur();
+						return EventCallbackResponse::StopPropagation;
+					}
+
+					if ((event->key == KeyboardKey::Space || event->key == KeyboardKey::Enter) &&
+						event->action == KeyAction::Release &&
+						callbackClick.has_value()) {
+						return callbackClick.value()();
+					}
+
+					return EventCallbackResponse::None;
+				})
+			};
+		};
+
+	private:
+		bool focused = false;
+
+		std::shared_ptr<Text> text = nullptr;
+		std::shared_ptr<Focusable> focusable = nullptr;
+
+		std::optional<std::function<EventCallbackResponse()>> callbackClick;
+	};
 }
 
 #endif //ELEMENTOR_COMPONENTS_BUTTON_H
