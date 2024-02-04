@@ -3,9 +3,6 @@
 //
 
 #include "GLCursor.h"
-#include "../../debug.h"
-
-#include <utility>
 
 namespace elementor::platforms::gl {
 	int mapCursorShapeToInt(CursorShape shape) {
