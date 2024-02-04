@@ -39,6 +39,8 @@ namespace elementor {
 		virtual sk_sp<SkFontMgr> getSkFontManager() = 0;
 
 		virtual void requestNextFrame(const std::function<void()>& callback) = 0;
+
+		virtual void requestNextFrame() = 0;
 	};
 }
 

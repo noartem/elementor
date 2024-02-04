@@ -28,6 +28,8 @@ namespace elementor::platforms::gl {
 
 		void requestNextFrame(const std::function<void()>& callback) override;
 
+		void requestNextFrame() override;
+
 		std::shared_ptr<Clipboard> getClipboard() override {
 			return clipboard;
 		}

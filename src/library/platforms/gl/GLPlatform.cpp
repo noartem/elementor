@@ -64,6 +64,10 @@ namespace elementor::platforms::gl {
 		eventLoop->pend();
 	}
 
+	void GLPlatform::requestNextFrame() {
+		eventLoop->pend();
+	}
+
 	void GLPlatform::applyRnfQueue() {
 		if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty()) {
 			return;
