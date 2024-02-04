@@ -15,7 +15,7 @@ namespace elementor::elements {
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
-	class Draggable : public Element, public WithEvents, public WithChild {
+	class Draggable : public Element, public WithChild, public WithEventsHandlers, public WithGlobalEventsHandlers {
 	public:
 		Draggable(const std::shared_ptr<ApplicationContext>& ctx, const DraggableProps& props)
 			: Element(ctx),
@@ -23,11 +23,6 @@ namespace elementor::elements {
 			if (props.onStart.has_value()) onStart(props.onStart.value());
 			if (props.onEnd.has_value()) onEnd(props.onEnd.value());
 			if (props.onMove.has_value()) onMove(props.onMove.value());
-		}
-
-		~Draggable() {
-			ctx->removeEventListener("mouse-move", mouseMoveListenerId);
-			ctx->removeEventListener("mouse-button", mouseButtonListenerId);
 		}
 
 		static std::shared_ptr<Draggable> New(
@@ -74,7 +69,9 @@ namespace elementor::elements {
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+
+		std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() override;
 
 	private:
 		ElementRect lastRect;
@@ -83,9 +80,6 @@ namespace elementor::elements {
 		Position previousCursorAbsolutePosition;
 		bool hovered;
 		bool dragging;
-
-		int mouseMoveListenerId = -1;
-		int mouseButtonListenerId = -1;
 
 		void onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event);
 

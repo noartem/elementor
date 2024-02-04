@@ -26,10 +26,6 @@ namespace elementor::elements {
 
 	class Border : public Element, public WithChild {
 	public:
-		explicit Border(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
 		Border(const std::shared_ptr<ApplicationContext>& ctx, const BorderProps& props)
 			: Element(ctx),
 			  WithChild(props.child) {
@@ -47,6 +43,16 @@ namespace elementor::elements {
 			const BorderProps& props
 		) {
 			return std::make_shared<Border>(ctx, props);
+		}
+
+		static std::shared_ptr<Border> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Border>& elementRef,
+			const BorderProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
 		}
 
 		static std::shared_ptr<Border> New(const std::shared_ptr<ApplicationContext>& ctx) {

@@ -36,6 +36,16 @@ namespace elementor::elements {
 			return std::make_shared<Paragraph>(ctx, props);
 		}
 
+		static std::shared_ptr<Paragraph> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Paragraph>& elementRef,
+			const ParagraphProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
 		static std::shared_ptr<Paragraph> New(const std::shared_ptr<ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
@@ -68,8 +78,10 @@ namespace elementor::elements {
 
 		void forceUpdate() {
 			// TODO: Refactor it. Make it update text value without hacks like this
-			skParagraph = makeSkParagraph();
+			skParagraph = nullptr;
 		}
+
+		std::optional<Rect> getGlyphRect(unsigned glyphOffset);
 
 	private:
 		TextAlign textAlign = TextAlign::Left;

@@ -8,6 +8,36 @@
 #include <string>
 #include <vector>
 
+#ifndef DEFINE_EVENT_HANDLER
+#define DEFINE_EVENT_HANDLER(eventClass, eventName) \
+public: static std::shared_ptr<EventHandler> Handle(std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback) { \
+    return std::make_shared<Handler>(callback);     \
+}                                                   \
+                                                    \
+private: class Handler : public EventHandler {      \
+public:                                             \
+    explicit Handler(std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback)                                  \
+        : callback(callback) {                      \
+    }                                               \
+                                                    \
+    std::string_view getName() override {           \
+        return eventName;                           \
+    }                                               \
+                                                    \
+    EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override {                                                        \
+        auto eventMapped = std::dynamic_pointer_cast<eventClass>(event);                                                                 \
+        if (!eventMapped) {                         \
+            return EventCallbackResponse::None;     \
+        }                                           \
+                                                    \
+        return callback(eventMapped);               \
+    }                                               \
+                                                    \
+private:                                            \
+    std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback;                                                      \
+};
+#endif
+
 namespace elementor {
 	class Event {
 	public:
@@ -19,9 +49,20 @@ namespace elementor {
 		StopPropagation,
 	};
 
-	class WithEvents {
+	class EventHandler {
 	public:
+		virtual std::string_view getName() = 0;
 		virtual EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) = 0;
+	};
+
+	class WithEventsHandlers {
+	public:
+		virtual std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() = 0;
+	};
+
+	class WithGlobalEventsHandlers {
+	public:
+		virtual std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() = 0;
 	};
 
 	enum class MouseButton {
@@ -173,6 +214,7 @@ namespace elementor {
 	};
 
 	class MouseButtonEvent : public Event {
+	DEFINE_EVENT_HANDLER(MouseButtonEvent, "mouse-button");
 	public:
 		MouseButtonEvent(MouseButton button, KeyAction action, KeyMod mod)
 			: button(button), action(action), mod(mod) {
@@ -188,6 +230,7 @@ namespace elementor {
 	};
 
 	class MouseMoveEvent : public Event {
+	DEFINE_EVENT_HANDLER(MouseMoveEvent, "mouse-move");
 	public:
 		MouseMoveEvent(float x, float y)
 			: x(x), y(x) {
@@ -202,6 +245,7 @@ namespace elementor {
 	};
 
 	class ScrollEvent : public Event {
+	DEFINE_EVENT_HANDLER(ScrollEvent, "scroll");
 	public:
 		ScrollEvent(float xOffset, float yOffset)
 			: xOffset(xOffset), yOffset(yOffset) {
@@ -216,6 +260,7 @@ namespace elementor {
 	};
 
 	class KeyboardEvent : public Event {
+	DEFINE_EVENT_HANDLER(KeyboardEvent, "keyboard");
 	public:
 		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, KeyMod mod)
 			: key(key), scancode(scancode), action(action), mod(mod) {
@@ -232,6 +277,7 @@ namespace elementor {
 	};
 
 	class CharEvent : public Event {
+	DEFINE_EVENT_HANDLER(CharEvent, "char");
 	public:
 		explicit CharEvent(char32_t value)
 			: value(value) {
@@ -245,6 +291,7 @@ namespace elementor {
 	};
 
 	class HoverEvent : public Event {
+	DEFINE_EVENT_HANDLER(HoverEvent, "hover");
 	public:
 		explicit HoverEvent(bool hovered)
 			: hovered(hovered) {
@@ -258,6 +305,7 @@ namespace elementor {
 	};
 
 	class FocusEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusEvent, "focus");
 	public:
 		explicit FocusEvent(bool focused)
 			: focused(focused) {
@@ -266,7 +314,29 @@ namespace elementor {
 		bool focused;
 
 		std::string_view getName() override {
-			return "hover";
+			return "focus";
+		}
+	};
+
+	class FocusInEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusInEvent, "focus-in");
+	public:
+		explicit FocusInEvent() {
+		}
+
+		std::string_view getName() override {
+			return "focus-in";
+		}
+	};
+
+	class FocusOutEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusOutEvent, "focus-out");
+	public:
+		explicit FocusOutEvent() {
+		}
+
+		std::string_view getName() override {
+			return "focus-out";
 		}
 	};
 }

@@ -9,20 +9,16 @@
 
 namespace elementor::elements {
 	struct BackgroundProps {
-		const std::string_view& color = "";
+		std::optional<std::string> color;
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
 	class Background : public Element, public WithChild {
 	public:
-		explicit Background(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
 		Background(const std::shared_ptr<ApplicationContext>& ctx, const BackgroundProps& props)
 			: Element(ctx),
 			  WithChild(props.child) {
-			setColor(props.color);
+			if (props.color.has_value()) setColor(props.color.value());
 		}
 
 		static std::shared_ptr<Background> New(
@@ -30,6 +26,16 @@ namespace elementor::elements {
 			const BackgroundProps& props
 		) {
 			return std::make_shared<Background>(ctx, props);
+		}
+
+		static std::shared_ptr<Background> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Background>& elementRef,
+			const BackgroundProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
 		}
 
 		static std::shared_ptr<Background> New(const std::shared_ptr<ApplicationContext>& ctx) {
@@ -52,8 +58,8 @@ namespace elementor::elements {
 			setColor(makeSkColorFromRGB(r, g, b));
 		}
 
-		void setColor(const std::string_view& hex) {
-			setColor(makeSkColorFromHex(std::string(hex)));
+		void setColor(const std::string& hex) {
+			setColor(makeSkColorFromHex(hex));
 		}
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;

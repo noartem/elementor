@@ -31,6 +31,34 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
+	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
+		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
+			return;
+		}
+
+		if (callbackStart.has_value()) {
+			bool startAllowed = callbackStart.value()(cursorPosition, cursorAbsolutePosition);
+			if (!startAllowed) {
+				return;
+			}
+		}
+
+		dragging = true;
+	}
+
+	std::vector<std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
+		return {
+			MouseMoveEvent::Handle([this](const auto& event) {
+				onApplicationMouseMoveEvent(event);
+				return EventCallbackResponse::None;
+			}),
+			MouseButtonEvent::Handle([this](const auto& event) {
+				onApplicationMouseButtonEvent(event);
+				return EventCallbackResponse::None;
+			}),
+		};
+	}
+
 	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event) {
 		if (!dragging) {
 			return;
@@ -63,53 +91,18 @@ namespace elementor::elements {
 		}
 
 		dragging = false;
-
-		ctx->removeEventListener("mouse-move", mouseMoveListenerId);
-		ctx->removeEventListener("mouse-button", mouseButtonListenerId);
 	}
 
-	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
-		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
-			return;
-		}
-
-		if (callbackStart.has_value()) {
-			bool startAllowed = callbackStart.value()(cursorPosition, cursorAbsolutePosition);
-			if (!startAllowed) {
-				return;
-			}
-		}
-
-		dragging = true;
-
-		mouseMoveListenerId = ctx->addEventListener("mouse-move", [this](const std::shared_ptr<Event>& event) {
-			auto mouseMoveEvent = std::dynamic_pointer_cast<MouseMoveEvent>(event);
-			if (mouseMoveEvent) {
-				onApplicationMouseMoveEvent(mouseMoveEvent);
-			}
-		});
-
-		mouseButtonListenerId = ctx->addEventListener("mouse-button", [this](const std::shared_ptr<Event>& event) {
-			auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
-			if (mouseButtonEvent) {
-				onApplicationMouseButtonEvent(mouseButtonEvent);
-			}
-		});
-	}
-
-	EventCallbackResponse Draggable::onEvent(const std::shared_ptr<Event>& event) {
-		auto hoverEvent = std::dynamic_pointer_cast<HoverEvent>(event);
-		if (hoverEvent) {
-			hovered = hoverEvent->hovered;
-			return EventCallbackResponse::None;
-		}
-
-		auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
-		if (mouseButtonEvent) {
-			onMouseButtonEvent(mouseButtonEvent);
-			return EventCallbackResponse::None;
-		}
-
-		return EventCallbackResponse::None;
+	std::vector<std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
+		return {
+			HoverEvent::Handle([this](const auto& event) {
+				hovered = event->hovered;
+				return EventCallbackResponse::None;
+			}),
+			MouseButtonEvent::Handle([this](const auto& event) {
+				onMouseButtonEvent(event);
+				return EventCallbackResponse::None;
+			}),
+		};
 	}
 }

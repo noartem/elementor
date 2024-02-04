@@ -20,7 +20,7 @@ namespace elementor::elements {
 		const std::shared_ptr<elementor::Element>& child = nullptr;
 	};
 
-	class Scrollable : public Element, public WithEvents, public WithChild {
+	class Scrollable : public Element, public WithEventsHandlers, public WithChild {
 	public:
 		Scrollable(const std::shared_ptr<ApplicationContext>& ctx, const ScrollableProps& props)
 			: Element(ctx), WithChild(props.child) {
@@ -105,7 +105,7 @@ namespace elementor::elements {
 			return ClipBehavior::AntiAlias;
 		}
 
-		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
 	private:
 		ScrollDirection direction = ScrollDirection::Both;

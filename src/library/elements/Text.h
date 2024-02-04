@@ -127,6 +127,16 @@ namespace elementor::elements {
 			return std::make_shared<Text>(ctx, props);
 		}
 
+		static std::shared_ptr<Text> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Text>& elementRef,
+			const TextProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
 		static std::shared_ptr<Text> New(const std::shared_ptr<ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}

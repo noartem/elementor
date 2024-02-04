@@ -189,4 +189,32 @@ namespace elementor::elements {
 			placeholdersChildren.push_back(child);
 		}
 	}
+
+	std::optional<Rect> Paragraph::getGlyphRect(unsigned glyphOffset) {
+		updateSkParagraph();
+
+		auto textBoxes = skParagraph->getRectsForRange(
+			glyphOffset,
+			glyphOffset + 1,
+			skia::textlayout::RectHeightStyle::kMax,
+			skia::textlayout::RectWidthStyle::kMax
+		);
+
+		for (auto textBox : textBoxes) {
+			Rect textBoxRect = {
+				.size = {
+					.width = textBox.rect.width(),
+					.height = textBox.rect.height(),
+				},
+				.position = {
+					.x = textBox.rect.left(),
+					.y = textBox.rect.top(),
+				}
+			};
+
+			return textBoxRect;
+		}
+
+		return std::nullopt;
+	}
 }

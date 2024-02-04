@@ -15,7 +15,7 @@ namespace elementor::elements {
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
-	class Focusable : public Element, public WithEvents, public WithChild {
+	class Focusable : public Element, public WithEventsHandlers, public WithChild {
 	public:
 		explicit Focusable(const std::shared_ptr<ApplicationContext>& ctx)
 			: Element(ctx) {
@@ -32,6 +32,16 @@ namespace elementor::elements {
 			const FocusableProps& props
 		) {
 			return std::make_shared<Focusable>(ctx, props);
+		}
+
+		static std::shared_ptr<Focusable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Focusable>& elementRef,
+			const FocusableProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
 		}
 
 		static std::shared_ptr<Focusable> New(const std::shared_ptr<ApplicationContext>& ctx) {
@@ -59,6 +69,10 @@ namespace elementor::elements {
 		}
 
 		void blur() {
+			if (!focused) {
+				return;
+			}
+
 			pendingFocus = false;
 			pendingBlur = true;
 		}
@@ -68,18 +82,35 @@ namespace elementor::elements {
 		}
 
 		void focus() {
+			if (focused) {
+				return;
+			}
+
 			pendingFocus = true;
 			pendingBlur = false;
+		}
+
+		[[nodiscard]] bool isFocused() const {
+			return focused;
+		}
+
+		void setFocused(bool newFocused) {
+			if (newFocused) {
+				focus();
+			} else {
+				blur();
+			}
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
 	private:
 		bool focusAllowed = true;
+		bool focused = false;
 		bool pendingFocus = false;
 		bool pendingBlur = false;
 

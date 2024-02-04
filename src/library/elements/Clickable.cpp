@@ -27,38 +27,35 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	EventCallbackResponse Clickable::onEvent(const std::shared_ptr<Event>& event) {
-		auto hoverEvent = std::dynamic_pointer_cast<HoverEvent>(event);
-		if (hoverEvent) {
-			hovered = hoverEvent->hovered;
-			return EventCallbackResponse::None;
-		}
-
-		auto mouseButtonEvent = std::dynamic_pointer_cast<MouseButtonEvent>(event);
-		if (mouseButtonEvent) {
-			if (!hovered || mouseButtonEvent->action == KeyAction::Press || mouseButtonEvent->action == KeyAction::Repeat) {
+	std::vector<std::shared_ptr<EventHandler>> Clickable::getEventsHandlers() {
+		return {
+			HoverEvent::Handle([this](const auto& event) {
+				hovered = event->hovered;
 				return EventCallbackResponse::None;
-			}
-
-			if (callbackButton.has_value()) {
-				auto callback = callbackButton.value();
-				EventCallbackResponse callbackResponse = callback(mouseButtonEvent->button, mouseButtonEvent->mod);
-				if (callbackResponse != EventCallbackResponse::None) {
-					return callbackResponse;
+			}),
+			MouseButtonEvent::Handle([this](const auto& event) {
+				if (!hovered || event->action != KeyAction::Release) {
+					return EventCallbackResponse::None;
 				}
-			}
 
-			if (mouseButtonEvent->button == MouseButton::Left && callbackClick.has_value()) {
-				auto callback = callbackClick.value();
-				EventCallbackResponse callbackResponse = callback(mouseButtonEvent->mod);
-				if (callbackResponse != EventCallbackResponse::None) {
-					return callbackResponse;
+				if (callbackButton.has_value()) {
+					auto callback = callbackButton.value();
+					EventCallbackResponse callbackResponse = callback(event->button, event->mod);
+					if (callbackResponse != EventCallbackResponse::None) {
+						return callbackResponse;
+					}
 				}
-			}
 
-			return EventCallbackResponse::None;
-		}
+				if (event->button == MouseButton::Left && callbackClick.has_value()) {
+					auto callback = callbackClick.value();
+					EventCallbackResponse callbackResponse = callback(event->mod);
+					if (callbackResponse != EventCallbackResponse::None) {
+						return callbackResponse;
+					}
+				}
 
-		return EventCallbackResponse::None;
+				return EventCallbackResponse::None;
+			})
+		};
 	}
 }

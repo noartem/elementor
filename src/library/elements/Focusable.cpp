@@ -27,23 +27,20 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	EventCallbackResponse Focusable::onEvent(const std::shared_ptr<Event>& event) {
-		auto focusEvent = std::dynamic_pointer_cast<FocusEvent>(event);
-		if (focusEvent) {
-			if (focusEvent->focused) {
-				pendingFocus = false;
-			} else {
+	std::vector<std::shared_ptr<EventHandler>> Focusable::getEventsHandlers() {
+		return {
+			FocusEvent::Handle([this](const auto& event) {
+				focused = event->focused;
+
 				pendingBlur = false;
-			}
+				pendingFocus = false;
 
-			if (callbackFocusChange.has_value()) {
-				callbackFocusChange.value()(focusEvent->focused);
-				return EventCallbackResponse::StopPropagation;
-			}
+				if (callbackFocusChange.has_value()) {
+					callbackFocusChange.value()(event->focused);
+				}
 
-			return EventCallbackResponse::None;
-		}
-
-		return EventCallbackResponse::None;
+				return EventCallbackResponse::None;
+			})
+		};
 	}
 }

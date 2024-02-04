@@ -56,25 +56,22 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	EventCallbackResponse Scrollable::onEvent(const std::shared_ptr<Event>& event) {
-		auto hoverEvent = std::dynamic_pointer_cast<HoverEvent>(event);
-		if (hoverEvent) {
-			hovered = hoverEvent->hovered;
-			return EventCallbackResponse::None;
-		}
-
-		auto scrollEvent = std::dynamic_pointer_cast<ScrollEvent>(event);
-		if (scrollEvent) {
-			if (!this->hovered) {
+	std::vector<std::shared_ptr<EventHandler>> Scrollable::getEventsHandlers() {
+		return {
+			HoverEvent::Handle([this](const auto& event) {
+				hovered = event->hovered;
 				return EventCallbackResponse::None;
-			}
+			}),
+			ScrollEvent::Handle([this](const auto& event) {
+				if (!this->hovered) {
+					return EventCallbackResponse::None;
+				}
 
-			setScrollLeft(scrollLeft - scrollEvent->xOffset * scrollAcceleration);
-			setScrollTop(scrollTop - scrollEvent->yOffset * scrollAcceleration);
+				setScrollLeft(scrollLeft - event->xOffset * scrollAcceleration);
+				setScrollTop(scrollTop - event->yOffset * scrollAcceleration);
 
-			return EventCallbackResponse::StopPropagation;
-		}
-
-		return EventCallbackResponse::None;
+				return EventCallbackResponse::StopPropagation;
+			})
+		};
 	}
 }

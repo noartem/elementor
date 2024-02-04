@@ -14,7 +14,7 @@ namespace elementor::elements {
 		const std::shared_ptr<Element>& child = nullptr;
 	};
 
-	class Clickable : public Element, public WithEvents, public WithChild {
+	class Clickable : public Element, public WithEventsHandlers, public WithChild {
 	public:
 		explicit Clickable(const std::shared_ptr<ApplicationContext>& ctx)
 			: Element(ctx) {
@@ -54,7 +54,7 @@ namespace elementor::elements {
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override;
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
 	private:
 		bool hovered = false;
