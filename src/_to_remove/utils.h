@@ -1,5 +1,5 @@
 //
-// Created by admin on 01.02.2024.
+// Created by noartem on 01.02.2024.
 //
 
 #ifndef UTILS_H

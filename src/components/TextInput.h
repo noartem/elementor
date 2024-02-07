@@ -1,5 +1,5 @@
 //
-// Created by admin on 04.02.2024.
+// Created by noartem on 04.02.2024.
 //
 
 #ifndef ELEMENTOR_COMPONENTS_TEXTINPUT_H
@@ -73,9 +73,20 @@ namespace elementor::components {
 		}
 
 		static std::shared_ptr<TextInput> New(
-			const std::shared_ptr<ApplicationContext>& ctx, const TextInputProps& props
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const TextInputProps& props
 		) {
 			return std::make_shared<TextInput>(ctx, props);
+		}
+
+		static std::shared_ptr<TextInput> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<TextInput>& elementRef,
+			const TextInputProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
 		}
 
 		static std::shared_ptr<TextInput> New(const std::shared_ptr<ApplicationContext>& ctx) {
@@ -95,8 +106,6 @@ namespace elementor::components {
 
 			auto textValue = value.empty() ? " " : toUTF8(value);
 			text->setText(textValue);
-
-			paragraph->forceUpdate();
 		}
 
 		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override {

@@ -13,7 +13,7 @@ namespace elementor::elements {
 		return child->getSize(boundaries);
 	}
 
-	std::vector<ElementWithRect> Hoverable::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Hoverable::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}
@@ -27,7 +27,7 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	std::vector<std::shared_ptr<EventHandler>> Hoverable::getEventsHandlers() {
+	std::vector <std::shared_ptr<EventHandler>> Hoverable::getEventsHandlers() {
 		return {
 			HoverEvent::Handle([this](const auto& event) {
 				if (callbackLeave && hovered && !event->hovered) {

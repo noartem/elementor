@@ -7,14 +7,13 @@
 
 #include "ApplicationTree.h"
 #include "ApplicationContext.h"
-#include "Color.h"
 #include "Component.h"
 #include "Element.h"
 #include "Event.h"
 #include "FocusState.h"
 #include "HoverState.h"
 #include "Render.h"
-#include "String.h"
+#include "utility.h"
 #include "WithChild.h"
 #include "WithChildren.h"
 

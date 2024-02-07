@@ -14,7 +14,7 @@ namespace elementor::elements {
 			.min = {
 				widthCoefficient.has_value() ? 0 : boundaries.min.width,
 				heightCoefficient.has_value() ? 0 : boundaries.min.height,
-				},
+			},
 			.max = boundaries.max
 		};
 
@@ -24,7 +24,7 @@ namespace elementor::elements {
 		return elementSize;
 	}
 
-	std::vector<ElementWithRect> Align::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Align::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

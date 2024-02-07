@@ -11,32 +11,28 @@
 
 namespace elementor::elements {
 	struct FocusableProps {
-		std::optional<std::function<void(bool focused)>> onFocusChange;
-		const std::shared_ptr<Element>& child = nullptr;
+		std::optional <std::function<void(bool focused)>> onFocusChange;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Focusable : public Element, public WithEventsHandlers, public WithChild {
 	public:
-		explicit Focusable(const std::shared_ptr<ApplicationContext>& ctx)
+		Focusable(const std::shared_ptr <ApplicationContext>& ctx, const FocusableProps& props)
 			: Element(ctx) {
-		}
-
-		Focusable(const std::shared_ptr<ApplicationContext>& ctx, const FocusableProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
 			if (props.onFocusChange.has_value()) onFocusChange(props.onFocusChange.value());
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Focusable> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Focusable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const FocusableProps& props
 		) {
 			return std::make_shared<Focusable>(ctx, props);
 		}
 
-		static std::shared_ptr<Focusable> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
-			std::shared_ptr<Focusable>& elementRef,
+		static std::shared_ptr <Focusable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Focusable>& elementRef,
 			const FocusableProps& props
 		) {
 			auto element = New(ctx, props);
@@ -44,11 +40,11 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr<Focusable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Focusable> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
-		void onFocusChange(const std::optional<std::function<void(bool focused)>>& newCallback) {
+		void onFocusChange(const std::optional <std::function<void(bool focused)>>& newCallback) {
 			callbackFocusChange = newCallback;
 		}
 
@@ -102,11 +98,16 @@ namespace elementor::elements {
 			}
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+		std::vector <std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
 	private:
 		bool focusAllowed = true;
@@ -114,7 +115,7 @@ namespace elementor::elements {
 		bool pendingFocus = false;
 		bool pendingBlur = false;
 
-		std::optional<std::function<void(bool focused)>> callbackFocusChange;
+		std::optional <std::function<void(bool focused)>> callbackFocusChange;
 	};
 }
 

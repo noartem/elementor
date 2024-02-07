@@ -19,7 +19,7 @@ namespace elementor::elements {
 		std::optional<float> childCoefficient = std::nullopt;
 		AlignDirectionProps width;
 		AlignDirectionProps height;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 
 		[[nodiscard]] std::optional<float> getWidthCoefficient() const {
 			if (width.coefficient.has_value()) return width.coefficient;
@@ -52,25 +52,31 @@ namespace elementor::elements {
 
 	class Align : public Element, public WithChild {
 	public:
-		explicit Align(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Align(const std::shared_ptr<ApplicationContext>& ctx, const AlignProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Align(const std::shared_ptr <ApplicationContext>& ctx, const AlignProps& props)
+			: Element(ctx) {
 			setWidthCoefficient(props.getWidthCoefficient(), props.getWidthChildCoefficient());
 			setHeightCoefficient(props.getHeightCoefficient(), props.getHeightChildCoefficient());
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Align> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Align> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const AlignProps& props
 		) {
 			return std::make_shared<Align>(ctx, props);
 		}
 
-		static std::shared_ptr<Align> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Align> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Align>& elementRef,
+			const AlignProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Align> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -83,6 +89,7 @@ namespace elementor::elements {
 		}
 
 		void setWidthCoefficient(std::optional<float> newCoefficient, std::optional<float> newChildCoefficient) {
+			markChanged();
 			widthCoefficient = newCoefficient;
 			widthChildCoefficient = newChildCoefficient;
 		}
@@ -100,6 +107,7 @@ namespace elementor::elements {
 		}
 
 		void setHeightCoefficient(std::optional<float> newCoefficient, std::optional<float> newChildCoefficient) {
+			markChanged();
 			heightCoefficient = newCoefficient;
 			heightChildCoefficient = newChildCoefficient;
 		}
@@ -108,9 +116,14 @@ namespace elementor::elements {
 			setHeightCoefficient(newCoefficient, newCoefficient);
 		}
 
+		void setChild(const std::shared_ptr<Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		std::optional<float> widthCoefficient = std::nullopt;
@@ -119,6 +132,5 @@ namespace elementor::elements {
 		std::optional<float> heightChildCoefficient = std::nullopt;
 	};
 }
-
 
 #endif //ELEMENTOR_ALIGN_H

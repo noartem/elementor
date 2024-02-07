@@ -25,7 +25,7 @@ namespace elementor::elements {
 		return fitSizeInBoundaries(getChildSize(boundaries), boundaries);
 	}
 
-	std::vector<ElementWithRect> Scrollable::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Scrollable::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}
@@ -56,7 +56,7 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	std::vector<std::shared_ptr<EventHandler>> Scrollable::getEventsHandlers() {
+	std::vector <std::shared_ptr<EventHandler>> Scrollable::getEventsHandlers() {
 		return {
 			HoverEvent::Handle([this](const auto& event) {
 				hovered = event->hovered;

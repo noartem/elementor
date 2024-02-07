@@ -11,25 +11,35 @@ namespace elementor::elements {
 
 	struct RowProps {
 		float spacing = 0;
-		const std::vector<std::shared_ptr<Element>>& children = {};
+		const std::vector <std::shared_ptr<Element>>& children = {};
 	};
 
 	class Row : public Element, public WithChildren {
 	public:
-		Row(const std::shared_ptr<ApplicationContext>& ctx, const RowProps& props)
-			: Element(ctx),
-			  WithChildren(props.children) {
+		Row(const std::shared_ptr <ApplicationContext>& ctx, const RowProps& props)
+			: Element(ctx) {
 			setSpacing(props.spacing);
+			setChildren(props.children);
 		}
 
-		static std::shared_ptr<Row> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Row> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const RowProps& props
 		) {
 			return std::make_shared<Row>(ctx, props);
 		}
 
-		static std::shared_ptr<Row> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Row> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Row>& elementRef,
+			const RowProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Row> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -38,12 +48,18 @@ namespace elementor::elements {
 		}
 
 		void setSpacing(float newSpacing) {
+			markChanged();
 			spacing = newSpacing;
+		}
+
+		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren) {
+			markChanged();
+			children = newChildren;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float spacing = 0;

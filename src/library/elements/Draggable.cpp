@@ -17,7 +17,7 @@ namespace elementor::elements {
 		lastRect = rect;
 	}
 
-	std::vector<ElementWithRect> Draggable::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Draggable::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}
@@ -31,7 +31,7 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
+	void Draggable::onMouseButtonEvent(const std::shared_ptr <MouseButtonEvent>& event) {
 		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
 			return;
 		}
@@ -46,7 +46,7 @@ namespace elementor::elements {
 		dragging = true;
 	}
 
-	std::vector<std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
+	std::vector <std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
 		return {
 			MouseMoveEvent::Handle([this](const auto& event) {
 				onApplicationMouseMoveEvent(event);
@@ -59,7 +59,7 @@ namespace elementor::elements {
 		};
 	}
 
-	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event) {
+	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr <MouseMoveEvent>& event) {
 		if (!dragging) {
 			return;
 		}
@@ -81,7 +81,7 @@ namespace elementor::elements {
 		}
 	}
 
-	void Draggable::onApplicationMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
+	void Draggable::onApplicationMouseButtonEvent(const std::shared_ptr <MouseButtonEvent>& event) {
 		if (!dragging || event->button != MouseButton::Left || event->action != KeyAction::Release) {
 			return;
 		}
@@ -93,7 +93,7 @@ namespace elementor::elements {
 		dragging = false;
 	}
 
-	std::vector<std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
+	std::vector <std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
 		return {
 			HoverEvent::Handle([this](const auto& event) {
 				hovered = event->hovered;

@@ -1,11 +1,13 @@
 //
-// Created by admin on 04.02.2024.
+// Created by noartem on 04.02.2024.
 //
 
 #include "ApplicationTree.h"
 #include "debug.h"
 
 #include <ranges>
+
+#include <include/core/SkSurface.h>
 
 namespace elementor {
 	std::shared_ptr<ApplicationTree::Node> makeRootNode(
@@ -60,30 +62,57 @@ namespace elementor {
 	}
 
 	void ApplicationTree::Node::print(std::ostream& os, unsigned int level) const {
-		os << std::string(level * 2, ' ')
-		   << "width=" << rect.size.width << ", "
-		   << "height=" << rect.size.height << ", "
-		   << "x=" << rect.position.x << ", "
-		   << "y=" << rect.position.y
-		   << std::endl;
-	}
+		os << std::string(level * 2, '.');
 
-	void ApplicationTree::print(std::ostream& os) const {
-		std::vector<std::pair<std::shared_ptr<Node>, int>> stack;
-		stack.emplace_back(root, 0);
-		while (!stack.empty()) {
-			auto node = stack.back();
-			stack.pop_back();
+		os << "(" << element << ") ";
 
-			node.first->print(os, node.second);
+		if (drawCachedImage != nullptr)
+			os << "[[cached]] ";
 
-			for (auto& child: node.first->children) {
-				stack.emplace_back(child, node.second + 1);
-			}
+		if (changed)
+			os << "[[changed]] ";
+
+		os << std::endl;
+
+		for (const auto& child: children) {
+			child->print(os, level + 1);
 		}
 	}
 
-	std::shared_ptr<ApplicationTree::Node> ApplicationTree::Node::findDeepestNode(
+	void ApplicationTree::print(std::ostream& os) const {
+		root->print(os, 0);
+	}
+
+	std::shared_ptr<ApplicationTree::Node> ApplicationTree::Node::findFirstNode(
+		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
+	) {
+		for (const auto& child: children) {
+			if (predicate(child)) {
+				return child;
+			}
+		}
+
+		for (const auto& child: children) {
+			auto childResult = child->findFirstNode(predicate);
+			if (childResult) {
+				return childResult;
+			}
+		}
+
+		return nullptr;
+	}
+
+	std::shared_ptr<ApplicationTree::Node> ApplicationTree::findFirstNode(
+		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
+	) const {
+		if (predicate(root)) {
+			return root;
+		}
+
+		return root->findFirstNode(predicate);
+	}
+
+	std::shared_ptr<ApplicationTree::Node> ApplicationTree::Node::findLastNode(
 		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 	) {
 		bool someChildMatched = false;
@@ -100,17 +129,17 @@ namespace elementor {
 
 		for (const auto& child: children) {
 			if (predicate(child)) {
-				return child->findDeepestNode(predicate);
+				return child->findLastNode(predicate);
 			}
 		}
 
 		return nullptr;
 	}
 
-	std::shared_ptr<ApplicationTree::Node> ApplicationTree::findDeepestNode(
+	std::shared_ptr<ApplicationTree::Node> ApplicationTree::findLastNode(
 		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 	) const {
-		return root->findDeepestNode(predicate);
+		return root->findLastNode(predicate);
 	}
 
 	EventsHandlersMap ApplicationTree::getGlobalEventsHandlers() const {
@@ -149,13 +178,7 @@ namespace elementor {
 		}
 	}
 
-	void ApplicationTree::Node::draw(SkCanvas* canvas) {
-		// TODO: Add cache
-		// TODO: Rewrite without recursion
-
-		canvas->save();
-		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
-
+	void ApplicationTree::Node::clipCanvas(SkCanvas* canvas) {
 		ClipBehavior clipBehavior = element->getClipBehaviour();
 		if (clipBehavior != ClipBehavior::None) {
 			SkRect skRect = SkRect::MakeXYWH(
@@ -170,19 +193,14 @@ namespace elementor {
 				clipBehavior == ClipBehavior::AntiAlias
 			);
 		}
+	}
+
+	void ApplicationTree::Node::draw(SkCanvas* canvas) {
+		canvas->save();
+		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
+		clipCanvas(canvas);
 
 		element->paintBackground(canvas, rect);
-
-#ifdef DEBUG
-		SkPaint debugSkPaint;
-		debugSkPaint.setColor(SK_ColorRED);
-		debugSkPaint.setStrokeWidth(2);
-		debugSkPaint.setStyle(SkPaint::kStroke_Style);
-		debugSkPaint.setAntiAlias(true);
-
-		SkRect debugSkRect = SkRect::MakeWH(rect.visibleSize.width, rect.visibleSize.height);
-		canvas->drawRect(debugSkRect, debugSkPaint);
-#endif
 
 		for (const auto& child: children) {
 			child->draw(canvas);
@@ -191,34 +209,97 @@ namespace elementor {
 		canvas->restore();
 	}
 
+	void ApplicationTree::Node::drawCache(SkCanvas* canvas) {
+		if (!drawCachedImage) {
+			return;
+		}
+
+		canvas->save();
+		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
+		clipCanvas(canvas);
+
+		canvas->resetMatrix();
+		canvas->drawImage(drawCachedImage, 0, 0);
+
+		canvas->restore();
+	}
+
+	void ApplicationTree::Node::drawWithChildrenCache(SkCanvas* canvas) {
+		canvas->save();
+		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
+		clipCanvas(canvas);
+
+		element->paintBackground(canvas, rect);
+
+		for (const auto& child: children) {
+			child->drawWithCache(canvas);
+		}
+
+		canvas->restore();
+	}
+
+	void ApplicationTree::Node::updateDrawCache(SkCanvas* canvas) {
+		if (drawCachedImage) {
+			return;
+		}
+
+		for (const auto& child: children) {
+			if (child->changed) {
+				return;
+			}
+		}
+
+		auto cacheSurface = canvas->makeSurface(canvas->imageInfo());
+		auto cacheCanvas = cacheSurface->getCanvas();
+		cacheCanvas->setMatrix(canvas->getTotalMatrix());
+
+		draw(cacheCanvas);
+
+		cacheCanvas->flush();
+		drawCachedImage = cacheSurface->makeImageSnapshot();
+	}
+
+	void ApplicationTree::Node::drawWithCache(SkCanvas* canvas) {
+		updateDrawCache(canvas);
+
+		if (drawCachedImage) {
+			drawCache(canvas);
+		} else {
+			drawWithChildrenCache(canvas);
+		}
+	}
+
 	void ApplicationTree::draw(SkCanvas* canvas) {
-		root->draw(canvas);
+		root->drawWithCache(canvas);
 	}
 
 	void ApplicationTree::Node::markChanged() {
+		changed = false;
 		childrenChanged = false;
+		deepChanged = false;
 
 		for (const auto& child: children) {
 			child->markChanged();
 			childrenChanged |= child->changed;
+			deepChanged |= child->deepChanged;
 		}
 
 		changed = element->popChanged();
+		deepChanged |= changed;
 
-		if (changed || childrenChanged) {
-			// TODO: invalidate draw cache
+		if (deepChanged) {
+			drawCachedImage = nullptr;
 		}
 	}
 
 	void ApplicationTree::markChanged() {
-		root->changed = true;
-		// TODO: Fix it
-//		root->markChanged();
+		root->markChanged();
 	}
 
 	void ApplicationTree::Node::updateChildren() {
 		children.clear();
 		childrenChanged = false;
+		deepChanged = false;
 
 		for (const auto& childElementWithRect: element->getChildren(rect)) {
 			auto childElement = std::get<0>(childElementWithRect);
@@ -234,31 +315,58 @@ namespace elementor {
 			childElementRect.visibleSize = childVisibleRect.size;
 			childElementRect.visiblePosition = childVisibleRect.position;
 
-			auto childNode = Node::New(childElement, childElementRect, childBoundary, shared_from_this());
+			auto childNode = New(childElement, childElementRect, childBoundary, shared_from_this());
 			children.push_back(childNode);
+		}
+	}
+
+	bool ApplicationTree::Node::isChildrenChanged() {
+		auto newChildren = element->getChildren(rect);
+
+		if (children.size() != newChildren.size()) {
+			return true;
+		}
+
+		for (size_t i = 0; i < children.size(); i++) {
+			auto childOldElement = children[i]->element;
+			auto childNewElement = std::get<0>(newChildren[i]);
+
+			Rect childOldRect = children[i]->rect;
+			auto childNewRect = std::get<1>(newChildren[i]);
+
+			if (childOldElement != childNewElement || childOldRect != childNewRect) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void ApplicationTree::Node::updateParentChildren() {
+		if (parent == nullptr) {
+			return;
+		}
+
+		if (parent->isChildrenChanged()) {
+			parent->updateChildren();
+			parent->updateParentChildren();
 		}
 	}
 
 	void ApplicationTree::updateChanged() const {
 		if (root->changed) {
 			root->updateChildren();
+			root->changed = false;
 			return;
 		}
 
-		std::vector<std::shared_ptr<Node>> stack;
-		stack.push_back(root);
-		while (!stack.empty()) {
-			auto node = stack.back();
-			stack.pop_back();
-
-			if (!node->changed && node->childrenChanged) {
-				node->updateChildren();
-				continue;
+		while (auto nodePendingUpdateChildren = findFirstNode(
+			[](const std::shared_ptr<Node>& node) {
+				return !node->changed && node->childrenChanged;
 			}
-
-			for (auto& child: node->children) {
-				stack.push_back(child);
-			}
+		)) {
+			nodePendingUpdateChildren->updateChildren();
+			nodePendingUpdateChildren->updateParentChildren();
 		}
 	}
 
@@ -277,6 +385,8 @@ namespace elementor {
 							  : unionOfRects(boundary, rect);
 		node->eventsHandlers = getElementEventHandlers(element);
 		node->globalEventsHandlers = getGlobalEventHandlers(element);
+
+		element->popChanged(); // fix setters called from constructor
 
 		node->updateChildren();
 

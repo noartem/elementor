@@ -6,6 +6,7 @@
 #define ELEMENTOR_TEXT_H
 
 #include "../include.h"
+#include "../debug.h"
 
 #include <include/core/SkFont.h>
 #include <include/core/SkFontStyle.h>
@@ -146,6 +147,7 @@ namespace elementor::elements {
 		}
 
 		void setText(const std::string& newText) {
+			markChanged();
 			text = newText;
 		}
 
@@ -154,8 +156,9 @@ namespace elementor::elements {
 		}
 
 		void setFontColor(SkColor newFontColor) {
-			fontColor = newFontColor;
+			markChanged();
 			paint = std::nullopt;
+			fontColor = newFontColor;
 		}
 
 		void setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
@@ -175,8 +178,9 @@ namespace elementor::elements {
 		}
 
 		void setFontSize(float newFontSize) {
-			fontSize = newFontSize;
+			markChanged();
 			font = std::nullopt;
+			fontSize = newFontSize;
 		}
 
 		[[nodiscard]] float getFontSkew() const {
@@ -184,8 +188,9 @@ namespace elementor::elements {
 		}
 
 		void setFontSkew(float newFontSkew) {
-			fontSkew = newFontSkew;
+			markChanged();
 			font = std::nullopt;
+			fontSkew = newFontSkew;
 		}
 
 		[[nodiscard]] float getFontScale() const {
@@ -193,8 +198,9 @@ namespace elementor::elements {
 		}
 
 		void setFontScale(float newFontScale) {
-			fontScale = newFontScale;
+			markChanged();
 			font = std::nullopt;
+			fontScale = newFontScale;
 		}
 
 		[[nodiscard]] float getFontWeight() const {
@@ -202,8 +208,9 @@ namespace elementor::elements {
 		}
 
 		void setFontWeight(float newFontWeight) {
-			fontWeight = newFontWeight;
+			markChanged();
 			font = std::nullopt;
+			fontWeight = newFontWeight;
 		}
 
 		[[nodiscard]] float getFontWidth() const {
@@ -211,8 +218,9 @@ namespace elementor::elements {
 		}
 
 		void setFontWidth(float newFontWidth) {
-			fontWidth = newFontWidth;
+			markChanged();
 			font = std::nullopt;
+			fontWidth = newFontWidth;
 		}
 
 		[[nodiscard]] FontSlant getFontSlant() const {
@@ -220,8 +228,9 @@ namespace elementor::elements {
 		}
 
 		void setFontSlant(FontSlant newFontSlant) {
-			fontSlant = newFontSlant;
+			markChanged();
 			font = std::nullopt;
+			fontSlant = newFontSlant;
 		}
 
 		[[nodiscard]] std::string getFontFamily() const {
@@ -229,8 +238,9 @@ namespace elementor::elements {
 		}
 
 		void setFontFamily(const std::string& newFontFamily) {
-			fontFamily = newFontFamily;
+			markChanged();
 			font = std::nullopt;
+			fontFamily = newFontFamily;
 		}
 
 		[[nodiscard]] FontEdging getFontEdging() const {
@@ -238,8 +248,9 @@ namespace elementor::elements {
 		}
 
 		void setFontEdging(FontEdging newFontEdging) {
-			fontEdging = newFontEdging;
+			markChanged();
 			font = std::nullopt;
+			fontEdging = newFontEdging;
 		}
 
 		[[nodiscard]] TextDecoration getDecoration() const {
@@ -255,6 +266,7 @@ namespace elementor::elements {
 		}
 
 		void setDecorationMode(TextDecorationMode newDecorationMode) {
+			markChanged();
 			decorationMode = newDecorationMode;
 		}
 
@@ -263,6 +275,7 @@ namespace elementor::elements {
 		}
 
 		void setDecorationStyle(TextDecorationStyle newDecorationStyle) {
+			markChanged();
 			decorationStyle = newDecorationStyle;
 		}
 
@@ -271,6 +284,7 @@ namespace elementor::elements {
 		}
 
 		void setDecorationColor(SkColor newDecorationColor) {
+			markChanged();
 			decorationColor = newDecorationColor;
 		}
 
@@ -291,6 +305,7 @@ namespace elementor::elements {
 		}
 
 		void setDecorationThicknessMultiplier(float newDecorationThicknessMultiplier) {
+			markChanged();
 			decorationThicknessMultiplier = newDecorationThicknessMultiplier;
 		}
 
@@ -299,6 +314,7 @@ namespace elementor::elements {
 		}
 
 		void setLocale(const std::optional<std::string>& newLocale) {
+			markChanged();
 			locale = newLocale;
 		}
 

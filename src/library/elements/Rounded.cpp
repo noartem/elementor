@@ -35,7 +35,7 @@ namespace elementor::elements {
 		return child->getSize(boundaries);
 	}
 
-	std::vector<ElementWithRect> Rounded::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Rounded::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

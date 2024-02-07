@@ -1,5 +1,5 @@
 //
-// Created by admin on 12.01.2024.
+// Created by noartem on 12.01.2024.
 //
 
 #ifndef ELEMENTOR_WITH_CHILD_H
@@ -12,17 +12,6 @@
 namespace elementor {
 	class WithChild {
 	public:
-		explicit WithChild(const std::shared_ptr<Element>& child)
-			: child(child) {
-		}
-
-		WithChild() {
-		}
-
-		void setChild(const std::shared_ptr<Element>& element) {
-			child = element;
-		}
-
 		[[nodiscard]] auto getChild() const {
 			return child;
 		}
@@ -35,12 +24,8 @@ namespace elementor {
 			return child == nullptr;
 		}
 
-		void removeChild() {
-			setChild(nullptr);
-		}
-
 	protected:
-		std::shared_ptr<Element> child;
+		std::shared_ptr <Element> child;
 	};
 }
 

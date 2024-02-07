@@ -10,13 +10,13 @@
 
 namespace elementor::components {
 	struct CursorableProps {
-		std::optional<CursorShape> cursorShape;
-		const std::shared_ptr<Element>& child = nullptr;
+		std::optional <CursorShape> cursorShape;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Cursorable : public Component {
 	public:
-		explicit Cursorable(const std::shared_ptr<ApplicationContext>& ctx, const CursorableProps& props)
+		explicit Cursorable(const std::shared_ptr <ApplicationContext>& ctx, const CursorableProps& props)
 			: Component(ctx) {
 			element = Hoverable::New(ctx, hoverable, {
 				.onEnter = [this]() {
@@ -33,11 +33,24 @@ namespace elementor::components {
 			setChild(props.child);
 		}
 
-		static std::shared_ptr<Cursorable> New(const std::shared_ptr<ApplicationContext>& ctx, const CursorableProps& props) {
+		static std::shared_ptr <Cursorable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const CursorableProps& props
+		) {
 			return std::make_shared<Cursorable>(ctx, props);
 		}
 
-		static std::shared_ptr<Cursorable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Cursorable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Cursorable>& elementRef,
+			const CursorableProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Cursorable> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -49,14 +62,15 @@ namespace elementor::components {
 			return cursorShape;
 		}
 
-		void setChild(const std::shared_ptr<Element>& child) {
+		void setChild(const std::shared_ptr <Element>& child) {
+			markChanged();
 			hoverable->setChild(child);
 		}
 
 	private:
 		CursorShape cursorShape = CursorShape::Default;
 
-		std::shared_ptr<Hoverable> hoverable;
+		std::shared_ptr <Hoverable> hoverable;
 	};
 }
 

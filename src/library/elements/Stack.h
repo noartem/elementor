@@ -9,30 +9,45 @@
 
 namespace elementor::elements {
 	struct StackProps {
-		const std::vector<std::shared_ptr<Element>>& children = {};
+		const std::vector <std::shared_ptr<Element>>& children = {};
 	};
 
 	class Stack : public Element, public WithChildren {
 	public:
-		Stack(const std::shared_ptr<ApplicationContext>& ctx, const StackProps& props)
-			: Element(ctx),
-			  WithChildren(props.children) {
+		Stack(const std::shared_ptr <ApplicationContext>& ctx, const StackProps& props)
+			: Element(ctx) {
+			setChildren(props.children);
 		}
 
-		static std::shared_ptr<Stack> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Stack> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const StackProps& props
 		) {
 			return std::make_shared<Stack>(ctx, props);
 		}
 
-		static std::shared_ptr<Stack> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Stack> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Stack>& elementRef,
+			const StackProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Stack> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
+		}
+
+		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren) {
+			markChanged();
+			children = newChildren;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 	};
 }
 

@@ -1,5 +1,5 @@
 //
-// Created by admin on 09.01.2024.
+// Created by noartem on 09.01.2024.
 //
 
 #ifndef ELEMENTOR_ELEMENT_TREE_H

@@ -23,38 +23,45 @@ namespace elementor::elements {
 		float right = 0;
 		float bottom = 0;
 		float left = 0;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Padding : public Element, public WithChild {
 	public:
-		explicit Padding(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Padding(const std::shared_ptr<ApplicationContext>& ctx, const PaddingProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Padding(const std::shared_ptr <ApplicationContext>& ctx, const PaddingProps& props)
+			: Element(ctx) {
 			setPaddings(
 				(props.top == 0) ? ((props.y == 0) ? props.all : props.y) : props.top,
 				(props.right == 0) ? ((props.x == 0) ? props.all : props.x) : props.right,
 				(props.bottom == 0) ? ((props.y == 0) ? props.all : props.y) : props.bottom,
 				(props.left == 0) ? ((props.x == 0) ? props.all : props.x) : props.left
 			);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Padding> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Padding> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const PaddingProps& props
 		) {
 			return std::make_shared<Padding>(ctx, props);
 		}
 
-		static std::shared_ptr<Padding> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Padding> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Padding>& elementRef,
+			const PaddingProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Padding> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
 		void setPaddings(float paddingTop, float paddingRight, float paddingBottom, float paddingLeft) {
+			markChanged();
 			paddings = { paddingTop, paddingRight, paddingBottom, paddingLeft };
 		}
 
@@ -74,12 +81,17 @@ namespace elementor::elements {
 			return paddings;
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
-		PaddingsValue paddings{};
+		PaddingsValue paddings = { 0, 0, 0, 0 };
 	};
 }
 

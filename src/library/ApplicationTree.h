@@ -1,5 +1,5 @@
 //
-// Created by admin on 04.02.2024.
+// Created by noartem on 04.02.2024.
 //
 
 #ifndef ELEMENTOR_APPLICATION_TREE_H
@@ -55,16 +55,37 @@ namespace elementor {
 			std::vector<std::shared_ptr<EventHandler>> eventsHandlers;
 			std::vector<std::shared_ptr<EventHandler>> globalEventsHandlers;
 
+			sk_sp<SkImage> drawCachedImage;
+
 			bool changed = false;
 			bool childrenChanged = false;
+			bool deepChanged = false;
 
-			std::shared_ptr<ApplicationTree::Node> findDeepestNode(
+			std::shared_ptr<ApplicationTree::Node> findFirstNode(
+				const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
+			);
+
+			std::shared_ptr<ApplicationTree::Node> findLastNode(
 				const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 			);
 
 			void updateChildren();
 
+			bool isChildrenChanged();
+
+			void updateParentChildren();
+
+			void clipCanvas(SkCanvas* canvas);
+
 			void draw(SkCanvas* canvas);
+
+			void drawCache(SkCanvas* canvas);
+
+			void updateDrawCache(SkCanvas* canvas);
+
+			void drawWithChildrenCache(SkCanvas* canvas);
+
+			void drawWithCache(SkCanvas* canvas);
 		};
 
 		ApplicationTree(const std::shared_ptr<Element>& rootElement, const Size& rootSize);
@@ -75,7 +96,11 @@ namespace elementor {
 			print(std::cout);
 		}
 
-		[[nodiscard]] std::shared_ptr<Node> findDeepestNode(
+		[[nodiscard]] std::shared_ptr<Node> findFirstNode(
+			const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
+		) const;
+
+		[[nodiscard]] std::shared_ptr<Node> findLastNode(
 			const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 		) const;
 

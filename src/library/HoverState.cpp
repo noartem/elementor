@@ -1,5 +1,5 @@
 //
-// Created by admin on 06.02.2024.
+// Created by noartem on 06.02.2024.
 //
 
 #include "HoverState.h"
@@ -13,7 +13,7 @@ namespace elementor {
 		}
 
 		setHoveredNode(
-			applicationTree->findDeepestNode(
+			applicationTree->findLastNode(
 				[=](const std::shared_ptr<ApplicationTree::Node>& node) {
 					return node->getRect().contains(cursorPosition);
 				}

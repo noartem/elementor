@@ -161,6 +161,12 @@ namespace elementor::platforms::gl {
 				continue;
 			}
 
+			auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+			if (keyboardEvent != nullptr && keyboardEvent->action == KeyAction::Release && keyboardEvent->key == KeyboardKey::P) {
+				applicationTree->print();
+				continue;
+			}
+
 			for (const auto& eventHandler: globalEventsHandlers[event->getName()]) {
 				auto eventHandlerResponse = eventHandler->onEvent(event);
 				if (eventHandlerResponse != EventCallbackResponse::None) {

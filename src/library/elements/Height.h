@@ -10,33 +10,40 @@
 namespace elementor::elements {
 	struct HeightProps {
 		float height = 0;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Height : public Element, public WithChild {
 	public:
-		explicit Height(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Height(const std::shared_ptr<ApplicationContext>& ctx, const HeightProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Height(const std::shared_ptr <ApplicationContext>& ctx, const HeightProps& props)
+			: Element(ctx) {
 			setHeight(props.height);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Height> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Height> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const HeightProps& props
 		) {
 			return std::make_shared<Height>(ctx, props);
 		}
 
-		static std::shared_ptr<Height> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Height> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Height>& elementRef,
+			const HeightProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Height> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
 		void setHeight(float newValue) {
+			markChanged();
 			height = newValue;
 		}
 
@@ -44,9 +51,14 @@ namespace elementor::elements {
 			return height;
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float height = 0;

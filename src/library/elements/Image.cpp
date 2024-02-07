@@ -7,8 +7,8 @@
 #include <utility>
 
 namespace elementor::elements {
-	sk_sp<SkImage> Image::makeImageFromFile(const std::string& path) {
-		sk_sp<SkData> encodedData = SkData::MakeFromFileName(path.c_str());
+	sk_sp <SkImage> Image::makeImageFromFile(const std::string& path) {
+		sk_sp <SkData> encodedData = SkData::MakeFromFileName(path.c_str());
 		return SkImage::MakeFromEncoded(encodedData);
 	}
 

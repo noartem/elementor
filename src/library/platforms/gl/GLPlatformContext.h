@@ -1,5 +1,5 @@
 //
-// Created by admin on 05.02.2024.
+// Created by noartem on 05.02.2024.
 //
 
 #ifndef ELEMENTOR_GL_PLATFORM_CONTEXT_H

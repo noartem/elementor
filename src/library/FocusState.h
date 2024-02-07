@@ -1,5 +1,5 @@
 //
-// Created by admin on 06.02.2024.
+// Created by noartem on 06.02.2024.
 //
 
 #ifndef ELEMENTOR_FOCUS_STATE_H

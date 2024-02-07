@@ -19,7 +19,7 @@ namespace elementor::elements {
 		float maxCrossAxisSize = 0;
 		bool hasFlexibleChildren = false;
 
-		for (const auto& child: this->getChildrenList()) {
+		for (const auto& child: children) {
 			Size childSize = child->getSize(childBoundaries);
 
 			float childCrossAxisSize = this->direction == FlexDirection::Row ? childSize.height : childSize.width;

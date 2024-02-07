@@ -63,7 +63,11 @@ namespace elementor {
 
 	protected:
 		std::shared_ptr<ApplicationContext> ctx;
-		bool changed = false;
+		bool changed = true;
+
+		void markChanged() {
+			changed = true;
+		}
 	};
 
 	using ElementWithRect = std::tuple<const std::shared_ptr<Element>&, Rect>;

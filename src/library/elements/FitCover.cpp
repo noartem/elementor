@@ -7,7 +7,7 @@
 #include <utility>
 
 namespace elementor::elements {
-	std::vector<ElementWithRect> FitCover::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> FitCover::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

@@ -1,11 +1,8 @@
 //
-// Created by noartem 07.08.2022.
+// Created by noartem on 07.02.2024.
 //
 
-#include "Color.h"
-
-#include <string>
-#include <include/core/SkColor.h>
+#include "utility.h"
 
 namespace elementor {
 	SkColor makeSkColorFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {

@@ -35,7 +35,7 @@ namespace elementor::components {
 				.offset = 6,
 				.child = Focusable::New(ctx, focusable, {
 					.onFocusChange = [this](bool newFocused) {
-						focused = newFocused;
+						setFocused(newFocused);
 					},
 					.child = Cursorable::New(ctx, {
 						.cursorShape = CursorShape::Hand,
@@ -139,6 +139,11 @@ namespace elementor::components {
 		std::shared_ptr<Focusable> focusable = nullptr;
 
 		std::optional<std::function<EventCallbackResponse()>> callbackClick;
+
+		void setFocused(bool newFocused) {
+			markChanged();
+			focused = newFocused;
+		}
 	};
 }
 

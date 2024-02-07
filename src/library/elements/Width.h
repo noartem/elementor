@@ -10,33 +10,40 @@
 namespace elementor::elements {
 	struct WidthProps {
 		float width = 0;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Width : public Element, public WithChild {
 	public:
-		explicit Width(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Width(const std::shared_ptr<ApplicationContext>& ctx, const WidthProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Width(const std::shared_ptr <ApplicationContext>& ctx, const WidthProps& props)
+			: Element(ctx) {
 			setWidth(props.width);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Width> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Width> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const WidthProps& props
 		) {
 			return std::make_shared<Width>(ctx, props);
 		}
 
-		static std::shared_ptr<Width> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Width> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Width>& elementRef,
+			const WidthProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Width> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
 		void setWidth(float newValue) {
+			markChanged();
 			width = newValue;
 		}
 
@@ -44,9 +51,14 @@ namespace elementor::elements {
 			return width;
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float width = 0;

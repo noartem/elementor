@@ -9,32 +9,43 @@
 
 namespace elementor::elements {
 	struct FitContainProps {
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class FitContain : public Element, public WithChild {
 	public:
-		explicit FitContain(const std::shared_ptr<ApplicationContext>& ctx)
+		FitContain(const std::shared_ptr <ApplicationContext>& ctx, const FitContainProps& props)
 			: Element(ctx) {
+			setChild(props.child);
 		}
 
-		FitContain(const std::shared_ptr<ApplicationContext>& ctx, const FitContainProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
-		}
-
-		static std::shared_ptr<FitContain> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <FitContain> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const FitContainProps& props
 		) {
 			return std::make_shared<FitContain>(ctx, props);
 		}
 
-		static std::shared_ptr<FitContain> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <FitContain> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <FitContain>& elementRef,
+			const FitContainProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <FitContain> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 	};
 }
 

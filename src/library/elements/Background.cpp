@@ -21,7 +21,7 @@ namespace elementor::elements {
 		canvas->drawRect(skRect, paint);
 	}
 
-	std::vector<ElementWithRect> Background::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Background::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

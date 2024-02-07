@@ -40,7 +40,7 @@ namespace elementor::elements {
 		return elementSize;
 	}
 
-	std::vector<ElementWithRect> Padding::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Padding::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

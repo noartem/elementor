@@ -33,8 +33,8 @@ namespace elementor::elements {
 		return elementSize;
 	}
 
-	std::vector<ElementWithRect> Column::getChildren(const ElementRect& rect) {
-		std::vector<ElementWithRect> childrenElements;
+	std::vector <ElementWithRect> Column::getChildren(const ElementRect& rect) {
+		std::vector <ElementWithRect> childrenElements;
 
 		auto pixelScale = ctx->getPixelScale();
 		auto spacingScaled = spacing * pixelScale;

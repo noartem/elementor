@@ -11,9 +11,9 @@
 #include "ParagraphPlaceholder.h"
 
 namespace elementor::elements {
-	sk_sp<skia::textlayout::FontCollection>
-	Paragraph::makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) const {
-		sk_sp<skia::textlayout::FontCollection> fontCollection = sk_make_sp<skia::textlayout::FontCollection>();
+	sk_sp <skia::textlayout::FontCollection>
+	Paragraph::makeFontCollection(const std::shared_ptr <ApplicationContext>& ctx) const {
+		sk_sp <skia::textlayout::FontCollection> fontCollection = sk_make_sp<skia::textlayout::FontCollection>();
 		fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
 		fontCollection->setDynamicFontManager(ctx->getSkFontManager());
 		return fontCollection;
@@ -37,9 +37,9 @@ namespace elementor::elements {
 	}
 
 	skia::textlayout::ParagraphBuilderImpl
-	Paragraph::makeBuilder(const std::shared_ptr<ApplicationContext>& ctx) const {
+	Paragraph::makeBuilder(const std::shared_ptr <ApplicationContext>& ctx) const {
 		skia::textlayout::ParagraphStyle paragraphStyle = makeParagraphStyle();
-		sk_sp<skia::textlayout::FontCollection> fontCollection = makeFontCollection(ctx);
+		sk_sp <skia::textlayout::FontCollection> fontCollection = makeFontCollection(ctx);
 		skia::textlayout::ParagraphBuilderImpl builder{ paragraphStyle, fontCollection };
 		return builder;
 	}
@@ -85,7 +85,7 @@ namespace elementor::elements {
 	}
 
 	skia::textlayout::PlaceholderStyle Paragraph::makeChildPlaceholderStyle(
-		const std::shared_ptr<Element>& child
+		const std::shared_ptr <Element>& child
 	) const {
 		Size childSize = child->getSize(InfiniteBoundaries);
 
@@ -97,10 +97,10 @@ namespace elementor::elements {
 		return makeElementChildPlaceholderStyle(childSize);
 	}
 
-	std::unique_ptr<skia::textlayout::Paragraph> Paragraph::makeSkParagraph() const {
+	std::unique_ptr <skia::textlayout::Paragraph> Paragraph::makeSkParagraph() const {
 		skia::textlayout::ParagraphBuilderImpl builder = makeBuilder(ctx);
 
-		for (const std::shared_ptr<Element>& child: getChildrenList()) {
+		for (const std::shared_ptr <Element>& child: children) {
 			auto textChild = std::dynamic_pointer_cast<Text>(child);
 			if (textChild) {
 				auto textChildValue = textChild->getText();
@@ -113,7 +113,7 @@ namespace elementor::elements {
 			}
 		}
 
-		std::unique_ptr<skia::textlayout::Paragraph> paragraph = builder.Build();
+		std::unique_ptr <skia::textlayout::Paragraph> paragraph = builder.Build();
 
 		paragraph->updateTextAlign(getSkTextAlign());
 
@@ -149,12 +149,12 @@ namespace elementor::elements {
 		skParagraph->paint(canvas, 0, 0);
 	}
 
-	std::vector<ElementWithRect> Paragraph::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Paragraph::getChildren(const ElementRect& rect) {
 		updateSkParagraph();
 
-		std::vector<ElementWithRect> childrenElements;
+		std::vector <ElementWithRect> childrenElements;
 
-		std::vector<skia::textlayout::TextBox> placeholdersRects = skParagraph->getRectsForPlaceholders();
+		std::vector <skia::textlayout::TextBox> placeholdersRects = skParagraph->getRectsForPlaceholders();
 		for (unsigned int i = 0; i < placeholdersRects.size(); i++) {
 			if (placeholdersChildren.size() <= i) {
 				break;
@@ -175,7 +175,9 @@ namespace elementor::elements {
 		return childrenElements;
 	}
 
-	void Paragraph::setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
+	void Paragraph::setChildren(const std::vector <std::shared_ptr<Element>>& newChildren) {
+		markChanged();
+
 		children = newChildren;
 		skParagraph = nullptr;
 
@@ -190,7 +192,7 @@ namespace elementor::elements {
 		}
 	}
 
-	std::optional<Rect> Paragraph::getGlyphRect(unsigned glyphOffset) {
+	std::optional <Rect> Paragraph::getGlyphRect(unsigned glyphOffset) {
 		updateSkParagraph();
 
 		auto textBoxes = skParagraph->getRectsForRange(
@@ -200,7 +202,7 @@ namespace elementor::elements {
 			skia::textlayout::RectWidthStyle::kMax
 		);
 
-		for (auto textBox : textBoxes) {
+		for (auto textBox: textBoxes) {
 			Rect textBoxRect = {
 				.size = {
 					.width = textBox.rect.width(),

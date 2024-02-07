@@ -20,7 +20,7 @@ std::filesystem::path getThisPath() {
 
 class LikeButton : public Component {
 public:
-	explicit LikeButton(const std::shared_ptr<ApplicationContext>& ctx)
+	explicit LikeButton(const std::shared_ptr <ApplicationContext>& ctx)
 		: Component(ctx) {
 		element = Button::New(ctx, button, {
 			.text = "Лайкнуть (0)",
@@ -34,14 +34,14 @@ public:
 		});
 	}
 
-	static std::shared_ptr<LikeButton> New(const std::shared_ptr<ApplicationContext>& ctx) {
+	static std::shared_ptr <LikeButton> New(const std::shared_ptr <ApplicationContext>& ctx) {
 		return std::make_shared<LikeButton>(ctx);
 	}
 
 private:
 	int count = 0;
 
-	std::shared_ptr<Button> button;
+	std::shared_ptr <Button> button;
 
 	void setCount(int newCount) {
 		count = newCount;
@@ -53,7 +53,7 @@ private:
 	}
 };
 
-std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
+std::shared_ptr <Element> Example(const std::shared_ptr <ApplicationContext>& ctx) {
 	return (
 		Background::New(ctx, {
 			.color = "#fff",
@@ -137,6 +137,16 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 			})
 		})
 	);
+}
+
+std::shared_ptr <Element> Example2(const std::shared_ptr <ApplicationContext>& ctx) {
+	return Background::New(ctx, {
+		.color = "#fff",
+		.child = Align::New(ctx, {
+			.coefficient = 0.5,
+			.child = LikeButton::New(ctx)
+		})
+	});
 }
 
 int main() {

@@ -11,7 +11,7 @@
 namespace elementor::components {
 	class FPSLabel : public Component {
 	public:
-		explicit FPSLabel(const std::shared_ptr<ApplicationContext>& ctx)
+		explicit FPSLabel(const std::shared_ptr <ApplicationContext>& ctx)
 			: Component(ctx) {
 			element = Rounded::New(ctx, {
 				.all = 3,
@@ -47,12 +47,12 @@ namespace elementor::components {
 			updateFPS();
 		}
 
-		static std::shared_ptr<FPSLabel> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <FPSLabel> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return std::make_shared<FPSLabel>(ctx);
 		}
 
 	private:
-		std::shared_ptr<Text> fpsText;
+		std::shared_ptr <Text> fpsText;
 
 		void updateFPS() {
 			auto fps = ctx->getPerfomance()->getFPS();

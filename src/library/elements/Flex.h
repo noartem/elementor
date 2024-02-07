@@ -42,28 +42,38 @@ namespace elementor::elements {
 		FlexDirection direction = FlexDirection::Row;
 		FlexAlignment alignment = FlexAlignment::Start;
 		FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
-		const std::vector<std::shared_ptr<Element>>& children = {};
+		const std::vector <std::shared_ptr<Element>>& children = {};
 	};
 
 	class Flex : public Element, public WithChildren {
 	public:
-		Flex(const std::shared_ptr<ApplicationContext>& ctx, const FlexProps& props)
-			: Element(ctx),
-			  WithChildren(props.children) {
+		Flex(const std::shared_ptr <ApplicationContext>& ctx, const FlexProps& props)
+			: Element(ctx) {
 			setSpacing(props.spacing);
 			setDirection(props.direction);
 			setAlignment(props.alignment);
 			setCrossAlignment(props.crossAlignment);
+			setChildren(props.children);
 		}
 
-		static std::shared_ptr<Flex> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Flex> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const FlexProps& props
 		) {
 			return std::make_shared<Flex>(ctx, props);
 		}
 
-		static std::shared_ptr<Flex> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Flex> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Flex>& elementRef,
+			const FlexProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Flex> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -72,6 +82,7 @@ namespace elementor::elements {
 		}
 
 		void setSpacing(float newSpacing) {
+			markChanged();
 			spacing = newSpacing;
 		}
 
@@ -80,6 +91,7 @@ namespace elementor::elements {
 		}
 
 		void setDirection(FlexDirection newDirection) {
+			markChanged();
 			direction = newDirection;
 		}
 
@@ -88,6 +100,7 @@ namespace elementor::elements {
 		}
 
 		void setAlignment(FlexAlignment newAlignment) {
+			markChanged();
 			alignment = newAlignment;
 		}
 
@@ -96,12 +109,18 @@ namespace elementor::elements {
 		}
 
 		void setCrossAlignment(FlexCrossAlignment newAlignment) {
+			markChanged();
 			crossAlignment = newAlignment;
+		}
+
+		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren) {
+			markChanged();
+			children = newChildren;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float spacing = 0;
@@ -110,7 +129,7 @@ namespace elementor::elements {
 		FlexCrossAlignment crossAlignment = FlexCrossAlignment::Start;
 	};
 
-	std::shared_ptr<Flex> flex();
+	std::shared_ptr <Flex> flex();
 }
 
 

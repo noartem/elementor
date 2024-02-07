@@ -9,28 +9,28 @@
 
 namespace elementor::elements {
 	struct BackgroundProps {
-		std::optional<std::string> color;
-		const std::shared_ptr<Element>& child = nullptr;
+		std::optional <std::string> color;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Background : public Element, public WithChild {
 	public:
-		Background(const std::shared_ptr<ApplicationContext>& ctx, const BackgroundProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Background(const std::shared_ptr <ApplicationContext>& ctx, const BackgroundProps& props)
+			: Element(ctx) {
 			if (props.color.has_value()) setColor(props.color.value());
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Background> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Background> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const BackgroundProps& props
 		) {
 			return std::make_shared<Background>(ctx, props);
 		}
 
-		static std::shared_ptr<Background> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
-			std::shared_ptr<Background>& elementRef,
+		static std::shared_ptr <Background> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Background>& elementRef,
 			const BackgroundProps& props
 		) {
 			auto element = New(ctx, props);
@@ -38,7 +38,7 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr<Background> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Background> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -47,6 +47,7 @@ namespace elementor::elements {
 		}
 
 		void setColor(SkColor skColor) {
+			markChanged();
 			color = skColor;
 		}
 
@@ -62,11 +63,16 @@ namespace elementor::elements {
 			setColor(makeSkColorFromHex(hex));
 		}
 
+		void setChild(const std::shared_ptr<Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 		ClipBehavior getClipBehaviour() override {
 			return ClipBehavior::Hard;

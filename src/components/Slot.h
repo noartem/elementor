@@ -15,8 +15,7 @@ namespace elementor::elements {
 	class Slot : public Element, public WithChild {
 	public:
 		Slot(const std::shared_ptr<ApplicationContext>& ctx, const SlotProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+			: Element(ctx) {
 		}
 
 		static std::shared_ptr<Slot> New(
@@ -36,18 +35,13 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr<Slot> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
-			std::shared_ptr<WithChild>& elementRef,
-			const SlotProps& props
-		) {
-			auto element = New(ctx, props);
-			elementRef = element;
-			return element;
-		}
-
 		static std::shared_ptr<Slot> New(const std::shared_ptr<ApplicationContext>& ctx) {
 			return New(ctx, {});
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
 		}
 
 		Size getSize(const Boundaries& boundaries) override {

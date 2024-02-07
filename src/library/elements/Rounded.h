@@ -26,7 +26,7 @@ namespace elementor::elements {
 		std::optional<float> topRight;
 		std::optional<float> bottomLeft;
 		std::optional<float> bottomRight;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 
 		[[nodiscard]] RectRadius getRectRadius() const {
 			return {
@@ -40,25 +40,35 @@ namespace elementor::elements {
 
 	class Rounded : public Element, public WithChild {
 	public:
-		explicit Rounded(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
+		Rounded(const std::shared_ptr <ApplicationContext>& ctx, const RoundedProps& props)
+			: Element(ctx) {
+			setRadius(props.getRectRadius());
+			setChild(props.child);
 		}
 
-		Rounded(const std::shared_ptr<ApplicationContext>& ctx, const RoundedProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
-			rectRadius = props.getRectRadius();
-		}
-
-		static std::shared_ptr<Rounded> New(const std::shared_ptr<ApplicationContext>& ctx, const RoundedProps& props) {
+		static std::shared_ptr <Rounded> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const RoundedProps& props
+		) {
 			return std::make_shared<Rounded>(ctx, props);
 		}
 
-		static std::shared_ptr<Rounded> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Rounded> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Rounded>& elementRef,
+			const RoundedProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Rounded> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
 		void setRadius(RectRadius newValue) {
+			markChanged();
 			rectRadius = newValue;
 		}
 
@@ -66,11 +76,16 @@ namespace elementor::elements {
 			return rectRadius;
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 		ClipBehavior getClipBehaviour() override {
 			return ClipBehavior::AntiAlias;

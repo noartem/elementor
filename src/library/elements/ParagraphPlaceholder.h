@@ -20,30 +20,40 @@ namespace elementor::elements {
 	};
 
 	struct ParagraphPlaceholderProps {
-		std::optional<ParagraphPlaceholderAlignment> alignment;
-		std::optional<TextBaseline> baseline;
+		std::optional <ParagraphPlaceholderAlignment> alignment;
+		std::optional <TextBaseline> baseline;
 		std::optional<float> offset;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class ParagraphPlaceholder : public Element, public WithChild {
 	public:
-		ParagraphPlaceholder(const std::shared_ptr<ApplicationContext>& ctx, const ParagraphPlaceholderProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		ParagraphPlaceholder(const std::shared_ptr <ApplicationContext>& ctx, const ParagraphPlaceholderProps& props)
+			: Element(ctx) {
 			if (props.alignment.has_value()) setAlignment(props.alignment.value());
 			if (props.baseline.has_value()) setBaseline(props.baseline.value());
 			if (props.offset.has_value()) setOffset(props.offset.value());
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<ParagraphPlaceholder> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <ParagraphPlaceholder> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const ParagraphPlaceholderProps& props
 		) {
 			return std::make_shared<ParagraphPlaceholder>(ctx, props);
 		}
 
-		static std::shared_ptr<ParagraphPlaceholder> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <ParagraphPlaceholder> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <ParagraphPlaceholder>& elementRef,
+			const ParagraphPlaceholderProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <ParagraphPlaceholder> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -52,6 +62,7 @@ namespace elementor::elements {
 		}
 
 		void setAlignment(ParagraphPlaceholderAlignment newAlignment) {
+			markChanged();
 			alignment = newAlignment;
 		}
 
@@ -60,6 +71,7 @@ namespace elementor::elements {
 		}
 
 		void setBaseline(TextBaseline newBaseline) {
+			markChanged();
 			baseline = newBaseline;
 		}
 
@@ -68,14 +80,20 @@ namespace elementor::elements {
 		}
 
 		void setOffset(float newOffset) {
+			markChanged();
 			offset = newOffset;
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
 		}
 
 		skia::textlayout::PlaceholderStyle getSkPlaceholderStyle(const Size& size) const;
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		ParagraphPlaceholderAlignment alignment = ParagraphPlaceholderAlignment::Middle;

@@ -10,33 +10,30 @@
 namespace elementor::elements {
 	struct RatioProps {
 		float ratio = 0;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Ratio : public Element, public WithChild {
 	public:
-		explicit Ratio(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Ratio(const std::shared_ptr<ApplicationContext>& ctx, const RatioProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Ratio(const std::shared_ptr <ApplicationContext>& ctx, const RatioProps& props)
+			: Element(ctx) {
 			setRatio(props.ratio);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Ratio> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Ratio> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const RatioProps& props
 		) {
 			return std::make_shared<Ratio>(ctx, props);
 		}
 
-		static std::shared_ptr<Ratio> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Ratio> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
 		void setRatio(float newValue) {
+			markChanged();
 			ratio = newValue;
 		}
 
@@ -44,9 +41,14 @@ namespace elementor::elements {
 			return ratio;
 		}
 
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float ratio = 0;

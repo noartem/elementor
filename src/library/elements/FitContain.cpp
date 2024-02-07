@@ -20,7 +20,7 @@ namespace elementor::elements {
 		};
 	}
 
-	std::vector<ElementWithRect> FitContain::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> FitContain::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

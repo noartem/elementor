@@ -15,8 +15,8 @@ namespace elementor::elements {
 		return fitSizeInBoundaries(size, boundaries);
 	}
 
-	std::vector<ElementWithRect> Stack::getChildren(const ElementRect& rect) {
-		std::vector<ElementWithRect> childrenElements;
+	std::vector <ElementWithRect> Stack::getChildren(const ElementRect& rect) {
+		std::vector <ElementWithRect> childrenElements;
 
 		Boundaries childBoundaries = {
 			.min = ZeroSize,

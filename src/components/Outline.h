@@ -12,36 +12,54 @@ namespace elementor::components {
 	struct OutlineProps {
 		BorderProps border;
 		float offset = 0.0f;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Outline : public Element, public WithChild, public WithEventsHandlers {
 	public:
-		explicit Outline(const std::shared_ptr<ApplicationContext>& ctx, const OutlineProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		explicit Outline(const std::shared_ptr <ApplicationContext>& ctx, const OutlineProps& props)
+			: Element(ctx) {
 			offset = props.offset;
 			border = Border::New(ctx, props.border);
 			borderAsElement = std::dynamic_pointer_cast<Element>(border);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Outline> New(const std::shared_ptr<ApplicationContext>& ctx, const OutlineProps& props) {
+		static std::shared_ptr <Outline> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Outline>& elementRef,
+			const OutlineProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Outline> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const OutlineProps& props
+		) {
 			return std::make_shared<Outline>(ctx, props);
 		}
 
-		static std::shared_ptr<Outline> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Outline> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+		std::vector <std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
 	private:
-		std::shared_ptr<Border> border = nullptr;
-		std::shared_ptr<Element> borderAsElement = nullptr;
+		std::shared_ptr <Border> border = nullptr;
+		std::shared_ptr <Element> borderAsElement = nullptr;
 
 		float offset = 0.0;
 		bool focused = false;

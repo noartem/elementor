@@ -84,7 +84,7 @@ namespace elementor::elements {
 		canvas->drawRRect(makeSkRRect(rect), makeSkPaint());
 	}
 
-	std::vector<ElementWithRect> Border::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Border::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

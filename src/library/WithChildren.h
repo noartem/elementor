@@ -1,5 +1,5 @@
 //
-// Created by admin on 12.01.2024.
+// Created by noartem on 12.01.2024.
 //
 
 #ifndef ELEMENTOR_WITH_CHILDREN_H
@@ -13,32 +13,6 @@
 namespace elementor {
 	class WithChildren {
 	public:
-		explicit WithChildren(const std::vector<std::shared_ptr<Element>>& children)
-			: children(children) {
-		}
-
-		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren) {
-			children = newChildren;
-		}
-
-		void clearChildren() {
-			setChildren({});
-		}
-
-		void addChild(const std::shared_ptr<Element>& child) {
-			children.push_back(child);
-		}
-
-		void removeChild(int i) {
-			if (i >= 0 && i < children.size()) {
-				children.erase(children.begin() + i);
-			}
-		}
-
-		void removeChild(const std::shared_ptr<Element>& child) {
-			removeChild(childIndex(child));
-		}
-
 		[[nodiscard]] std::vector<std::shared_ptr<Element>> getChildrenList() const {
 			return children;
 		}

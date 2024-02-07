@@ -23,7 +23,7 @@ namespace elementor::elements {
 		return fitSizeInBoundaries(fitRatioWithin(ratio, boundaries.max), boundaries);
 	}
 
-	std::vector<ElementWithRect> Ratio::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Ratio::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

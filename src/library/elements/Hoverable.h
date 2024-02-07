@@ -16,15 +16,11 @@ namespace elementor::elements {
 
 	class Hoverable : public Element, public WithEventsHandlers, public WithChild {
 	public:
-		explicit Hoverable(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx) {
-		}
-
 		Hoverable(const std::shared_ptr<ApplicationContext>& ctx, const HoverableProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+			: Element(ctx) {
 			if (props.onEnter.has_value()) onEnter(props.onEnter.value());
 			if (props.onLeave.has_value()) onLeave(props.onLeave.value());
+			setChild(props.child);
 		}
 
 		static std::shared_ptr<Hoverable> New(
@@ -54,6 +50,11 @@ namespace elementor::elements {
 
 		void onLeave(const std::function<EventCallbackResponse()>& newCallbackLeave) {
 			callbackLeave = newCallbackLeave;
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;

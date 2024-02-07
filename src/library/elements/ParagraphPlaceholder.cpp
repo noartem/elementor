@@ -54,7 +54,7 @@ namespace elementor::elements {
 		return child->getSize(boundaries);
 	}
 
-	std::vector<ElementWithRect> ParagraphPlaceholder::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> ParagraphPlaceholder::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

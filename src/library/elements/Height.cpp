@@ -30,7 +30,7 @@ namespace elementor::elements {
 		return child->getSize(childBoundaries);
 	}
 
-	std::vector<ElementWithRect> Height::getChildren(const ElementRect& rect) {
+	std::vector <ElementWithRect> Height::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}

@@ -21,14 +21,13 @@ namespace elementor::elements {
 		float width = 1;
 		const std::string_view& color = "";
 		BorderStyle style = BorderStyle::Solid;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Border : public Element, public WithChild {
 	public:
-		Border(const std::shared_ptr<ApplicationContext>& ctx, const BorderProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+		Border(const std::shared_ptr <ApplicationContext>& ctx, const BorderProps& props)
+			: Element(ctx) {
 			setRadius(
 				props.radiusX.value_or(props.radius),
 				props.radiusY.value_or(props.radius)
@@ -36,18 +35,19 @@ namespace elementor::elements {
 			setWidth(props.width);
 			setStyle(props.style);
 			setColor(props.color);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Border> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Border> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const BorderProps& props
 		) {
 			return std::make_shared<Border>(ctx, props);
 		}
 
-		static std::shared_ptr<Border> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
-			std::shared_ptr<Border>& elementRef,
+		static std::shared_ptr <Border> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Border>& elementRef,
 			const BorderProps& props
 		) {
 			auto element = New(ctx, props);
@@ -55,7 +55,7 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr<Border> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Border> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -64,6 +64,7 @@ namespace elementor::elements {
 		}
 
 		void setColor(SkColor skColor) {
+			markChanged();
 			color = skColor;
 		}
 
@@ -84,6 +85,7 @@ namespace elementor::elements {
 		}
 
 		void setWidth(float newWidth) {
+			markChanged();
 			width = newWidth;
 		}
 
@@ -96,6 +98,7 @@ namespace elementor::elements {
 		}
 
 		void setRadius(float newRadiusX, float newRadiusY) {
+			markChanged();
 			radiusX = newRadiusX;
 			radiusY = newRadiusY;
 		}
@@ -109,14 +112,20 @@ namespace elementor::elements {
 		}
 
 		void setStyle(BorderStyle newStyle) {
+			markChanged();
 			style = newStyle;
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
 	private:
 		float width = 0.0;
@@ -129,7 +138,7 @@ namespace elementor::elements {
 		SkRRect makeSkRRect(const ElementRect& rect);
 	};
 
-	std::shared_ptr<Border> border();
+	std::shared_ptr <Border> border();
 }
 
 

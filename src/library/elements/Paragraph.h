@@ -14,31 +14,30 @@
 namespace elementor::elements {
 
 	struct ParagraphProps {
-		std::optional<TextAlign> textAlign;
-		std::optional<TextDirection> textDirection;
-		const std::vector<std::shared_ptr<Element>>& children = {};
+		std::optional <TextAlign> textAlign;
+		std::optional <TextDirection> textDirection;
+		const std::vector <std::shared_ptr<Element>>& children = {};
 	};
 
 	class Paragraph : public Element, private WithChildren {
 	public:
-		Paragraph(const std::shared_ptr<ApplicationContext>& ctx, const ParagraphProps& props)
-			: Element(ctx),
-			  WithChildren({}) {
+		Paragraph(const std::shared_ptr <ApplicationContext>& ctx, const ParagraphProps& props)
+			: Element(ctx) {
 			if (props.textAlign.has_value()) setTextAlign(props.textAlign.value());
 			if (props.textDirection.has_value()) setTextDirection(props.textDirection.value());
 			setChildren(props.children);
 		}
 
-		static std::shared_ptr<Paragraph> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Paragraph> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const ParagraphProps& props
 		) {
 			return std::make_shared<Paragraph>(ctx, props);
 		}
 
-		static std::shared_ptr<Paragraph> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
-			std::shared_ptr<Paragraph>& elementRef,
+		static std::shared_ptr <Paragraph> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Paragraph>& elementRef,
 			const ParagraphProps& props
 		) {
 			auto element = New(ctx, props);
@@ -46,7 +45,7 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr<Paragraph> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Paragraph> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -55,8 +54,8 @@ namespace elementor::elements {
 		}
 
 		void setTextAlign(TextAlign newTextAlign) {
+			markChanged();
 			textAlign = newTextAlign;
-			skParagraph = nullptr;
 		}
 
 		[[nodiscard]] TextDirection getTextDirection() const {
@@ -64,42 +63,44 @@ namespace elementor::elements {
 		}
 
 		void setTextDirection(TextDirection newTextDirection) {
+			markChanged();
 			textDirection = newTextDirection;
-			skParagraph = nullptr;
 		}
 
 		Size getSize(const Boundaries& boundaries) override;
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-		void setChildren(const std::vector<std::shared_ptr<Element>>& newChildren);
+		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren);
 
-		void forceUpdate() {
-			// TODO: Refactor it. Make it update text value without hacks like this
+		void markChanged() {
+			Element::markChanged();
 			skParagraph = nullptr;
 		}
 
-		std::optional<Rect> getGlyphRect(unsigned glyphOffset);
+		// TODO: Override isChanged. Call texts isChanged
+
+		std::optional <Rect> getGlyphRect(unsigned glyphOffset);
 
 	private:
 		TextAlign textAlign = TextAlign::Left;
 		TextDirection textDirection = TextDirection::LeftToRight;
 
-		std::unique_ptr<skia::textlayout::Paragraph> skParagraph;
-		std::vector<std::shared_ptr<Element>> placeholdersChildren;
+		std::unique_ptr <skia::textlayout::Paragraph> skParagraph;
+		std::vector <std::shared_ptr<Element>> placeholdersChildren;
 
 		float lastPixelScale;
 
-		sk_sp<skia::textlayout::FontCollection>
-		makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) const;
+		sk_sp <skia::textlayout::FontCollection>
+		makeFontCollection(const std::shared_ptr <ApplicationContext>& ctx) const;
 
 		skia::textlayout::TextStyle makeDefaultTextStyle() const;
 
 		skia::textlayout::ParagraphStyle makeParagraphStyle() const;
 
-		skia::textlayout::ParagraphBuilderImpl makeBuilder(const std::shared_ptr<ApplicationContext>& ctx) const;
+		skia::textlayout::ParagraphBuilderImpl makeBuilder(const std::shared_ptr <ApplicationContext>& ctx) const;
 
 		skia::textlayout::TextAlign getSkTextAlign() const;
 
@@ -107,9 +108,9 @@ namespace elementor::elements {
 
 		skia::textlayout::PlaceholderStyle makeElementChildPlaceholderStyle(const Size& childSize) const;
 
-		skia::textlayout::PlaceholderStyle makeChildPlaceholderStyle(const std::shared_ptr<Element>& child) const;
+		skia::textlayout::PlaceholderStyle makeChildPlaceholderStyle(const std::shared_ptr <Element>& child) const;
 
-		std::unique_ptr<skia::textlayout::Paragraph> makeSkParagraph() const;
+		std::unique_ptr <skia::textlayout::Paragraph> makeSkParagraph() const;
 
 		void updateSkParagraph();
 	};

@@ -12,13 +12,13 @@
 
 namespace elementor::components {
 	struct ClickableOutsideProps {
-		std::optional<std::function<void()>> onClickOutside;
-		const std::shared_ptr<Element>& child = nullptr;
+		std::optional <std::function<void()>> onClickOutside;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class ClickableOutside : public Component {
 	public:
-		explicit ClickableOutside(const std::shared_ptr<ApplicationContext>& ctx, const ClickableOutsideProps& props)
+		explicit ClickableOutside(const std::shared_ptr <ApplicationContext>& ctx, const ClickableOutsideProps& props)
 			: Component(ctx) {
 			element = Eventable::New(ctx, {
 				.globalEvents = {
@@ -49,12 +49,24 @@ namespace elementor::components {
 			if (props.child) setChild(props.child);
 		}
 
-		static std::shared_ptr<ClickableOutside>
-		New(const std::shared_ptr<ApplicationContext>& ctx, const ClickableOutsideProps& props) {
+		static std::shared_ptr <ClickableOutside> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const ClickableOutsideProps& props
+		) {
 			return std::make_shared<ClickableOutside>(ctx, props);
 		}
 
-		static std::shared_ptr<ClickableOutside> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr<ClickableOutside> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<ClickableOutside>& elementRef,
+			const ClickableOutsideProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <ClickableOutside> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -62,15 +74,16 @@ namespace elementor::components {
 			clickOutsideCallback = callback;
 		}
 
-		void setChild(const std::shared_ptr<Element>& child) {
+		void setChild(const std::shared_ptr <Element>& child) {
+			markChanged();
 			hoverable->setChild(child);
 		}
 
 	private:
 		bool hovered = false;
-		std::shared_ptr<Hoverable> hoverable;
+		std::shared_ptr <Hoverable> hoverable;
 
-		std::optional<std::function<void()>> clickOutsideCallback;
+		std::optional <std::function<void()>> clickOutsideCallback;
 	};
 }
 

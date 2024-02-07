@@ -1,5 +1,5 @@
 //
-// Created by admin on 13.01.2024.
+// Created by noartem on 13.01.2024.
 //
 
 #ifndef ELEMENTOR_DEBUG_H

@@ -10,14 +10,14 @@
 
 namespace elementor::components {
 	struct EventableProps {
-		std::vector<std::shared_ptr<EventHandler>> events;
-		std::vector<std::shared_ptr<EventHandler>> globalEvents;
-		const std::shared_ptr<Element>& child = nullptr;
+		std::vector <std::shared_ptr<EventHandler>> events;
+		std::vector <std::shared_ptr<EventHandler>> globalEvents;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
 	class Eventable : public Component, public WithEventsHandlers, public WithGlobalEventsHandlers {
 	public:
-		explicit Eventable(const std::shared_ptr<ApplicationContext>& ctx, const EventableProps& props)
+		explicit Eventable(const std::shared_ptr <ApplicationContext>& ctx, const EventableProps& props)
 			: Component(ctx) {
 			events = props.events;
 			globalEvents = props.globalEvents;
@@ -25,32 +25,43 @@ namespace elementor::components {
 			setChild(props.child);
 		}
 
-		static std::shared_ptr<Eventable> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Eventable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const EventableProps& props
 		) {
 			return std::make_shared<Eventable>(ctx, props);
 		}
 
-		static std::shared_ptr<Eventable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Eventable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Eventable>& elementRef,
+			const EventableProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Eventable> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
-		void setChild(const std::shared_ptr<Element>& child) {
+		void setChild(const std::shared_ptr <Element>& child) {
+			markChanged();
 			element = child;
 		}
 
-		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override {
+		std::vector <std::shared_ptr<EventHandler>> getEventsHandlers() override {
 			return events;
 		}
 
-		std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() override {
+		std::vector <std::shared_ptr<EventHandler>> getGlobalEventsHandlers() override {
 			return globalEvents;
 		}
 
 	private:
-		std::vector<std::shared_ptr<EventHandler>> events;
-		std::vector<std::shared_ptr<EventHandler>> globalEvents;
+		std::vector <std::shared_ptr<EventHandler>> events;
+		std::vector <std::shared_ptr<EventHandler>> globalEvents;
 	};
 }
 

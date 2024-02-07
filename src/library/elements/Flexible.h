@@ -8,50 +8,61 @@
 #include "../include.h"
 
 namespace elementor::elements {
-
 	struct FlexibleProps {
 		float grow = 1.0;
-		const std::shared_ptr<Element>& child = nullptr;
+		const std::shared_ptr <Element>& child = nullptr;
 	};
 
-    class Flexible : public Element, public WithChild {
-    public:
-		explicit Flexible(const std::shared_ptr<ApplicationContext>& ctx)
-			: Element(ctx), WithChild() {
-		}
-
-		Flexible(const std::shared_ptr<ApplicationContext>& ctx, const FlexibleProps& props)
-			: Element(ctx),
-			  WithChild(props.child) {
+	class Flexible : public Element, public WithChild {
+	public:
+		Flexible(const std::shared_ptr <ApplicationContext>& ctx, const FlexibleProps& props)
+			: Element(ctx) {
 			setGrow(props.grow);
+			setChild(props.child);
 		}
 
-		static std::shared_ptr<Flexible> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Flexible> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const FlexibleProps& props
 		) {
 			return std::make_shared<Flexible>(ctx, props);
 		}
 
-		static std::shared_ptr<Flexible> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Flexible> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Flexible>& elementRef,
+			const FlexibleProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Flexible> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
-        void setGrow(float newGrow) {
+		void setGrow(float newGrow) {
+			markChanged();
 			grow = newGrow;
 		}
 
-        float getGrow() const {
+		float getGrow() const {
 			return grow;
 		}
 
-        Size getSize(const Boundaries& boundaries) override;
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
 
-        std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+		Size getSize(const Boundaries& boundaries) override;
 
-    private:
-        float grow = 1;
-    };
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float grow = 1;
+	};
 }
 
 

@@ -33,7 +33,7 @@ namespace elementor::elements {
 		return SkFontStyle(fontWeight, fontWidth, getSkFontStyleSlant());
 	}
 
-	sk_sp<SkTypeface> Text::makeSkTypeface() const {
+	sk_sp <SkTypeface> Text::makeSkTypeface() const {
 		return SkTypeface::MakeFromName(fontFamily.data(), makeSkFontStyle());
 	}
 

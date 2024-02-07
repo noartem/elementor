@@ -13,19 +13,19 @@
 
 namespace elementor::elements {
 	struct ImageProps {
-		std::optional<sk_sp<SkImage>> fromImage = std::nullopt;
-		std::optional<sk_sp<SkData>> fromData = std::nullopt;
-		std::optional<std::string> src = std::nullopt;
+		std::optional <sk_sp<SkImage>> fromImage = std::nullopt;
+		std::optional <sk_sp<SkData>> fromData = std::nullopt;
+		std::optional <std::string> src = std::nullopt;
 		SkSamplingOptions samplingOptions = SkSamplingOptions(SkCubicResampler::Mitchell());
 	};
 
 	class Image : public Element {
 	public:
-		explicit Image(const std::shared_ptr<ApplicationContext>& ctx)
+		explicit Image(const std::shared_ptr <ApplicationContext>& ctx)
 			: Element(ctx) {
 		}
 
-		Image(const std::shared_ptr<ApplicationContext>& ctx, const ImageProps& props)
+		Image(const std::shared_ptr <ApplicationContext>& ctx, const ImageProps& props)
 			: Element(ctx) {
 			if (props.fromImage.has_value()) fromSkImage(props.fromImage.value());
 			if (props.fromData.has_value()) fromSkData(props.fromData.value());
@@ -33,14 +33,24 @@ namespace elementor::elements {
 			setSamplingOptions(samplingOptions);
 		}
 
-		static std::shared_ptr<Image> New(
-			const std::shared_ptr<ApplicationContext>& ctx,
+		static std::shared_ptr <Image> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
 			const ImageProps& props
 		) {
 			return std::make_shared<Image>(ctx, props);
 		}
 
-		static std::shared_ptr<Image> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		static std::shared_ptr <Image> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Image>& elementRef,
+			const ImageProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
+
+		static std::shared_ptr <Image> New(const std::shared_ptr <ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -49,10 +59,11 @@ namespace elementor::elements {
 		}
 
 		void fromSkImage(const sk_sp <SkImage>& newSkImage) {
+			markChanged();
 			skImage = newSkImage;
 		}
 
-		void fromSkData(const sk_sp<SkData>& data) {
+		void fromSkData(const sk_sp <SkData>& data) {
 			fromSkImage(SkImage::MakeFromEncoded(data));
 		}
 
@@ -65,6 +76,7 @@ namespace elementor::elements {
 		}
 
 		void setSamplingOptions(const SkSamplingOptions& newSamplingOptions) {
+			markChanged();
 			samplingOptions = newSamplingOptions;
 		}
 

@@ -41,6 +41,10 @@ namespace elementor {
 		[[nodiscard]] bool contains(float x, float y) const;
 
 		[[nodiscard]] bool contains(Position point) const;
+
+		bool operator==(const Rect& other) const {
+			return size == other.size && position == other.position;
+		}
 	};
 
 	Rect unionOfRects(const Rect& a, const Rect& b);
