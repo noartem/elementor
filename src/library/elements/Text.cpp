@@ -38,7 +38,7 @@ namespace elementor::elements {
 	}
 
 	SkFont Text::makeSkFont() const {
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 		float fontSizeScaled = fontSize * pixelScale;
 
 		SkFont skFont;
@@ -100,10 +100,10 @@ namespace elementor::elements {
 	}
 
 	skia::textlayout::TextStyle Text::makeSkTextStyle() const {
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 		float fontSizeScaled = fontSize * pixelScale;
 
-		auto defaultLocale = ctx->getPlatformCtx()->getLocale();
+		auto defaultLocale = ctx->getLocale();
 		auto localeOrDefault = locale.value_or(defaultLocale);
 
 		skia::textlayout::TextStyle textStyle;
@@ -121,7 +121,7 @@ namespace elementor::elements {
 	}
 
 	Size Text::getSize(const Boundaries& boundaries) {
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 
 		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont();
 		if (!paint.has_value()) paint = makeSkPaint();
@@ -139,7 +139,7 @@ namespace elementor::elements {
 	}
 
 	void Text::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 
 		if (!font.has_value() || pixelScale != lastPixelScale) font = makeSkFont();
 		if (!paint.has_value()) paint = makeSkPaint();

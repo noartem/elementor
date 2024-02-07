@@ -5,7 +5,9 @@
 #ifndef ELEMENTOR_GL_PLATFORM_H
 #define ELEMENTOR_GL_PLATFORM_H
 
-#include "../../Element.h"
+#include "elementor.h"
+
+#include "GLPlatformContext.h"
 
 #include "GLEventLoop.h"
 #include "GLClipboard.h"
@@ -14,7 +16,7 @@
 #include "GLWindow.h"
 
 namespace elementor::platforms::gl {
-	class GLPlatform : public PlatformContext {
+	class GLPlatform : public GLPlatformContext {
 	public:
 		GLPlatform();
 
@@ -30,23 +32,23 @@ namespace elementor::platforms::gl {
 
 		void requestNextFrame() override;
 
-		std::shared_ptr<Clipboard> getClipboard() override {
+		[[nodiscard]] std::shared_ptr<Clipboard> getClipboard() const override {
 			return clipboard;
 		}
 
-		std::shared_ptr<Perfomance> getPerfomance() override {
+		[[nodiscard]] std::shared_ptr<Perfomance> getPerfomance() const override {
 			return perfomance;
 		}
 
-		sk_sp<SkFontMgr> getSkFontManager() override {
-			return this->fontManager->getSkFontManager();
+		[[nodiscard]] sk_sp<SkFontMgr> getSkFontManager() const override {
+			return fontManager->getSkFontManager();
 		}
 
-		std::string getLocale() override {
+		[[nodiscard]] std::string getLocale() const {
 			return locale;
 		}
 
-		void setLocale(std::string newLocale) override {
+		void setLocale(std::string newLocale) {
 			locale = newLocale;
 		}
 
@@ -59,8 +61,7 @@ namespace elementor::platforms::gl {
 
 		std::vector<std::shared_ptr<GLWindow>> windows;
 
-		std::vector<std::function<void()>> rnfNextQueue;
-		std::vector<std::function<void()>> rnfCurrentQueue;
+		std::vector<std::function<void()>> rnfQueue;
 
 		std::string locale = "en";
 

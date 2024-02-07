@@ -15,6 +15,7 @@
 #include "FitCover.h"
 #include "Flex.h"
 #include "Flexible.h"
+#include "Focusable.h"
 #include "Height.h"
 #include "Hoverable.h"
 #include "Image.h"

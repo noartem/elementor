@@ -440,7 +440,7 @@ namespace elementor::components {
         }
     }
 
-    EventCallbackResponse TimePicker::onEvent(std::shared_ptr<EventKeyboard> event) {
+    EventCallbackResponse TimePicker::onEvent(std::shared_ptr<KeyboardEvent> event) {
         if (this->activePart && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
             if ((event->key == KeyboardKey::Tab && event->mod != KeyMod::Shift) || event->key == KeyboardKey::Right) {
                 PartType partType = this->activePart.value();
@@ -573,7 +573,7 @@ namespace elementor::components {
         this->textElement->setText(this->value);
     }
 
-    EventCallbackResponse TimePicker::Part::onEvent(std::shared_ptr<EventKeyboard> event) {
+    EventCallbackResponse TimePicker::Part::onEvent(std::shared_ptr<KeyboardEvent> event) {
         if (this->focused && (event->action == KeyAction::Press || event->action == KeyAction::Repeat)) {
             if (event->key == KeyboardKey::Up) {
                 int value = std::stoi(this->textElement->getText());

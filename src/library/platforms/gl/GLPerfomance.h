@@ -5,16 +5,27 @@
 #ifndef ELEMENTOR_GL_PERFOMANCE_H
 #define ELEMENTOR_GL_PERFOMANCE_H
 
-#include "../../Element.h"
+#include "elementor.h"
 
 #include "GLFW/glfw3.h"
 
 namespace elementor::platforms::gl {
 	class GLPerfomance : public Perfomance {
 	public:
-		double getFPS() override;
+		double getFPS() override {
+			return lastFPS;
+		}
 
-		void incrementFramesCount();
+		void incrementFramesCount() {
+			framesCount++;
+
+			double now = glfwGetTime();
+			if ((now - framesLastTime) >= 1) {
+				lastFPS = framesCount;
+				framesLastTime = now;
+				framesCount = 0;
+			}
+		}
 
 	private:
 		double framesLastTime;

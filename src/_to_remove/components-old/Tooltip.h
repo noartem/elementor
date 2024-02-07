@@ -31,7 +31,7 @@ namespace elementor::components {
 
         std::vector<RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<MouseMoveEvent> event) override;
     };
 
     class Tooltip : public Element, public std::enable_shared_from_this<Tooltip> {

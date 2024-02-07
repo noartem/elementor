@@ -19,7 +19,7 @@ namespace elementor::elements {
 			totalHeight += childSize.height;
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		auto spacingScaled = spacing * pixelScale;
 
 		totalHeight += ((float)children.size() - 1) * spacingScaled;
@@ -36,7 +36,7 @@ namespace elementor::elements {
 	std::vector<ElementWithRect> Column::getChildren(const ElementRect& rect) {
 		std::vector<ElementWithRect> childrenElements;
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		auto spacingScaled = spacing * pixelScale;
 
 		float yPosition = 0;

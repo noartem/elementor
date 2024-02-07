@@ -10,10 +10,8 @@
 #include "include/core/SkColorSpace.h"
 #include "include/core/SkSurface.h"
 
-#define GL_RGBA8 0x8058
-
 namespace elementor::platforms::gl {
-	void onGLFWError(int error, const char* description) {
+	void onGLFWError([[maybe_unused]] int error, const char* description) {
 		fputs(description, stderr);
 	}
 
@@ -30,37 +28,35 @@ namespace elementor::platforms::gl {
 		glfwWindowHint(GLFW_ALPHA_BITS, 0);
 		glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
-		this->eventLoop = std::make_shared<GLEventLoop>();
+		eventLoop = std::make_shared<GLEventLoop>();
 
-		this->clipboard = std::make_shared<GLClipboard>();
-		this->perfomance = std::make_shared<GLPerfomance>();
-		this->fontManager = std::make_shared<GLFontManager>();
+		clipboard = std::make_shared<GLClipboard>();
+		perfomance = std::make_shared<GLPerfomance>();
+		fontManager = std::make_shared<GLFontManager>();
 	}
 
 	void GLPlatform::run() {
-		eventLoop->setCallback([this]() {
+		for (;;) {
+			glfwWaitEvents();
+
 			applyRnfQueue();
 
 			for (const std::shared_ptr<GLWindow>& window: windows) {
-				window->draw();
+				window->tick();
 			}
 
 			if (windows.empty()) {
-				return true;
+				break;
 			}
 
 			perfomance->incrementFramesCount();
-
-			return false;
-		});
-
-		eventLoop->start();
+		}
 
 		glfwTerminate();
 	}
 
 	void GLPlatform::requestNextFrame(const std::function<void()>& callback) {
-		rnfNextQueue.push_back(callback);
+		rnfQueue.push_back(callback);
 		eventLoop->pend();
 	}
 
@@ -69,33 +65,32 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLPlatform::applyRnfQueue() {
-		if (this->rnfCurrentQueue.empty() && this->rnfNextQueue.empty()) {
+		if (rnfQueue.empty()) {
 			return;
 		}
 
-		for (const std::function<void()>& callback: this->rnfCurrentQueue) {
+		auto rnfCurrentQueue = rnfQueue;
+		rnfQueue = {};
+		for (const std::function<void()>& callback: rnfCurrentQueue) {
 			callback();
 		}
-
-		this->rnfCurrentQueue = this->rnfNextQueue;
-		this->rnfNextQueue = {};
 	}
 
 	void GLPlatform::addWindow(const std::shared_ptr<GLWindow>& window) {
-		window->onClose([this, window]() { this->removeWindow(window); });
-		this->windows.push_back(window);
+		window->onClose([this, window]() { removeWindow(window); });
+		windows.push_back(window);
 	}
 
 	void GLPlatform::removeWindow(unsigned int index) {
-		if (index < this->windows.size()) {
-			this->windows.erase(this->windows.begin() + index);
+		if (index < windows.size()) {
+			windows.erase(windows.begin() + index);
 		}
 	}
 
 	void GLPlatform::removeWindow(const std::shared_ptr<GLWindow>& window) {
-		for (unsigned int i = 0; i < this->windows.size(); ++i) {
-			if (this->windows[i] == window) {
-				this->removeWindow(i);
+		for (unsigned int i = 0; i < windows.size(); ++i) {
+			if (windows[i] == window) {
+				removeWindow(i);
 				return;
 			}
 		}

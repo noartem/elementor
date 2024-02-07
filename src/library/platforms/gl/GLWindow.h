@@ -16,67 +16,88 @@
 
 #include "elementor.h"
 
+#include "GLPlatformContext.h"
 #include "GLCursor.h"
-#include "GLMonitor.h"
+#include "GLDisplay.h"
+
+#include "utility.h"
 
 namespace elementor::platforms::gl {
-	class GLWindow : public WindowContext {
+	class GLWindow : public ApplicationContext {
 	public:
-		explicit GLWindow(const std::shared_ptr<PlatformContext>& ctx);
+		explicit GLWindow(const std::shared_ptr<GLPlatformContext>& ctx);
 
 		~GLWindow();
 
-		void draw();
+		void tick();
 
-		void pendDraw();
-
-		void setTitle(std::string newTitle) override;
-
-		std::string getTitle() override;
-
-		Size getSize() override;
-
-		void setSize(Size size) override;
-
-		std::optional<Size> getMinSize() override;
-
-		void setMinSize(std::optional<Size> size) override;
-
-		void setMinSize(Size size) override;
-
-		std::optional<Size> getMaxSize() override;
-
-		void setMaxSize(std::optional<Size> size) override;
-
-		void setMaxSize(Size size) override;
-
-		Position getPosition() override;
-
-		void setPosition(Position Position) override;
-
-		bool getFocused() override;
-
-		std::shared_ptr<Cursor> getCursor() override;
-
-		std::shared_ptr<Monitor> getMonitor() override;
-
-		float getPixelScale() override {
-			return pixelScale;
+		void setTitle(const std::string_view& newTitle) {
+			title = newTitle;
+			glfwSetWindowTitle(glWindow, title.data());
 		}
 
-		void setPixelScale(float newValue) override {
-			pixelScale = newValue;
+		[[nodiscard]] std::string getTitle() const {
+			return title;
 		}
 
-		void close() override;
-
-		void onClose(const std::function<void()>& callback) override {
-			this->closeCallbacks.push_back(callback);
+		[[nodiscard]] Size getSize() const {
+			return getWindowSize(glWindow);
 		}
 
-		void setApplication(const std::shared_ptr<Application>& newValue) {
-			this->application = newValue;
+		void setSize(const Size& size) {
+			glfwSetWindowSize(glWindow, std::ceil(size.width), std::ceil(size.height));
 		}
+
+		[[nodiscard]] std::optional<Size> getMinSize() const {
+			return minSize;
+		}
+
+		void setMinSize(std::optional<Size> size) {
+			minSize = size;
+			updateWindowSizeLimits();
+		}
+
+		void setMinSize(const Size& size) {
+			minSize = size;
+			updateWindowSizeLimits();
+		}
+
+		[[nodiscard]] std::optional<Size> getMaxSize() const {
+			return maxSize;
+		}
+
+		void setMaxSize(std::optional<Size> size) {
+			maxSize = size;
+			updateWindowSizeLimits();
+		}
+
+		void setMaxSize(const Size& size) {
+			maxSize = size;
+			updateWindowSizeLimits();
+		}
+
+		[[nodiscard]] Position getPosition() const {
+			return getWindowPosition(glWindow);
+		}
+
+		void setPosition(const Position& position) {
+			glfwSetWindowPos(glWindow, std::ceil(position.x), std::ceil(position.y));
+		}
+
+		[[nodiscard]] bool isFocused() const {
+			return glfwGetWindowAttrib(glWindow, GLFW_FOCUSED);
+		}
+
+		void close() {
+			glfwDestroyWindow(glWindow);
+			callCloseCallbacks();
+		}
+
+		void onClose(const std::function<void()>& callback) {
+			closeCallbacks.push_back(callback);
+		}
+
+		void setRoot(const std::shared_ptr<Element>& rootElement);
 
 		void onPosition();
 
@@ -92,19 +113,57 @@ namespace elementor::platforms::gl {
 
 		void onScroll(double xOffset, double yOffset);
 
+		std::string getLocale() override {
+			return ctx->getLocale();
+		}
+
+		void setLocale(std::string locale) override {
+			ctx->setLocale(locale);
+		}
+
+		std::shared_ptr<Clipboard> getClipboard() override {
+			return ctx->getClipboard();
+		}
+
+		std::shared_ptr<Perfomance> getPerfomance() override {
+			return ctx->getPerfomance();
+		}
+
+		sk_sp<SkFontMgr> getSkFontManager() override {
+			return ctx->getSkFontManager();
+		}
+
+		void requestNextFrame(const std::function<void()>& callback) override {
+			ctx->requestNextFrame(callback);
+		}
+
+		void requestNextFrame() override {
+			ctx->requestNextFrame();
+		}
+
+		std::shared_ptr<Cursor> getCursor() override {
+			return cursor;
+		}
+
+		std::shared_ptr<Display> getDisplay() override;
+
+		float getPixelScale() override {
+			return pixelScale;
+		}
+
+		void setPixelScale(float newValue) override {
+			pixelScale = newValue;
+		}
+
 	private:
-		std::shared_ptr<PlatformContext> ctx;
+		std::shared_ptr<GLPlatformContext> ctx;
 
 		GLFWwindow* glWindow = nullptr;
 		GrDirectContext* skContext = nullptr;
 		sk_sp<SkSurface> skSurface = nullptr;
 		SkCanvas* skCanvas = nullptr;
 
-		bool pendingDraw = false;
-
-		std::shared_ptr<Application> application;
-
-		std::shared_ptr<GLMonitor> monitor;
+		std::shared_ptr<GLDisplay> display;
 		std::shared_ptr<GLCursor> cursor;
 
 		std::string title;
@@ -115,7 +174,14 @@ namespace elementor::platforms::gl {
 
 		std::vector<std::function<void()>> closeCallbacks;
 
+		std::shared_ptr<ApplicationTree> applicationTree;
+		std::vector<std::shared_ptr<Event>> pendingEvents;
+		std::unique_ptr<HoverState> hoverState;
+		std::unique_ptr<FocusState> focusState;
+
 		void refresh();
+
+		void draw();
 
 		void updateWindowSizeLimits();
 
@@ -125,7 +191,11 @@ namespace elementor::platforms::gl {
 			}
 		}
 
-		float calcPixelScale();
+		static float calcPixelScale();
+
+		void dispatchEvent(const std::shared_ptr<Event>& event);
+
+		void dispatchPendingEvents();
 	};
 }
 

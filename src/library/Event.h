@@ -5,8 +5,10 @@
 #ifndef ELEMENTOR_EVENT_H
 #define ELEMENTOR_EVENT_H
 
+#include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 #ifndef DEFINE_EVENT_HANDLER
 #define DEFINE_EVENT_HANDLER(eventClass, eventName) \
@@ -54,6 +56,8 @@ namespace elementor {
 		virtual std::string_view getName() = 0;
 		virtual EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) = 0;
 	};
+
+	using EventsHandlersMap = std::map<std::string_view, std::vector<std::shared_ptr<EventHandler>>>;
 
 	class WithEventsHandlers {
 	public:

@@ -8,7 +8,7 @@
 #include "GLClipboard.h"
 #include "GLCursor.h"
 #include "GLFontManager.h"
-#include "GLMonitor.h"
+#include "GLDisplay.h"
 #include "GLPerfomance.h"
 #include "GLPlatform.h"
 #include "GLWindow.h"

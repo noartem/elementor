@@ -8,7 +8,7 @@
 
 namespace elementor::elements {
 	void Rounded::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 
 		float topLeft = rectRadius.topLeft * pixelScale;
 		float topRight = rectRadius.topRight * pixelScale;

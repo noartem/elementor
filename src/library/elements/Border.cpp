@@ -16,7 +16,7 @@ namespace elementor::elements {
 			return boundaries.max;
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float widthScaled = width * pixelScale;
 
 		Boundaries childBoundaries = {
@@ -41,7 +41,7 @@ namespace elementor::elements {
 	}
 
 	SkPaint Border::makeSkPaint() {
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float widthScaled = width * pixelScale;
 
 		SkPaint paint;
@@ -67,7 +67,7 @@ namespace elementor::elements {
 	}
 
 	SkRRect Border::makeSkRRect(const ElementRect& rect) {
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float radiusXScaled = radiusX * pixelScale;
 		float radiusYScaled = radiusY * pixelScale;
 		float widthScaled = width * pixelScale;
@@ -89,7 +89,7 @@ namespace elementor::elements {
 			return {};
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float widthScaled = width * pixelScale;
 
 		Rect childRect = {

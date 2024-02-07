@@ -11,7 +11,7 @@ namespace elementor::elements {
 			return boundaries.max;
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float paddingTop = paddings.top * pixelScale;
 		float paddingBottom = paddings.bottom * pixelScale;
 		float paddingY = paddingTop + paddingBottom;
@@ -45,7 +45,7 @@ namespace elementor::elements {
 			return {};
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float paddingTop = paddings.top * pixelScale;
 		float paddingBottom = paddings.bottom * pixelScale;
 		float paddingY = paddingTop + paddingBottom;

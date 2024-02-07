@@ -20,11 +20,11 @@ namespace elementor::components {
 			: Component(ctx) {
 			element = Hoverable::New(ctx, hoverable, {
 				.onEnter = [this]() {
-					this->ctx->getWindowCtx()->getCursor()->set(cursorShape);
+					this->ctx->getCursor()->set(cursorShape);
 					return EventCallbackResponse::None;
 				},
 				.onLeave = [this]() {
-					this->ctx->getWindowCtx()->getCursor()->set(CursorShape::Default);
+					this->ctx->getCursor()->set(CursorShape::Default);
 					return EventCallbackResponse::None;
 				},
 			});

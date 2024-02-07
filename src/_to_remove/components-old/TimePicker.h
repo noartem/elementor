@@ -56,7 +56,7 @@ namespace elementor::components {
 
         std::shared_ptr<TimePicker> onBlur(const std::function<void()> &callback);
 
-        EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
+        EventCallbackResponse onEvent(std::shared_ptr<KeyboardEvent> event) override;
 
     private:
         enum class PartType {
@@ -89,7 +89,7 @@ namespace elementor::components {
 
             void setValue(const std::string &newValue);
 
-            EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) override;
+            EventCallbackResponse onEvent(std::shared_ptr<KeyboardEvent> event) override;
         };
 
         tm value{};

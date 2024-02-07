@@ -28,7 +28,7 @@ namespace elementor::components {
 			return { childElementWithRect };
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		auto offsetScaled = offset * pixelScale;
 
 		Rect borderRect = {

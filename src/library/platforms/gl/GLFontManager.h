@@ -5,20 +5,28 @@
 #ifndef ELEMENTOR_GL_FONT_MANAGER_H
 #define ELEMENTOR_GL_FONT_MANAGER_H
 
-#include "../../Element.h"
+#include "elementor.h"
 
 #include <modules/skparagraph/include/TypefaceFontProvider.h>
 
 namespace elementor::platforms::gl {
 	class GLFontManager {
 	public:
-		GLFontManager();
+		GLFontManager() {
+			skFontManager = sk_make_sp<skia::textlayout::TypefaceFontProvider>();
+		}
 
-		sk_sp<SkFontMgr> getSkFontManager();
+		[[nodiscard]] sk_sp<SkFontMgr> getSkFontManager() const {
+			return skFontManager;
+		}
 
-		void registerFontFromSkData(sk_sp<SkData> data);
+		void registerFontFromSkData(sk_sp<SkData> data) {
+			skFontManager->registerTypeface(SkTypeface::MakeFromData(std::move(data)));
+		}
 
-		void registerFontFromPath(const std::string& path);
+		void registerFontFromPath(const std::string& path) {
+			registerFontFromSkData(SkData::MakeFromFileName(path.c_str()));
+		}
 
 	private:
 		sk_sp<skia::textlayout::TypefaceFontProvider> skFontManager;

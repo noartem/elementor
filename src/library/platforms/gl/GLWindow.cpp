@@ -5,8 +5,6 @@
 #include "GLWindow.h"
 
 #include <memory>
-#include <string>
-#include <functional>
 #include <cmath>
 
 #include "GLFW/glfw3.h"
@@ -22,7 +20,7 @@
 
 #include "utility.h"
 #include "GLCursor.h"
-#include "GLMonitor.h"
+#include "GLDisplay.h"
 
 #define GL_RGBA8 0x8058
 
@@ -33,7 +31,7 @@ namespace elementor::platforms::gl {
 
 	void onWindowRefresh(GLFWwindow* glfwWindow) {
 		GLWindow* window = getGLFWWindowGLWindow(glfwWindow);
-		window->pendDraw();
+		window->requestNextFrame();
 	}
 
 	void onWindowPosition(GLFWwindow* glfwWindow, [[maybe_unused]] int x, [[maybe_unused]] int y) {
@@ -76,12 +74,12 @@ namespace elementor::platforms::gl {
 		window->onScroll(x, y);
 	}
 
-	GLWindow::GLWindow(const std::shared_ptr<PlatformContext>& ctx) {
-		this->ctx = ctx;
-		this->glWindow = glfwCreateWindow(1, 1, "Elementor", nullptr, nullptr);
+	GLWindow::GLWindow(const std::shared_ptr<GLPlatformContext>& ctx)
+		: ctx(ctx) {
+		glWindow = glfwCreateWindow(1, 1, "Elementor", nullptr, nullptr);
 
 		glfwMakeContextCurrent(glWindow);
-		glfwSwapInterval(GLFW_TRUE);
+		glfwSwapInterval(1);
 		glfwSetWindowUserPointer(glWindow, this);
 		glfwSetWindowRefreshCallback(glWindow, onWindowRefresh);
 		glfwSetWindowPosCallback(glWindow, onWindowPosition);
@@ -93,93 +91,109 @@ namespace elementor::platforms::gl {
 		glfwSetCursorPosCallback(glWindow, onWindowCursorPosition);
 		glfwSetScrollCallback(glWindow, onWindowScroll);
 
-		this->cursor = std::make_shared<GLCursor>(ctx, glWindow);
-		this->pixelScale = calcPixelScale();
+		cursor = std::make_shared<GLCursor>(glWindow);
+		pixelScale = calcPixelScale();
 
-		this->skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
+		skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
 	}
 
 	GLWindow::~GLWindow() {
-		glfwDestroyWindow(this->glWindow);
-		delete this->skContext;
-		delete this->skCanvas;
+		glfwDestroyWindow(glWindow);
+		delete skContext;
+		delete skCanvas;
 	}
 
 	void GLWindow::refresh() {
-		Size size = this->getSize();
+		auto size = getSize();
 
 		GrGLFramebufferInfo framebufferInfo;
 		framebufferInfo.fFBOID = 0;
 		framebufferInfo.fFormat = GL_RGBA8;
 
-		glfwMakeContextCurrent(this->glWindow);
+		glfwMakeContextCurrent(glWindow);
 		GrBackendRenderTarget backendRenderTarget(
-				(int)size.width,
-				(int)size.height,
-				0,
-				0,
-				framebufferInfo
+			(int)size.width,
+			(int)size.height,
+			0,
+			0,
+			framebufferInfo
 		);
-		this->skSurface = SkSurface::MakeFromBackendRenderTarget(
-				this->skContext,
-				backendRenderTarget,
-				kBottomLeft_GrSurfaceOrigin,
-				kRGBA_8888_SkColorType,
-				SkColorSpace::MakeSRGB(),
-				nullptr
+		// TODO: clear skSurface?
+		skSurface = SkSurface::MakeFromBackendRenderTarget(
+			skContext,
+			backendRenderTarget,
+			kBottomLeft_GrSurfaceOrigin,
+			kRGBA_8888_SkColorType,
+			SkColorSpace::MakeSRGB(),
+			nullptr
 		);
-		this->skCanvas = this->skSurface->getCanvas();
+		// TODO: clear canvas?
+		skCanvas = skSurface->getCanvas();
 	}
 
 	void GLWindow::draw() {
-		pendingDraw = false;
+		refresh();
 
-		this->refresh();
+		skCanvas->clear(SK_ColorBLACK);
+		applicationTree->draw(skCanvas);
 
-		this->skCanvas->clear(SK_ColorBLACK);
-		this->application->draw(this->skCanvas);
-
-		glfwMakeContextCurrent(this->glWindow);
-		this->skContext->flush();
-		glfwSwapBuffers(this->glWindow);
+		glfwMakeContextCurrent(glWindow);
+		skContext->flush();
+		glfwSwapBuffers(glWindow);
 	}
 
-	void GLWindow::pendDraw() {
-//		if (pendingDraw) {
-//			return;
-//		}
-
-		pendingDraw = true;
-		ctx->requestNextFrame([this]() { this->draw(); });
+	void GLWindow::dispatchEvent(const std::shared_ptr<Event>& event) {
+		pendingEvents.push_back(event);
+		requestNextFrame();
 	}
 
-	void GLWindow::setTitle(std::string newTitle) {
-		this->title = newTitle;
-		glfwSetWindowTitle(this->glWindow, newTitle.c_str());
+	void GLWindow::dispatchPendingEvents() {
+		auto globalEventsHandlers = applicationTree->getGlobalEventsHandlers();
+
+		auto lastPendingEvents = pendingEvents;
+		pendingEvents = {};
+		for (const auto& event: lastPendingEvents) {
+			if (hoverState->onEvent(event) == EventCallbackResponse::StopPropagation) {
+				continue;
+			}
+
+			if (focusState->onEvent(event) == EventCallbackResponse::StopPropagation) {
+				continue;
+			}
+
+			for (const auto& eventHandler: globalEventsHandlers[event->getName()]) {
+				auto eventHandlerResponse = eventHandler->onEvent(event);
+				if (eventHandlerResponse != EventCallbackResponse::None) {
+					break;
+				}
+			}
+		}
 	}
 
-	std::string GLWindow::getTitle() {
-		return this->title;
+	void GLWindow::tick() {
+		if (applicationTree == nullptr) {
+			return;
+		}
+
+		cursor->updateCursor();
+
+		applicationTree->resize(getSize());
+
+		hoverState->tick();
+		focusState->tick();
+
+		dispatchPendingEvents();
+
+		applicationTree->markChanged();
+		applicationTree->updateChanged();
+
+		draw();
 	}
 
-	Size GLWindow::getSize() {
-		return getWindowSize(this->glWindow);
-	}
-
-	void GLWindow::setSize(Size size) {
-		glfwSetWindowSize(this->glWindow, std::ceil(size.width), std::ceil(size.height));
-	}
-
-	std::optional<Size> GLWindow::getMinSize() {
-		return this->minSize;
-	}
-
-	std::optional<Size> GLWindow::getMaxSize() {
-		return this->maxSize;
-	}
-
-	bool GLWindow::getFocused() {
-		return glfwGetWindowAttrib(glWindow, GLFW_FOCUSED);
+	void GLWindow::setRoot(const std::shared_ptr<Element>& rootElement) {
+		applicationTree = std::make_shared<ApplicationTree>(rootElement, getSize());
+		hoverState = std::make_unique<HoverState>(applicationTree, cursor);
+		focusState = std::make_unique<FocusState>(applicationTree);
 	}
 
 	void GLWindow::updateWindowSizeLimits() {
@@ -190,57 +204,26 @@ namespace elementor::platforms::gl {
 		glfwSetWindowSizeLimits(glWindow, minWidth, minHeight, maxWidth, maxHeight);
 	}
 
-	void GLWindow::setMinSize(Size size) {
-		this->minSize = size;
-		this->updateWindowSizeLimits();
-	}
-
-	void GLWindow::setMinSize(std::optional<Size> size) {
-		this->minSize = size;
-		this->updateWindowSizeLimits();
-	}
-
-	void GLWindow::setMaxSize(Size size) {
-		this->maxSize = size;
-		this->updateWindowSizeLimits();
-	}
-
-	void GLWindow::setMaxSize(std::optional<Size> size) {
-		this->maxSize = size;
-		this->updateWindowSizeLimits();
-	}
-
-	Position GLWindow::getPosition() {
-		return getWindowPosition(this->glWindow);
-	}
-
-	void GLWindow::setPosition(Position position) {
-		glfwSetWindowPos(this->glWindow, std::ceil(position.x), std::ceil(position.y));
-	}
-
-	std::shared_ptr<Cursor> GLWindow::getCursor() {
-		return this->cursor;
-	}
-
-	std::shared_ptr<Monitor> GLWindow::getMonitor() {
-		if (this->monitor == nullptr) {
-			this->monitor = std::make_shared<GLMonitor>(getWindowMonitor(this->glWindow));
+	std::shared_ptr<Display> GLWindow::getDisplay() {
+		if (display == nullptr) {
+			display = std::make_shared<GLDisplay>(getWindowMonitor(glWindow));
 		}
 
-		return this->monitor;
+		return display;
 	}
 
-	void GLWindow::close() {
-		glfwDestroyWindow(glWindow);
-		callCloseCallbacks();
+	float GLWindow::calcPixelScale() {
+		GLFWmonitor* glfwMonitor = glfwGetPrimaryMonitor();
+		auto monitorScale = getMonitorSize(glfwMonitor).width / getMonitorPhysicalSize(glfwMonitor).width;
+		return monitorScale / DefaultPixelScale;
 	}
 
 	void GLWindow::onPosition() {
-		monitor = nullptr;
+		display = nullptr;
 	}
 
 	void GLWindow::onFocused() {
-		cursor->setPosition({ -1, -1 });
+		cursor->setPosition(InvalidPosition);
 	}
 
 	MouseButton mapIntToMouseButton(int button) {
@@ -294,11 +277,11 @@ namespace elementor::platforms::gl {
 
 	void GLWindow::onMouseButton(int button, int action, int mods) {
 		auto event = std::make_shared<MouseButtonEvent>(
-				mapIntToMouseButton(button),
-				mapIntToKeyAction(action),
-				mapIntToKeyMod(mods)
+			mapIntToMouseButton(button),
+			mapIntToKeyAction(action),
+			mapIntToKeyMod(mods)
 		);
-		this->application->emit(event);
+		dispatchEvent(event);
 	}
 
 	KeyboardKey mapIntToKeyboardKey(int key) {
@@ -550,35 +533,30 @@ namespace elementor::platforms::gl {
 
 	void GLWindow::onKeyboard(int key, int scancode, int action, int mods) {
 		auto event = std::make_shared<KeyboardEvent>(
-				mapIntToKeyboardKey(key),
-				scancode,
-				mapIntToKeyAction(action),
-				mapIntToKeyMod(mods)
+			mapIntToKeyboardKey(key),
+			scancode,
+			mapIntToKeyAction(action),
+			mapIntToKeyMod(mods)
 		);
-		this->application->emit(event);
+		dispatchEvent(event);
 	}
 
 	void GLWindow::onChar(unsigned int codepoint) {
 		auto event = std::make_shared<CharEvent>(codepoint);
-		this->application->emit(event);
+		dispatchEvent(event);
 	}
 
 	void GLWindow::onMouseMove(double x, double y) {
-		this->cursor->setPosition({ (float)x, (float)y });
+		cursor->setPosition({ (float)x, (float)y });
 
 		auto event = std::make_shared<MouseMoveEvent>(x, y);
-		this->application->emit(event);
+		dispatchEvent(event);
 	}
 
 	void GLWindow::onScroll(double xOffset, double yOffset) {
 		auto event = std::make_shared<ScrollEvent>(xOffset, yOffset);
 
-		this->application->emit(event);
-	}
-
-	float GLWindow::calcPixelScale() {
-		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-		return getMonitorSize(monitor).width / getMonitorPhysicalSize(monitor).width / DefaultPixelScale;
+		dispatchEvent(event);
 	}
 }
 

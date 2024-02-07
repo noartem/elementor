@@ -148,11 +148,8 @@ int main() {
 	window->setMinSize({ 630, 320 });
 	platform->addWindow(window);
 
-	auto application = std::make_shared<Application>(platform, window);
-	window->setApplication(application);
-
-	auto root = Example(application);
-	application->setRoot(root);
+	auto root = Example(window);
+	window->setRoot(root);
 
 	platform->run();
 }

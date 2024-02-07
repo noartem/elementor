@@ -55,10 +55,10 @@ namespace elementor::components {
 		std::shared_ptr<Text> fpsText;
 
 		void updateFPS() {
-			auto fps = ctx->getPlatformCtx()->getPerfomance()->getFPS();
+			auto fps = ctx->getPerfomance()->getFPS();
 			fpsText->setText(std::to_string((int)fps));
 
-			ctx->getPlatformCtx()->requestNextFrame([this]() {
+			ctx->requestNextFrame([this]() {
 				updateFPS();
 			});
 		}

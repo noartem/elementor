@@ -15,7 +15,7 @@ namespace elementor::elements {
 	Paragraph::makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx) const {
 		sk_sp<skia::textlayout::FontCollection> fontCollection = sk_make_sp<skia::textlayout::FontCollection>();
 		fontCollection->setDefaultFontManager(SkFontMgr::RefDefault());
-		fontCollection->setDynamicFontManager(ctx->getPlatformCtx()->getSkFontManager());
+		fontCollection->setDynamicFontManager(ctx->getSkFontManager());
 		return fontCollection;
 	}
 
@@ -121,7 +121,7 @@ namespace elementor::elements {
 	}
 
 	void Paragraph::updateSkParagraph() {
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		if (skParagraph != nullptr && pixelScale == lastPixelScale) {
 			return;
 		}

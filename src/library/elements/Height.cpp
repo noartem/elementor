@@ -6,7 +6,7 @@
 
 namespace elementor::elements {
 	Size Height::getSize(const Boundaries& boundaries) {
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 		float heightScaled = height * pixelScale;
 
 		if (doesNotHaveChild()) {

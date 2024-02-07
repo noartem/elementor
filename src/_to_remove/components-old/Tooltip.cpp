@@ -180,7 +180,7 @@ namespace elementor::components {
         return children;
     }
 
-    EventCallbackResponse TipWrapper::onEvent(std::shared_ptr<EventMouseMove> event) {
+    EventCallbackResponse TipWrapper::onEvent(std::shared_ptr<MouseMoveEvent> event) {
         if (event->x > this->position.x && event->x < this->position.x + this->size.width &&
             event->y > this->position.y && event->y < this->position.y + this->size.height) {
             return EventCallbackResponse::StopPropagation;

@@ -34,7 +34,7 @@ namespace elementor::elements {
 			}
 		}
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float spacingScaled = spacing * pixelScale;
 		totalAxisSize += ((float)children.size() - 1) * spacingScaled;
 
@@ -61,7 +61,7 @@ namespace elementor::elements {
 
 		Boundaries sizedChildBoundaries = { .min = minSize, .max = rect.size };
 
-		auto pixelScale = ctx->getWindowCtx()->getPixelScale();
+		auto pixelScale = ctx->getPixelScale();
 		float spacingScaled = spacing * pixelScale;
 
 		std::vector<std::tuple<int, float>> flexibleChildren;

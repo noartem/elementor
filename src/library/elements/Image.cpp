@@ -26,7 +26,7 @@ namespace elementor::elements {
 			return boundaries.min;
 		}
 
-		float pixelScale = ctx->getWindowCtx()->getPixelScale();
+		float pixelScale = ctx->getPixelScale();
 		float imageWidthScaled = skImage->width() * pixelScale;
 		float imageHeightScaled = skImage->height() * pixelScale;
 

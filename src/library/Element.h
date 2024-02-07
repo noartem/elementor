@@ -48,8 +48,22 @@ namespace elementor {
 			return ClipBehavior::None;
 		}
 
+		[[nodiscard]] bool isChanged() const {
+			return changed;
+		}
+
+		bool popChanged() {
+			if (changed) {
+				changed = false;
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 	protected:
 		std::shared_ptr<ApplicationContext> ctx;
+		bool changed = false;
 	};
 
 	using ElementWithRect = std::tuple<const std::shared_ptr<Element>&, Rect>;

@@ -12,14 +12,20 @@ namespace elementor {
 	struct Position {
 		float x;
 		float y;
+
+		bool operator==(const Position& other) const {
+			return x == other.x && y == other.y;
+		}
 	};
+
+	constexpr Position InvalidPosition = { -1, -1 };
 
 	struct Size {
 		float width;
 		float height;
 
 		bool operator==(const Size& other) const {
-			return other.width == this->width && other.height == this->height;
+			return width == other.width && height == other.height;
 		}
 	};
 

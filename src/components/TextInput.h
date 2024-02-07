@@ -121,12 +121,12 @@ namespace elementor::components {
 					}
 
 					if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
-						ctx->getPlatformCtx()->getClipboard()->set(toUTF8(value));
+						ctx->getClipboard()->set(toUTF8(value));
 						return EventCallbackResponse::StopPropagation;
 					}
 
 					if (event->key == KeyboardKey::V && event->mod == KeyMod::Control) {
-						auto clipboard = ctx->getPlatformCtx()->getClipboard();
+						auto clipboard = ctx->getClipboard();
 						auto clipboardValueU8 = clipboard->get();
 
 						std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
