@@ -33,16 +33,16 @@ target("elementor")
     add_files("src/library/*.cpp")
     add_files("src/library/elements/*.cpp")
 
--- if is_plat("windows") then
---     after_build(function (target)
---         local project = target._PROJECT
---         local skiaBuild = project.required_packages()['skia-build']
---         os.cp(
---             path.join(skiaBuild:get('linkdirs'), "icudtl.dat"),
---             path.join(project.directory(), "build", "$(plat)", "$(arch)", "$(mode)", "icudtl.dat")
---         )
---     end)
--- end
+if is_plat("windows") then
+    after_build(function (target)
+        local project = target._PROJECT
+        local skiaBuild = project.required_packages()['skia-build']
+        os.cp(
+            path.join(skiaBuild:get('linkdirs'), "icudtl.dat"),
+            path.join(project.directory(), "build", "$(plat)", "$(arch)", "$(mode)", "icudtl.dat")
+        )
+    end)
+end
 
 target("elementor-components")
     set_kind("static")
