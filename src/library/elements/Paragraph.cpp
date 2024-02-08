@@ -219,4 +219,46 @@ namespace elementor::elements {
 
 		return std::nullopt;
 	}
+
+	[[nodiscard]] bool Paragraph::isTextChildrenChanged() const {
+		for (const auto& child: children) {
+			auto textChild = std::dynamic_pointer_cast<Text>(child);
+			if (!textChild) {
+				continue;
+			}
+
+			if (textChild->isChanged()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool Paragraph::isChanged() const {
+		return Element::isChanged() || isTextChildrenChanged();
+	}
+
+	bool Paragraph::popTextChildrenChanged() {
+		bool textChildrenChanged = false;
+
+		for (const auto& child: children) {
+			auto textChild = std::dynamic_pointer_cast<Text>(child);
+			if (textChild) {
+				textChildrenChanged |= textChild->popChanged();
+			}
+		}
+
+		if (textChildrenChanged) {
+			skParagraph = nullptr;
+		}
+
+		return textChildrenChanged;
+	}
+
+	bool Paragraph::popChanged() {
+		bool changed = Element::popChanged();
+		bool textChildrenChanged = popTextChildrenChanged();
+		return changed || textChildrenChanged;
+	}
 }

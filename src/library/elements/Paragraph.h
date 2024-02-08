@@ -67,6 +67,8 @@ namespace elementor::elements {
 			textDirection = newTextDirection;
 		}
 
+		std::optional <Rect> getGlyphRect(unsigned glyphOffset);
+
 		Size getSize(const Boundaries& boundaries) override;
 
 		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
@@ -75,14 +77,15 @@ namespace elementor::elements {
 
 		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren);
 
-		void markChanged() {
+		[[nodiscard]] bool isChanged() const override;
+
+		bool popChanged() override;
+
+	protected:
+		void markChanged() override {
 			Element::markChanged();
 			skParagraph = nullptr;
 		}
-
-		// TODO: Override isChanged. Call texts isChanged
-
-		std::optional <Rect> getGlyphRect(unsigned glyphOffset);
 
 	private:
 		TextAlign textAlign = TextAlign::Left;
@@ -93,8 +96,13 @@ namespace elementor::elements {
 
 		float lastPixelScale;
 
-		sk_sp <skia::textlayout::FontCollection>
-		makeFontCollection(const std::shared_ptr <ApplicationContext>& ctx) const;
+		[[nodiscard]] bool isTextChildrenChanged() const;
+
+		bool popTextChildrenChanged();
+
+		sk_sp <skia::textlayout::FontCollection> makeFontCollection(
+			const std::shared_ptr <ApplicationContext>& ctx
+		) const;
 
 		skia::textlayout::TextStyle makeDefaultTextStyle() const;
 

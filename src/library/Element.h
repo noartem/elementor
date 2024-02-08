@@ -48,12 +48,12 @@ namespace elementor {
 			return ClipBehavior::None;
 		}
 
-		[[nodiscard]] bool isChanged() const {
+		virtual [[nodiscard]] bool isChanged() const {
 			return changed;
 		}
 
-		bool popChanged() {
-			if (changed) {
+		virtual bool popChanged() {
+			if (isChanged()) {
 				changed = false;
 				return true;
 			} else {
@@ -65,7 +65,7 @@ namespace elementor {
 		std::shared_ptr<ApplicationContext> ctx;
 		bool changed = true;
 
-		void markChanged() {
+		virtual void markChanged() {
 			changed = true;
 		}
 	};
