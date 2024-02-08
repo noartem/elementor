@@ -65,6 +65,8 @@ namespace elementor {
 
 	constexpr float Infinity = std::numeric_limits<float>::infinity();
 
+	constexpr Position ZeroPosition = { 0, 0 };
+
 	constexpr Size ZeroSize = { 0, 0 };
 
 	constexpr Size InfiniteSize = { Infinity, Infinity };

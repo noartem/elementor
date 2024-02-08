@@ -78,7 +78,10 @@ namespace elementor::components {
 			if (props.onClick.has_value()) onClick(props.onClick.value());
 		}
 
-		static std::shared_ptr<Button> New(const std::shared_ptr<ApplicationContext>& ctx, const ButtonProps& props) {
+		static std::shared_ptr<Button> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const ButtonProps& props
+			) {
 			return std::make_shared<Button>(ctx, props);
 		}
 

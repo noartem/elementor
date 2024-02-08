@@ -15,14 +15,14 @@ namespace elementor::elements {
 	};
 
 	struct ScrollableProps {
-		std::optional <ScrollDirection> direction;
+		std::optional<ScrollDirection> direction;
 		std::optional<float> scrollAcceleration;
-		const std::shared_ptr <elementor::Element>& child = nullptr;
+		const std::shared_ptr<elementor::Element>& child = nullptr;
 	};
 
-	class Scrollable : public Element, public WithEventsHandlers, public WithChild {
+	class Scrollable : public Element, public WithEventsHandlers, public WithGlobalEventsHandlers, public WithChild {
 	public:
-		Scrollable(const std::shared_ptr <ApplicationContext>& ctx, const ScrollableProps& props)
+		Scrollable(const std::shared_ptr<ApplicationContext>& ctx, const ScrollableProps& props)
 			: Element(ctx) {
 			if (props.direction.has_value()) setDirection(props.direction.value());
 			if (props.scrollAcceleration.has_value()) setScrollAcceleration(props.scrollAcceleration.value());
@@ -31,16 +31,16 @@ namespace elementor::elements {
 
 		// TODO: Add ELEMENT_NEW macro
 
-		static std::shared_ptr <Scrollable> New(
-			const std::shared_ptr <ApplicationContext>& ctx,
+		static std::shared_ptr<Scrollable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
 			const ScrollableProps& props
 		) {
 			return std::make_shared<Scrollable>(ctx, props);
 		}
 
-		static std::shared_ptr <Scrollable> New(
-			const std::shared_ptr <ApplicationContext>& ctx,
-			std::shared_ptr <Scrollable>& elementRef,
+		static std::shared_ptr<Scrollable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Scrollable>& elementRef,
 			const ScrollableProps& props
 		) {
 			auto element = New(ctx, props);
@@ -48,7 +48,7 @@ namespace elementor::elements {
 			return element;
 		}
 
-		static std::shared_ptr <Scrollable> New(const std::shared_ptr <ApplicationContext>& ctx) {
+		static std::shared_ptr<Scrollable> New(const std::shared_ptr<ApplicationContext>& ctx) {
 			return New(ctx, {});
 		}
 
@@ -111,22 +111,22 @@ namespace elementor::elements {
 			return scrollAcceleration;
 		}
 
-		void setChild(const std::shared_ptr <Element>& newChild) {
+		void setChild(const std::shared_ptr<Element>& newChild) {
 			markChanged();
 			child = newChild;
 		}
 
-		Size getChildSize(const Boundaries& boundaries);
-
 		Size getSize(const Boundaries& boundaries) override;
 
-		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
 		ClipBehavior getClipBehaviour() override {
 			return ClipBehavior::AntiAlias;
 		}
 
-		std::vector <std::shared_ptr<EventHandler>> getEventsHandlers() override;
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+
+		std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() override;
 
 	private:
 		ScrollDirection direction = ScrollDirection::Both;
@@ -138,6 +138,8 @@ namespace elementor::elements {
 
 		Size lastSize = { 0, 0 };
 		Size lastChildSize = { 0, 0 };
+
+		Size getChildSize(const Boundaries& boundaries);
 	};
 }
 

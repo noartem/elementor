@@ -25,7 +25,7 @@ namespace elementor::elements {
 		return fitSizeInBoundaries(getChildSize(boundaries), boundaries);
 	}
 
-	std::vector <ElementWithRect> Scrollable::getChildren(const ElementRect& rect) {
+	std::vector<ElementWithRect> Scrollable::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}
@@ -56,14 +56,14 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	std::vector <std::shared_ptr<EventHandler>> Scrollable::getEventsHandlers() {
+	std::vector<std::shared_ptr<EventHandler>> Scrollable::getEventsHandlers() {
 		return {
 			HoverEvent::Handle([this](const auto& event) {
 				hovered = event->hovered;
 				return EventCallbackResponse::None;
 			}),
 			ScrollEvent::Handle([this](const auto& event) {
-				if (!this->hovered) {
+				if (!hovered) {
 					return EventCallbackResponse::None;
 				}
 
@@ -71,6 +71,41 @@ namespace elementor::elements {
 				setScrollTop(scrollTop - event->yOffset * scrollAcceleration);
 
 				return EventCallbackResponse::StopPropagation;
+			})
+		};
+	}
+
+	std::vector<std::shared_ptr<EventHandler>> Scrollable::getGlobalEventsHandlers() {
+		return {
+			KeyboardEvent::Handle([this](const auto& event) {
+				if (event->action == KeyAction::Release) {
+					return EventCallbackResponse::None;
+				}
+
+				switch (event->key) {
+				case KeyboardKey::Left:
+					setScrollLeft(scrollLeft - scrollAcceleration);
+					return EventCallbackResponse::StopPropagation;
+				case KeyboardKey::Right:
+					setScrollLeft(scrollLeft + scrollAcceleration);
+					return EventCallbackResponse::StopPropagation;
+				case KeyboardKey::Up:
+					setScrollTop(scrollTop - scrollAcceleration);
+					return EventCallbackResponse::StopPropagation;
+				case KeyboardKey::Down:
+					setScrollTop(scrollTop + scrollAcceleration);
+					return EventCallbackResponse::StopPropagation;
+				case KeyboardKey::Home:
+					setScrollLeft(0);
+					setScrollTop(0);
+					return EventCallbackResponse::StopPropagation;
+				case KeyboardKey::End:
+					setScrollLeft(getMaxScrollLeft());
+					setScrollTop(getMaxScrollTop());
+					return EventCallbackResponse::StopPropagation;
+				default:
+					return EventCallbackResponse::None;
+				}
 			})
 		};
 	}

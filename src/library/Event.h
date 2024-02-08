@@ -237,7 +237,7 @@ namespace elementor {
 	DEFINE_EVENT_HANDLER(MouseMoveEvent, "mouse-move");
 	public:
 		MouseMoveEvent(float x, float y)
-			: x(x), y(x) {
+			: x(x), y(y) {
 		}
 
 		float x;

@@ -3,6 +3,7 @@
 //
 
 #include "Draggable.h"
+#include "../debug.h"
 
 namespace elementor::elements {
 	Size Draggable::getSize(const Boundaries& boundaries) {
@@ -17,7 +18,7 @@ namespace elementor::elements {
 		lastRect = rect;
 	}
 
-	std::vector <ElementWithRect> Draggable::getChildren(const ElementRect& rect) {
+	std::vector<ElementWithRect> Draggable::getChildren(const ElementRect& rect) {
 		if (doesNotHaveChild()) {
 			return {};
 		}
@@ -31,7 +32,7 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	void Draggable::onMouseButtonEvent(const std::shared_ptr <MouseButtonEvent>& event) {
+	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
 		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
 			return;
 		}
@@ -44,9 +45,12 @@ namespace elementor::elements {
 		}
 
 		dragging = true;
+		cursorPosition = InvalidPosition;
+		cursorAbsolutePosition = InvalidPosition;
+		previousCursorAbsolutePosition = InvalidPosition;
 	}
 
-	std::vector <std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
+	std::vector<std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
 		return {
 			MouseMoveEvent::Handle([this](const auto& event) {
 				onApplicationMouseMoveEvent(event);
@@ -59,13 +63,18 @@ namespace elementor::elements {
 		};
 	}
 
-	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr <MouseMoveEvent>& event) {
+	void Draggable::onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event) {
 		if (!dragging) {
 			return;
 		}
 
 		previousCursorAbsolutePosition = cursorAbsolutePosition;
-		cursorAbsolutePosition = { event->x, event->y };
+		cursorAbsolutePosition = { .x = event->x, .y = event->y };
+
+		if (previousCursorAbsolutePosition == InvalidPosition) {
+			return;
+		}
+
 		cursorPosition = lastRect.absolutePositionToContained(cursorAbsolutePosition);
 
 		if (callbackMove.has_value()) {
@@ -74,26 +83,26 @@ namespace elementor::elements {
 				.y = cursorAbsolutePosition.y - previousCursorAbsolutePosition.y,
 			};
 			callbackMove.value()(
-				this->cursorPosition,
-				this->cursorAbsolutePosition,
+				cursorPosition,
+				cursorAbsolutePosition,
 				cursorPositionDiff
 			);
 		}
 	}
 
-	void Draggable::onApplicationMouseButtonEvent(const std::shared_ptr <MouseButtonEvent>& event) {
+	void Draggable::onApplicationMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
 		if (!dragging || event->button != MouseButton::Left || event->action != KeyAction::Release) {
 			return;
 		}
 
 		if (callbackEnd.has_value()) {
-			callbackEnd.value()(this->cursorPosition, this->cursorAbsolutePosition);
+			callbackEnd.value()(cursorPosition, cursorAbsolutePosition);
 		}
 
 		dragging = false;
 	}
 
-	std::vector <std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
+	std::vector<std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
 		return {
 			HoverEvent::Handle([this](const auto& event) {
 				hovered = event->hovered;

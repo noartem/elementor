@@ -116,7 +116,7 @@ namespace elementor {
 		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 	) {
 		bool someChildMatched = false;
-		for (const auto& child: children) {
+		for (const auto& child: children | std::ranges::views::reverse) {
 			if (predicate(child)) {
 				someChildMatched = true;
 				break;
@@ -127,7 +127,7 @@ namespace elementor {
 			return shared_from_this();
 		}
 
-		for (const auto& child: children) {
+		for (const auto& child: children | std::ranges::views::reverse) {
 			if (predicate(child)) {
 				return child->findLastNode(predicate);
 			}
