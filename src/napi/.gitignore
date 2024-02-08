@@ -1,7 +1,0 @@
-/build
-/node_modules
-/dist
-
-*.debug.json
-
-binding.gyp

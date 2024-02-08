@@ -34,5 +34,3 @@
     ```bash
     xmake run example-gallery
     ```
-
-7. Check out [node.js bindings](src/napi/)
