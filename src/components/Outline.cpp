@@ -18,32 +18,34 @@ namespace elementor::components {
 			return {};
 		}
 
+		std::vector<ElementWithRect> children;
+
+		if (focused) {
+			auto pixelScale = ctx->getPixelScale();
+			auto offsetScaled = offset * pixelScale;
+
+			Rect borderRect = {
+				.size = {
+					.width = rect.size.width + offsetScaled * 2,
+					.height = rect.size.height + offsetScaled * 2,
+				},
+				.position = {
+					.x = -1 * offsetScaled,
+					.y = -1 * offsetScaled
+				},
+			};
+			ElementWithRect borderElementWithRect(borderAsElement, borderRect);
+			children.push_back(borderElementWithRect);
+		}
+
 		Rect childRect = {
 			.size = rect.size,
 			.position = { .x = 0.0f, .y = 0.0f },
 		};
 		ElementWithRect childElementWithRect(child, childRect);
+		children.push_back(childElementWithRect);
 
-		if (!focused) {
-			return { childElementWithRect };
-		}
-
-		auto pixelScale = ctx->getPixelScale();
-		auto offsetScaled = offset * pixelScale;
-
-		Rect borderRect = {
-			.size = {
-				.width = rect.size.width + offsetScaled * 2,
-				.height = rect.size.height + offsetScaled * 2,
-			},
-			.position = {
-				.x = -1 * offsetScaled,
-				.y = -1 * offsetScaled
-			},
-		};
-		ElementWithRect borderElementWithRect(borderAsElement, borderRect);
-
-		return { childElementWithRect, borderElementWithRect };
+		return children;
 	}
 
 	void Outline::setFocused(bool newFocused) {

@@ -50,6 +50,14 @@ namespace elementor::elements {
 			return New(ctx, {});
 		}
 
+		void setDragging(bool newDragging) {
+			dragging = newDragging;
+
+			cursorPosition = InvalidPosition;
+			cursorAbsolutePosition = InvalidPosition;
+			previousCursorAbsolutePosition = InvalidPosition;
+		}
+
 		void onStart(const std::optional<StartCallback>& newCallback) {
 			callbackStart = newCallback;
 		}
@@ -82,14 +90,12 @@ namespace elementor::elements {
 		Position cursorPosition;
 		Position cursorAbsolutePosition;
 		Position previousCursorAbsolutePosition;
-		bool hovered;
-		bool dragging;
+		bool hovered = false;
+		bool dragging = false;
 
 		void onApplicationMouseMoveEvent(const std::shared_ptr<MouseMoveEvent>& event);
 
 		void onApplicationMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event);
-
-		void onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event);
 
 		std::optional<StartCallback> callbackStart;
 		std::optional<EndCallback> callbackEnd;

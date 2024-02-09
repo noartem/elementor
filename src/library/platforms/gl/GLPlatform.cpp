@@ -28,30 +28,28 @@ namespace elementor::platforms::gl {
 		glfwWindowHint(GLFW_ALPHA_BITS, 0);
 		glfwWindowHint(GLFW_DEPTH_BITS, 0);
 
-		eventLoop = std::make_shared<GLEventLoop>();
+		eventLoop = std::make_unique<GLEventLoop>([this]() {
+			tick();
+			return windows.empty();
+		});
 
 		clipboard = std::make_shared<GLClipboard>();
 		perfomance = std::make_shared<GLPerfomance>();
 		fontManager = std::make_shared<GLFontManager>();
 	}
 
-	void GLPlatform::run() {
-		for (;;) {
-			glfwWaitEvents();
+	void GLPlatform::tick() {
+		applyRnfQueue();
 
-			applyRnfQueue();
-
-			for (const std::shared_ptr<GLWindow>& window: windows) {
-				window->tick();
-			}
-
-			if (windows.empty()) {
-				break;
-			}
-
-			perfomance->incrementFramesCount();
+		for (const std::shared_ptr<GLWindow>& window: windows) {
+			window->tick();
 		}
 
+		perfomance->incrementFramesCount();
+	}
+
+	void GLPlatform::run() {
+		eventLoop->run();
 		glfwTerminate();
 	}
 

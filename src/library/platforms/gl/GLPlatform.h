@@ -65,6 +65,8 @@ namespace elementor::platforms::gl {
 
 		std::string locale = "en";
 
+		void tick();
+
 		void applyRnfQueue();
 	};
 };

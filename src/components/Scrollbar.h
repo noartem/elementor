@@ -16,14 +16,14 @@ namespace elementor::elements {
 		const std::shared_ptr<Scrollable>& child = nullptr;
 	};
 
-	class Scrollbar : public Component {
+	class Scrollbar : public Element, public WithEventsHandlers {
 	public:
 		Scrollbar(const std::shared_ptr<ApplicationContext>& ctx, const ScrollbarProps& props)
-			: Component(ctx) {
-			setThickness(props.thickness);
-			setSpacing(props.spacing);
+			: Element(ctx) {
+			thickness = props.thickness;
+			spacing = props.spacing;
 			setThumb(props.thumb);
-			setChild(props.child);
+			child = props.child;
 		}
 
 		static std::shared_ptr<Scrollbar> New(
@@ -60,11 +60,6 @@ namespace elementor::elements {
 			return spacing;
 		}
 
-		void setSpacing(float newSpacing) {
-			markChanged();
-			spacing = newSpacing;
-		}
-
 		void setThumb(const std::shared_ptr<Element>& newThumb);
 
 		void setChild(const std::shared_ptr<Scrollable>& newChild) {
@@ -76,12 +71,15 @@ namespace elementor::elements {
 
 		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
 
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+
 	private:
 		float thickness;
 		float spacing;
 		std::shared_ptr<Element> thumbX = nullptr;
 		std::shared_ptr<Element> thumbY = nullptr;
 		std::shared_ptr<Scrollable> child = nullptr;
+		ElementRect lastRect;
 
 		bool hovered;
 	};

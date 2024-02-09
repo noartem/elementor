@@ -32,24 +32,6 @@ namespace elementor::elements {
 		return { childElement };
 	}
 
-	void Draggable::onMouseButtonEvent(const std::shared_ptr<MouseButtonEvent>& event) {
-		if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
-			return;
-		}
-
-		if (callbackStart.has_value()) {
-			bool startAllowed = callbackStart.value()(cursorPosition, cursorAbsolutePosition);
-			if (!startAllowed) {
-				return;
-			}
-		}
-
-		dragging = true;
-		cursorPosition = InvalidPosition;
-		cursorAbsolutePosition = InvalidPosition;
-		previousCursorAbsolutePosition = InvalidPosition;
-	}
-
 	std::vector<std::shared_ptr<EventHandler>> Draggable::getGlobalEventsHandlers() {
 		return {
 			MouseMoveEvent::Handle([this](const auto& event) {
@@ -99,7 +81,7 @@ namespace elementor::elements {
 			callbackEnd.value()(cursorPosition, cursorAbsolutePosition);
 		}
 
-		dragging = false;
+		setDragging(false);
 	}
 
 	std::vector<std::shared_ptr<EventHandler>> Draggable::getEventsHandlers() {
@@ -109,8 +91,20 @@ namespace elementor::elements {
 				return EventCallbackResponse::None;
 			}),
 			MouseButtonEvent::Handle([this](const auto& event) {
-				onMouseButtonEvent(event);
-				return EventCallbackResponse::None;
+				if (dragging || !hovered || event->button != MouseButton::Left || event->action != KeyAction::Press) {
+					return EventCallbackResponse::None;
+				}
+
+				if (callbackStart.has_value()) {
+					bool startAllowed = callbackStart.value()(cursorPosition, cursorAbsolutePosition);
+					if (!startAllowed) {
+						return EventCallbackResponse::None;
+					}
+				}
+
+				setDragging(true);
+
+				return EventCallbackResponse::StopPropagation;
 			}),
 		};
 	}

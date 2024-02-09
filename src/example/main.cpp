@@ -58,8 +58,8 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 		Background::New(ctx, {
 			.color = "#fff",
 			.child = Scrollbar::New(ctx, {
-				.thickness = 16,
-				.spacing = 4,
+				.thickness = 8,
+				.spacing = 2,
 				.thumb = Rounded::New(ctx, {
 					.all = 8,
 					.child = Background::New(ctx, {
