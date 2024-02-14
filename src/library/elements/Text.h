@@ -147,6 +147,10 @@ namespace elementor::elements {
 		}
 
 		void setText(const std::string& newText) {
+			if (newText == text) {
+				return;
+			}
+
 			markChanged();
 			text = newText;
 		}

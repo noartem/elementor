@@ -86,8 +86,14 @@ namespace elementor::elements {
 		}
 
 		void setScrollTop(float newScrollTop) {
+			newScrollTop = std::min(std::max(newScrollTop, 0.0f), getMaxScrollTop());
+
+			if (newScrollTop == scrollTop) {
+				return;
+			}
+
 			markChanged();
-			scrollTop = std::min(std::max(newScrollTop, 0.0f), getMaxScrollTop());
+			scrollTop = newScrollTop;
 		}
 
 		[[nodiscard]] float getScrollTop() const {
@@ -95,8 +101,14 @@ namespace elementor::elements {
 		}
 
 		void setScrollLeft(float newScrollLeft) {
+			newScrollLeft = std::min(std::max(newScrollLeft, 0.0f), getMaxScrollLeft());
+
+			if (newScrollLeft == scrollLeft) {
+				return;
+			}
+
 			markChanged();
-			scrollLeft = std::min(std::max(newScrollLeft, 0.0f), getMaxScrollLeft());
+			scrollLeft = newScrollLeft;
 		}
 
 		[[nodiscard]] float getScrollLeft() const {

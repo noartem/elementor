@@ -66,6 +66,8 @@ namespace elementor {
 
 		os << "(" << element << ") ";
 
+		os << "[" << this << "] ";
+
 		if (drawCachedImage != nullptr)
 			os << "[[cached]] ";
 
@@ -180,22 +182,25 @@ namespace elementor {
 
 	void ApplicationTree::Node::clipCanvas(SkCanvas* canvas) {
 		ClipBehavior clipBehavior = element->getClipBehaviour();
-		if (clipBehavior != ClipBehavior::None) {
-			SkRect skRect = SkRect::MakeXYWH(
-				rect.visiblePosition.x - rect.position.x,
-				rect.visiblePosition.y - rect.position.y,
-				rect.visibleSize.width,
-				rect.visibleSize.height
-			);
-			canvas->clipRect(
-				skRect,
-				SkClipOp::kIntersect,
-				clipBehavior == ClipBehavior::AntiAlias
-			);
+		if (clipBehavior == ClipBehavior::None) {
+			return;
 		}
+
+		SkRect skRect = SkRect::MakeXYWH(
+			rect.visiblePosition.x - rect.position.x,
+			rect.visiblePosition.y - rect.position.y,
+			rect.visibleSize.width,
+			rect.visibleSize.height
+		);
+
+		canvas->clipRect(
+			skRect,
+			SkClipOp::kIntersect,
+			clipBehavior == ClipBehavior::AntiAlias
+		);
 	}
 
-	void ApplicationTree::Node::draw(SkCanvas* canvas) {
+	void ApplicationTree::Node::draw(SkCanvas* canvas, bool withChildrenCache) {
 		canvas->save();
 		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
 		clipCanvas(canvas);
@@ -203,18 +208,31 @@ namespace elementor {
 		element->paintBackground(canvas, rect);
 
 		for (const auto& child: children) {
-			child->draw(canvas);
+			if (withChildrenCache) {
+				child->drawWithCache(canvas);
+			} else {
+				child->draw(canvas, false);
+			}
 		}
 
 		canvas->restore();
 	}
 
-	void ApplicationTree::Node::drawCache(SkCanvas* canvas) {
-		if (!drawCachedImage) {
-			return;
-		}
+	void ApplicationTree::Node::drawToCache(SkCanvas* canvas) {
+		auto cacheSurface = canvas->makeSurface(canvas->imageInfo());
+		auto cacheCanvas = cacheSurface->getCanvas();
+		cacheCanvas->setMatrix(canvas->getTotalMatrix());
 
+		draw(cacheCanvas, false);
+
+		drawCachedImage = cacheSurface->makeImageSnapshot();
+
+		drawCache(canvas);
+	}
+
+	void ApplicationTree::Node::drawCache(SkCanvas* canvas) {
 		canvas->save();
+
 		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
 		clipCanvas(canvas);
 
@@ -224,81 +242,70 @@ namespace elementor {
 		canvas->restore();
 	}
 
-	void ApplicationTree::Node::drawWithChildrenCache(SkCanvas* canvas) {
-		canvas->save();
-		canvas->translate(rect.inParentPosition.x, rect.inParentPosition.y);
-		clipCanvas(canvas);
-
-		element->paintBackground(canvas, rect);
-
-		for (const auto& child: children) {
-			child->drawWithCache(canvas);
-		}
-
-		canvas->restore();
-	}
-
-	void ApplicationTree::Node::updateDrawCache(SkCanvas* canvas) {
+	void ApplicationTree::Node::drawWithCache(SkCanvas* canvas) {
 		if (drawCachedImage) {
+			drawCache(canvas);
 			return;
 		}
 
-		for (const auto& child: children) {
-			if (child->changed) {
-				return;
-			}
+		if (!childrenCached) {
+			draw(canvas, true);
+			return;
 		}
 
-		auto cacheSurface = canvas->makeSurface(canvas->imageInfo());
-		auto cacheCanvas = cacheSurface->getCanvas();
-		cacheCanvas->setMatrix(canvas->getTotalMatrix());
-
-		draw(cacheCanvas);
-
-		cacheCanvas->flush();
-		drawCachedImage = cacheSurface->makeImageSnapshot();
-	}
-
-	void ApplicationTree::Node::drawWithCache(SkCanvas* canvas) {
-		updateDrawCache(canvas);
-
-		if (drawCachedImage) {
-			drawCache(canvas);
-		} else {
-			drawWithChildrenCache(canvas);
+		if (beforeCacheRenders > 0) {
+			beforeCacheRenders -= 1;
+			draw(canvas, false);
+			return;
 		}
+
+		drawToCache(canvas);
 	}
 
 	void ApplicationTree::draw(SkCanvas* canvas) {
 		root->drawWithCache(canvas);
 	}
 
-	void ApplicationTree::Node::markChanged() {
+	void ApplicationTree::Node::removeCache() {
+		drawCachedImage = nullptr;
+		beforeCacheRenders = DEFAULT_BEFORE_CACHE_RENDERS;
+	}
+
+	void ApplicationTree::Node::checkIfChanged() {
 		changed = false;
 		childrenChanged = false;
 		deepChanged = false;
+		childrenCached = true;
 
 		for (const auto& child: children) {
-			child->markChanged();
+			child->checkIfChanged();
+
 			childrenChanged |= child->changed;
+			childrenCached &= child->drawCachedImage != nullptr;
+
 			deepChanged |= child->deepChanged;
 		}
 
 		changed = element->popChanged();
 		deepChanged |= changed;
 
+		D(if (changed) {
+			std::cout << "Element (" << element << ") changed" << std::endl;
+		});
+
 		if (deepChanged) {
-			drawCachedImage = nullptr;
+			removeCache();
 		}
 	}
 
-	void ApplicationTree::markChanged() {
-		root->markChanged();
+	void ApplicationTree::checkIfChanged() {
+		root->checkIfChanged();
 	}
 
 	void ApplicationTree::Node::updateChildren() {
 		children.clear();
 		childrenChanged = false;
+		childrenCached = false;
 		deepChanged = false;
 
 		for (const auto& childElementWithRect: element->getChildren(rect)) {
@@ -331,10 +338,12 @@ namespace elementor {
 			auto childOldElement = children[i]->element;
 			auto childNewElement = std::get<0>(newChildren[i]);
 
-			Rect childOldRect = children[i]->rect;
+			ElementRect childOldRect = children[i]->rect;
 			auto childNewRect = std::get<1>(newChildren[i]);
 
-			if (childOldElement != childNewElement || childOldRect != childNewRect) {
+			if (childOldElement != childNewElement ||
+				childOldRect.size != childNewRect.size ||
+				childOldRect.inParentPosition != childNewRect.position) {
 				return true;
 			}
 		}
@@ -342,31 +351,21 @@ namespace elementor {
 		return false;
 	}
 
-	void ApplicationTree::Node::updateParentChildren() {
-		if (parent == nullptr) {
+	void ApplicationTree::Node::updateChildrenIfChanged() {
+		if (isChildrenChanged()) {
+			D_LOG("Element (" << element << ") children are changed");
+			updateChildren();
 			return;
 		}
 
-		if (parent->isChildrenChanged()) {
-			parent->updateChildren();
-			parent->updateParentChildren();
+		for (const auto& child: children) {
+			child->updateChildrenIfChanged();
 		}
 	}
 
-	void ApplicationTree::updateChanged() const {
-		if (root->changed) {
-			root->updateChildren();
-			root->changed = false;
-			return;
-		}
-
-		while (auto nodePendingUpdateChildren = findFirstNode(
-			[](const std::shared_ptr<Node>& node) {
-				return !node->changed && node->childrenChanged;
-			}
-		)) {
-			nodePendingUpdateChildren->updateChildren();
-			nodePendingUpdateChildren->updateParentChildren();
+	void ApplicationTree::updateChanged() {
+		if (root->deepChanged) {
+			root->updateChildrenIfChanged();
 		}
 	}
 

@@ -190,7 +190,7 @@ namespace elementor::platforms::gl {
 
 		dispatchPendingEvents();
 
-		applicationTree->markChanged();
+		applicationTree->checkIfChanged();
 		applicationTree->updateChanged();
 
 		draw();

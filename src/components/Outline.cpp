@@ -34,6 +34,7 @@ namespace elementor::components {
 					.y = -1 * offsetScaled
 				},
 			};
+			auto borderAsElement = std::dynamic_pointer_cast<Element>(border);
 			ElementWithRect borderElementWithRect(borderAsElement, borderRect);
 			children.push_back(borderElementWithRect);
 		}
@@ -49,6 +50,7 @@ namespace elementor::components {
 	}
 
 	void Outline::setFocused(bool newFocused) {
+		markChanged();
 		focused = newFocused;
 	}
 
