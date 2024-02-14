@@ -21,7 +21,6 @@ namespace elementor::components {
 			: Element(ctx) {
 			offset = props.offset;
 			border = Border::New(ctx, props.border);
-			borderAsElement = std::dynamic_pointer_cast<Element>(border);
 			setChild(props.child);
 		}
 
@@ -59,7 +58,6 @@ namespace elementor::components {
 
 	private:
 		std::shared_ptr <Border> border = nullptr;
-		std::shared_ptr <Element> borderAsElement = nullptr;
 
 		float offset = 0.0;
 		bool focused = false;

@@ -10,6 +10,8 @@
 #include <map>
 #include <iostream>
 
+#include <include/core/SkImage.h>
+
 #include "Element.h"
 
 namespace elementor {
@@ -18,6 +20,8 @@ namespace elementor {
 		class Node : public std::enable_shared_from_this<Node> {
 			friend ApplicationTree;
 		public:
+			constexpr static int DEFAULT_BEFORE_CACHE_RENDERS = 60;
+
 			static std::shared_ptr<Node> New(
 				const std::shared_ptr<Element>& element,
 				const ElementRect& rect,
@@ -43,7 +47,9 @@ namespace elementor {
 
 			void print(std::ostream& os, unsigned level = 0) const;
 
-			void markChanged();
+			void removeCache();
+
+			void checkIfChanged();
 
 		private:
 			std::shared_ptr<Element> element;
@@ -56,9 +62,11 @@ namespace elementor {
 			std::vector<std::shared_ptr<EventHandler>> globalEventsHandlers;
 
 			sk_sp<SkImage> drawCachedImage;
+			int beforeCacheRenders = DEFAULT_BEFORE_CACHE_RENDERS; // TODO: rewrite to timestamps
 
 			bool changed = false;
 			bool childrenChanged = false;
+			bool childrenCached = false;
 			bool deepChanged = false;
 
 			std::shared_ptr<ApplicationTree::Node> findFirstNode(
@@ -73,17 +81,15 @@ namespace elementor {
 
 			bool isChildrenChanged();
 
-			void updateParentChildren();
+			void updateChildrenIfChanged();
 
 			void clipCanvas(SkCanvas* canvas);
 
-			void draw(SkCanvas* canvas);
+			void draw(SkCanvas* canvas, bool withChildrenCache);
+
+			void drawToCache(SkCanvas* canvas);
 
 			void drawCache(SkCanvas* canvas);
-
-			void updateDrawCache(SkCanvas* canvas);
-
-			void drawWithChildrenCache(SkCanvas* canvas);
 
 			void drawWithCache(SkCanvas* canvas);
 		};
@@ -112,9 +118,9 @@ namespace elementor {
 
 		void draw(SkCanvas* canvas);
 
-		void markChanged();
+		void checkIfChanged();
 
-		void updateChanged() const;
+		void updateChanged();
 
 	private:
 		std::shared_ptr<Node> root;

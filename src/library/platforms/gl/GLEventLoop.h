@@ -29,7 +29,6 @@ namespace elementor::platforms::gl {
 		}
 
 		void pend() {
-			E_LOG("pend");
 			glfwPostEmptyEvent();
 			tryCallCallback();
 		}
