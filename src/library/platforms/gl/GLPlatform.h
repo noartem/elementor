@@ -2,69 +2,73 @@
 // Created by noartem on 14.04.2022.
 //
 
-#ifndef ELEMENTOR_GL_GLPLATFORM_H
-#define ELEMENTOR_GL_GLPLATFORM_H
+#ifndef ELEMENTOR_GL_PLATFORM_H
+#define ELEMENTOR_GL_PLATFORM_H
 
-#include "../../Element.h"
+#include "elementor.h"
 
+#include "GLPlatformContext.h"
+
+#include "GLEventLoop.h"
 #include "GLClipboard.h"
 #include "GLFontManager.h"
 #include "GLPerfomance.h"
 #include "GLWindow.h"
 
 namespace elementor::platforms::gl {
-    class GLPlatform {
-    public:
-        GLPlatform();
+	class GLPlatform : public GLPlatformContext {
+	public:
+		GLPlatform();
 
-        std::shared_ptr<GLWindow> makeWindow(Size size);
+		void addWindow(const std::shared_ptr<GLWindow>& window);
 
-        void addWindow(const std::shared_ptr<GLWindow>& window);
+		void removeWindow(const std::shared_ptr<GLWindow>& window);
 
-        void removeWindow(const std::shared_ptr<GLWindow>& window);
+		void removeWindow(unsigned int index);
 
-        void removeWindow(unsigned int index);
+		void run();
 
-        void run();
+		void requestNextFrame(const std::function<void()>& callback) override;
 
-        void requestNextFrame(const std::function<void()> &callback);
+		void requestNextFrame() override;
 
-        std::shared_ptr<GLClipboard> getClipboard();
+		[[nodiscard]] std::shared_ptr<Clipboard> getClipboard() const override {
+			return clipboard;
+		}
 
-        std::shared_ptr<GLPerfomance> getPerfomance();
+		[[nodiscard]] std::shared_ptr<Perfomance> getPerfomance() const override {
+			return perfomance;
+		}
 
-        std::shared_ptr<GLFontManager> getFontManager();
+		[[nodiscard]] sk_sp<SkFontMgr> getSkFontManager() const override {
+			return fontManager->getSkFontManager();
+		}
 
-        sk_sp<SkFontMgr> getSkFontManager();
+		[[nodiscard]] std::string getLocale() const {
+			return locale;
+		}
 
-        [[nodiscard]] float getPixelScale() const;
+		void setLocale(std::string newLocale) {
+			locale = newLocale;
+		}
 
-        void setPixelScale(float scale);
+	private:
+		std::shared_ptr<GLEventLoop> eventLoop;
 
-        std::string getLocale();
+		std::shared_ptr<GLClipboard> clipboard;
+		std::shared_ptr<GLPerfomance> perfomance;
+		std::shared_ptr<GLFontManager> fontManager;
 
-        void setLocale(std::string newLocale);
+		std::vector<std::shared_ptr<GLWindow>> windows;
 
-    private:
-        std::shared_ptr<GLClipboard> clipboard;
-        std::shared_ptr<GLFontManager> fontManager;
-        std::shared_ptr<GLPerfomance> perfomance;
+		std::vector<std::function<void()>> rnfQueue;
 
-        std::shared_ptr<ApplicationContext> applicationContext;
+		std::string locale = "en";
 
-        std::vector<std::shared_ptr<GLWindow>> windows;
+		void tick();
 
-        std::vector<std::function<void()>> rnfNextQueue;
-        std::vector<std::function<void()>> rnfCurrentQueue;
-
-        void applyRnfQueue();
-
-        float pixelScale;
-
-        static float calcPixelScale();
-
-        std::string locale = "en";
-    };
+		void applyRnfQueue();
+	};
 };
 
-#endif //ELEMENTOR_GL_GLPLATFORM_H
+#endif //ELEMENTOR_GL_PLATFORM_H

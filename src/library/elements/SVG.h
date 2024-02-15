@@ -5,35 +5,76 @@
 #ifndef ELEMENTOR_SVG_H
 #define ELEMENTOR_SVG_H
 
-#include "../Element.h"
+#include "../include.h"
 
 #include <include/core/SkData.h>
+#include <include/core/SkImage.h>
 #include <include/core/SkStream.h>
 #include <modules/svg/include/SkSVGDOM.h>
 
 namespace elementor::elements {
-    class SVG : public Element, public std::enable_shared_from_this<SVG> {
-    public:
-        sk_sp<SkSVGDOM> getSkSVGDOM();
+	struct SVGProps {
+		std::optional<sk_sp<SkSVGDOM>> fromDOM = std::nullopt;
+		std::optional<sk_sp<SkData>> fromData;
+		std::optional<std::string> src;
+	};
 
-        std::shared_ptr<SVG> fromSkSVGDOM(sk_sp<SkSVGDOM> newSkSVGDOM);
+	class SVG : public Element {
+	public:
+		explicit SVG(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        std::shared_ptr<SVG> fromSkStream(SkStream& stream);
+		SVG(const std::shared_ptr<ApplicationContext>& ctx, const SVGProps& props)
+			: Element(ctx) {
+			if (props.fromDOM.has_value()) fromSkSVGDOM(props.fromDOM.value());
+			if (props.fromData.has_value()) fromSkData(props.fromData.value());
+			if (props.src.has_value()) fromPath(props.src.value());
+		}
 
-        std::shared_ptr<SVG> fromSkData(sk_sp<SkData> data);
+		static std::shared_ptr<SVG> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const SVGProps& props
+		) {
+			return std::make_shared<SVG>(ctx, props);
+		}
 
-        std::shared_ptr<SVG> fromPath(const std::string& path);
+		static std::shared_ptr <SVG> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <SVG>& elementRef,
+			const SVGProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        std::shared_ptr<SVG> fromString(const char value[]);
+		static std::shared_ptr<SVG> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
+		sk_sp<SkSVGDOM> getSkSVGDOM() const {
+			return skSVGDOM;
+		}
 
-    private:
-        sk_sp<SkSVGDOM> skSVGDOM;
-        sk_sp<SkImage> skImage;
-    };
+		void fromSkSVGDOM(const sk_sp<SkSVGDOM>& newSkSVGDOM) {
+			skSVGDOM = newSkSVGDOM;
+		}
 
-    std::shared_ptr<SVG> svg();
+		void fromSkStream(SkStream& stream);
+
+		void fromSkData(sk_sp<SkData> data);
+
+		void fromPath(const std::string& path);
+
+		void fromString(const char value[]);
+
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
+
+	private:
+		sk_sp<SkSVGDOM> skSVGDOM;
+		sk_sp<SkImage> skImage;
+	};
 }
 
 

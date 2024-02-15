@@ -5,63 +5,140 @@
 #ifndef ELEMENTOR_BORDER_H
 #define ELEMENTOR_BORDER_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    enum class BorderStyle {
-        Solid,
-        Dotted,
-        Dashed,
-    };
+	enum class BorderStyle {
+		Solid,
+		Dotted,
+		Dashed,
+	};
 
-    class Border : public Element, public WithChild, public std::enable_shared_from_this<Border> {
-    public:
-        std::shared_ptr<Border> setColor(SkColor color);
+	struct BorderProps {
+		std::optional<float> radiusX = std::nullopt;
+		std::optional<float> radiusY = std::nullopt;
+		float radius = 0;
+		float width = 1;
+		const std::string_view& color = "";
+		BorderStyle style = BorderStyle::Solid;
+		const std::shared_ptr <Element>& child = nullptr;
+	};
 
-        std::shared_ptr<Border> setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+	class Border : public Element, public WithChild {
+	public:
+		Border(const std::shared_ptr <ApplicationContext>& ctx, const BorderProps& props)
+			: Element(ctx) {
+			setRadius(
+				props.radiusX.value_or(props.radius),
+				props.radiusY.value_or(props.radius)
+			);
+			setWidth(props.width);
+			setStyle(props.style);
+			setColor(props.color);
+			setChild(props.child);
+		}
 
-        std::shared_ptr<Border> setColor(uint8_t r, uint8_t g, uint8_t b);
+		static std::shared_ptr <Border> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const BorderProps& props
+		) {
+			return std::make_shared<Border>(ctx, props);
+		}
 
-        std::shared_ptr<Border> setColor(std::string hex);
+		static std::shared_ptr <Border> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Border>& elementRef,
+			const BorderProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        SkColor getColor();
+		static std::shared_ptr <Border> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr<Border> setWidth(float width);
+		[[nodiscard]] SkColor getColor() const {
+			return color;
+		}
 
-        float getWidth();
+		void setColor(SkColor skColor) {
+			markChanged();
+			color = skColor;
+		}
 
-        std::shared_ptr<Border> setRadius(float radiusX, float radiusY);
+		void setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			setColor(makeSkColorFromRGBA(r, g, b, a));
+		}
 
-        std::shared_ptr<Border> setRadius(float radiusXY);
+		void setColor(uint8_t r, uint8_t g, uint8_t b) {
+			setColor(makeSkColorFromRGB(r, g, b));
+		}
 
-        float getRadiusX();
+		void setColor(const std::string_view& hex) {
+			setColor(makeSkColorFromHex(std::string(hex)));
+		}
 
-        float getRadiusY();
+		[[nodiscard]] float getWidth() const {
+			return width;
+		}
 
-        std::shared_ptr<Border> setStyle(BorderStyle style);
+		void setWidth(float newWidth) {
+			markChanged();
+			width = newWidth;
+		}
 
-        BorderStyle getStyle();
+		[[nodiscard]] float getRadiusX() const {
+			return radiusX;
+		}
 
-        std::shared_ptr<Border> setChild(const std::shared_ptr<Element>& child);
+		[[nodiscard]] float getRadiusY() const {
+			return radiusY;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		void setRadius(float newRadiusX, float newRadiusY) {
+			markChanged();
+			radiusX = newRadiusX;
+			radiusY = newRadiusY;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		void setRadius(float radiusXY) {
+			setRadius(radiusXY, radiusXY);
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		[[nodiscard]] BorderStyle getStyle() const {
+			return style;
+		}
 
-    private:
-        float width = 0.0;
-        float radiusX = 0.0;
-        float radiusY = 0.0;
-        SkColor color;
-        BorderStyle style = BorderStyle::Solid;
-    };
+		void setStyle(BorderStyle newStyle) {
+			markChanged();
+			style = newStyle;
+		}
 
-    std::shared_ptr<Border> border();
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
+
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float width = 0.0;
+		float radiusX = 0.0;
+		float radiusY = 0.0;
+		SkColor color;
+		BorderStyle style = BorderStyle::Solid;
+
+		SkPaint makeSkPaint();
+		SkRRect makeSkRRect(const ElementRect& rect);
+	};
+
+	std::shared_ptr <Border> border();
 }
 
 

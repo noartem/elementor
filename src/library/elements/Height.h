@@ -5,28 +5,64 @@
 #ifndef ELEMENTOR_HEIGHT_H
 #define ELEMENTOR_HEIGHT_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Height : public Element, public WithChild, public std::enable_shared_from_this<Height> {
-    public:
-        std::shared_ptr<Height> setHeight(float height);
+	struct HeightProps {
+		float height = 0;
+		const std::shared_ptr <Element>& child = nullptr;
+	};
 
-        float getHeight();
+	class Height : public Element, public WithChild {
+	public:
+		Height(const std::shared_ptr <ApplicationContext>& ctx, const HeightProps& props)
+			: Element(ctx) {
+			setHeight(props.height);
+			setChild(props.child);
+		}
 
-        std::shared_ptr<Height> setChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr <Height> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const HeightProps& props
+		) {
+			return std::make_shared<Height>(ctx, props);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		static std::shared_ptr <Height> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Height>& elementRef,
+			const HeightProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		static std::shared_ptr <Height> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-    private:
-        float height = 0;
-    };
+		void setHeight(float newValue) {
+			markChanged();
+			height = newValue;
+		}
 
-    std::shared_ptr<Height> height();
+		[[nodiscard]] float getHeight() const {
+			return height;
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float height = 0;
+	};
 }
 
 

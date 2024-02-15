@@ -5,43 +5,95 @@
 #ifndef ELEMENTOR_ROUNDED_H
 #define ELEMENTOR_ROUNDED_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Rounded : public Element, public WithChild, public std::enable_shared_from_this<Rounded> {
-    public:
-        std::shared_ptr<Rounded> setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomLeft, float radiusBottomRight);
+	struct RectRadius {
+		float topLeft;
+		float topRight;
+		float bottomLeft;
+		float bottomRight;
+	};
 
-        std::shared_ptr<Rounded> setRadius(float radiusLeft, float radiusRight);
+	struct RoundedProps {
+	public:
+		std::optional<float> all;
+		std::optional<float> top;
+		std::optional<float> bottom;
+		std::optional<float> left;
+		std::optional<float> right;
+		std::optional<float> topLeft;
+		std::optional<float> topRight;
+		std::optional<float> bottomLeft;
+		std::optional<float> bottomRight;
+		const std::shared_ptr <Element>& child = nullptr;
 
-        std::shared_ptr<Rounded> setRadius(float radius);
+		[[nodiscard]] RectRadius getRectRadius() const {
+			return {
+				topLeft.value_or(left.value_or(top.value_or(all.value_or(0)))),
+				topRight.value_or(right.value_or(top.value_or(all.value_or(0)))),
+				bottomLeft.value_or(left.value_or(bottom.value_or(all.value_or(0)))),
+				bottomRight.value_or(right.value_or(bottom.value_or(all.value_or(0))))
+			};
+		}
+	};
 
-        float getRadiusTopLeft() const;
+	class Rounded : public Element, public WithChild {
+	public:
+		Rounded(const std::shared_ptr <ApplicationContext>& ctx, const RoundedProps& props)
+			: Element(ctx) {
+			setRadius(props.getRectRadius());
+			setChild(props.child);
+		}
 
-        float getRadiusTopRight() const;
+		static std::shared_ptr <Rounded> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const RoundedProps& props
+		) {
+			return std::make_shared<Rounded>(ctx, props);
+		}
 
-        float getRadiusBottomLeft() const;
+		static std::shared_ptr <Rounded> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Rounded>& elementRef,
+			const RoundedProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        float getRadiusBottomRight() const;
+		static std::shared_ptr <Rounded> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr<Rounded> setChild(const std::shared_ptr<Element>& child);
+		void setRadius(RectRadius newValue) {
+			markChanged();
+			rectRadius = newValue;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
+		[[nodiscard]] RectRadius getRadius() const {
+			return rectRadius;
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-        ClipBehavior getClipBehaviour() override;
+		Size getSize(const Boundaries& boundaries) override;
 
-    private:
-        float radiusTopLeft;
-        float radiusTopRight;
-        float radiusBottomLeft;
-        float radiusBottomRight;
-    };
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-    std::shared_ptr<Rounded> rounded();
+		ClipBehavior getClipBehaviour() override {
+			return ClipBehavior::AntiAlias;
+		}
+
+	private:
+		RectRadius rectRadius{};
+	};
 }
 
 

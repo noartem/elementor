@@ -6,8 +6,6 @@
 #define ELEMENTOR_COMPONENTS_ELEMENTOR_H
 
 #include "../library/include.h"
-#include "../library/animation/include.h"
-#include "../library/platforms/gl/include.h"
 #include "../library/elements/include.h"
 
 using namespace elementor;

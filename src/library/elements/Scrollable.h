@@ -5,87 +5,154 @@
 #ifndef ELEMENTOR_SCROLLABLE_H
 #define ELEMENTOR_SCROLLABLE_H
 
-#include "../Element.h"
-#include "../Event.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    enum class ScrollDirection {
-        Vertical,
-        Horizontal,
-        Both,
-    };
+	enum class ScrollDirection {
+		Vertical,
+		Horizontal,
+		Both,
+	};
 
-    class Scrollable
-            : public Element,
-              public WithOnHover,
-              public WithOnScroll,
-              public WithChild,
-              public std::enable_shared_from_this<Scrollable> {
-    public:
-        std::shared_ptr <Scrollable> setDirection(ScrollDirection newDirection);
+	struct ScrollableProps {
+		std::optional<ScrollDirection> direction;
+		std::optional<float> scrollAcceleration;
+		const std::shared_ptr<elementor::Element>& child = nullptr;
+	};
 
-        ScrollDirection getDirection();
+	class Scrollable : public Element, public WithEventsHandlers, public WithGlobalEventsHandlers, public WithChild {
+	public:
+		Scrollable(const std::shared_ptr<ApplicationContext>& ctx, const ScrollableProps& props)
+			: Element(ctx) {
+			if (props.direction.has_value()) setDirection(props.direction.value());
+			if (props.scrollAcceleration.has_value()) setScrollAcceleration(props.scrollAcceleration.value());
+			setChild(props.child);
+		}
 
-        bool isHorizontalScroll();
+		// TODO: Add ELEMENT_NEW macro
 
-        bool isVerticalScroll();
+		static std::shared_ptr<Scrollable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const ScrollableProps& props
+		) {
+			return std::make_shared<Scrollable>(ctx, props);
+		}
 
-        float getHeight() const;
+		static std::shared_ptr<Scrollable> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Scrollable>& elementRef,
+			const ScrollableProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        float getWidth() const;
+		static std::shared_ptr<Scrollable> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        float getMaxScrollLeft() const;
+		void setDirection(ScrollDirection newDirection) {
+			markChanged();
+			direction = newDirection;
+		}
 
-        float getMaxScrollTop() const;
+		[[nodiscard]] ScrollDirection getDirection() const {
+			return direction;
+		}
 
-        std::shared_ptr <Scrollable> setScrollTop(float newScrollTop);
+		bool isHorizontalScroll() {
+			return direction != ScrollDirection::Vertical;
+		}
 
-        float getScrollTop() const;
+		bool isVerticalScroll() {
+			return direction != ScrollDirection::Horizontal;
+		}
 
-        std::shared_ptr <Scrollable> setScrollLeft(float newScrollLeft);
+		[[nodiscard]] Size getSize() const {
+			return lastSize;
+		}
 
-        float getScrollLeft() const;
+		[[nodiscard]] Size getScrollSize() const {
+			return lastChildSize;
+		}
 
-        float getScrollHeight() const;
+		[[nodiscard]] float getMaxScrollLeft() const {
+			return std::max(lastChildSize.width - lastSize.width, 0.0f);
+		}
 
-        float getScrollWidth() const;
+		[[nodiscard]] float getMaxScrollTop() const {
+			return std::max(lastChildSize.height - lastSize.height, 0.0f);
+		}
 
-        std::shared_ptr <Scrollable> setScrollAcceleration(float newScrollAcceleration);
+		void setScrollTop(float newScrollTop) {
+			newScrollTop = std::min(std::max(newScrollTop, 0.0f), getMaxScrollTop());
 
-        float getScrollAcceleration() const;
+			if (newScrollTop == scrollTop) {
+				return;
+			}
 
-        std::shared_ptr <Scrollable> setChild(const std::shared_ptr <Element> &child);
+			markChanged();
+			scrollTop = newScrollTop;
+		}
 
-        Size getChildSize(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
-                          Boundaries boundaries);
+		[[nodiscard]] float getScrollTop() const {
+			return scrollTop;
+		}
 
-        Size getSize(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
-                     Boundaries boundaries) override;
+		void setScrollLeft(float newScrollLeft) {
+			newScrollLeft = std::min(std::max(newScrollLeft, 0.0f), getMaxScrollLeft());
 
-        void paintBackground(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window,
-                             SkCanvas *canvas, ElementRect rect) override;
+			if (newScrollLeft == scrollLeft) {
+				return;
+			}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr <ApplicationContext> ctx,
-                                                std::shared_ptr <Window> window, ElementRect rect) override;
+			markChanged();
+			scrollLeft = newScrollLeft;
+		}
 
-        ClipBehavior getClipBehaviour() override;
+		[[nodiscard]] float getScrollLeft() const {
+			return scrollLeft;
+		}
 
-        EventCallbackResponse onEvent(std::shared_ptr <EventHover> event) override;
+		void setScrollAcceleration(float newScrollAcceleration) {
+			scrollAcceleration = newScrollAcceleration;
+		}
 
-        EventCallbackResponse onEvent(std::shared_ptr <EventScroll> event) override;
+		[[nodiscard]] float getScrollAcceleration() const {
+			return scrollAcceleration;
+		}
 
-    private:
-        std::shared_ptr <ApplicationContext> ctx;
-        ElementRect rect;
-        ScrollDirection direction = ScrollDirection::Both;
-        float scrollLeft;
-        float scrollTop;
-        float scrollAcceleration = 16.0;
-        Size childSize;
-        bool hovered;
-    };
+		void setChild(const std::shared_ptr<Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
 
-    std::shared_ptr <Scrollable> scrollable();
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override;
+
+		ClipBehavior getClipBehaviour() override {
+			return ClipBehavior::AntiAlias;
+		}
+
+		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override;
+
+		std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() override;
+
+	private:
+		ScrollDirection direction = ScrollDirection::Both;
+		float scrollLeft;
+		float scrollTop;
+		float scrollAcceleration = 64.0;
+
+		bool hovered;
+
+		Size lastSize = { 0, 0 };
+		Size lastChildSize = { 0, 0 };
+
+		Size getChildSize(const Boundaries& boundaries);
+	};
 }
 
 

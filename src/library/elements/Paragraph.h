@@ -5,67 +5,125 @@
 #ifndef ELEMENTOR_PARAGRAPH_H
 #define ELEMENTOR_PARAGRAPH_H
 
-#include "../Element.h"
-#include "Text.h"
+#include "../include.h"
 
 #include <modules/skparagraph/src/ParagraphBuilderImpl.h>
 
-namespace sktextlayout = skia::textlayout;
+#include "Text.h"
 
 namespace elementor::elements {
-    class Paragraph : public Element, public WithChildren, public std::enable_shared_from_this<Paragraph> {
-    public:
-        std::shared_ptr<Paragraph> setTextAlign(TextAlign newTextAlign);
 
-        TextAlign getTextAlign();
+	struct ParagraphProps {
+		std::optional <TextAlign> textAlign;
+		std::optional <TextDirection> textDirection;
+		const std::vector <std::shared_ptr<Element>>& children = {};
+	};
 
-        std::shared_ptr<Paragraph> setTextDirection(TextDirection newTextDirection);
+	class Paragraph : public Element, private WithChildren {
+	public:
+		Paragraph(const std::shared_ptr <ApplicationContext>& ctx, const ParagraphProps& props)
+			: Element(ctx) {
+			if (props.textAlign.has_value()) setTextAlign(props.textAlign.value());
+			if (props.textDirection.has_value()) setTextDirection(props.textDirection.value());
+			setChildren(props.children);
+		}
 
-        TextDirection getTextDirection();
+		static std::shared_ptr <Paragraph> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const ParagraphProps& props
+		) {
+			return std::make_shared<Paragraph>(ctx, props);
+		}
 
-        std::shared_ptr<Paragraph> appendChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr <Paragraph> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Paragraph>& elementRef,
+			const ParagraphProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        void forceUpdate();
+		static std::shared_ptr <Paragraph> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		[[nodiscard]] TextAlign getTextAlign() const {
+			return textAlign;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		void setTextAlign(TextAlign newTextAlign) {
+			markChanged();
+			textAlign = newTextAlign;
+		}
 
-        std::vector<RenderElement>
-        getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		[[nodiscard]] TextDirection getTextDirection() const {
+			return textDirection;
+		}
 
-    private:
-        TextAlign textAlign = TextAlign::Left;
-        TextDirection textDirection = TextDirection::LTR;
-        std::unique_ptr<sktextlayout::Paragraph> skParagraph;
-        std::vector<std::shared_ptr<Text>> childrenText;
-        std::vector<std::shared_ptr<Element>> childrenElements;
+		void setTextDirection(TextDirection newTextDirection) {
+			markChanged();
+			textDirection = newTextDirection;
+		}
 
-        float lastPixelScale;
+		std::optional <Rect> getGlyphRect(unsigned glyphOffset);
 
-        static sk_sp<sktextlayout::FontCollection> makeFontCollection(const std::shared_ptr<ApplicationContext>& ctx);
+		Size getSize(const Boundaries& boundaries) override;
 
-        static sktextlayout::TextStyle makeDefaultTextStyle();
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-        sktextlayout::ParagraphStyle makeParagraphStyle();
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-        sktextlayout::ParagraphBuilderImpl makeBuilder(const std::shared_ptr<ApplicationContext>& ctx);
+		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren);
 
-        sktextlayout::TextAlign getSkTextAlign();
+		[[nodiscard]] bool isChanged() const override;
 
-        sktextlayout::TextDirection getSkTextDirection();
+		bool popChanged() override;
 
-        static sktextlayout::PlaceholderStyle
-        makeChildPlaceholderStyle(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                  const std::shared_ptr<Element>& child);
+	protected:
+		void markChanged() override {
+			Element::markChanged();
+			skParagraph = nullptr;
+		}
 
-        std::unique_ptr<sktextlayout::Paragraph>
-        makeSkParagraph(const std::shared_ptr<ApplicationContext>& ctx, const std::shared_ptr<Window>& window);
-    };
+	private:
+		TextAlign textAlign = TextAlign::Left;
+		TextDirection textDirection = TextDirection::LeftToRight;
 
-    std::shared_ptr<Paragraph> paragraph();
+		std::unique_ptr <skia::textlayout::Paragraph> skParagraph;
+		std::vector <std::shared_ptr<Element>> placeholdersChildren;
+
+		float lastPixelScale;
+
+		[[nodiscard]] bool isTextChildrenChanged() const;
+
+		bool popTextChildrenChanged();
+
+		sk_sp <skia::textlayout::FontCollection> makeFontCollection(
+			const std::shared_ptr <ApplicationContext>& ctx
+		) const;
+
+		skia::textlayout::TextStyle makeDefaultTextStyle() const;
+
+		skia::textlayout::ParagraphStyle makeParagraphStyle() const;
+
+		skia::textlayout::ParagraphBuilderImpl makeBuilder(const std::shared_ptr <ApplicationContext>& ctx) const;
+
+		skia::textlayout::TextAlign getSkTextAlign() const;
+
+		skia::textlayout::TextDirection getSkTextDirection() const;
+
+		skia::textlayout::PlaceholderStyle makeElementChildPlaceholderStyle(const Size& childSize) const;
+
+		skia::textlayout::PlaceholderStyle makeChildPlaceholderStyle(const std::shared_ptr <Element>& child) const;
+
+		std::unique_ptr <skia::textlayout::Paragraph> makeSkParagraph() const;
+
+		void updateSkParagraph();
+	};
+
+	void paragraph();
 }
 
 

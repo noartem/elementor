@@ -5,197 +5,370 @@
 #ifndef ELEMENTOR_TEXT_H
 #define ELEMENTOR_TEXT_H
 
-#include "../Element.h"
+#include "../include.h"
+#include "../debug.h"
 
 #include <include/core/SkFont.h>
 #include <include/core/SkFontStyle.h>
 #include <modules/skparagraph/include/TextStyle.h>
 
-namespace sktextlayout = skia::textlayout;
-
 namespace elementor::elements {
-    enum class TextAlign {
-        Left,
-        Right,
-        Center,
-        Justify,
-        Start,
-        End,
-    };
+	enum class TextAlign {
+		Left,
+		Right,
+		Center,
+		Justify,
+		Start,
+		End,
+	};
 
-    enum class TextDirection {
-        LTR,
-        RTL,
-    };
+	enum class TextDirection {
+		LeftToRight,
+		RightToLeft,
+	};
 
-    enum class TextBaseline {
-        Alphabetic,
-        Ideographic,
-    };
+	enum class TextBaseline {
+		Alphabetic,
+		Ideographic,
+	};
 
-    enum class FontSlant {
-        Upright,
-        Italic,
-        Oblique,
-    };
+	enum class FontSlant {
+		Upright,
+		Italic,
+		Oblique,
+	};
 
-    enum class FontEdging {
-        Alias,
-        AntiAlias,
-        SubpixelAntiAlias,
-    };
+	enum class FontEdging {
+		Alias,
+		AntiAlias,
+		SubpixelAntiAlias,
+	};
 
-    enum class TextDecoration {
-        NoDecoration,
-        Underline,
-        Overline,
-        LineThrough,
-    };
+	enum class TextDecoration {
+		NoDecoration,
+		Underline,
+		Overline,
+		LineThrough,
+	};
 
-    enum class TextDecorationMode {
-        Gaps,
-        Through,
-    };
+	enum class TextDecorationMode {
+		Gaps,
+		Through,
+	};
 
-    enum class TextDecorationStyle {
-        Solid,
-        Double,
-        Dotted,
-        Dashed,
-        Wavy,
-    };
+	enum class TextDecorationStyle {
+		Solid,
+		Double,
+		Dotted,
+		Dashed,
+		Wavy,
+	};
 
-    class Text : public Element, public std::enable_shared_from_this<Text> {
-    public:
-        std::shared_ptr<Text> setText(std::u32string newText);
+	struct TextProps {
+		std::optional<std::string> text;
+		std::optional<std::string> fontColor;
+		std::optional<float> fontSize;
+		std::optional<float> fontSkew;
+		std::optional<float> fontScale;
+		std::optional<float> fontWeight;
+		std::optional<float> fontWidth;
+		std::optional<FontSlant> fontSlant;
+		std::optional<std::string> fontFamily;
+		std::optional<FontEdging> fontEdging;
+		std::optional<TextDecoration> decoration;
+		std::optional<TextDecorationMode> decorationMode;
+		std::optional<TextDecorationStyle> decorationStyle;
+		std::optional<SkColor> decorationColor;
+		std::optional<float> decorationThicknessMultiplier;
+		std::optional<std::string> locale;
+	};
 
-        std::shared_ptr<Text> setText(std::string newText);
+	class Text : public Element {
+	public:
+		Text(const std::shared_ptr<ApplicationContext>& ctx, const TextProps& props)
+			: Element(ctx) {
+			if (props.text.has_value())
+				setText(props.text.value());
+			if (props.fontColor.has_value())
+				setFontColor(props.fontColor.value());
+			if (props.fontSize.has_value())
+				setFontSize(props.fontSize.value());
+			if (props.fontSkew.has_value())
+				setFontSkew(props.fontSkew.value());
+			if (props.fontScale.has_value())
+				setFontScale(props.fontScale.value());
+			if (props.fontWeight.has_value())
+				setFontWeight(props.fontWeight.value());
+			if (props.fontWidth.has_value())
+				setFontWidth(props.fontWidth.value());
+			if (props.fontSlant.has_value())
+				setFontSlant(props.fontSlant.value());
+			if (props.fontFamily.has_value())
+				setFontFamily(props.fontFamily.value());
+			if (props.fontEdging.has_value())
+				setFontEdging(props.fontEdging.value());
+			if (props.decoration.has_value())
+				setDecoration(props.decoration.value());
+			if (props.decorationMode.has_value())
+				setDecorationMode(props.decorationMode.value());
+			if (props.decorationStyle.has_value())
+				setDecorationStyle(props.decorationStyle.value());
+			if (props.decorationColor.has_value())
+				setDecorationColor(props.decorationColor.value());
+			if (props.decorationThicknessMultiplier.has_value())
+				setDecorationThicknessMultiplier(props.decorationThicknessMultiplier.value());
+			if (props.locale.has_value())
+				setLocale(props.locale.value());
+		}
 
-        std::string getText();
+		static std::shared_ptr<Text> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			const TextProps& props
+		) {
+			return std::make_shared<Text>(ctx, props);
+		}
 
-        std::shared_ptr<Text> setFontColor(SkColor color);
+		static std::shared_ptr<Text> New(
+			const std::shared_ptr<ApplicationContext>& ctx,
+			std::shared_ptr<Text>& elementRef,
+			const TextProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        std::shared_ptr<Text> setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+		static std::shared_ptr<Text> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr<Text> setFontColor(uint8_t r, uint8_t g, uint8_t b);
+		[[nodiscard]] std::string getText() const {
+			return text;
+		}
 
-        std::shared_ptr<Text> setFontColor(std::string color);
+		void setText(const std::string& newText) {
+			if (newText == text) {
+				return;
+			}
 
-        SkColor getFontColor() const;
+			markChanged();
+			text = newText;
+		}
 
-        std::shared_ptr<Text> setFontSize(float size);
+		[[nodiscard]] SkColor getFontColor() const {
+			return fontColor;
+		}
 
-        float getFontSize() const;
+		void setFontColor(SkColor newFontColor) {
+			markChanged();
+			paint = std::nullopt;
+			fontColor = newFontColor;
+		}
 
-        std::shared_ptr<Text> setFontSkew(float skew);
+		void setFontColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			setFontColor(makeSkColorFromRGBA(r, g, b, a));
+		}
 
-        float getFontSkew() const;
+		void setFontColor(uint8_t r, uint8_t g, uint8_t b) {
+			setFontColor(makeSkColorFromRGB(r, g, b));
+		}
 
-        std::shared_ptr<Text> setFontScale(float scale);
+		void setFontColor(const std::string& newFontColor) {
+			setFontColor(makeSkColorFromHex(newFontColor));
+		}
 
-        float getFontScale() const;
+		[[nodiscard]] float getFontSize() const {
+			return fontSize;
+		}
 
-        std::shared_ptr<Text> setFontWeight(float weight);
+		void setFontSize(float newFontSize) {
+			markChanged();
+			font = std::nullopt;
+			fontSize = newFontSize;
+		}
 
-        float getFontWeight() const;
+		[[nodiscard]] float getFontSkew() const {
+			return fontSkew;
+		}
 
-        std::shared_ptr<Text> setFontWidth(float width);
+		void setFontSkew(float newFontSkew) {
+			markChanged();
+			font = std::nullopt;
+			fontSkew = newFontSkew;
+		}
 
-        float getFontWidth() const;
+		[[nodiscard]] float getFontScale() const {
+			return fontScale;
+		}
 
-        std::shared_ptr<Text> setFontSlant(FontSlant slant);
+		void setFontScale(float newFontScale) {
+			markChanged();
+			font = std::nullopt;
+			fontScale = newFontScale;
+		}
 
-        FontSlant getFontSlant();
+		[[nodiscard]] float getFontWeight() const {
+			return fontWeight;
+		}
 
-        std::shared_ptr<Text> setFontFamily(std::string fontFamily);
+		void setFontWeight(float newFontWeight) {
+			markChanged();
+			font = std::nullopt;
+			fontWeight = newFontWeight;
+		}
 
-        std::string getFontFamily();
+		[[nodiscard]] float getFontWidth() const {
+			return fontWidth;
+		}
 
-        std::shared_ptr<Text> setFontEdging(FontEdging edging);
+		void setFontWidth(float newFontWidth) {
+			markChanged();
+			font = std::nullopt;
+			fontWidth = newFontWidth;
+		}
 
-        FontEdging getFontEdging();
+		[[nodiscard]] FontSlant getFontSlant() const {
+			return fontSlant;
+		}
 
-        std::shared_ptr<Text> setDecoration(TextDecoration decoration);
+		void setFontSlant(FontSlant newFontSlant) {
+			markChanged();
+			font = std::nullopt;
+			fontSlant = newFontSlant;
+		}
 
-        TextDecoration getDecoration();
+		[[nodiscard]] std::string getFontFamily() const {
+			return fontFamily;
+		}
 
-        std::shared_ptr<Text> setDecorationMode(TextDecorationMode decorationMode);
+		void setFontFamily(const std::string& newFontFamily) {
+			markChanged();
+			font = std::nullopt;
+			fontFamily = newFontFamily;
+		}
 
-        TextDecorationMode getDecorationMode();
+		[[nodiscard]] FontEdging getFontEdging() const {
+			return fontEdging;
+		}
 
-        std::shared_ptr<Text> setDecorationStyle(TextDecorationStyle decorationStyle);
+		void setFontEdging(FontEdging newFontEdging) {
+			markChanged();
+			font = std::nullopt;
+			fontEdging = newFontEdging;
+		}
 
-        TextDecorationStyle getDecorationStyle();
+		[[nodiscard]] TextDecoration getDecoration() const {
+			return decoration;
+		}
 
-        std::shared_ptr<Text> setDecorationColor(SkColor color);
+		void setDecoration(TextDecoration newDecoration) {
+			decoration = newDecoration;
+		}
 
-        std::shared_ptr<Text> setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+		[[nodiscard]] TextDecorationMode getDecorationMode() const {
+			return decorationMode;
+		}
 
-        std::shared_ptr<Text> setDecorationColor(uint8_t r, uint8_t g, uint8_t b);
+		void setDecorationMode(TextDecorationMode newDecorationMode) {
+			markChanged();
+			decorationMode = newDecorationMode;
+		}
 
-        std::shared_ptr<Text> setDecorationColor(std::string color);
+		[[nodiscard]] TextDecorationStyle getDecorationStyle() const {
+			return decorationStyle;
+		}
 
-        SkColor getDecorationColor();
+		void setDecorationStyle(TextDecorationStyle newDecorationStyle) {
+			markChanged();
+			decorationStyle = newDecorationStyle;
+		}
 
-        std::shared_ptr<Text> setDecorationThicknessMultiplier(float multiplier);
+		[[nodiscard]] SkColor getDecorationColor() const {
+			return decorationColor;
+		}
 
-        float getDecorationThicknessMultiplier();
+		void setDecorationColor(SkColor newDecorationColor) {
+			markChanged();
+			decorationColor = newDecorationColor;
+		}
 
-        std::shared_ptr<Text> setLocale(std::optional<std::string> locale);
+		void setDecorationColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			setDecorationColor(makeSkColorFromRGBA(r, g, b, a));
+		}
 
-        std::optional<std::string> getLocale();
+		void setDecorationColor(uint8_t r, uint8_t g, uint8_t b) {
+			setDecorationColor(makeSkColorFromRGB(r, g, b));
+		}
 
-        sktextlayout::TextStyle makeSkTextStyle(std::shared_ptr<ApplicationContext> ctx);
+		void setDecorationColor(const std::string& color) {
+			setDecorationColor(makeSkColorFromHex(std::string(color)));
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                     Boundaries boundaries) override;
+		[[nodiscard]] float getDecorationThicknessMultiplier() const {
+			return decorationThicknessMultiplier;
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas,
-                             ElementRect rect) override;
+		void setDecorationThicknessMultiplier(float newDecorationThicknessMultiplier) {
+			markChanged();
+			decorationThicknessMultiplier = newDecorationThicknessMultiplier;
+		}
 
-    private:
-        std::string text;
-        SkColor fontColor = SK_ColorBLACK;
-        float fontSize = 16.0;
-        float fontSkew = 0.0;
-        float fontScale = 1.0;
-        float fontWeight = SkFontStyle::kNormal_Weight;
-        float fontWidth = SkFontStyle::kNormal_Width;
-        FontSlant fontSlant = FontSlant::Upright;
-        std::string fontFamily;
-        FontEdging fontEdging = FontEdging::AntiAlias;
-        TextDecoration decoration = TextDecoration::NoDecoration;
-        TextDecorationMode decorationMode = TextDecorationMode::Through;
-        TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
-        SkColor decorationColor = SK_ColorTRANSPARENT;
-        float decorationThicknessMultiplier = 1;
-        std::optional<std::string> locale;
+		[[nodiscard]] std::optional<std::string> getLocale() const {
+			return locale;
+		}
 
-        float lastPixelScale;
+		void setLocale(const std::optional<std::string>& newLocale) {
+			markChanged();
+			locale = newLocale;
+		}
 
-        std::optional<SkFont> font;
-        std::optional<SkPaint> paint;
+		[[nodiscard]] skia::textlayout::TextStyle makeSkTextStyle() const;
 
-        SkFontStyle::Slant getSkFontStyleSlant();
+		Size getSize(const Boundaries& boundaries) override;
 
-        SkFont::Edging getSkFontEdging();
+		void paintBackground(SkCanvas* canvas, const ElementRect& rect) override;
 
-        SkFontStyle makeSkFontStyle();
+	private:
+		std::string text;
+		SkColor fontColor = SK_ColorBLACK;
+		float fontSize = 16.0;
+		float fontSkew = 0.0;
+		float fontScale = 1.0;
+		float fontWeight = SkFontStyle::kNormal_Weight;
+		float fontWidth = SkFontStyle::kNormal_Width;
+		FontSlant fontSlant = FontSlant::Upright;
+		std::string fontFamily;
+		FontEdging fontEdging = FontEdging::AntiAlias;
+		TextDecoration decoration = TextDecoration::NoDecoration;
+		TextDecorationMode decorationMode = TextDecorationMode::Through;
+		TextDecorationStyle decorationStyle = TextDecorationStyle::Solid;
+		SkColor decorationColor = SK_ColorTRANSPARENT;
+		float decorationThicknessMultiplier = 1;
+		std::optional<std::string> locale;
 
-        sk_sp<SkTypeface> makeSkTypeface();
+		float lastPixelScale = 0;
 
-        SkFont makeSkFont(std::shared_ptr<ApplicationContext> ctx);
+		std::optional<SkFont> font;
+		std::optional<SkPaint> paint;
 
-        SkPaint makeSkPaint();
+		[[nodiscard]] SkFontStyle::Slant getSkFontStyleSlant() const;
 
-        sktextlayout::TextDecoration getSkTextDecoration();
+		[[nodiscard]] SkFont::Edging getSkFontEdging() const;
 
-        sktextlayout::TextDecorationMode getSkTextDecorationMode();
+		[[nodiscard]] SkFontStyle makeSkFontStyle() const;
 
-        sktextlayout::TextDecorationStyle getSkTextDecorationStyle();
-    };
+		[[nodiscard]] sk_sp<SkTypeface> makeSkTypeface() const;
 
-    std::shared_ptr<Text> text();
+		[[nodiscard]] SkFont makeSkFont() const;
+
+		[[nodiscard]] SkPaint makeSkPaint() const;
+
+		[[nodiscard]] skia::textlayout::TextDecoration getSkTextDecoration() const;
+
+		[[nodiscard]] skia::textlayout::TextDecorationMode getSkTextDecorationMode() const;
+
+		[[nodiscard]] skia::textlayout::TextDecorationStyle getSkTextDecorationStyle() const;
+	};
 }
 
 

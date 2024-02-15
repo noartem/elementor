@@ -10,21 +10,21 @@
 #include "GLFW/glfw3.h"
 
 namespace elementor::platforms::gl {
-    Size getWindowSize(GLFWwindow *window);
+	Size getWindowSize(GLFWwindow* window);
 
-    Position getWindowPosition(GLFWwindow *window);
+	Position getWindowPosition(GLFWwindow* window);
 
-    Rect getWindowRect(GLFWwindow *window);
+	Rect getWindowRect(GLFWwindow* window);
 
-    Size getMonitorSize(GLFWmonitor *monitor);
+	Size getMonitorSize(GLFWmonitor* monitor);
 
-    Size getMonitorPhysicalSize(GLFWmonitor *monitor);
+	Size getMonitorPhysicalSize(GLFWmonitor* monitor);
 
-    Position getMonitorPosition(GLFWmonitor *monitor);
+	Position getMonitorPosition(GLFWmonitor* monitor);
 
-    Rect getMonitorRect(GLFWmonitor *monitor);
+	Rect getMonitorRect(GLFWmonitor* monitor);
 
-    GLFWmonitor* getWindowMonitor(GLFWwindow* window);
+	GLFWmonitor* getWindowMonitor(GLFWwindow* window);
 };
 
 

@@ -5,55 +5,63 @@
 #include "Row.h"
 
 namespace elementor::elements {
-    std::shared_ptr<Row> row() {
-        return std::make_shared<Row>();
-    }
+	Size Row::getSize(const Boundaries& boundaries) {
+		float maxHeight = 0;
+		float totalWidth = 0;
+		for (const auto& childElement: children) {
+			Boundaries childBoundaries = {
+				.min = { .width = 0, .height = boundaries.min.height },
+				.max = boundaries.max
+			};
+			Size childSize = childElement->getSize(childBoundaries);
 
-    std::shared_ptr<Row> Row::setSpacing(float newSpacing) {
-        this->spacing = newSpacing;
-        return shared_from_this();
-    }
+			maxHeight = std::max(childSize.height, maxHeight);
+			totalWidth += childSize.width;
+		}
 
-    float Row::getSpacing() const {
-        return this->spacing;
-    }
+		auto pixelScale = ctx->getPixelScale();
+		auto spacingScaled = spacing * pixelScale;
 
-    std::shared_ptr<Row> Row::appendChild(const std::shared_ptr<Element>& child) {
-        this->addChild(child);
-        return shared_from_this();
-    }
+		totalWidth += ((float)children.size() - 1) * spacingScaled;
 
-    Size Row::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        float totalWidth = 0;
-        float maxHeight = 0;
-        for (const std::shared_ptr<Element>& childElement : this->getChildrenList()) {
-            Size childSize = childElement->getSize(ctx, window, {{0, 0}, boundaries.max});
-            totalWidth += childSize.width;
-            maxHeight = std::max(childSize.height, maxHeight);
-        }
+		Size elementSize = {
+			.width = totalWidth,
+			.height = maxHeight,
+		};
+		elementSize = fitSizeInBoundaries(elementSize, boundaries);
 
-        totalWidth += (this->getChildrenSize() - 1) * this->getSpacing() * ctx->getPixelScale();
+		return elementSize;
+	}
 
-        return fitSizeInBoundaries({totalWidth, maxHeight}, boundaries);
-    }
+	std::vector <ElementWithRect> Row::getChildren(const ElementRect& rect) {
+		std::vector <ElementWithRect> childrenElements;
 
-    std::vector <RenderElement> Row::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector <RenderElement> children;
+		auto pixelScale = ctx->getPixelScale();
+		auto spacingScaled = spacing * pixelScale;
 
-        float spacing = this->getSpacing() * ctx->getPixelScale();
+		float xPosition = 0;
+		for (const auto& child: children) {
+			Boundaries childBoundaries = {
+				.min = { .width = 0, .height = rect.size.height },
+				.max = rect.size
+			};
+			Size childSize = child->getSize(childBoundaries);
 
-        float xPosition = 0;
-        for (const std::shared_ptr<Element>& child : this->getChildrenList()) {
-            RenderElement childElement{};
-            childElement.element = child;
-            childElement.size = childElement.element->getSize(ctx, window, {{0, rect.size.height}, rect.size});
+			Rect childRect = {
+				.size = child->getSize(childBoundaries),
+				.position = {
+					.x = xPosition,
+					.y = 0,
+				}
+			};
 
-            childElement.position = {xPosition, 0};
-            xPosition += childElement.size.width + spacing;
+			ElementWithRect childElement(child, childRect);
+			childrenElements.push_back(childElement);
 
-            children.push_back(childElement);
-        }
+			xPosition += childSize.width;
+			xPosition += spacingScaled;
+		}
 
-        return children;
-    }
+		return childrenElements;
+	}
 }

@@ -5,302 +5,344 @@
 #ifndef ELEMENTOR_EVENT_H
 #define ELEMENTOR_EVENT_H
 
-#include "Element.h"
-
+#include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
-#define EVENT_MOUSE_BUTTON "mouse-button"
-#define EVENT_MOUSE_MOVE "mouse-move"
-#define EVENT_SCROLL "scroll"
-#define EVENT_KEYBOARD "keyboard"
-#define EVENT_CHAR "char"
-#define EVENT_HOVER "hover"
+#ifndef DEFINE_EVENT_HANDLER
+#define DEFINE_EVENT_HANDLER(eventClass, eventName) \
+public: static std::shared_ptr<EventHandler> Handle(std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback) { \
+    return std::make_shared<Handler>(callback);     \
+}                                                   \
+                                                    \
+private: class Handler : public EventHandler {      \
+public:                                             \
+    explicit Handler(std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback)                                  \
+        : callback(callback) {                      \
+    }                                               \
+                                                    \
+    std::string_view getName() override {           \
+        return eventName;                           \
+    }                                               \
+                                                    \
+    EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) override {                                                        \
+        auto eventMapped = std::dynamic_pointer_cast<eventClass>(event);                                                                 \
+        if (!eventMapped) {                         \
+            return EventCallbackResponse::None;     \
+        }                                           \
+                                                    \
+        return callback(eventMapped);               \
+    }                                               \
+                                                    \
+private:                                            \
+    std::function<EventCallbackResponse(const std::shared_ptr<eventClass>&)> callback;                                                      \
+};
+#endif
 
 namespace elementor {
-    class Event {
-    public:
-        virtual std::string getName() = 0;
-    };
+	class Event {
+	public:
+		virtual std::string_view getName() = 0;
+	};
 
-    std::vector<std::string> getElementEvents(const std::shared_ptr<Element>& element);
+	enum class EventCallbackResponse {
+		None,
+		StopPropagation,
+	};
 
-    enum class EventCallbackResponse {
-        None,
-        StopPropagation,
-    };
+	class EventHandler {
+	public:
+		virtual std::string_view getName() = 0;
+		virtual EventCallbackResponse onEvent(const std::shared_ptr<Event>& event) = 0;
+	};
 
-    EventCallbackResponse callElementEventHandler(const std::shared_ptr<Element>& element, const std::shared_ptr<Event>& event);
+	using EventsHandlersMap = std::map<std::string_view, std::vector<std::shared_ptr<EventHandler>>>;
 
-    enum class MouseButton {
-        Left,
-        Right,
-        Middle,
-        Back,
-        Forward,
-    };
+	class WithEventsHandlers {
+	public:
+		virtual std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() = 0;
+	};
 
-    enum class KeyAction {
-        Release,
-        Press,
-        Repeat,
-    };
+	class WithGlobalEventsHandlers {
+	public:
+		virtual std::vector<std::shared_ptr<EventHandler>> getGlobalEventsHandlers() = 0;
+	};
 
-    enum class KeyMod {
-        None,
-        Shift,
-        Control,
-        Alt,
-        Super,
-        CapsLock,
-        NumLock,
-    };
+	enum class MouseButton {
+		Left,
+		Right,
+		Middle,
+		Back,
+		Forward,
+	};
 
-    enum class KeyboardKey {
-        Unknow,
-        Space,
-        Apostraphe,
-        Comma,
-        Minus,
-        Period,
-        Slash,
-        Number0,
-        Number1World,
-        Number1,
-        Number2World,
-        Number2,
-        Number3,
-        Number4,
-        Number5,
-        Number6,
-        Number7,
-        Number8,
-        Number9,
-        Semicolon,
-        Equal,
-        A,
-        B,
-        C,
-        D,
-        E,
-        F,
-        G,
-        H,
-        I,
-        J,
-        K,
-        L,
-        M,
-        N,
-        O,
-        P,
-        Q,
-        R,
-        S,
-        T,
-        U,
-        V,
-        W,
-        X,
-        Y,
-        Z,
-        LeftBracket,
-        Backslash,
-        RightBracket,
-        GraveAccent,
-        Escape,
-        Enter,
-        Tab,
-        Backspace,
-        Insert,
-        Delete,
-        Right,
-        Left,
-        Down,
-        Up,
-        PageUp,
-        PageDown,
-        Home,
-        End,
-        CapsLock,
-        ScrollLock,
-        NumLock,
-        PrintScreen,
-        Pause,
-        F1,
-        F2,
-        F3,
-        F4,
-        F5,
-        F6,
-        F7,
-        F8,
-        F9,
-        F10,
-        F11,
-        F12,
-        F13,
-        F14,
-        F15,
-        F16,
-        F17,
-        F18,
-        F19,
-        F20,
-        F21,
-        F22,
-        F23,
-        F24,
-        F25,
-        KP0,
-        KP1,
-        KP2,
-        KP3,
-        KP4,
-        KP5,
-        KP6,
-        KP7,
-        KP8,
-        KP9,
-        KPDecimal,
-        KPDivide,
-        KPMultiply,
-        KPSubtract,
-        KPAdd,
-        KPEnter,
-        KPEqual,
-        LeftShift,
-        LeftControl,
-        LeftAlt,
-        LeftSuper,
-        RightShift,
-        RightControl,
-        RightAlt,
-        RightSuper,
-        Menu,
-    };
+	enum class KeyAction {
+		Release,
+		Press,
+		Repeat,
+	};
 
-    class EventMouseButton : public Event {
-    public:
-        EventMouseButton(MouseButton button, KeyAction action, KeyMod mod) {
-            this->button = button;
-            this->action = action;
-            this->mod = mod;
-        }
+	enum class KeyMod {
+		None,
+		Shift,
+		Control,
+		Alt,
+		Super,
+		CapsLock,
+		NumLock,
+	};
 
-        MouseButton button;
-        KeyAction action;
-        KeyMod mod;
+	enum class KeyboardKey {
+		Unknow,
+		Space,
+		Apostraphe,
+		Comma,
+		Minus,
+		Period,
+		Slash,
+		Number0,
+		Number1World,
+		Number1,
+		Number2World,
+		Number2,
+		Number3,
+		Number4,
+		Number5,
+		Number6,
+		Number7,
+		Number8,
+		Number9,
+		Semicolon,
+		Equal,
+		A,
+		B,
+		C,
+		D,
+		E,
+		F,
+		G,
+		H,
+		I,
+		J,
+		K,
+		L,
+		M,
+		N,
+		O,
+		P,
+		Q,
+		R,
+		S,
+		T,
+		U,
+		V,
+		W,
+		X,
+		Y,
+		Z,
+		LeftBracket,
+		Backslash,
+		RightBracket,
+		GraveAccent,
+		Escape,
+		Enter,
+		Tab,
+		Backspace,
+		Insert,
+		Delete,
+		Right,
+		Left,
+		Down,
+		Up,
+		PageUp,
+		PageDown,
+		Home,
+		End,
+		CapsLock,
+		ScrollLock,
+		NumLock,
+		PrintScreen,
+		Pause,
+		F1,
+		F2,
+		F3,
+		F4,
+		F5,
+		F6,
+		F7,
+		F8,
+		F9,
+		F10,
+		F11,
+		F12,
+		F13,
+		F14,
+		F15,
+		F16,
+		F17,
+		F18,
+		F19,
+		F20,
+		F21,
+		F22,
+		F23,
+		F24,
+		F25,
+		KP0,
+		KP1,
+		KP2,
+		KP3,
+		KP4,
+		KP5,
+		KP6,
+		KP7,
+		KP8,
+		KP9,
+		KPDecimal,
+		KPDivide,
+		KPMultiply,
+		KPSubtract,
+		KPAdd,
+		KPEnter,
+		KPEqual,
+		LeftShift,
+		LeftControl,
+		LeftAlt,
+		LeftSuper,
+		RightShift,
+		RightControl,
+		RightAlt,
+		RightSuper,
+		Menu,
+	};
 
-        std::string getName() override {
-            return EVENT_MOUSE_BUTTON;
-        };
-    };
+	class MouseButtonEvent : public Event {
+	DEFINE_EVENT_HANDLER(MouseButtonEvent, "mouse-button");
+	public:
+		MouseButtonEvent(MouseButton button, KeyAction action, KeyMod mod)
+			: button(button), action(action), mod(mod) {
+		}
 
-    class WithOnMouseButton {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseButton> event) = 0;
-    };
+		MouseButton button;
+		KeyAction action;
+		KeyMod mod;
 
-    class EventMouseMove : public Event {
-    public:
-        EventMouseMove(float x, float y) {
-            this->x = x;
-            this->y = y;
-        }
+		std::string_view getName() override {
+			return "mouse-button";
+		};
+	};
 
-        float x;
-        float y;
+	class MouseMoveEvent : public Event {
+	DEFINE_EVENT_HANDLER(MouseMoveEvent, "mouse-move");
+	public:
+		MouseMoveEvent(float x, float y)
+			: x(x), y(y) {
+		}
 
-        std::string getName() override {
-            return EVENT_MOUSE_MOVE;
-        };
-    };
+		float x;
+		float y;
 
-    class WithOnMouseMove {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventMouseMove> event) = 0;
-    };
+		std::string_view getName() override {
+			return "mouse-move";
+		}
+	};
 
-    class EventScroll : public Event {
-    public:
-        EventScroll(float xOffset, float yOffset) {
-            this->xOffset = xOffset;
-            this->yOffset = yOffset;
-        }
+	class ScrollEvent : public Event {
+	DEFINE_EVENT_HANDLER(ScrollEvent, "scroll");
+	public:
+		ScrollEvent(float xOffset, float yOffset)
+			: xOffset(xOffset), yOffset(yOffset) {
+		}
 
-        float xOffset;
-        float yOffset;
+		float xOffset;
+		float yOffset;
 
-        std::string getName() override {
-            return EVENT_SCROLL;
-        };
-    };
+		std::string_view getName() override {
+			return "scroll";
+		}
+	};
 
-    class WithOnScroll {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventScroll> event) = 0;
-    };
+	class KeyboardEvent : public Event {
+	DEFINE_EVENT_HANDLER(KeyboardEvent, "keyboard");
+	public:
+		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, KeyMod mod)
+			: key(key), scancode(scancode), action(action), mod(mod) {
+		}
 
-    class EventKeyboard : public Event {
-    public:
-        EventKeyboard(KeyboardKey key, int scancode, KeyAction action, KeyMod mod) {
-            this->key = key;
-            this->scancode = scancode;
-            this->action = action;
-            this->mod = mod;
-        }
+		KeyboardKey key;
+		int scancode;
+		KeyAction action;
+		KeyMod mod;
 
-        KeyboardKey key;
-        int scancode;
-        KeyAction action;
-        KeyMod mod;
+		std::string_view getName() override {
+			return "keyboard";
+		}
+	};
 
-        std::string getName() override {
-            return EVENT_KEYBOARD;
-        };
-    };
+	class CharEvent : public Event {
+	DEFINE_EVENT_HANDLER(CharEvent, "char");
+	public:
+		explicit CharEvent(char32_t value)
+			: value(value) {
+		}
 
-    class WithOnKeyboard {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventKeyboard> event) = 0;
-    };
+		char32_t value;
 
-    class EventChar : public Event {
-    public:
-        explicit EventChar(char32_t value) {
-            this->value = value;
-        }
+		std::string_view getName() override {
+			return "char";
+		}
+	};
 
-        char32_t value;
+	class HoverEvent : public Event {
+	DEFINE_EVENT_HANDLER(HoverEvent, "hover");
+	public:
+		explicit HoverEvent(bool hovered)
+			: hovered(hovered) {
+		}
 
-        std::string getName() override {
-            return EVENT_CHAR;
-        };
-    };
+		bool hovered;
 
-    class WithOnChar {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventChar >event) = 0;
-    };
+		std::string_view getName() override {
+			return "hover";
+		}
+	};
 
-    class EventHover : public Event {
-    public:
-        EventHover(bool hovered) {
-            this->hovered = hovered;
-        }
+	class FocusEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusEvent, "focus");
+	public:
+		explicit FocusEvent(bool focused)
+			: focused(focused) {
+		}
 
-        bool hovered;
+		bool focused;
 
-        std::string getName() override {
-            return EVENT_HOVER;
-        };
-    };
+		std::string_view getName() override {
+			return "focus";
+		}
+	};
 
-    class WithOnHover {
-    public:
-        virtual EventCallbackResponse onEvent(std::shared_ptr<EventHover> event) = 0;
-    };
+	class FocusInEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusInEvent, "focus-in");
+	public:
+		explicit FocusInEvent() {
+		}
+
+		std::string_view getName() override {
+			return "focus-in";
+		}
+	};
+
+	class FocusOutEvent : public Event {
+	DEFINE_EVENT_HANDLER(FocusOutEvent, "focus-out");
+	public:
+		explicit FocusOutEvent() {
+		}
+
+		std::string_view getName() override {
+			return "focus-out";
+		}
+	};
 }
 
 #endif //ELEMENTOR_EVENT_H

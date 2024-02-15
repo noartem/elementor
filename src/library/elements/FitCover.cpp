@@ -7,36 +7,27 @@
 #include <utility>
 
 namespace elementor::elements {
-    std::shared_ptr<FitCover> fitCover() {
-        return std::make_shared<FitCover>();
-    }
+	std::vector <ElementWithRect> FitCover::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    std::shared_ptr<FitCover> FitCover::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
+		Size realChildSize = child->getSize(InfiniteBoundaries);
 
-    ClipBehavior FitCover::getClipBehaviour() {
-        return ClipBehavior::AntiAlias;
-    }
+		float ratio = realChildSize.width / realChildSize.height;
+		Size childSize{
+			.width = rect.size.width > rect.size.height ? rect.size.width : rect.size.height / ratio,
+			.height = rect.size.width > rect.size.height ? rect.size.width / ratio : rect.size.height,
+		};
 
-    std::vector <RenderElement> FitCover::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        RenderElement childElement;
-        childElement.element = this->getChild();
+		Position childPosition = {
+			.x = (rect.size.width - childSize.width) / 2,
+			.y = (rect.size.height - childSize.height) / 2
+		};
 
-        Size childSize = childElement.element->getSize(ctx, window, {{0, 0}, {INFINITY, INFINITY}});
-        float ratio = childSize.width / childSize.height;
-        if (rect.size.width > rect.size.height) {
-            childElement.size.width = rect.size.width;
-            childElement.size.height = rect.size.width / ratio;
-        } else {
-            childElement.size.height = rect.size.height;
-            childElement.size.width = rect.size.height / ratio;
-        }
+		Rect childRect = { .size = childSize, .position = childPosition };
 
-        childElement.position.x = (rect.size.width - childElement.size.width) / 2;
-        childElement.position.y = (rect.size.height - childElement.size.height) / 2;
-
-        return {childElement};
-    }
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 }

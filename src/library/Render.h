@@ -5,53 +5,76 @@
 #ifndef ELEMENTOR_RENDER_H
 #define ELEMENTOR_RENDER_H
 
+#include <limits>
+
 namespace elementor {
-    #define ZERO (float) 0
-    #define ONE (float) 1
 
-    struct Position {
-        float x;
-        float y;
-    };
+	struct Position {
+		float x;
+		float y;
 
-    struct Size {
-        float width;
-        float height;
-    };
+		bool operator==(const Position& other) const {
+			return x == other.x && y == other.y;
+		}
+	};
 
-    struct Boundaries {
-        Size min;
-        Size max;
-    };
+	constexpr Position InvalidPosition = { -1, -1 };
 
-    struct Rect {
-        Size size;
-        Position position;
+	struct Size {
+		float width;
+		float height;
 
-        bool contains(float x, float y);
+		bool operator==(const Size& other) const {
+			return width == other.width && height == other.height;
+		}
+	};
 
-        bool contains(Position point);
-    };
+	struct Boundaries {
+		Size min;
+		Size max;
+	};
 
-    struct ElementRect {
-        Size size;
-        Position position;
-        Size visibleSize;
-        Position visiblePosition;
-        Position inParentPosition;
+	struct Rect {
+		Size size;
+		Position position;
 
-        bool contains(float x, float y);
+		[[nodiscard]] bool contains(float x, float y) const;
 
-        bool contains(Position point);
+		[[nodiscard]] bool contains(Position point) const;
 
-        bool visibleContains(float x, float y);
+		bool operator==(const Rect& other) const {
+			return size == other.size && position == other.position;
+		}
+	};
 
-        bool visibleContains(Position point);
+	Rect unionOfRects(const Rect& a, const Rect& b);
 
-        Position absolutePositionToContained(Position absolutePosition);
-    };
+	struct ElementRect : Rect {
+		Size visibleSize;
+		Position visiblePosition;
+		Position inParentPosition;
 
-    Size fitSizeInBoundaries(Size size, Boundaries boundaries);
+		[[nodiscard]] bool visibleContains(float x, float y) const;
+
+		[[nodiscard]] bool visibleContains(Position point) const;
+
+		[[nodiscard]] Position absolutePositionToContained(Position absolutePosition) const;
+	};
+
+	Size fitSizeInBoundaries(Size size, Boundaries boundaries);
+
+	constexpr float Infinity = std::numeric_limits<float>::infinity();
+
+	constexpr Position ZeroPosition = { 0, 0 };
+
+	constexpr Size ZeroSize = { 0, 0 };
+
+	constexpr Size InfiniteSize = { Infinity, Infinity };
+
+	constexpr Boundaries InfiniteBoundaries = {
+		.min = ZeroSize,
+		.max = InfiniteSize
+	};
 }
 
 #endif //ELEMENTOR_RENDER_H

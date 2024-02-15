@@ -2,93 +2,202 @@
 // Created by noartem on 15.08.2022.
 //
 
-#ifndef ELEMENTOR_GL_GLWINDOW_H
-#define ELEMENTOR_GL_GLWINDOW_H
+#ifndef ELEMENTOR_GL_WINDOW_H
+#define ELEMENTOR_GL_WINDOW_H
 
-#include "../../Application.h"
-#include "GLCursor.h"
-#include "GLMonitor.h"
+#include <memory>
+#include <string>
+#include <functional>
 
 #define SK_GL
+
 #include "GLFW/glfw3.h"
 #include "include/gpu/GrDirectContext.h"
 
+#include "elementor.h"
+
+#include "GLPlatformContext.h"
+#include "GLCursor.h"
+#include "GLDisplay.h"
+
+#include "utility.h"
+
 namespace elementor::platforms::gl {
-    class GLWindow : public Window, public std::enable_shared_from_this<GLWindow> {
-    public:
-        static std::shared_ptr<GLWindow> Make(std::shared_ptr<ApplicationContext> applicationContext, Size size);
+	class GLWindow : public ApplicationContext {
+	public:
+		explicit GLWindow(const std::shared_ptr<GLPlatformContext>& ctx);
 
-        ~GLWindow();
+		~GLWindow();
 
-        void draw();
+		void tick();
 
-        std::shared_ptr<Element> getRoot() override;
-        void setRoot(std::shared_ptr<Element> newRoot) override;
+		void setTitle(const std::string_view& newTitle) {
+			title = newTitle;
+			glfwSetWindowTitle(glWindow, title.data());
+		}
 
-        void setTitle(std::string newTitle) override;
-        std::string getTitle() override;
+		[[nodiscard]] std::string getTitle() const {
+			return title;
+		}
 
-        Size getSize() override;
-        void setSize(Size size) override;
+		[[nodiscard]] Size getSize() const {
+			return getWindowSize(glWindow);
+		}
 
-        std::optional<Size> getMinSize() override;
-        void setMinSize(std::optional<Size> size) override;
-        void setMinSize(Size size) override;
+		void setSize(const Size& size) {
+			glfwSetWindowSize(glWindow, std::ceil(size.width), std::ceil(size.height));
+		}
 
-        std::optional<Size> getMaxSize() override;
-        void setMaxSize(std::optional<Size> size) override;
-        void setMaxSize(Size size) override;
+		[[nodiscard]] std::optional<Size> getMinSize() const {
+			return minSize;
+		}
 
-        Position getPosition() override;
-        void setPosition(Position Position) override;
+		void setMinSize(std::optional<Size> size) {
+			minSize = size;
+			updateWindowSizeLimits();
+		}
 
-        bool getFocused() override;
+		void setMinSize(const Size& size) {
+			minSize = size;
+			updateWindowSizeLimits();
+		}
 
-        std::shared_ptr<Cursor> getCursor() override;
+		[[nodiscard]] std::optional<Size> getMaxSize() const {
+			return maxSize;
+		}
 
-        std::shared_ptr<Monitor> getMonitor() override;
+		void setMaxSize(std::optional<Size> size) {
+			maxSize = size;
+			updateWindowSizeLimits();
+		}
 
-        void close() override;
+		void setMaxSize(const Size& size) {
+			maxSize = size;
+			updateWindowSizeLimits();
+		}
 
-        void onClose(std::function<void ()> callback);
+		[[nodiscard]] Position getPosition() const {
+			return getWindowPosition(glWindow);
+		}
 
-        void setUserPointer(std::shared_ptr<void> pointer) override;
-        std::shared_ptr<void> getUserPointer() override;
+		void setPosition(const Position& position) {
+			glfwSetWindowPos(glWindow, std::ceil(position.x), std::ceil(position.y));
+		}
 
-    private:
-        void init(std::shared_ptr<ApplicationContext> applicationContext, Size size);
+		[[nodiscard]] bool isFocused() const {
+			return glfwGetWindowAttrib(glWindow, GLFW_FOCUSED);
+		}
 
-        std::shared_ptr<Application> application;
+		void close() {
+			glfwDestroyWindow(glWindow);
+			callCloseCallbacks();
+		}
 
-        std::shared_ptr<Element> root;
-        std::string title;
-        std::optional<Size> minSize;
-        std::optional<Size> maxSize;
+		void onClose(const std::function<void()>& callback) {
+			closeCallbacks.push_back(callback);
+		}
 
-        GLFWwindow *glWindow;
-        GrDirectContext *skContext;
-        sk_sp<SkSurface> skSurface;
-        SkCanvas *skCanvas{};
-        void refresh();
+		void setRoot(const std::shared_ptr<Element>& rootElement);
 
-        std::shared_ptr<GLMonitor> monitor;
+		void onPosition();
 
-        std::shared_ptr<ApplicationContext> applicationContext;
-        std::shared_ptr<GLCursor> cursor;
+		void onFocused();
 
-        std::shared_ptr<void> userPointer;
+		void onMouseButton(int button, int action, int mods);
 
-        void updateWindowSizeLimits();
+		void onKeyboard(int key, int scancode, int action, int mods);
 
-        void onMouseButton(int button, int action, int mods);
-        void onKeyboard(int key, int scancode, int action, int mods);
-        void onChar(unsigned int codepoint);
-        void onMouseMove(double x, double y);
-        void onScroll(double xOffset, double yOffset);
+		void onChar(unsigned int codepoint);
 
-        std::function<void ()> callbackClose;
-    };
-};
+		void onMouseMove(double x, double y);
+
+		void onScroll(double xOffset, double yOffset);
+
+		std::string getLocale() override {
+			return ctx->getLocale();
+		}
+
+		void setLocale(std::string locale) override {
+			ctx->setLocale(locale);
+		}
+
+		std::shared_ptr<Clipboard> getClipboard() override {
+			return ctx->getClipboard();
+		}
+
+		std::shared_ptr<Perfomance> getPerfomance() override {
+			return ctx->getPerfomance();
+		}
+
+		sk_sp<SkFontMgr> getSkFontManager() override {
+			return ctx->getSkFontManager();
+		}
+
+		void requestNextFrame(const std::function<void()>& callback) override {
+			ctx->requestNextFrame(callback);
+		}
+
+		void requestNextFrame() override {
+			ctx->requestNextFrame();
+		}
+
+		std::shared_ptr<Cursor> getCursor() override {
+			return cursor;
+		}
+
+		std::shared_ptr<Display> getDisplay() override;
+
+		float getPixelScale() override {
+			return pixelScale;
+		}
+
+		void setPixelScale(float newValue) override {
+			pixelScale = newValue;
+		}
+
+	private:
+		std::shared_ptr<GLPlatformContext> ctx;
+
+		GLFWwindow* glWindow = nullptr;
+		GrDirectContext* skContext = nullptr;
+		sk_sp<SkSurface> skSurface = nullptr;
+		SkCanvas* skCanvas = nullptr;
+
+		std::shared_ptr<GLDisplay> display;
+		std::shared_ptr<GLCursor> cursor;
+
+		std::string title;
+		std::optional<Size> minSize;
+		std::optional<Size> maxSize;
+
+		float pixelScale = 0.0f;
+
+		std::vector<std::function<void()>> closeCallbacks;
+
+		std::shared_ptr<ApplicationTree> applicationTree;
+		std::vector<std::shared_ptr<Event>> pendingEvents;
+		std::unique_ptr<HoverState> hoverState;
+		std::unique_ptr<FocusState> focusState;
+
+		void refresh();
+
+		void draw();
+
+		void updateWindowSizeLimits();
+
+		void callCloseCallbacks() {
+			for (auto& callback: closeCallbacks) {
+				callback();
+			}
+		}
+
+		static float calcPixelScale();
+
+		void dispatchEvent(const std::shared_ptr<Event>& event);
+
+		void dispatchPendingEvents();
+	};
+}
 
 
-#endif //ELEMENTOR_GL_GLWINDOW_H
+#endif //ELEMENTOR_GL_WINDOW_H

@@ -2,38 +2,74 @@
 // Created by noartem on 15.08.2022.
 //
 
-#ifndef ELEMENTOR_GL_GLCURSOR_H
-#define ELEMENTOR_GL_GLCURSOR_H
+#ifndef ELEMENTOR_GL_CURSOR_H
+#define ELEMENTOR_GL_CURSOR_H
 
-#include "../../Element.h"
+#include "elementor.h"
 
 #include "GLFW/glfw3.h"
 
+#include "GLPlatformContext.h"
+
 namespace elementor::platforms::gl {
-    class GLCursor : public Cursor {
-    public:
-        GLCursor(GLFWwindow *window, std::shared_ptr<ApplicationContext> ctx);
+	class GLCursor : public Cursor {
+	public:
+		GLCursor(GLFWwindow* window)
+			: window(window) {
+		}
 
-        void set(CursorShape shape) override;
+		void set(CursorShape shape) override {
+			currentShape = shape;
+		}
 
-        CursorShape get() override;
+		CursorShape get() override {
+			return currentShape;
+		}
 
-        Position getPosition() override;
+		Position getPosition() override {
+			return position;
+		}
 
-        void setPosition(Position position);
+		void setPosition(Position newValue) {
+			position = newValue;
+		}
 
-    private:
-        std::shared_ptr<ApplicationContext> ctx;
-        GLFWwindow *window;
-        GLFWcursor *cursor;
-        CursorShape currentShape = CursorShape::Default;
-        CursorShape appliedShape = CursorShape::Default;
+		void updateCursor() {
+			if (appliedShape != currentShape) {
+				auto cursor = glfwCreateStandardCursor(mapCursorShapeToInt(currentShape));
+				glfwSetCursor(window, cursor);
+				appliedShape = currentShape;
+			}
+		}
 
-        Position position;
+	private:
+		GLFWwindow* window;
 
-        void updateCursor();
-    };
+		CursorShape currentShape = CursorShape::Default;
+		CursorShape appliedShape = CursorShape::Default;
+
+		Position position = { .x = -1, .y = -1 };
+
+		static int mapCursorShapeToInt(CursorShape shape) {
+			switch (shape) {
+			case CursorShape::Default:
+			case CursorShape::Arrow:
+				return GLFW_ARROW_CURSOR;
+			case CursorShape::IBeam:
+				return GLFW_IBEAM_CURSOR;
+			case CursorShape::Crosshair:
+				return GLFW_CROSSHAIR_CURSOR;
+			case CursorShape::Hand:
+				return GLFW_HAND_CURSOR;
+			case CursorShape::HorizontalResize:
+				return GLFW_HRESIZE_CURSOR;
+			case CursorShape::VerticalResize:
+				return GLFW_VRESIZE_CURSOR;
+			default:
+				return GLFW_ARROW_CURSOR;
+			}
+		}
+	};
 };
 
-
-#endif //ELEMENTOR_GL_GLCURSOR_H
+#endif //ELEMENTOR_GL_CURSOR_H

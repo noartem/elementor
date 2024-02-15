@@ -5,26 +5,64 @@
 #ifndef ELEMENTOR_WIDTH_H
 #define ELEMENTOR_WIDTH_H
 
-#include "../Element.h"
+#include "../include.h"
 
 namespace elementor::elements {
-    class Width : public Element, public WithChild, public std::enable_shared_from_this<Width> {
-    public:
-        std::shared_ptr<Width> setWidth(float width);
+	struct WidthProps {
+		float width = 0;
+		const std::shared_ptr <Element>& child = nullptr;
+	};
 
-        float getWidth();
+	class Width : public Element, public WithChild {
+	public:
+		Width(const std::shared_ptr <ApplicationContext>& ctx, const WidthProps& props)
+			: Element(ctx) {
+			setWidth(props.width);
+			setChild(props.child);
+		}
 
-        std::shared_ptr<Width> setChild(const std::shared_ptr<Element>& child);
+		static std::shared_ptr <Width> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const WidthProps& props
+		) {
+			return std::make_shared<Width>(ctx, props);
+		}
 
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+		static std::shared_ptr <Width> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Width>& elementRef,
+			const WidthProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+		static std::shared_ptr <Width> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-    private:
-        float width = 0;
-    };
+		void setWidth(float newValue) {
+			markChanged();
+			width = newValue;
+		}
 
-    std::shared_ptr<Width> width();
+		[[nodiscard]] float getWidth() const {
+			return width;
+		}
+
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
+
+		Size getSize(const Boundaries& boundaries) override;
+
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
+
+	private:
+		float width = 0;
+	};
 }
 
 

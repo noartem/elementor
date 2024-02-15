@@ -5,24 +5,43 @@
 #ifndef ELEMENTOR_COMPONENT_H
 #define ELEMENTOR_COMPONENT_H
 
+#include <vector>
+#include <vector>
+
+#include "Render.h"
 #include "Element.h"
 
 namespace elementor::elements {
-    class Component : public Element {
-    public:
-        Size getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) override;
+	class Component : public Element {
+	public:
+		explicit Component(const std::shared_ptr<ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        void paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) override;
+		Size getSize(const Boundaries& boundaries) override {
+			if (element == nullptr) {
+				return boundaries.max;
+			}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) override;
+			return element->getSize(boundaries);
+		}
 
-    protected:
-        std::shared_ptr<ApplicationContext> ctx;
-        std::shared_ptr<Window> window;
-        ElementRect rect;
-        std::shared_ptr<Element> element;
-    };
+		std::vector<ElementWithRect> getChildren(const ElementRect& rect) override {
+			if (element == nullptr) {
+				return {};
+			}
+
+			Rect elementRect = {
+				.size = rect.size,
+				.position = { .x =  0, .y = 0 },
+			};
+			ElementWithRect elementWithRect(this->element, elementRect);
+			return { elementWithRect };
+		}
+
+	protected:
+		std::shared_ptr<Element> element = nullptr;
+	};
 }
-
 
 #endif //ELEMENTOR_COMPONENT_H

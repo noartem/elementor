@@ -5,58 +5,78 @@
 #ifndef ELEMENTOR_CLICKABLE_H
 #define ELEMENTOR_CLICKABLE_H
 
-#include "../Element.h"
-#include "../Event.h"
-
-#include <functional>
+#include "../include.h"
 
 namespace elementor::elements {
-    class Clickable
-            : public Element,
-              public WithOnMouseButton,
-              public WithOnMouseMove,
-              public WithOnHover,
-              public WithChild,
-              public std::enable_shared_from_this<Clickable> {
-    public:
-        std::shared_ptr <Clickable> onButton(std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callback);
+	struct ClickableProps {
+		std::optional <std::function<EventCallbackResponse(KeyMod mod)>> onClick;
+		std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>> onButton;
+		const std::shared_ptr <Element>& child = nullptr;
+	};
 
-        std::shared_ptr <Clickable> onButton(const std::function<void()> &callback);
+	class Clickable : public Element, public WithEventsHandlers, public WithChild {
+	public:
+		explicit Clickable(const std::shared_ptr <ApplicationContext>& ctx)
+			: Element(ctx) {
+		}
 
-        std::shared_ptr <Clickable> onClick(std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callback);
+		Clickable(const std::shared_ptr <ApplicationContext>& ctx, const ClickableProps& props)
+			: Element(ctx) {
+			if (props.onClick.has_value()) onClick(props.onClick.value());
+			if (props.onButton.has_value()) onButton(props.onButton.value());
+			setChild(props.child);
+		}
 
-        std::shared_ptr <Clickable> onClick(const std::function<void()> &callback);
+		static std::shared_ptr <Clickable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			const ClickableProps& props
+		) {
+			return std::make_shared<Clickable>(ctx, props);
+		}
 
-        std::shared_ptr <Clickable> onRightClick(std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callback);
+		static std::shared_ptr <Clickable> New(
+			const std::shared_ptr <ApplicationContext>& ctx,
+			std::shared_ptr <Clickable>& elementRef,
+			const ClickableProps& props
+		) {
+			auto element = New(ctx, props);
+			elementRef = element;
+			return element;
+		}
 
-        std::shared_ptr <Clickable> onRightClick(const std::function<void()> &callback);
+		static std::shared_ptr <Clickable> New(const std::shared_ptr <ApplicationContext>& ctx) {
+			return New(ctx, {});
+		}
 
-        std::shared_ptr <Clickable> setChild(const std::shared_ptr <Element> &child);
+		void onClick(
+			const std::optional <std::function<EventCallbackResponse(KeyMod mod)>>& newCallback
+		) {
+			callbackClick = newCallback;
+		}
 
-        Size getSize(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window, Boundaries boundaries) override;
+		void onButton(
+			const std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>>& newCallback
+		) {
+			callbackButton = newCallback;
+		}
 
-        void paintBackground(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window, SkCanvas *canvas, ElementRect rect) override;
+		void setChild(const std::shared_ptr <Element>& newChild) {
+			markChanged();
+			child = newChild;
+		}
 
-        std::vector <RenderElement> getChildren(std::shared_ptr <ApplicationContext> ctx, std::shared_ptr <Window> window, ElementRect rect) override;
+		Size getSize(const Boundaries& boundaries) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr <EventMouseMove> event) override;
+		std::vector <ElementWithRect> getChildren(const ElementRect& rect) override;
 
-        EventCallbackResponse onEvent(std::shared_ptr <EventHover> event) override;
+		std::vector <std::shared_ptr<EventHandler>> getEventsHandlers() override;
 
-        EventCallbackResponse onEvent(std::shared_ptr <EventMouseButton> event) override;
+	private:
+		bool hovered = false;
 
-    private:
-        std::shared_ptr <Window> window;
-        ElementRect rect;
-        Position cursorPosition;
-        bool hovered;
-
-        std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callbackButton;
-        std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callbackClick;
-        std::function< EventCallbackResponse(std::shared_ptr <EventMouseButton> event, Position position)> callbackRightClick;
-    };
-
-    std::shared_ptr <Clickable> clickable();
+		std::optional <std::function<EventCallbackResponse(KeyMod mod)>> callbackClick;
+		std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>> callbackButton;
+	};
 }
 
 

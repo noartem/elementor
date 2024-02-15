@@ -4,115 +4,58 @@
 
 #include "Clickable.h"
 
-#include <utility>
-
 namespace elementor::elements {
-    std::shared_ptr<Clickable> clickable() {
-        return std::make_shared<Clickable>();
-    }
+	Size Clickable::getSize(const Boundaries& boundaries) {
+		if (doesNotHaveChild()) {
+			return boundaries.max;
+		}
 
-    std::shared_ptr<Clickable> Clickable::onButton(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
-        this->callbackButton = std::move(callback);
-        return shared_from_this();
-    }
+		return child->getSize(boundaries);
+	}
 
-    std::shared_ptr<Clickable> Clickable::onButton(const std::function<void()> &callback) {
-        this->callbackButton = [callback](const std::shared_ptr<EventMouseButton> &event, Position position) {
-            callback();
-            return EventCallbackResponse::None;
-        };
-        return shared_from_this();
-    }
+	std::vector <ElementWithRect> Clickable::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    std::shared_ptr<Clickable> Clickable::onClick(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
-        this->callbackClick = std::move(callback);
-        return shared_from_this();
-    }
+		Rect childRect = {
+			.size = rect.size,
+			.position = { .x = 0, .y = 0 }
+		};
 
-    std::shared_ptr<Clickable> Clickable::onClick(const std::function<void()> &callback) {
-        this->callbackClick = [callback](const std::shared_ptr<EventMouseButton> &event, Position position) {
-            callback();
-            return EventCallbackResponse::None;
-        };
-        return shared_from_this();
-    }
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 
-    std::shared_ptr<Clickable> Clickable::onRightClick(std::function<EventCallbackResponse(std::shared_ptr<EventMouseButton> event, Position position)> callback) {
-        this->callbackRightClick = std::move(callback);
-        return shared_from_this();
-    }
+	std::vector <std::shared_ptr<EventHandler>> Clickable::getEventsHandlers() {
+		return {
+			HoverEvent::Handle([this](const auto& event) {
+				hovered = event->hovered;
+				return EventCallbackResponse::None;
+			}),
+			MouseButtonEvent::Handle([this](const auto& event) {
+				if (!hovered || event->action != KeyAction::Release) {
+					return EventCallbackResponse::None;
+				}
 
-    std::shared_ptr<Clickable> Clickable::onRightClick(const std::function<void()> &callback) {
-        this->callbackRightClick = [callback](const std::shared_ptr<EventMouseButton> &event, Position position) {
-            callback();
-            return EventCallbackResponse::None;
-        };
-        return shared_from_this();
-    }
+				if (callbackButton.has_value()) {
+					auto callback = callbackButton.value();
+					EventCallbackResponse callbackResponse = callback(event->button, event->mod);
+					if (callbackResponse != EventCallbackResponse::None) {
+						return callbackResponse;
+					}
+				}
 
-    std::shared_ptr<Clickable> Clickable::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
+				if (event->button == MouseButton::Left && callbackClick.has_value()) {
+					auto callback = callbackClick.value();
+					EventCallbackResponse callbackResponse = callback(event->mod);
+					if (callbackResponse != EventCallbackResponse::None) {
+						return callbackResponse;
+					}
+				}
 
-    Size Clickable::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, window, boundaries);
-        } else {
-            return boundaries.max;
-        }
-    }
-
-    void Clickable::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
-        this->window = window;
-        this->rect = rect;
-    }
-
-    std::vector<RenderElement> Clickable::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
-
-        if (this->hasChild()) {
-            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
-            children.push_back(childElement);
-        }
-
-        return children;
-    }
-
-    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseMove> event) {
-        this->cursorPosition = this->rect.absolutePositionToContained({event->x, event->y});
-        return EventCallbackResponse::None;
-    }
-
-    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventHover> event) {
-        this->hovered = event->hovered;
-        return EventCallbackResponse::None;
-    }
-
-    EventCallbackResponse Clickable::onEvent(std::shared_ptr<EventMouseButton> event) {
-        if (this->hovered) {
-            if (this->callbackButton) {
-                EventCallbackResponse callbackResponse = this->callbackButton(event, this->cursorPosition);
-                if (callbackResponse != EventCallbackResponse::None) {
-                    return callbackResponse;
-                }
-            }
-
-            if (event->action == KeyAction::Press && event->button == MouseButton::Left && this->callbackClick) {
-                EventCallbackResponse callbackResponse = this->callbackClick(event, this->cursorPosition);
-                if (callbackResponse != EventCallbackResponse::None) {
-                    return callbackResponse;
-                }
-            }
-
-            if (event->action == KeyAction::Press && event->button == MouseButton::Right && this->callbackRightClick) {
-                EventCallbackResponse callbackResponse = this->callbackRightClick(event, this->cursorPosition);
-                if (callbackResponse != EventCallbackResponse::None) {
-                    return callbackResponse;
-                }
-            }
-        }
-
-        return EventCallbackResponse::None;
-    }
+				return EventCallbackResponse::None;
+			})
+		};
+	}
 }

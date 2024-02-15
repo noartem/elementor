@@ -7,86 +7,44 @@
 #include <include/core/SkRRect.h>
 
 namespace elementor::elements {
-    std::shared_ptr<Rounded> rounded() {
-        return std::make_shared<Rounded>();
-    }
+	void Rounded::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
+		auto pixelScale = ctx->getPixelScale();
 
-    std::shared_ptr<Rounded> Rounded::setRadius(float radiusTopLeft, float radiusTopRight, float radiusBottomRight, float radiusBottomLeft) {
-        this->radiusTopLeft = radiusTopLeft;
-        this->radiusTopRight = radiusTopRight;
-        this->radiusBottomLeft = radiusBottomLeft;
-        this->radiusBottomRight = radiusBottomRight;
-        return shared_from_this();
-    }
+		float topLeft = rectRadius.topLeft * pixelScale;
+		float topRight = rectRadius.topRight * pixelScale;
+		float bottomRight = rectRadius.bottomRight * pixelScale;
+		float bottomLeft = rectRadius.bottomLeft * pixelScale;
 
-    std::shared_ptr<Rounded> Rounded::setRadius(float radiusLeft, float radiusRight) {
-        this->setRadius(radiusLeft, radiusRight, radiusRight, radiusLeft);
-        return shared_from_this();
-    }
+		SkVector corners[] = {{ topLeft, topLeft },
+							  { topRight, topRight },
+							  { bottomRight, bottomRight },
+							  { bottomLeft, bottomLeft }};
 
-    std::shared_ptr<Rounded> Rounded::setRadius(float radius) {
-        this->setRadius(radius, radius);
-        return shared_from_this();
-    }
+		SkRRect skRRect;
+		SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
+		skRRect.setRectRadii(skRect, corners);
 
-    float Rounded::getRadiusTopLeft() const {
-        return this->radiusTopLeft;
-    }
+		canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
+	}
 
-    float Rounded::getRadiusTopRight() const {
-        return this->radiusTopRight;
-    }
+	Size Rounded::getSize(const Boundaries& boundaries) {
+		if (doesNotHaveChild()) {
+			return boundaries.max;
+		}
 
-    float Rounded::getRadiusBottomLeft() const {
-        return this->radiusBottomLeft;
-    }
+		return child->getSize(boundaries);
+	}
 
-    float Rounded::getRadiusBottomRight() const {
-        return this->radiusBottomRight;
-    }
+	std::vector <ElementWithRect> Rounded::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    std::shared_ptr<Rounded> Rounded::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
-
-    void Rounded::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, SkCanvas *canvas, ElementRect rect) {
-        float topLeft = this->getRadiusTopLeft() * ctx->getPixelScale();
-        float topRight = this->getRadiusTopRight() * ctx->getPixelScale();
-        float bottomRight = this->getRadiusBottomRight() * ctx->getPixelScale();
-        float bottomLeft = this->getRadiusBottomLeft() * ctx->getPixelScale();
-        SkVector corners[] = {{topLeft,     topLeft},
-                              {topRight,    topRight},
-                              {bottomRight, bottomRight},
-                              {bottomLeft,  bottomLeft}};
-
-        SkRRect skRRect;
-        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        skRRect.setRectRadii(skRect, corners);
-
-        canvas->clipRRect(skRRect, SkClipOp::kIntersect, true);
-    }
-
-    Size Rounded::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, Boundaries boundaries) {
-        if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, window, boundaries);
-        } else {
-            return boundaries.max;
-        }
-    }
-
-    std::vector<RenderElement> Rounded::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
-
-        if (this->hasChild()) {
-            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
-            children.push_back(childElement);
-        }
-
-        return children;
-    }
-
-    ClipBehavior Rounded::getClipBehaviour() {
-        return ClipBehavior::AntiAlias;
-    }
+		Rect childRect = {
+			.size = rect.size,
+			.position = { .x=0, .y=0 }
+		};
+		ElementWithRect childElement(child, childRect);
+		return { childElement };
+	}
 }

@@ -4,70 +4,34 @@
 
 #include "Background.h"
 
-#include <utility>
-#include "../Color.h"
-
 namespace elementor::elements {
-    std::shared_ptr<Background> background() {
-        return std::make_shared<Background>();
-    }
+	Size Background::getSize(const Boundaries& boundaries) {
+		if (doesNotHaveChild()) {
+			return boundaries.max;
+		}
 
-    std::shared_ptr<Background> Background::setColor(SkColor skColor) {
-        this->color = skColor;
-        return shared_from_this();
-    }
+		return getChild()->getSize(boundaries);
+	}
 
-    std::shared_ptr<Background> Background::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-        this->color = makeSkColorFromRGBA(r, g, b, a);
-        return shared_from_this();
-    }
+	void Background::paintBackground(SkCanvas* canvas, const ElementRect& rect) {
+		SkPaint paint;
+		paint.setColor(color);
 
-    std::shared_ptr<Background> Background::setColor(uint8_t r, uint8_t g, uint8_t b) {
-        this->color = makeSkColorFromRGB(r, g, b);
-        return shared_from_this();
-    }
+		SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
+		canvas->drawRect(skRect, paint);
+	}
 
-    std::shared_ptr<Background> Background::setColor(std::string hex) {
-        this->color = makeSkColorFromHex(std::move(hex));
-        return shared_from_this();
-    }
+	std::vector <ElementWithRect> Background::getChildren(const ElementRect& rect) {
+		if (doesNotHaveChild()) {
+			return {};
+		}
 
-    SkColor Background::getColor() const {
-        return this->color;
-    }
+		Rect childRect = {
+			.size = rect.size,
+			.position = { .x = 0.0f, .y = 0.0f },
+		};
 
-    std::shared_ptr<Background> Background::setChild(const std::shared_ptr<Element>& child) {
-        this->updateChild(child);
-        return shared_from_this();
-    }
-
-    Size Background::getSize(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                             Boundaries boundaries) {
-        if (this->hasChild()) {
-            return this->getChild()->getSize(ctx, window, boundaries);
-        } else {
-            return boundaries.max;
-        }
-    }
-
-    void Background::paintBackground(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window,
-                                     SkCanvas *canvas, ElementRect rect) {
-        SkPaint paint;
-        paint.setColor(this->color);
-
-        SkRect skRect = SkRect::MakeXYWH(0, 0, rect.size.width, rect.size.height);
-        canvas->drawRect(skRect, paint);
-    }
-
-    std::vector<RenderElement>
-    Background::getChildren(std::shared_ptr<ApplicationContext> ctx, std::shared_ptr<Window> window, ElementRect rect) {
-        std::vector<RenderElement> children;
-
-        if (this->hasChild()) {
-            RenderElement childElement{this->getChild(), {0, 0}, rect.size};
-            children.push_back(childElement);
-        }
-
-        return children;
-    }
+		ElementWithRect childElementWithRect(child, childRect);
+		return { childElementWithRect };
+	}
 }
