@@ -16,5 +16,6 @@
 #include "utility.h"
 #include "WithChild.h"
 #include "WithChildren.h"
+#include "debug.h"
 
 #endif //ELEMENTOR_INCLUDE_H

@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-#ifndef PRINT
-#define PRINT(x) std::cout << #x"=" << x << std::endl
+#ifndef LOG
+#define LOG(x) std::cout << __TIME__ << " | " << __FILE__ << ":" << __LINE__ << " | " <<  x << std::endl
 #endif
 
-#ifndef LOG
-#define LOG(x) std::cout << x << std::endl
+#ifndef PRINT
+#define PRINT(x) LOG(#x"=" << x)
 #endif
 
 #ifdef DEBUG
@@ -27,6 +27,10 @@
 
 #ifndef D_LOG
 #define D_LOG(x) D(LOG(x))
+#endif
+
+#ifndef D_IF_LOG
+#define D_IF_LOG(c, x) if (c) D(LOG(x))
 #endif
 
 #endif //ELEMENTOR_DEBUG_H

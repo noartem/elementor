@@ -94,7 +94,7 @@ namespace elementor {
 	};
 
 	enum class KeyboardKey {
-		Unknow,
+		Unknown,
 		Space,
 		Apostraphe,
 		Comma,

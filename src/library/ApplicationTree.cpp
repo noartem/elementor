@@ -81,10 +81,6 @@ namespace elementor {
 		}
 	}
 
-	void ApplicationTree::print(std::ostream& os) const {
-		root->print(os, 0);
-	}
-
 	std::shared_ptr<ApplicationTree::Node> ApplicationTree::Node::findFirstNode(
 		const std::function<bool(const std::shared_ptr<Node>& node)>& predicate
 	) {
@@ -289,9 +285,7 @@ namespace elementor {
 		changed = element->popChanged();
 		deepChanged |= changed;
 
-		D(if (changed) {
-			std::cout << "Element (" << element << ") changed" << std::endl;
-		});
+		D_IF_LOG(changed, "Element (" << element << ") changed");
 
 		if (deepChanged) {
 			removeCache();

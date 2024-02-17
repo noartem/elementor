@@ -6,7 +6,6 @@
 #define ELEMENTOR_TEXT_H
 
 #include "../include.h"
-#include "../debug.h"
 
 #include <include/core/SkFont.h>
 #include <include/core/SkFontStyle.h>

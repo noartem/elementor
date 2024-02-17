@@ -3,7 +3,6 @@
 //
 
 #include "Draggable.h"
-#include "../debug.h"
 
 namespace elementor::elements {
 	Size Draggable::getSize(const Boundaries& boundaries) {

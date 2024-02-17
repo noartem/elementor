@@ -62,7 +62,7 @@ namespace elementor {
 			std::vector<std::shared_ptr<EventHandler>> globalEventsHandlers;
 
 			sk_sp<SkImage> drawCachedImage;
-			int beforeCacheRenders = DEFAULT_BEFORE_CACHE_RENDERS; // TODO: rewrite to timestamps
+			int beforeCacheRenders = DEFAULT_BEFORE_CACHE_RENDERS;
 
 			bool changed = false;
 			bool childrenChanged = false;
@@ -96,7 +96,9 @@ namespace elementor {
 
 		ApplicationTree(const std::shared_ptr<Element>& rootElement, const Size& rootSize);
 
-		void print(std::ostream& os) const;
+		void print(std::ostream& os) const  {
+			root->print(os, 0);
+		}
 
 		void print() const {
 			print(std::cout);

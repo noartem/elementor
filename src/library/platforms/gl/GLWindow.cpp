@@ -161,11 +161,16 @@ namespace elementor::platforms::gl {
 				continue;
 			}
 
-			auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
-			if (keyboardEvent != nullptr && keyboardEvent->action == KeyAction::Release && keyboardEvent->key == KeyboardKey::P) {
-				applicationTree->print();
-				continue;
-			}
+			D(
+				auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+				if (keyboardEvent != nullptr &&
+					keyboardEvent->action == KeyAction::Release &&
+					keyboardEvent->mod == KeyMod::Control &&
+					keyboardEvent->key == KeyboardKey::P) {
+					applicationTree->print();
+					continue;
+				}
+			);
 
 			for (const auto& eventHandler: globalEventsHandlers[event->getName()]) {
 				auto eventHandlerResponse = eventHandler->onEvent(event);
@@ -533,7 +538,7 @@ namespace elementor::platforms::gl {
 		case 348:
 			return KeyboardKey::Menu;
 		default:
-			return KeyboardKey::Unknow;
+			return KeyboardKey::Unknown;
 		}
 	}
 

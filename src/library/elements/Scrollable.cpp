@@ -38,6 +38,10 @@ namespace elementor::elements {
 			}
 		});
 
+		if (lastChildSize != childSize || lastSize != rect.size) {
+			markChanged();
+		}
+
 		lastChildSize = childSize;
 		lastSize = rect.size;
 

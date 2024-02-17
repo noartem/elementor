@@ -3,7 +3,6 @@
 //
 
 #include "FocusState.h"
-#include "debug.h"
 
 namespace elementor {
 	int ring(int i, unsigned n) {

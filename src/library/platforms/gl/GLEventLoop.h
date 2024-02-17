@@ -10,7 +10,6 @@
 #include "GLFW/glfw3.h"
 
 #include "elementor.h"
-#include "../../debug.h"
 
 namespace elementor::platforms::gl {
 	class GLEventLoop {
