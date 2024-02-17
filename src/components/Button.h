@@ -13,23 +13,21 @@
 #include "./Outline.h"
 
 namespace elementor::components {
-	struct ButtonProps {
-		std::optional<std::string> text;
-		std::optional<std::string> fontColor;
-		std::optional<std::string> backgroundColor;
-		std::optional<std::string> outlineColor;
-		std::optional<std::function<EventCallbackResponse()>> onClick;
-	};
-
 	class Button : public Component, public WithEventsHandlers {
 	public:
-		explicit Button(const std::shared_ptr<ApplicationContext>& ctx, const ButtonProps& props)
+		struct Props {
+			std::optional<std::function<EventCallbackResponse()>> onClick;
+			std::shared_ptr<Element> child;
+		};
+
+		explicit Button(const std::shared_ptr<ApplicationContext>& ctx, const Props& props)
 			: Component(ctx) {
+
 			element = Outline::New(ctx, {
 				.border = {
 					.radius = 6,
 					.width = 3,
-					.color = props.outlineColor.value_or(props.fontColor.value_or("")),
+					.color = "#21CFFF",
 					.style = BorderStyle::Dashed,
 				},
 				.offset = 6,
@@ -50,42 +48,26 @@ namespace elementor::components {
 
 									return callbackClick.value()();
 								},
-								.child = Rounded::New(ctx, {
-									.all = 4,
-									.child = Background::New(ctx, {
-										.color = props.backgroundColor,
-										.child = Padding::New(ctx, {
-											.all = 8,
-											.top = 6,
-											.child = Text::New(ctx, text, {
-												.text = props.text,
-												.fontColor = props.fontColor,
-												.fontSize = 16,
-												.fontFamily = "Arial",
-											})
-										})
-									})
-								})
+								.child = props.child
 							})
 						})
 					})
 				})
 			});
-
 			if (props.onClick.has_value()) onClick(props.onClick.value());
 		}
 
 		static std::shared_ptr<Button> New(
 			const std::shared_ptr<ApplicationContext>& ctx,
-			const ButtonProps& props
-			) {
+			const Props& props
+		) {
 			return std::make_shared<Button>(ctx, props);
 		}
 
 		static std::shared_ptr<Button> New(
 			const std::shared_ptr<ApplicationContext>& ctx,
 			std::shared_ptr<Button>& elementRef,
-			const ButtonProps& props
+			const Props& props
 		) {
 			auto element = New(ctx, props);
 			elementRef = element;
@@ -98,10 +80,6 @@ namespace elementor::components {
 
 		void onClick(const std::optional<std::function<EventCallbackResponse()>>& newCallback) {
 			callbackClick = newCallback;
-		}
-
-		void setText(const std::string& newText) {
-			text->setText(newText);
 		}
 
 		void focus() {
@@ -133,7 +111,6 @@ namespace elementor::components {
 		};
 
 	private:
-		std::shared_ptr<Text> text = nullptr;
 		std::shared_ptr<Focusable> focusable = nullptr;
 
 		std::optional<std::function<EventCallbackResponse()>> callbackClick;

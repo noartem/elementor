@@ -2,31 +2,18 @@
 // Created by noartem on 12.01.2024.
 //
 
-#include "elementor.h"
-
 #include <format>
-#include <filesystem>
 
-std::filesystem::path getThisPath() {
-	return std::filesystem::current_path()
-		.append("..")
-		.append("..")
-		.append("..")
-		.append("..")
-		.append("src")
-		.append("examples")
-		.append("basic");
-}
+#include "elementor.h"
 
 class LikeButton : public Component {
 public:
 	explicit LikeButton(const std::shared_ptr<ApplicationContext>& ctx)
 		: Component(ctx) {
-		element = Button::New(ctx, button, {
+		element = TextButton::New(ctx, button, {
 			.text = "Лайкнуть (0)",
 			.fontColor = "#fff",
 			.backgroundColor = "#ff5020",
-			.outlineColor = "#21CFFF",
 			.onClick = [this]() {
 				incCount();
 				return EventCallbackResponse::StopPropagation;
@@ -41,7 +28,7 @@ public:
 private:
 	int count = 0;
 
-	std::shared_ptr<Button> button;
+	std::shared_ptr<TextButton> button;
 
 	void setCount(int newCount) {
 		count = newCount;
