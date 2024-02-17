@@ -83,15 +83,12 @@ namespace elementor {
 		Repeat,
 	};
 
-	enum class KeyMod {
-		None,
-		Shift,
-		Control,
-		Alt,
-		Super,
-		CapsLock,
-		NumLock,
-	};
+	constexpr int KeyModsShift = 0x0001;
+	constexpr int KeyModsCtrl = 0x0002;
+	constexpr int KeyModsAlt = 0x0004;
+	constexpr int KeyModsSuper = 0x0008;
+	constexpr int KeyModsCapsLock = 0x0010;
+	constexpr int KeyModsNumLock = 0x0020;
 
 	enum class KeyboardKey {
 		Unknown,
@@ -220,13 +217,13 @@ namespace elementor {
 	class MouseButtonEvent : public Event {
 	DEFINE_EVENT_HANDLER(MouseButtonEvent, "mouse-button");
 	public:
-		MouseButtonEvent(MouseButton button, KeyAction action, KeyMod mod)
-			: button(button), action(action), mod(mod) {
+		MouseButtonEvent(MouseButton button, KeyAction action, int mods)
+			: button(button), action(action), mods(mods) {
 		}
 
 		MouseButton button;
 		KeyAction action;
-		KeyMod mod;
+		int mods;
 
 		std::string_view getName() override {
 			return "mouse-button";
@@ -266,14 +263,14 @@ namespace elementor {
 	class KeyboardEvent : public Event {
 	DEFINE_EVENT_HANDLER(KeyboardEvent, "keyboard");
 	public:
-		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, KeyMod mod)
-			: key(key), scancode(scancode), action(action), mod(mod) {
+		KeyboardEvent(KeyboardKey key, int scancode, KeyAction action, int mods)
+			: key(key), scancode(scancode), action(action), mods(mods) {
 		}
 
 		KeyboardKey key;
 		int scancode;
 		KeyAction action;
-		KeyMod mod;
+		int mods;
 
 		std::string_view getName() override {
 			return "keyboard";

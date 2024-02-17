@@ -43,7 +43,7 @@ namespace elementor::components {
 								blur();
 							},
 							.child = Clickable::New(ctx, {
-								.onClick = [this](KeyMod _) {
+								.onClick = [this](int _) {
 									focus();
 									return EventCallbackResponse::StopPropagation;
 								},
@@ -167,12 +167,12 @@ namespace elementor::components {
 						return EventCallbackResponse::StopPropagation;
 					}
 
-					if (event->key == KeyboardKey::C && event->mod == KeyMod::Control) {
+					if (event->key == KeyboardKey::C && event->mods & KeyModsCtrl) {
 						ctx->getClipboard()->set(toUTF8(value));
 						return EventCallbackResponse::StopPropagation;
 					}
 
-					if (event->key == KeyboardKey::V && event->mod == KeyMod::Control) {
+					if (event->key == KeyboardKey::V && event->mods & KeyModsCtrl) {
 						auto clipboard = ctx->getClipboard();
 						auto clipboardValueU8 = clipboard->get();
 

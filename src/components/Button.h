@@ -39,7 +39,7 @@ namespace elementor::components {
 								blur();
 							},
 							.child = Clickable::New(ctx, {
-								.onClick = [this](KeyMod _) {
+								.onClick = [this](int _) {
 									focus();
 
 									if (!callbackClick.has_value()) {

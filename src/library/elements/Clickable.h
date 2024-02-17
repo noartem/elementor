@@ -9,8 +9,8 @@
 
 namespace elementor::elements {
 	struct ClickableProps {
-		std::optional <std::function<EventCallbackResponse(KeyMod mod)>> onClick;
-		std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>> onButton;
+		std::optional <std::function<EventCallbackResponse(int mods)>> onClick;
+		std::optional <std::function<EventCallbackResponse(MouseButton button, int mods)>> onButton;
 		const std::shared_ptr <Element>& child = nullptr;
 	};
 
@@ -49,13 +49,13 @@ namespace elementor::elements {
 		}
 
 		void onClick(
-			const std::optional <std::function<EventCallbackResponse(KeyMod mod)>>& newCallback
+			const std::optional <std::function<EventCallbackResponse(int mods)>>& newCallback
 		) {
 			callbackClick = newCallback;
 		}
 
 		void onButton(
-			const std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>>& newCallback
+			const std::optional <std::function<EventCallbackResponse(MouseButton button, int mods)>>& newCallback
 		) {
 			callbackButton = newCallback;
 		}
@@ -74,8 +74,8 @@ namespace elementor::elements {
 	private:
 		bool hovered = false;
 
-		std::optional <std::function<EventCallbackResponse(KeyMod mod)>> callbackClick;
-		std::optional <std::function<EventCallbackResponse(MouseButton button, KeyMod mod)>> callbackButton;
+		std::optional <std::function<EventCallbackResponse(int mods)>> callbackClick;
+		std::optional <std::function<EventCallbackResponse(MouseButton button, int mods)>> callbackButton;
 	};
 }
 

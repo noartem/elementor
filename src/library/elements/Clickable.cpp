@@ -40,7 +40,7 @@ namespace elementor::elements {
 
 				if (callbackButton.has_value()) {
 					auto callback = callbackButton.value();
-					EventCallbackResponse callbackResponse = callback(event->button, event->mod);
+					EventCallbackResponse callbackResponse = callback(event->button, event->mods);
 					if (callbackResponse != EventCallbackResponse::None) {
 						return callbackResponse;
 					}
@@ -48,7 +48,7 @@ namespace elementor::elements {
 
 				if (event->button == MouseButton::Left && callbackClick.has_value()) {
 					auto callback = callbackClick.value();
-					EventCallbackResponse callbackResponse = callback(event->mod);
+					EventCallbackResponse callbackResponse = callback(event->mods);
 					if (callbackResponse != EventCallbackResponse::None) {
 						return callbackResponse;
 					}

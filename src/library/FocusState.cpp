@@ -36,7 +36,7 @@ namespace elementor {
 		auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
 		return keyboardEvent != nullptr
 			&& (keyboardEvent->action == KeyAction::Press || keyboardEvent->action == KeyAction::Repeat)
-			&& keyboardEvent->mod != KeyMod::Shift
+			&& !(keyboardEvent->mods & KeyModsShift)
 			&& keyboardEvent->key == KeyboardKey::Tab;
 	}
 
@@ -44,7 +44,7 @@ namespace elementor {
 		auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
 		return keyboardEvent != nullptr
 			&& (keyboardEvent->action == KeyAction::Press || keyboardEvent->action == KeyAction::Repeat)
-			&& keyboardEvent->mod == KeyMod::Shift
+			&& (keyboardEvent->mods & KeyModsShift)
 			&& keyboardEvent->key == KeyboardKey::Tab;
 	}
 

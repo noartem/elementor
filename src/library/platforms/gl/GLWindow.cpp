@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <cmath>
+#include <fstream>
 
 #include "GLFW/glfw3.h"
 
@@ -163,12 +164,27 @@ namespace elementor::platforms::gl {
 
 			D(
 				auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
-				if (keyboardEvent != nullptr &&
-					keyboardEvent->action == KeyAction::Release &&
-					keyboardEvent->mod == KeyMod::Control &&
-					keyboardEvent->key == KeyboardKey::P) {
-					applicationTree->print();
-					continue;
+				if (keyboardEvent) {
+					if (keyboardEvent->action == KeyAction::Release &&
+						keyboardEvent->mods & KeyModsCtrl &&
+						keyboardEvent->key == KeyboardKey::P) {
+						if (keyboardEvent->mods & KeyModsShift) {
+							std::ofstream logFile(std::format("elementor_tree_dump_{}.txt", std::chrono::system_clock::now().time_since_epoch().count()));
+							applicationTree->print(logFile);
+							logFile.close();
+						} else {
+							applicationTree->print(std::cout);
+						}
+
+						continue;
+					}
+
+					if (keyboardEvent->action == KeyAction::Release &&
+						keyboardEvent->mods & KeyModsCtrl &&
+						keyboardEvent->key == KeyboardKey::F) {
+						LOG("FPS: " << ctx->getPerfomance()->getFPS());
+						continue;
+					}
 				}
 			);
 
@@ -267,30 +283,11 @@ namespace elementor::platforms::gl {
 		}
 	}
 
-	KeyMod mapIntToKeyMod(int mod) {
-		switch (mod) {
-		case 1:
-			return KeyMod::Shift;
-		case 2:
-			return KeyMod::Control;
-		case 4:
-			return KeyMod::Alt;
-		case 8:
-			return KeyMod::Super;
-		case 10:
-			return KeyMod::CapsLock;
-		case 20:
-			return KeyMod::NumLock;
-		default:
-			return KeyMod::None;
-		}
-	}
-
 	void GLWindow::onMouseButton(int button, int action, int mods) {
 		auto event = std::make_shared<MouseButtonEvent>(
 			mapIntToMouseButton(button),
 			mapIntToKeyAction(action),
-			mapIntToKeyMod(mods)
+			mods
 		);
 		dispatchEvent(event);
 	}
@@ -547,7 +544,7 @@ namespace elementor::platforms::gl {
 			mapIntToKeyboardKey(key),
 			scancode,
 			mapIntToKeyAction(action),
-			mapIntToKeyMod(mods)
+			mods
 		);
 		dispatchEvent(event);
 	}
