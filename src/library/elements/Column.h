@@ -8,15 +8,14 @@
 #include "../include.h"
 
 namespace elementor::elements {
-
-	struct ColumnProps {
-		float spacing = 0;
-		const std::vector <std::shared_ptr<Element>>& children = {};
-	};
-
 	class Column : public Element, public WithChildren {
 	public:
-		Column(const std::shared_ptr <ApplicationContext>& ctx, const ColumnProps& props)
+		struct Props {
+			float spacing = 0;
+			const std::vector <std::shared_ptr<Element>>& children = {};
+		};
+
+		Column(const std::shared_ptr <ApplicationContext>& ctx, const Props& props)
 			: Element(ctx) {
 			setSpacing(props.spacing);
 			setChildren(props.children);
@@ -24,7 +23,7 @@ namespace elementor::elements {
 
 		static std::shared_ptr <Column> New(
 			const std::shared_ptr <ApplicationContext>& ctx,
-			const ColumnProps& props
+			const Props& props
 		) {
 			return std::make_shared<Column>(ctx, props);
 		}
@@ -32,7 +31,7 @@ namespace elementor::elements {
 		static std::shared_ptr <Column> New(
 			const std::shared_ptr <ApplicationContext>& ctx,
 			std::shared_ptr <Column>& elementRef,
-			const ColumnProps& props
+			const Props& props
 		) {
 			auto element = New(ctx, props);
 			elementRef = element;

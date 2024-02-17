@@ -27,6 +27,20 @@ namespace elementor {
 		bool operator==(const Size& other) const {
 			return width == other.width && height == other.height;
 		}
+
+		Size operator*(float multiplier) const {
+			return {
+				.width = width * multiplier,
+				.height = height * multiplier
+			};
+		}
+
+		Size operator/(float divider) const {
+			return {
+				.width = width / divider,
+				.height = height / divider
+			};
+		}
 	};
 
 	struct Boundaries {

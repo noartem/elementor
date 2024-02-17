@@ -8,28 +8,28 @@
 #include "../include.h"
 
 namespace elementor::elements {
-	struct ClickableProps {
-		std::optional <std::function<EventCallbackResponse(int mods)>> onClick;
-		std::optional <std::function<EventCallbackResponse(MouseButton button, int mods)>> onButton;
-		const std::shared_ptr <Element>& child = nullptr;
-	};
-
 	class Clickable : public Element, public WithEventsHandlers, public WithChild {
 	public:
+		struct Props {
+			std::optional <std::function<EventCallbackResponse(int mods)>> onClick;
+			std::optional <std::function<EventCallbackResponse(MouseButton button, int mods)>> onButton;
+			const std::shared_ptr <Element>& child = nullptr;
+		};
+
 		explicit Clickable(const std::shared_ptr <ApplicationContext>& ctx)
 			: Element(ctx) {
 		}
 
-		Clickable(const std::shared_ptr <ApplicationContext>& ctx, const ClickableProps& props)
+		Clickable(const std::shared_ptr <ApplicationContext>& ctx, const Props& props)
 			: Element(ctx) {
-			if (props.onClick.has_value()) onClick(props.onClick.value());
-			if (props.onButton.has_value()) onButton(props.onButton.value());
+			onClick(props.onClick);
+			onButton(props.onButton);
 			setChild(props.child);
 		}
 
 		static std::shared_ptr <Clickable> New(
 			const std::shared_ptr <ApplicationContext>& ctx,
-			const ClickableProps& props
+			const Props& props
 		) {
 			return std::make_shared<Clickable>(ctx, props);
 		}
@@ -37,7 +37,7 @@ namespace elementor::elements {
 		static std::shared_ptr <Clickable> New(
 			const std::shared_ptr <ApplicationContext>& ctx,
 			std::shared_ptr <Clickable>& elementRef,
-			const ClickableProps& props
+			const Props& props
 		) {
 			auto element = New(ctx, props);
 			elementRef = element;

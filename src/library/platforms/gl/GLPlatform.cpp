@@ -75,7 +75,10 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLPlatform::addWindow(const std::shared_ptr<GLWindow>& window) {
-		window->onClose([this, window]() { removeWindow(window); });
+		window->onClose([this, window]() {
+			removeWindow(window);
+		});
+
 		windows.push_back(window);
 	}
 

@@ -92,14 +92,14 @@ namespace elementor::platforms::gl {
 		glfwSetCursorPosCallback(glWindow, onWindowCursorPosition);
 		glfwSetScrollCallback(glWindow, onWindowScroll);
 
+		updateMonitor();
+
 		cursor = std::make_shared<GLCursor>(glWindow);
-		pixelScale = calcPixelScale();
 
 		skContext = GrDirectContext::MakeGL(GrGLMakeNativeInterface()).release();
 	}
 
 	GLWindow::~GLWindow() {
-		glfwDestroyWindow(glWindow);
 		delete skContext;
 		delete skCanvas;
 	}
@@ -162,14 +162,23 @@ namespace elementor::platforms::gl {
 				continue;
 			}
 
-			D(
-				auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
-				if (keyboardEvent) {
+
+			auto keyboardEvent = std::dynamic_pointer_cast<KeyboardEvent>(event);
+			if (keyboardEvent) {
+				if (keyboardEvent->action == KeyAction::Release &&
+					keyboardEvent->key == KeyboardKey::F11 &&
+					keyboardEvent->mods == 0) {
+					toggleFullscreen();
+					continue;
+				}
+
+				D(
 					if (keyboardEvent->action == KeyAction::Release &&
 						keyboardEvent->mods & KeyModsCtrl &&
 						keyboardEvent->key == KeyboardKey::P) {
 						if (keyboardEvent->mods & KeyModsShift) {
-							std::ofstream logFile(std::format("elementor_tree_dump_{}.txt", std::chrono::system_clock::now().time_since_epoch().count()));
+							std::ofstream logFile(std::format("elementor_tree_dump_{}.txt",
+								std::chrono::system_clock::now().time_since_epoch().count()));
 							applicationTree->print(logFile);
 							logFile.close();
 						} else {
@@ -182,11 +191,11 @@ namespace elementor::platforms::gl {
 					if (keyboardEvent->action == KeyAction::Release &&
 						keyboardEvent->mods & KeyModsCtrl &&
 						keyboardEvent->key == KeyboardKey::F) {
-						LOG("FPS: " << ctx->getPerfomance()->getFPS());
+						D_LOG("FPS: " << ctx->getPerfomance()->getFPS());
 						continue;
 					}
-				}
-			);
+				);
+			}
 
 			for (const auto& eventHandler: globalEventsHandlers[event->getName()]) {
 				auto eventHandlerResponse = eventHandler->onEvent(event);
@@ -214,6 +223,10 @@ namespace elementor::platforms::gl {
 		applicationTree->checkIfChanged();
 		applicationTree->updateChanged();
 
+		if (getSize() == ZeroSize) {
+			return;
+		}
+
 		draw();
 	}
 
@@ -224,29 +237,93 @@ namespace elementor::platforms::gl {
 	}
 
 	void GLWindow::updateWindowSizeLimits() {
-		auto minWidth = minSize ? (int)minSize->width : GLFW_DONT_CARE;
-		auto minHeight = minSize ? (int)minSize->height : GLFW_DONT_CARE;
-		auto maxWidth = maxSize ? (int)maxSize->width : GLFW_DONT_CARE;
-		auto maxHeight = maxSize ? (int)maxSize->height : GLFW_DONT_CARE;
-		glfwSetWindowSizeLimits(glWindow, minWidth, minHeight, maxWidth, maxHeight);
+		glfwSetWindowSizeLimits(
+			glWindow,
+			minSize ? (int)(minSize->width * pixelScale) : GLFW_DONT_CARE,
+			minSize ? (int)(minSize->height * pixelScale) : GLFW_DONT_CARE,
+			maxSize ? (int)(maxSize->width * pixelScale) : GLFW_DONT_CARE,
+			maxSize ? (int)(maxSize->height * pixelScale) : GLFW_DONT_CARE
+		);
 	}
 
-	std::shared_ptr<Display> GLWindow::getDisplay() {
-		if (display == nullptr) {
-			display = std::make_shared<GLDisplay>(getWindowMonitor(glWindow));
-		}
+	void GLWindow::openFullscreen(GLFWmonitor* monitor) {
+		positionBeforeFullScreen = getPosition();
+		sizeBeforeFullScreen = getSize();
 
-		return display;
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		glfwSetWindowMonitor(
+			glWindow,
+			monitor,
+			0,
+			0,
+			mode->width,
+			mode->height,
+			mode->refreshRate
+		);
+	}
+
+	void GLWindow::closeFullscreen() {
+		glfwSetWindowMonitor(
+			glWindow,
+			nullptr,
+			(int)positionBeforeFullScreen.x,
+			(int)positionBeforeFullScreen.y,
+			(int)(sizeBeforeFullScreen.width * pixelScale),
+			(int)(sizeBeforeFullScreen.height * pixelScale),
+			GLFW_DONT_CARE
+		);
+	}
+
+	void GLWindow::toggleFullscreen() {
+		auto glfwMonitor = getWindowMonitor(glWindow);
+		if (glfwGetWindowMonitor(glWindow) == nullptr) {
+			openFullscreen(glfwMonitor);
+		} else {
+			closeFullscreen();
+		}
 	}
 
 	float GLWindow::calcPixelScale() {
-		GLFWmonitor* glfwMonitor = glfwGetPrimaryMonitor();
-		auto monitorScale = getMonitorSize(glfwMonitor).width / getMonitorPhysicalSize(glfwMonitor).width;
+		auto monitorScale = getMonitorSize(glMonitor).width / getMonitorPhysicalSize(glMonitor).width;
 		return monitorScale / DefaultPixelScale;
 	}
 
+	void GLWindow::updatePixelScale() {
+		auto oldPixelScale = pixelScale;
+		auto newPixelScale = calcPixelScale();
+		pixelScale = newPixelScale;
+
+		if (oldPixelScale == 0 || oldPixelScale == newPixelScale) {
+			return;
+		}
+
+		updateWindowSizeLimits();
+
+		// TODO: Add window resize based on changed pixelScale
+	}
+
+	void GLWindow::updateMonitor() {
+		auto newGlMonitor = getWindowMonitor(glWindow);
+		if (newGlMonitor == nullptr) {
+			if (glMonitor != nullptr) {
+				return;
+			}
+
+			newGlMonitor = glfwGetPrimaryMonitor();
+		}
+
+		if (glMonitor == newGlMonitor) {
+			return;
+		}
+
+		glMonitor = newGlMonitor;
+
+		display = std::make_shared<GLDisplay>(glMonitor);
+		updatePixelScale();
+	}
+
 	void GLWindow::onPosition() {
-		display = nullptr;
+		updateMonitor();
 	}
 
 	void GLWindow::onFocused() {

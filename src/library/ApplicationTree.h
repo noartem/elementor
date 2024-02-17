@@ -49,6 +49,8 @@ namespace elementor {
 
 			void removeCache();
 
+			void removeCacheDeep();
+
 			void checkIfChanged();
 
 		private:

@@ -267,6 +267,14 @@ namespace elementor {
 		beforeCacheRenders = DEFAULT_BEFORE_CACHE_RENDERS;
 	}
 
+	void ApplicationTree::Node::removeCacheDeep() {
+		removeCache();
+
+		for (const auto& child: children) {
+			child->removeCacheDeep();
+		}
+	}
+
 	void ApplicationTree::Node::checkIfChanged() {
 		changed = false;
 		childrenChanged = false;
@@ -347,7 +355,6 @@ namespace elementor {
 
 	void ApplicationTree::Node::updateChildrenIfChanged() {
 		if (isChildrenChanged()) {
-			D_LOG("Element (" << element << ") children are changed");
 			updateChildren();
 			return;
 		}

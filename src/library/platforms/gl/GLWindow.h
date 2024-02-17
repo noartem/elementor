@@ -40,12 +40,9 @@ namespace elementor::platforms::gl {
 			return title;
 		}
 
-		[[nodiscard]] Size getSize() const {
-			return getWindowSize(glWindow);
-		}
-
 		void setSize(const Size& size) {
-			glfwSetWindowSize(glWindow, std::ceil(size.width), std::ceil(size.height));
+			glfwSetWindowSize(glWindow, std::ceil(size.width * pixelScale), std::ceil(size.height * pixelScale));
+			requestNextFrame();
 		}
 
 		[[nodiscard]] std::optional<Size> getMinSize() const {
@@ -145,7 +142,9 @@ namespace elementor::platforms::gl {
 			return cursor;
 		}
 
-		std::shared_ptr<Display> getDisplay() override;
+		std::shared_ptr<Display> getDisplay() override {
+			return display;
+		}
 
 		float getPixelScale() override {
 			return pixelScale;
@@ -159,6 +158,10 @@ namespace elementor::platforms::gl {
 		std::shared_ptr<GLPlatformContext> ctx;
 
 		GLFWwindow* glWindow = nullptr;
+
+		GLFWmonitor* glMonitor = nullptr;
+		void updateMonitor();
+
 		GrDirectContext* skContext = nullptr;
 		sk_sp<SkSurface> skSurface = nullptr;
 		SkCanvas* skCanvas = nullptr;
@@ -170,14 +173,16 @@ namespace elementor::platforms::gl {
 		std::optional<Size> minSize;
 		std::optional<Size> maxSize;
 
-		float pixelScale = 0.0f;
-
 		std::vector<std::function<void()>> closeCallbacks;
 
 		std::shared_ptr<ApplicationTree> applicationTree;
 		std::vector<std::shared_ptr<Event>> pendingEvents;
 		std::unique_ptr<HoverState> hoverState;
 		std::unique_ptr<FocusState> focusState;
+
+		[[nodiscard]] Size getSize() const {
+			return getWindowSize(glWindow);
+		}
 
 		void refresh();
 
@@ -191,11 +196,18 @@ namespace elementor::platforms::gl {
 			}
 		}
 
-		static float calcPixelScale();
-
 		void dispatchEvent(const std::shared_ptr<Event>& event);
-
 		void dispatchPendingEvents();
+
+		float pixelScale = 0.0f;
+		float calcPixelScale();
+		void updatePixelScale();
+
+		Position positionBeforeFullScreen;
+		Size sizeBeforeFullScreen;
+		void openFullscreen(GLFWmonitor* monitor);
+		void closeFullscreen();
+		void toggleFullscreen();
 	};
 }
 

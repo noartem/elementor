@@ -3,6 +3,7 @@
 //
 
 #include "utility.h"
+#include "../../debug.h"
 
 #include <algorithm>
 
@@ -10,34 +11,52 @@ namespace elementor::platforms::gl {
 	Size getWindowSize(GLFWwindow* window) {
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
-		return { (float)width, (float)height };
+		return {
+			.width = (float)width,
+			.height = (float)height
+		};
 	}
 
 	Position getWindowPosition(GLFWwindow* window) {
 		int x, y;
 		glfwGetWindowPos(window, &x, &y);
-		return { (float)x, (float)y };
+		return {
+			.x = (float)x,
+			.y = (float)y
+		};
 	}
 
 	Rect getWindowRect(GLFWwindow* window) {
-		return { getWindowSize(window), getWindowPosition(window) };
+		return {
+			.size = getWindowSize(window),
+			.position = getWindowPosition(window)
+		};
 	}
 
 	Size getMonitorSize(GLFWmonitor* monitor) {
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-		return { (float)mode->width, (float)mode->height };
+		return {
+			.width = (float)mode->width,
+			.height = (float)mode->height
+		};
 	}
 
 	Size getMonitorPhysicalSize(GLFWmonitor* monitor) {
 		int width, height;
 		glfwGetMonitorPhysicalSize(monitor, &width, &height);
-		return { (float)width, (float)height };
+		return {
+			.width = (float)width,
+			.height = (float)height
+		};
 	}
 
 	Position getMonitorPosition(GLFWmonitor* monitor) {
 		int x, y;
 		glfwGetMonitorPos(monitor, &x, &y);
-		return { (float)x, (float)y };
+		return {
+			.x = (float)x,
+			.y = (float)y
+		};
 	}
 
 	Rect getMonitorRect(GLFWmonitor* monitor) {
