@@ -41,7 +41,9 @@ public:
 						})
 					}),
 					Padding::New(ctx, {
-						.all = 10,
+						.y = 8,
+						.right = 16,
+						.left = 12,
 						.child = MakeTodoForm::New(ctx, {
 							.onSubmit = [this](const std::string& text) {
 								addItem(text);
@@ -115,15 +117,14 @@ private:
 				.children = {
 					Flexible::New(ctx, {
 						.child = TextInput::New(ctx, textInput, {
+							.placeholder = U"Add item...",
 							.onSubmit = [this](const std::u32string& newValue) {
 								onSubmit();
 							}
 						}),
 					}),
-					TextButton::New(ctx, {
-						.text = "Add",
-						.fontColor = "#ffffff",
-						.backgroundColor = "#ff5020",
+					IconButton::New(ctx, {
+						.src = asset("add.svg"),
 						.onClick = [this]() {
 							onSubmit();
 							return EventCallbackResponse::None;
@@ -189,7 +190,6 @@ private:
 					}),
 					IconButton::New(ctx, {
 						.src = asset("delete.svg"),
-						.size = 18.0f,
 						.onClick = [props]() {
 							props.onRemove();
 							return EventCallbackResponse::None;

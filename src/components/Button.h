@@ -17,6 +17,7 @@ namespace elementor::components {
 	public:
 		struct Props {
 			std::optional<std::function<EventCallbackResponse()>> onClick;
+			std::optional<std::function<EventCallbackResponse()>> onMiddleClick;
 			std::shared_ptr<Element> child;
 		};
 
@@ -39,7 +40,17 @@ namespace elementor::components {
 								blur();
 							},
 							.child = Clickable::New(ctx, {
-								.onClick = [this](int _) {
+								.onButton = [this](MouseButton button, int _) {
+									if (button == MouseButton::Middle) {
+										if (callbackMiddleClick.has_value()) {
+											return callbackMiddleClick.value()();
+										}
+									}
+
+									if (button != MouseButton::Left) {
+										return EventCallbackResponse::None;
+									}
+
 									focus();
 
 									if (!callbackClick.has_value()) {
@@ -54,7 +65,9 @@ namespace elementor::components {
 					})
 				})
 			});
-			if (props.onClick.has_value()) onClick(props.onClick.value());
+
+			onClick(props.onClick);
+			onMiddleClick(props.onMiddleClick);
 		}
 
 		static std::shared_ptr<Button> New(
@@ -80,6 +93,10 @@ namespace elementor::components {
 
 		void onClick(const std::optional<std::function<EventCallbackResponse()>>& newCallback) {
 			callbackClick = newCallback;
+		}
+
+		void onMiddleClick(const std::optional<std::function<EventCallbackResponse()>>& newCallback) {
+			callbackMiddleClick = newCallback;
 		}
 
 		void focus() {
@@ -114,6 +131,7 @@ namespace elementor::components {
 		std::shared_ptr<Focusable> focusable = nullptr;
 
 		std::optional<std::function<EventCallbackResponse()>> callbackClick;
+		std::optional<std::function<EventCallbackResponse()>> callbackMiddleClick;
 	};
 }
 

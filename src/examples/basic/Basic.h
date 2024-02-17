@@ -59,7 +59,8 @@ public:
 										}
 									}),
 									TextInput::New(ctx, {
-										.value = U"How are you?"
+										.value = U"How are you?",
+										.placeholder = U"Some cool text input label..."
 									}),
 									Paragraph::New(ctx, {
 										.children = {

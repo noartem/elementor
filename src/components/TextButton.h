@@ -17,12 +17,14 @@ namespace elementor::components {
 			std::optional<std::string> fontColor;
 			std::optional<std::string> backgroundColor;
 			std::optional<std::function<EventCallbackResponse()>> onClick;
+			std::optional<std::function<EventCallbackResponse()>> onMiddleClick;
 		};
 
 		explicit TextButton(const std::shared_ptr<ApplicationContext>& ctx, const Props& props)
 			: Component(ctx) {
 			element = Button::New(ctx, {
 				.onClick = props.onClick,
+				.onMiddleClick = props.onMiddleClick,
 				.child = Rounded::New(ctx, {
 					.all = 4,
 					.child = Background::New(ctx, {

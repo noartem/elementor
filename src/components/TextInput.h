@@ -17,6 +17,7 @@ namespace elementor::components {
 	public:
 		struct Props {
 			std::u32string value;
+			std::u32string placeholder;
 			std::function<void(const std::u32string& value)> onChange;
 			std::function<void(const std::u32string& value)> onInput;
 			std::function<void(const std::u32string& value)> onSubmit;
@@ -71,6 +72,7 @@ namespace elementor::components {
 				})
 			});
 
+			setPlaceholder(props.placeholder);
 			setValue(props.value);
 			setOnChange(props.onChange);
 			setOnInput(props.onInput);
@@ -110,11 +112,15 @@ namespace elementor::components {
 			return toUTF8(value);
 		}
 
+		void setPlaceholder(const std::u32string& newValue) {
+			placeholder = newValue;
+			updateText();
+		}
+
 		void setValue(const std::u32string& newValue) {
 			value = newValue;
 
-			auto textValue = value.empty() ? " " : toUTF8(value);
-			text->setText(textValue);
+			updateText();
 
 			if (changeCallback) {
 				changeCallback(value);
@@ -208,6 +214,7 @@ namespace elementor::components {
 		// TODO: Add selection
 
 		std::u32string value;
+		std::u32string placeholder;
 
 		std::function<void(const std::u32string&)> changeCallback = nullptr;
 		std::function<void(const std::u32string&)> inputCallback = nullptr;
@@ -225,6 +232,16 @@ namespace elementor::components {
 
 			if (!inputFocused && inputCallback) {
 				inputCallback(value);
+			}
+		}
+
+		void updateText() {
+			if (value.empty() || value == U" ") {
+				text->setText(placeholder.empty() ? " " : toUTF8(placeholder));
+				text->setFontColor("#aaa");
+			} else {
+				text->setText(value.empty() ? " " : toUTF8(value));
+				text->setFontColor("#000");
 			}
 		}
 	};
