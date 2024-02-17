@@ -9,8 +9,8 @@ int main() {
 
 	auto window = std::make_shared<GLWindow>(platform);
 	window->setTitle("Elementor Examples");
-	window->setSize({ 920, 640 });
-	window->setMinSize({ 630, 320 });
+	window->setSize({ 420, 320 });
+	window->setMinSize({ 240, 180 });
 	platform->addWindow(window);
 
 	window->setRoot(
