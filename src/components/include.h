@@ -9,9 +9,12 @@
 #include "ClickableOutside.h"
 #include "Cursorable.h"
 #include "Eventable.h"
-#include "Outline.h"
 #include "FPSLabel.h"
+#include "IconButton.h"
+#include "Outline.h"
 #include "Scrollbar.h"
+#include "Slot.h"
+#include "TextButton.h"
 #include "TextInput.h"
 
 #endif //ELEMENTOR_COMPONENTS_INCLUDE_H
