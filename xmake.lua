@@ -55,14 +55,20 @@ if is_plat("windows") then
     add_packages("glew")
 end
 
-target("example")
+target("example-basic")
     set_kind("binary")
     add_deps("elementor", "elementor-components", "elementor-glfw")
     add_packages("skia-build", "glfw")
-    add_files("src/example/*.cpp")
+    add_files("src/examples/basic/*.cpp")
 
 target("example-todo")
     set_kind("binary")
     add_deps("elementor", "elementor-components", "elementor-glfw")
     add_packages("skia-build", "glfw")
     add_files("src/examples/todo/*.cpp")
+
+target("examples")
+    set_kind("binary")
+    add_deps("elementor", "elementor-components", "elementor-glfw")
+    add_packages("skia-build", "glfw")
+    add_files("src/examples/*.cpp")

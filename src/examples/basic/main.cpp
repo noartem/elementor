@@ -1,22 +1,20 @@
 //
-// Created by noartem on 15.02.2024.
+// Created by noartem on 12.01.2024.
 //
 
-#include "./Todo.h"
+#include "./Basic.h"
 
 int main() {
 	auto platform = std::make_shared<GLPlatform>();
 
 	auto window = std::make_shared<GLWindow>(platform);
 	window->setTitle("Elementor Examples");
-	window->setSize({ 640, 920 });
-	window->setMinSize({ 640, 920 });
+	window->setSize({ 920, 640 });
+	window->setMinSize({ 630, 320 });
 	platform->addWindow(window);
 
 	window->setRoot(
-		Todo::New(window, {
-			.filename = asset("todo.md"),
-		})
+		Basic::New(window)
 	);
 
 	platform->run();

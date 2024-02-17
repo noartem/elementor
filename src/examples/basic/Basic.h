@@ -1,48 +1,17 @@
 //
-// Created by noartem on 12.01.2024.
+// Created by admin on 17.02.2024.
 //
 
-#include <format>
+#ifndef EXAMPLES_BASIC_H
+#define EXAMPLES_BASIC_H
 
-#include "elementor.h"
+#include "../elementor.h"
 
-class LikeButton : public Component {
+class Basic : public Component {
 public:
-	explicit LikeButton(const std::shared_ptr<ApplicationContext>& ctx)
+	explicit Basic(const std::shared_ptr<ApplicationContext>& ctx)
 		: Component(ctx) {
-		element = TextButton::New(ctx, button, {
-			.text = "Лайкнуть (0)",
-			.fontColor = "#fff",
-			.backgroundColor = "#ff5020",
-			.onClick = [this]() {
-				incCount();
-				return EventCallbackResponse::StopPropagation;
-			}
-		});
-	}
-
-	static std::shared_ptr<LikeButton> New(const std::shared_ptr<ApplicationContext>& ctx) {
-		return std::make_shared<LikeButton>(ctx);
-	}
-
-private:
-	int count = 0;
-
-	std::shared_ptr<TextButton> button;
-
-	void setCount(int newCount) {
-		count = newCount;
-		button->setText(std::format("Лайкнуть ({})", count));
-	}
-
-	void incCount() {
-		setCount(count + 1);
-	}
-};
-
-std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx) {
-	return (
-		Background::New(ctx, {
+		element = Background::New(ctx, {
 			.color = "#fff",
 			.child = Scrollbar::New(ctx, {
 				.thickness = 8,
@@ -132,21 +101,47 @@ std::shared_ptr<Element> Example(const std::shared_ptr<ApplicationContext>& ctx)
 					})
 				})
 			})
-		})
-	);
-}
+		});
+	}
 
-int main() {
-	auto platform = std::make_shared<GLPlatform>();
+	static std::shared_ptr<Basic> New(const std::shared_ptr<ApplicationContext>& ctx) {
+		return std::make_shared<Basic>(ctx);
+	}
 
-	auto window = std::make_shared<GLWindow>(platform);
-	window->setTitle("Elementor Examples");
-	window->setSize({ 920, 640 });
-	window->setMinSize({ 630, 320 });
-	platform->addWindow(window);
+private:
+	class LikeButton : public Component {
+	public:
+		explicit LikeButton(const std::shared_ptr<ApplicationContext>& ctx)
+			: Component(ctx) {
+			element = TextButton::New(ctx, button, {
+				.text = "Лайкнуть (0)",
+				.fontColor = "#fff",
+				.backgroundColor = "#ff5020",
+				.onClick = [this]() {
+					incCount();
+					return EventCallbackResponse::StopPropagation;
+				}
+			});
+		}
 
-	auto root = Example(window);
-	window->setRoot(root);
+		static std::shared_ptr<LikeButton> New(const std::shared_ptr<ApplicationContext>& ctx) {
+			return std::make_shared<LikeButton>(ctx);
+		}
 
-	platform->run();
-}
+	private:
+		int count = 0;
+
+		std::shared_ptr<TextButton> button;
+
+		void setCount(int newCount) {
+			count = newCount;
+			button->setText(std::format("Лайкнуть ({})", count));
+		}
+
+		void incCount() {
+			setCount(count + 1);
+		}
+	};
+};
+
+#endif //EXAMPLES_BASIC_H
