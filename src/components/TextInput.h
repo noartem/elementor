@@ -13,14 +13,16 @@
 #include "./Outline.h"
 
 namespace elementor::components {
-
-	struct TextInputProps {
-		std::u32string value;
-	};
-
 	class TextInput : public Component, public WithEventsHandlers {
 	public:
-		explicit TextInput(const std::shared_ptr<ApplicationContext>& ctx, const TextInputProps& props)
+		struct Props {
+			std::u32string value;
+			std::function<void(const std::u32string& value)> onChange;
+			std::function<void(const std::u32string& value)> onInput;
+			std::function<void(const std::u32string& value)> onSubmit;
+		};
+
+		explicit TextInput(const std::shared_ptr<ApplicationContext>& ctx, const Props& props)
 			: Component(ctx) {
 			element = Outline::New(ctx, {
 				.border = {
@@ -70,11 +72,14 @@ namespace elementor::components {
 			});
 
 			setValue(props.value);
+			setOnChange(props.onChange);
+			setOnInput(props.onInput);
+			setOnSubmit(props.onSubmit);
 		}
 
 		static std::shared_ptr<TextInput> New(
 			const std::shared_ptr<ApplicationContext>& ctx,
-			const TextInputProps& props
+			const Props& props
 		) {
 			return std::make_shared<TextInput>(ctx, props);
 		}
@@ -82,7 +87,7 @@ namespace elementor::components {
 		static std::shared_ptr<TextInput> New(
 			const std::shared_ptr<ApplicationContext>& ctx,
 			std::shared_ptr<TextInput>& elementRef,
-			const TextInputProps& props
+			const Props& props
 		) {
 			auto element = New(ctx, props);
 			elementRef = element;
@@ -101,17 +106,41 @@ namespace elementor::components {
 			focusable->focus();
 		}
 
+		std::string getValue() {
+			return toUTF8(value);
+		}
+
 		void setValue(const std::u32string& newValue) {
 			value = newValue;
 
 			auto textValue = value.empty() ? " " : toUTF8(value);
 			text->setText(textValue);
+
+			if (changeCallback) {
+				changeCallback(value);
+			}
+		}
+
+		void setValue(const std::string& newValue) {
+			setValue(fromUTF8(newValue));
+		}
+
+		void setOnChange(const std::function<void(const std::u32string&)>& onChange) {
+			changeCallback = onChange;
+		}
+
+		void setOnInput(const std::function<void(const std::u32string&)>& onInput) {
+			inputCallback = onInput;
+		}
+
+		void setOnSubmit(const std::function<void(const std::u32string&)>& onSubmit) {
+			submitCallback = onSubmit;
 		}
 
 		std::vector<std::shared_ptr<EventHandler>> getEventsHandlers() override {
 			return {
 				KeyboardEvent::Handle([this](const auto& event) {
-					if (!inputFocused) {
+					if (!inputFocused || event->key == KeyboardKey::Unknown) {
 						return EventCallbackResponse::None;
 					}
 
@@ -125,7 +154,16 @@ namespace elementor::components {
 					}
 
 					if (event->key == KeyboardKey::Enter) {
-						setValue(value + U"\n");
+						if (inputCallback) {
+							inputCallback(value);
+						}
+
+						if (submitCallback) {
+							submitCallback(value);
+						}
+
+						blur();
+
 						return EventCallbackResponse::StopPropagation;
 					}
 
@@ -138,10 +176,7 @@ namespace elementor::components {
 						auto clipboard = ctx->getClipboard();
 						auto clipboardValueU8 = clipboard->get();
 
-						std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-						std::u32string clipboardValueU32 = converter.from_bytes(clipboardValueU8.data());
-
-						setValue(value + clipboardValueU32);
+						setValue(value + fromUTF8(clipboard->get()));
 
 						return EventCallbackResponse::StopPropagation;
 					}
@@ -174,6 +209,10 @@ namespace elementor::components {
 
 		std::u32string value;
 
+		std::function<void(const std::u32string&)> changeCallback = nullptr;
+		std::function<void(const std::u32string&)> inputCallback = nullptr;
+		std::function<void(const std::u32string&)> submitCallback = nullptr;
+
 		std::shared_ptr<Text> text = nullptr;
 		std::shared_ptr<Paragraph> paragraph = nullptr;
 		std::shared_ptr<Background> background = nullptr;
@@ -183,6 +222,10 @@ namespace elementor::components {
 
 		void setInputFocused(bool focused) {
 			inputFocused = focused;
+
+			if (!inputFocused && inputCallback) {
+				inputCallback(value);
+			}
 		}
 	};
 }
