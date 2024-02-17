@@ -268,8 +268,8 @@ namespace elementor::platforms::gl {
 			nullptr,
 			(int)positionBeforeFullScreen.x,
 			(int)positionBeforeFullScreen.y,
-			(int)(sizeBeforeFullScreen.width * pixelScale),
-			(int)(sizeBeforeFullScreen.height * pixelScale),
+			(int)(sizeBeforeFullScreen.width),
+			(int)(sizeBeforeFullScreen.height),
 			GLFW_DONT_CARE
 		);
 	}
