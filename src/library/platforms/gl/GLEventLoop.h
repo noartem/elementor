@@ -32,8 +32,6 @@ namespace elementor::platforms::gl {
 
 				glfwWaitEvents();
 
-				PRINT("TICK");
-
 				D(
 					glfwErrorCode = glfwGetError(&glfwErrorDescription);
 					if (glfwErrorCode != 0 || glfwErrorDescription) {
