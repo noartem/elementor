@@ -4,8 +4,11 @@
 
 #include "elementor.h"
 
-#include "./todo/Todo.h"
 #include "./basic/Basic.h"
+#include "./counter/Counter.h"
+#include "./crud/Crud.h"
+#include "./tempconv/Tempconv.h"
+#include "./todo/Todo.h"
 
 class Examples : public Component {
 public:
@@ -72,11 +75,20 @@ private:
 		{ "Basic", [this]() {
 			return Basic::New(ctx);
 		}},
+		{ "Counter", [this]() {
+			return Counter::New(ctx);
+		}},
+		{ "CRUD", [this]() {
+			return Crud::New(ctx);
+		}},
+		{ "TempConv", [this]() {
+			return TempConv::New(ctx);
+		}},
 		{ "Todo", [this]() {
 			return Todo::New(ctx, {
 				.filename = asset("todo.md"),
 			});
-		}},
+		}}
 	};
 
 	std::vector<std::shared_ptr<Element>> makeItemsNamesElements() {

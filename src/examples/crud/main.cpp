@@ -2,19 +2,19 @@
 // Created by noartem on 12.01.2024.
 //
 
-#include "./Basic.h"
+#include "./Crud.h"
 
 int main() {
 	auto platform = std::make_shared<GLPlatform>();
 
 	auto window = std::make_shared<GLWindow>(platform);
-	window->setTitle("Elementor: Basic");
-	window->setSize({ 420, 320 });
-	window->setMinSize({ 240, 180 });
+	window->setTitle("Elementor: Counter");
+	window->setSize({ 512, 256 });
+	window->setMinSize({ 512, 256 });
 	platform->addWindow(window);
 
 	window->setRoot(
-		Basic::New(window)
+		Crud::New(window)
 	);
 
 	platform->run();
