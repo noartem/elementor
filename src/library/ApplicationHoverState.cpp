@@ -2,10 +2,10 @@
 // Created by noartem on 06.02.2024.
 //
 
-#include "HoverState.h"
+#include "ApplicationHoverState.h"
 
 namespace elementor {
-	void HoverState::tick() {
+	void ApplicationHoverState::tick() {
 		auto cursorPosition = cursor->getPosition();
 		if (cursorPosition == InvalidPosition) {
 			setHoveredNode(nullptr);
@@ -27,7 +27,7 @@ namespace elementor {
 			|| event->getName() == "scroll";
 	}
 
-	EventCallbackResponse HoverState::onEvent(const std::shared_ptr<Event>& event) {
+	EventCallbackResponse ApplicationHoverState::onEvent(const std::shared_ptr<Event>& event) {
 		if (hoveredNode && isCursorCausedEvent(event)) {
 			return hoveredNode->bubbleEvent(event);
 		}
@@ -35,7 +35,7 @@ namespace elementor {
 		return EventCallbackResponse::None;
 	}
 
-	void HoverState::setHoveredNode(const std::shared_ptr<ApplicationTree::Node>& newHoveredNode) {
+	void ApplicationHoverState::setHoveredNode(const std::shared_ptr<ApplicationTree::Node>& newHoveredNode) {
 		if (hoveredNode && newHoveredNode && hoveredNode->getElement() == newHoveredNode->getElement()
 			|| hoveredNode == nullptr && newHoveredNode == nullptr) {
 			return;

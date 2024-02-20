@@ -177,8 +177,8 @@ namespace elementor::platforms::gl {
 
 		std::shared_ptr<ApplicationTree> applicationTree;
 		std::vector<std::shared_ptr<Event>> pendingEvents;
-		std::unique_ptr<HoverState> hoverState;
-		std::unique_ptr<FocusState> focusState;
+		std::unique_ptr<ApplicationHoverState> hoverState;
+		std::unique_ptr<ApplicationFocusState> focusState;
 
 		[[nodiscard]] Size getSize() const {
 			return getWindowSize(glWindow);

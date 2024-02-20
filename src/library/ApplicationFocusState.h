@@ -2,8 +2,8 @@
 // Created by noartem on 06.02.2024.
 //
 
-#ifndef ELEMENTOR_FOCUS_STATE_H
-#define ELEMENTOR_FOCUS_STATE_H
+#ifndef ELEMENTOR_APPLICATION_FOCUS_STATE_H
+#define ELEMENTOR_APPLICATION_FOCUS_STATE_H
 
 #include <memory>
 #include <optional>
@@ -16,9 +16,9 @@
 #include "elements/Focusable.h"
 
 namespace elementor {
-	class FocusState {
+	class ApplicationFocusState {
 	public:
-		explicit FocusState(const std::shared_ptr<ApplicationTree>& applicationTree)
+		explicit ApplicationFocusState(const std::shared_ptr<ApplicationTree>& applicationTree)
 			: applicationTree(applicationTree) {
 		}
 
@@ -48,4 +48,4 @@ namespace elementor {
 	};
 }
 
-#endif //ELEMENTOR_FOCUS_STATE_H
+#endif //ELEMENTOR_APPLICATION_FOCUS_STATE_H

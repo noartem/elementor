@@ -2,8 +2,8 @@
 // Created by noartem on 06.02.2024.
 //
 
-#ifndef ELEMENTOR_HOVER_STATE_H
-#define ELEMENTOR_HOVER_STATE_H
+#ifndef ELEMENTOR_APPLICATION_HOVER_STATE_H
+#define ELEMENTOR_APPLICATION_HOVER_STATE_H
 
 #include <memory>
 #include <optional>
@@ -13,9 +13,9 @@
 #include "ApplicationTree.h"
 
 namespace elementor {
-	class HoverState {
+	class ApplicationHoverState {
 	public:
-		HoverState(
+		ApplicationHoverState(
 			const std::shared_ptr<ApplicationTree>& applicationTree,
 			const std::shared_ptr<Cursor>& cursor
 		)
@@ -36,4 +36,4 @@ namespace elementor {
 	};
 }
 
-#endif //ELEMENTOR_HOVER_STATE_H
+#endif //ELEMENTOR_APPLICATION_HOVER_STATE_H

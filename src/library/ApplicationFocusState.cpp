@@ -2,7 +2,7 @@
 // Created by noartem on 06.02.2024.
 //
 
-#include "FocusState.h"
+#include "ApplicationFocusState.h"
 
 namespace elementor {
 	int ring(int i, unsigned n) {
@@ -48,7 +48,7 @@ namespace elementor {
 			&& keyboardEvent->key == KeyboardKey::Tab;
 	}
 
-	void FocusState::tick() {
+	void ApplicationFocusState::tick() {
 		focusableNodes.clear();
 		applicationTree->visit([this](const std::shared_ptr<ApplicationTree::Node>& node) {
 			auto element = node->getElement();
@@ -70,7 +70,7 @@ namespace elementor {
 		}
 	}
 
-	EventCallbackResponse FocusState::onEvent(const std::shared_ptr<Event>& event) {
+	EventCallbackResponse ApplicationFocusState::onEvent(const std::shared_ptr<Event>& event) {
 		if (focusedNode && isFocusRelatedEvent(event)) {
 			auto bubbleEventResponse = focusedNode->bubbleEvent(event);
 			if (bubbleEventResponse == EventCallbackResponse::StopPropagation) {
@@ -87,7 +87,7 @@ namespace elementor {
 		return EventCallbackResponse::None;
 	}
 
-	int FocusState::getFocusedNodeIndex() {
+	int ApplicationFocusState::getFocusedNodeIndex() {
 		if (focusedNode == nullptr) {
 			return -1;
 		}
@@ -101,7 +101,7 @@ namespace elementor {
 		return -1;
 	}
 
-	void FocusState::setFocusedNode(const std::shared_ptr<ApplicationTree::Node>& newFocusedNode) {
+	void ApplicationFocusState::setFocusedNode(const std::shared_ptr<ApplicationTree::Node>& newFocusedNode) {
 		if (focusedNode && newFocusedNode && focusedNode->getElement() == newFocusedNode->getElement()
 			|| focusedNode == nullptr && newFocusedNode == nullptr) {
 			return;
@@ -128,7 +128,7 @@ namespace elementor {
 		}
 	}
 
-	void FocusState::focusIthNode(int i) {
+	void ApplicationFocusState::focusIthNode(int i) {
 		if (focusableNodes.empty()) {
 			return;
 		}
@@ -139,17 +139,17 @@ namespace elementor {
 		setFocusedNode(focusableNodes[i]);
 	}
 
-	void FocusState::focusNextNode() {
+	void ApplicationFocusState::focusNextNode() {
 		auto i = getFocusedNodeIndex();
 		focusIthNode(i == -1 ? 0 : (i + 1));
 	}
 
-	void FocusState::focusPreviousNode() {
+	void ApplicationFocusState::focusPreviousNode() {
 		auto i = getFocusedNodeIndex();
 		focusIthNode(i == -1 ? 0 : (i - 1));
 	}
 
-	void FocusState::clearFocusedNodeIfRemoved() {
+	void ApplicationFocusState::clearFocusedNodeIfRemoved() {
 		if (focusedNode == nullptr) {
 			return;
 		}
@@ -163,7 +163,7 @@ namespace elementor {
 		setFocusedNode(nullptr);
 	}
 
-	void FocusState::clearFocusedNodeIfPendingBlur() {
+	void ApplicationFocusState::clearFocusedNodeIfPendingBlur() {
 		if (focusedNode && isNodePendingBlur(focusedNode)) {
 			setFocusedNode(nullptr);
 		}

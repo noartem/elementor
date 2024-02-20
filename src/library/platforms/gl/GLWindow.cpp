@@ -232,8 +232,8 @@ namespace elementor::platforms::gl {
 
 	void GLWindow::setRoot(const std::shared_ptr<Element>& rootElement) {
 		applicationTree = std::make_shared<ApplicationTree>(rootElement, getSize());
-		hoverState = std::make_unique<HoverState>(applicationTree, cursor);
-		focusState = std::make_unique<FocusState>(applicationTree);
+		hoverState = std::make_unique<ApplicationHoverState>(applicationTree, cursor);
+		focusState = std::make_unique<ApplicationFocusState>(applicationTree);
 	}
 
 	void GLWindow::updateWindowSizeLimits() {
