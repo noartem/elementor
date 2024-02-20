@@ -77,8 +77,6 @@ namespace elementor::elements {
 
 		void setChildren(const std::vector <std::shared_ptr<Element>>& newChildren);
 
-		[[nodiscard]] bool isChanged() const override;
-
 		bool popChanged() override;
 
 	protected:
@@ -95,8 +93,6 @@ namespace elementor::elements {
 		std::vector <std::shared_ptr<Element>> placeholdersChildren;
 
 		float lastPixelScale;
-
-		[[nodiscard]] bool isTextChildrenChanged() const;
 
 		bool popTextChildrenChanged();
 

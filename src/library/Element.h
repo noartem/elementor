@@ -48,12 +48,8 @@ namespace elementor {
 			return ClipBehavior::None;
 		}
 
-		virtual [[nodiscard]] bool isChanged() const {
-			return changed;
-		}
-
 		virtual bool popChanged() {
-			if (isChanged()) {
+			if (changed) {
 				changed = false;
 				return true;
 			} else {
