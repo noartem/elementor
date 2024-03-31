@@ -6,7 +6,6 @@
 
 #include <memory>
 #include <cmath>
-#include <fstream>
 
 #include "GLFW/glfw3.h"
 

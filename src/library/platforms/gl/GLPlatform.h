@@ -52,6 +52,14 @@ namespace elementor::platforms::gl {
 			locale = newLocale;
 		}
 
+#ifdef TEST
+		void __T_tick(int N) {
+			for (auto i = 0; i < N; i++) {
+				tick();
+			}
+		}
+#endif
+
 	private:
 		std::shared_ptr<GLEventLoop> eventLoop;
 

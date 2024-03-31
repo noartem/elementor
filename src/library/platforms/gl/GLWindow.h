@@ -12,6 +12,7 @@
 #define SK_GL
 
 #include "GLFW/glfw3.h"
+#include "include/core/SkSurface.h"
 #include "include/gpu/GrDirectContext.h"
 
 #include "elementor.h"
@@ -153,6 +154,12 @@ namespace elementor::platforms::gl {
 		void setPixelScale(float newValue) override {
 			pixelScale = newValue;
 		}
+
+#ifdef TEST
+		sk_sp<SkImage> __T_screenshot() {
+			return skSurface->makeImageSnapshot();
+		}
+#endif
 
 	private:
 		std::shared_ptr<GLPlatformContext> ctx;
