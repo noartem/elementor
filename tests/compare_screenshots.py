@@ -71,7 +71,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(old.size, new.size, msg='Screenshots sizes are different')
 
             diff = ImageChops.difference(old, new)
-            image_with_diff(old, diff).save(path.join('screenshots_diff', screenshot))
+            image_with_diff(old, diff).save(path.join(screenshots_diff_path, screenshot))
             msg = f"\nScreenshots have difference, checkout it here: {link(path.join(screenshots_diff_path, screenshot))}"
             self.assertAlmostEqual(calc_diff_percentage(diff), 0, delta=1e-7, msg=msg)
 

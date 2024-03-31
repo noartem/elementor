@@ -84,8 +84,6 @@ int main() {
 	auto platform = std::make_shared<GLPlatform>();
 
 	auto window = std::make_shared<GLWindow>(platform);
-	window->setTitle("Test");
-	window->setSize({ 256, 256 });
 	platform->addWindow(window);
 
 	for (const auto& example: Examples) {
