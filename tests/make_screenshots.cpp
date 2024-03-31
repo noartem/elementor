@@ -91,7 +91,7 @@ int main() {
 	for (const auto& example: Examples) {
 		window->setSize(example.size);
 		window->setRoot(example.make(window));
-		platform->__T_tick(3);
+		platform->__T_tick(2);
 		saveImageToFile(window->__T_screenshot(), "../../../../tests/screenshots_new/" + example.name + ".png");
 	}
 
