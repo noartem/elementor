@@ -5,9 +5,11 @@
 #include "elementor.h"
 
 #include "./basic/Basic.h"
+#include "./button/ButtonDemo.h"
 #include "./counter/Counter.h"
 #include "./crud/Crud.h"
 #include "./tempconv/Tempconv.h"
+#include "./text/TextDemo.h"
 #include "./todo/Todo.h"
 
 class Examples : public Component {
@@ -74,6 +76,12 @@ private:
 	const std::vector<std::pair<std::string, std::function<std::shared_ptr<Element>()>>> items = {
 		{ "Basic", [this]() {
 			return Basic::New(ctx);
+		}},
+		{ "Text", [this]() {
+			return TextDemo::New(ctx);
+		}},
+		{ "Button", [this]() {
+			return ButtonDemo::New(ctx);
 		}},
 		{ "Counter", [this]() {
 			return Counter::New(ctx);

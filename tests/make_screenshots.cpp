@@ -11,11 +11,12 @@
 #include <include/core/SkEncodedImageFormat.h>
 
 #include "../src/examples/elementor.h"
-#include "../src/examples/counter/Counter.h"
 #include "../src/examples/basic/Basic.h"
+#include "../src/examples/button/ButtonDemo.h"
+#include "../src/examples/counter/Counter.h"
 #include "../src/examples/crud/Crud.h"
 #include "../src/examples/tempconv/TempConv.h"
-#include "../src/examples/assets/include.h"
+#include "../src/examples/text/TextDemo.h"
 #include "../src/examples/todo/Todo.h"
 
 struct Example {
@@ -26,10 +27,31 @@ struct Example {
 
 const std::vector<Example> Examples = {
 	{
+		.name = "basic",
+		.size = { 420, 320 },
+		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
+			return Basic::New(ctx);
+		}
+	},
+	{
+		.name = "button",
+		.size = { 420, 320 },
+		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
+			return ButtonDemo::New(ctx);
+		}
+	},
+	{
 		.name = "counter",
 		.size = { 256, 256 },
 		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
 			return Counter::New(ctx);
+		}
+	},
+	{
+		.name = "crud",
+		.size = { 512, 256 },
+		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
+			return Crud::New(ctx);
 		}
 	},
 	{
@@ -40,17 +62,10 @@ const std::vector<Example> Examples = {
 		}
 	},
 	{
-		.name = "basic",
-		.size = { 420, 320 },
-		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
-			return Basic::New(ctx);
-		}
-	},
-	{
-		.name = "crud",
+		.name = "text",
 		.size = { 512, 256 },
 		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
-			return Crud::New(ctx);
+			return TextDemo::New(ctx);
 		}
 	},
 	{
@@ -90,7 +105,10 @@ int main() {
 		window->setSize(example.size);
 		window->setRoot(example.make(window));
 		platform->__T_tick(2);
-		saveImageToFile(window->__T_screenshot(), "../../../../tests/screenshots_new/" + example.name + ".png");
+		saveImageToFile(
+			window->__T_screenshot(),
+			"../../../../tests/screenshots_new/" + example.name + ".png"
+		);
 	}
 
 	window->close();
