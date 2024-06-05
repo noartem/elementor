@@ -31,8 +31,8 @@ explicit Counter(const std::shared_ptr<ApplicationContext>& ctx)
 									.child = Text::New(ctx, countText, {
 										.text = std::to_string(count),
 										.fontColor = "#000",
-										.fontSize = 14,
-										.fontFamily = "Fira Code",
+										.fontSize = 20,
+										.fontFamily = "Comic Sans",
 									})
 								})
 							})
