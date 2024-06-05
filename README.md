@@ -4,7 +4,7 @@
 
 1. Install [XMake](https://xmake.io)
 
-2. Clone project
+2. Clone the project
 
     ```bash
     git clone https://github.com/noartem/elementor.git
@@ -23,7 +23,7 @@
     xmake f -m release -y
     ```
 
-5. Build project for your system
+5. Build the project for your system
 
     ```bash
     xmake build
@@ -37,22 +37,22 @@
 
 ## Project structure
 
-src/library - contains library code
-src/library/*.(cpp|h) - library core
-src/library/platforms - standard primitive elements library, most of them can be replaced by self-made elements
-src/platforms - OS interaction layer
-src/platforms/gl - OS interaction layer made by GLFW
-src/components - ready to use UI components made by standard elements composition, also can be replaced by user elements
-src/examples - example applications used for proofing that library works correctly
-tests - various library tests
-tests/screenshots - standard examples screenshots that used for testing
-tests/screenshots_new - newly generated examples screenshots
-tests/screenshots_diff - difference between standard and new screenshots
+`src/library` - contains library code   
+`src/library/*.(cpp|h)` - library core   
+`src/library/platforms` - standard primitive elements library, most of them can be replaced by self-made elements   
+`src/platforms` - OS interaction layer   
+`src/platforms/gl` - OS interaction layer made with GLFW   
+`src/components` - ready-to-use UI components made by standard elements composition, also can be replaced by user
+elements   
+`src/examples` - example applications used to verify that the library works correctly   
+`tests` - various library tests   
+`tests/screenshots` - standard examples screenshots used for testing   
+`tests/screenshots_new` - newly generated examples screenshots   
+`tests/screenshots_diff` - difference between standard and new screenshots
 
 ## Run Tests
 
-Run screenshot tests.
-Screenshots are created by `tests/make_screnshots.cpp` and
+Run screenshot tests. Screenshots are created by `tests/make_screenshots.cpp` and
 compared by `tests/compare_screenshots.py`
 
 ```bash
@@ -61,16 +61,15 @@ python test.py
 
 ## Examples
 
-Elementor provides list of various examples.
-They also used for performing screenshot tests
+Elementor provides a list of various examples. They are also used for performing screenshot tests.
 
 ### 1. Basic
 
-- Rich Text rendering
+- Rich text rendering
 - FPS counter
 - Buttons and text field
 - Hover and focus support
-    - Click on button and then press Tab - your focus will be moved to the next focusable element (button, text, ...)
+    - Click on a button and then press Tab - your focus will be moved to the next focusable element (button, text, ...)
 
 ```bash
 xmake && xmake run example-basic
@@ -107,8 +106,8 @@ xmake && xmake run example-counter
 
 ### 4. CRUD (readonly)
 
-- Template for generic CRUD application
-- For now readonly
+- Template for a generic CRUD application
+- For now, read-only
 
 ```bash
 xmake && xmake run example-crud
@@ -118,7 +117,7 @@ xmake && xmake run example-crud
     <img src="tests/screenshots/crud.png" height="256px">
 </div>
 
-### 5. Temperature Convertor
+### 5. Temperature Converter
 
 - Text input
 - State
@@ -158,9 +157,8 @@ xmake && xmake run example-todo
 
 ### All combined
 
-There is also example application providing all of previous examples in one window.
+There is also an example application providing all of the previous examples in one window.
 
 ```bash
 xmake && xmake run examples
 ```
-
