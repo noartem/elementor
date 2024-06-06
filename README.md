@@ -28,8 +28,14 @@
     ```bash
     xmake build
     ```
+   
+6. Generate CMake config file
 
-6. Check out examples
+   ```bash
+   xmake project -k cmakelists
+   ```
+
+7. Check out examples
 
     ```bash
     xmake run example-todo
