@@ -32,7 +32,7 @@
 6. Check out examples
 
     ```bash
-    xmake run example-gallery
+    xmake run example-todo
     ```
 
 ## Project structure
@@ -72,11 +72,11 @@ Elementor provides a list of various examples. They are also used for performing
     - Click on a button and then press Tab - your focus will be moved to the next focusable element (button, text, ...)
 
 ```bash
-xmake && xmake run example-basic
+xmake run example-basic
 ```
 
 <div>
-    <img src="tests/screenshots/basic.png" height="256px">
+    <img src="tests/screenshots/basic.png" height="256px" alt="Basic example screnshot">
 </div>
 
 ### 2. Button
@@ -84,11 +84,11 @@ xmake && xmake run example-basic
 - Clickable buttons of different types
 
 ```bash
-xmake && xmake run example-button
+xmake run example-button
 ```
 
 <div>
-    <img src="tests/screenshots/button.png" height="256px">
+    <img src="tests/screenshots/button.png" height="256px" alt="Button example screnshot">
 </div>
 
 ### 3. Counter
@@ -97,11 +97,11 @@ xmake && xmake run example-button
 - Updating state
 
 ```bash
-xmake && xmake run example-counter
+xmake run example-counter
 ```
 
 <div>
-    <img src="tests/screenshots/counter.png" height="256px">
+    <img src="tests/screenshots/counter.png" height="256px"  alt="Counter example screnshot">
 </div>
 
 ### 4. CRUD (readonly)
@@ -110,11 +110,11 @@ xmake && xmake run example-counter
 - For now, read-only
 
 ```bash
-xmake && xmake run example-crud
+xmake run example-crud
 ```
 
 <div>
-    <img src="tests/screenshots/crud.png" height="256px">
+    <img src="tests/screenshots/crud.png" height="256px" alt="CRUD example screnshot">
 </div>
 
 ### 5. Temperature Converter
@@ -124,11 +124,11 @@ xmake && xmake run example-crud
 - Transforming state
 
 ```bash
-xmake && xmake run example-tempconv
+xmake run example-tempconv
 ```
 
 <div>
-    <img src="tests/screenshots/tempconv.png" width="512px">
+    <img src="tests/screenshots/tempconv.png" width="512px" alt="Temperature converter example screnshot">
 </div>
 
 ### 6. Text
@@ -136,23 +136,24 @@ xmake && xmake run example-tempconv
 - Rich text rendering
 
 ```bash
-xmake && xmake run example-text
+xmake run example-text
 ```
 
 <div>
-    <img src="tests/screenshots/text.png" height="256px">
+    <img src="tests/screenshots/text.png" height="256px" alt="Text example screnshot">
 </div>
 
 ### 7. TODO
 
 - Complex demo application with all previous features combined
+- Sync with markdown file `examples/assets/todo.md`
 
 ```bash
-xmake && xmake run example-todo
+xmake run example-todo
 ```
 
 <div>
-    <img src="tests/screenshots/todo.png" height="384px">
+    <img src="tests/screenshots/todo.png" height="384px" alt="TODO example screnshot">
 </div>
 
 ### All combined
@@ -160,5 +161,5 @@ xmake && xmake run example-todo
 There is also an example application providing all of the previous examples in one window.
 
 ```bash
-xmake && xmake run examples
+xmake run examples
 ```
