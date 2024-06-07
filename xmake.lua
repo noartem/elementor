@@ -12,6 +12,7 @@ end
 
 if is_mode("debug") then
     add_defines("DEBUG")
+    set_policy("build.sanitizer.address")
     set_policy('build.sanitizer.undefined')
     set_policy('build.sanitizer.leak')
 end
