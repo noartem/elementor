@@ -175,15 +175,7 @@ namespace elementor::platforms::gl {
 					if (keyboardEvent->action == KeyAction::Release &&
 						keyboardEvent->mods & KeyModsCtrl &&
 						keyboardEvent->key == KeyboardKey::P) {
-						if (keyboardEvent->mods & KeyModsShift) {
-							std::ofstream logFile(std::format("elementor_tree_dump_{}.txt",
-								std::chrono::system_clock::now().time_since_epoch().count()));
-							applicationTree->print(logFile);
-							logFile.close();
-						} else {
-							applicationTree->print(std::cout);
-						}
-
+						applicationTree->print(std::cout);
 						continue;
 					}
 
