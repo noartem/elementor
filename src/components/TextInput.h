@@ -181,8 +181,9 @@ namespace elementor::components {
 					if (event->key == KeyboardKey::V && event->mods & KeyModsCtrl) {
 						auto clipboard = ctx->getClipboard();
 						auto clipboardValueU8 = clipboard->get();
+						auto clipboardValueU32 = fromUTF8(clipboardValueU8);
 
-						setValue(value + fromUTF8(clipboard->get()));
+						setValue(value + clipboardValueU32);
 
 						return EventCallbackResponse::StopPropagation;
 					}
