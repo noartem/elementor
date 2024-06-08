@@ -15,6 +15,7 @@
 #include "../src/examples/button/ButtonDemo.h"
 #include "../src/examples/counter/Counter.h"
 #include "../src/examples/crud/Crud.h"
+#include "../src/examples/flex/FlexDemo.h"
 #include "../src/examples/tempconv/TempConv.h"
 #include "../src/examples/text/TextDemo.h"
 #include "../src/examples/todo/Todo.h"
@@ -52,6 +53,13 @@ const std::vector<Example> Examples = {
 		.size = { 512, 256 },
 		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
 			return Crud::New(ctx);
+		}
+	},
+	{
+		.name = "flex",
+		.size = { 320, 420 },
+		.make = [](const std::shared_ptr<ApplicationContext>& ctx) {
+			return FlexDemo::New(ctx);
 		}
 	},
 	{

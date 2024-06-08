@@ -123,7 +123,20 @@ xmake run example-crud
     <img src="tests/screenshots/crud.png" height="256px" alt="CRUD example screnshot">
 </div>
 
-### 5. Temperature Converter
+### 5. Flexbox Layout
+
+- Layout
+- Nested layout
+
+```bash
+xmake run example-flex
+```
+
+<div>
+    <img src="tests/screenshots/flex.png" width="512px" alt="Flex layout example screnshot">
+</div>
+
+### 6. Temperature Converter
 
 - Text input
 - State
@@ -137,7 +150,7 @@ xmake run example-tempconv
     <img src="tests/screenshots/tempconv.png" width="512px" alt="Temperature converter example screnshot">
 </div>
 
-### 6. Text
+### 7. Text
 
 - Rich text rendering
 
@@ -149,7 +162,7 @@ xmake run example-text
     <img src="tests/screenshots/text.png" height="256px" alt="Text example screnshot">
 </div>
 
-### 7. TODO
+### 8. TODO
 
 - Complex demo application with all previous features combined
 - Sync with markdown file `examples/assets/todo.md`

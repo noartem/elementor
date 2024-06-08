@@ -8,6 +8,7 @@
 #include "./button/ButtonDemo.h"
 #include "./counter/Counter.h"
 #include "./crud/Crud.h"
+#include "./flex/FlexDemo.h"
 #include "./tempconv/Tempconv.h"
 #include "./text/TextDemo.h"
 #include "./todo/Todo.h"
@@ -82,6 +83,9 @@ private:
 		}},
 		{ "Button", [this]() {
 			return ButtonDemo::New(ctx);
+		}},
+		{ "Flex", [this]() {
+			return FlexDemo::New(ctx);
 		}},
 		{ "Counter", [this]() {
 			return Counter::New(ctx);

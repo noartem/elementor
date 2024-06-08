@@ -12,7 +12,7 @@ end
 
 if is_mode("debug") then
     add_defines("DEBUG")
-    set_policy("build.sanitizer.address")
+--     set_policy("build.sanitizer.address")
     set_policy('build.sanitizer.undefined')
     set_policy('build.sanitizer.leak')
 end
@@ -79,6 +79,12 @@ target("example-crud")
     add_deps("elementor", "elementor-components", "elementor-glfw")
     add_packages("skia-build", "glfw")
     add_files("src/examples/crud/*.cpp")
+
+target("example-flex")
+    set_kind("binary")
+    add_deps("elementor", "elementor-components", "elementor-glfw")
+    add_packages("skia-build", "glfw")
+    add_files("src/examples/flex/*.cpp")
 
 target("example-tempconv")
     set_kind("binary")
