@@ -402,6 +402,9 @@ private:
 
 	void changeItem(unsigned i, const std::string& text) {
 		D_LOG("Changing " << i << "th item to \"" << text << "\"");
+		if (items[i].done) {
+			return;
+		}
 		items[i].text = text;
 		pendUpdateItems();
 	}
